@@ -333,7 +333,7 @@
                              </div>
 
                              <div>
-                                 <h4 class="text-sm font-bold uppercase text-teal-500 mb-6 tracking-wide">Display</h4>
+                                 <h4 class="text-sm font-bold uppercase text-teal-500 mb-6 tracking-wide border-b border-teal-500/20 pb-2">Display</h4>
                                  <dl class="space-y-4">
                                      <div>
                                          <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Type & Size</dt>
@@ -395,7 +395,7 @@
                                      </div>
                                      <div>
                                          <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">SIM</dt>
-                                          <dd class="text-base text-gray-700 dark:text-gray-300 whitespace-nowrap">{{ $phone->body->sim }}</dd>
+                                          <dd class="text-base text-gray-700 dark:text-gray-300 leading-relaxed">{{ $phone->body->sim }}</dd>
                                      </div>
                                      <div>
                                          <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Dimensions & Weight</dt>
