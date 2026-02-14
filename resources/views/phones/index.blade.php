@@ -1,21 +1,35 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeInUp {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+    }
+    .delay-100 { animation-delay: 100ms; }
+    .delay-200 { animation-delay: 200ms; }
+    .delay-300 { animation-delay: 300ms; }
+</style>
+
 <div class="bg-gray-50 dark:bg-black min-h-screen">
     
     <!-- Hero Section -->
     <div class="relative bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-white/5 overflow-hidden">
         <div class="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-900/[0.04] bg-[bottom_1px_center] dark:bg-[bottom_1px_center]" style="mask-image: linear-gradient(to bottom, transparent, black);"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative z-10 text-center">
-            <h1 class="text-5xl md:text-7xl font-black tracking-tight text-slate-900 dark:text-white mb-6">
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight text-slate-900 dark:text-white mb-6 animate-fadeInUp">
                 Find Value, <span class="text-teal-600 dark:text-teal-500">Not Hype.</span>
             </h1>
-            <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
+            <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed animate-fadeInUp delay-100">
                 The only data-driven smartphone ranking based on real-world performance per rupee. No bias, just math.
             </p>
             
             <!-- Search & Filter Bar -->
-            <div class="max-w-3xl mx-auto relative group">
+            <div class="max-w-3xl mx-auto relative group animate-fadeInUp delay-200">
                 <div class="absolute -inset-1 bg-gradient-to-r from-teal-500 to-emerald-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                 <div class="relative flex items-center bg-white dark:bg-[#1A1A1A] rounded-xl shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 p-2">
                     <div class="pl-4 text-gray-400">
@@ -34,7 +48,7 @@
             </div>
 
             <!-- Quick Filters (Chips) -->
-            <div class="flex flex-wrap justify-center gap-3 mt-8">
+            <div class="flex flex-wrap justify-center gap-3 mt-8 animate-fadeInUp delay-300">
                 <button class="px-5 py-2 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 text-sm font-semibold hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors border border-teal-200 dark:border-teal-800 flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
                     Top Value

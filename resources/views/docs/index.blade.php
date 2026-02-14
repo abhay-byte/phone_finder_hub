@@ -1,8 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeInUp {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+    }
+    .delay-100 { animation-delay: 100ms; }
+    .delay-200 { animation-delay: 200ms; }
+    .delay-300 { animation-delay: 300ms; }
+</style>
+
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="text-center mb-12">
+    <div class="text-center mb-12 animate-fadeInUp">
         <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl">
             Documentation
         </h1>
@@ -13,7 +27,7 @@
 
     <div class="grid grid-cols-1 gap-10 sm:grid-cols-3">
         <!-- UEPS Card -->
-        <a href="{{ route('ueps.methodology') }}" class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
+        <a href="{{ route('ueps.methodology') }}" class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-100">
             <div>
                 <span class="rounded-lg inline-flex p-3 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 ring-4 ring-white dark:ring-gray-800">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -38,7 +52,7 @@
         </a>
 
         <!-- FPI Card -->
-        <a href="{{ route('fpi.methodology') }}" class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
+        <a href="{{ route('fpi.methodology') }}" class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-200">
             <div>
                 <span class="rounded-lg inline-flex p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 ring-4 ring-white dark:ring-gray-800">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -58,7 +72,7 @@
         </a>
 
         <!-- Value Calculation Card -->
-        <div class="group relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
+        <div class="group relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
             <div>
                 <span class="rounded-lg inline-flex p-3 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 ring-4 ring-white dark:ring-gray-800">
                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
