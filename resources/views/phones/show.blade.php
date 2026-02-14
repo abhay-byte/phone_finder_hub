@@ -132,13 +132,15 @@
                         {{ $phone->name }}
                     </h1>
                     <!-- Fix: Stacking on mobile to prevent overlap -->
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
                          <p class="text-xl md:text-2xl text-gray-500 dark:text-gray-400 font-medium tracking-tight">
                             {{ $phone->model_variant }}
                         </p>
-                         <p class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
-                             ₹{{ number_format($phone->price) }}
-                         </p>
+                         <div class="flex items-center gap-4">
+                             <p class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
+                                 ₹{{ number_format($phone->price) }}
+                             </p>
+                         </div>
                     </div>
                 </div>
 

@@ -28,6 +28,13 @@ class Phone extends Model
         'release_date' => 'date',
         'price' => 'decimal:2',
         'announced_date' => 'date',
+        'overall_score' => 'decimal:1',
+        'ueps_score' => 'decimal:1',
+    ];
+
+    protected $appends = [
+        'value_score',
+        'ueps_details',
     ];
 
     public function body()
