@@ -542,6 +542,13 @@
                                 </div>
                                 @endif
 
+                                @if($phone->camera->ultrawide_camera_specs)
+                                <div class="mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                                    <h5 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-1">Ultrawide</h5>
+                                    <p class="text-lg font-medium leading-relaxed">{{ $phone->camera->ultrawide_camera_specs }}</p>
+                                </div>
+                                @endif
+
                                 <!-- New Granular Camera Specs -->
                                 <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-sm">
                                     @if($phone->camera->main_camera_sensors)
