@@ -17,7 +17,14 @@ class SpecConnectivity extends Model
         'usb',
         'sensors',
         'loudspeaker',
-        'jack_3_5mm',
+        'audio_quality',
+        'loudness_test_result',
+        'wifi_bands',
+        'usb_details',
+        'sar_value',
+        'network_bands',
+        'positioning_details',
+        'has_3_5mm_jack',
     ];
 
     public function phone()
