@@ -10,7 +10,7 @@
                 UEPS 4.0
             </div>
             <h1 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-6">
-                Ultra-Extensive Phone Scoring
+                Ultra-Extensive Phone Scoring System (UEPS-40)
             </h1>
             <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
                 A comprehensive 200-point system designed to evaluate smartphones based on real-world usage, covering every aspect from build quality to connectivity.

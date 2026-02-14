@@ -65,7 +65,7 @@
         </nav>
 
         <!-- Page Content -->
-        <main class="flex-grow">
+        <main class="flex-grow" id="main-content">
             @yield('content')
         </main>
 

@@ -3,9 +3,150 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ config('app.name', 'PhoneFinderHub') }} - Data-Driven Decisions</title>
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,900" rel="stylesheet" />
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    </head>
+    <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] dark:text-[#EDEDEC] min-h-screen flex flex-col font-sans antialiased overflow-x-hidden">
+        
+        <!-- Navigation -->
+        <nav class="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-md bg-white/70 dark:bg-black/70 border-b border-gray-100 dark:border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16 items-center">
+                    <div class="flex-shrink-0 flex items-center gap-3">
+                        <img src="{{ asset('assets/logo.png') }}" alt="Logo" class="w-8 h-8 object-contain">
+                        <span class="font-bold text-xl tracking-tight">PhoneFinderHub</span>
+                    </div>
+                    <div class="hidden sm:flex sm:space-x-8">
+                        <a href="{{ route('home') }}" class="text-gray-900 dark:text-white px-3 py-2 text-sm font-medium border-b-2 border-teal-500">Home</a>
+                        <a href="{{ route('phones.rankings') }}" class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-700 transition-all">Rankings</a>
+                        <a href="#" class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-3 py-2 text-sm font-medium border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-700 transition-all">Compare</a>
+                    </div>
+                    <div>
+                        @if (Route::has('login'))
+                            @auth
+                                <a href="{{ url('/dashboard') }}" class="text-sm font-semibold text-gray-900 dark:text-white hover:text-teal-500 transition-colors">Dashboard</a>
+                            @else
+                                <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-900 dark:text-white hover:text-teal-500 transition-colors">Log in</a>
+                            @endauth
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </nav>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <!-- Main Content -->
+        <main id="main-content" class="flex-grow flex flex-col justify-center pt-20">
+            
+            <!-- Hero Section -->
+            <div class="relative isolate px-6 pt-14 lg:px-8">
+                <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
+                    <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+                </div>
 
+                <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 text-center animate-fade-in-up">
+                    <div class="hidden sm:mb-8 sm:flex sm:justify-center">
+                        <div class="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 dark:text-gray-400 ring-1 ring-gray-900/10 dark:ring-white/10 hover:ring-gray-900/20 dark:hover:ring-white/20 transition-all">
+                            Announcing UEPS 4.0 & FPI Methodology. <a href="{{ route('methodology.ueps') }}" class="font-semibold text-teal-600 dark:text-teal-400"><span class="absolute inset-0" aria-hidden="true"></span>Read more <span aria-hidden="true">&rarr;</span></a>
+                        </div>
+                    </div>
+                    <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-6xl mb-6">
+                        Find Your Perfect Phone using <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500">Data, Not Hype.</span>
+                    </h1>
+                    <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
+                        Stop guessing. Use our scientific <b>UEPS 4.0</b> methodology and <b>Final Performance Index (FPI)</b> to find the absolute best device for your budget.
+                    </p>
+                    <div class="mt-10 flex items-center justify-center gap-x-6">
+                        <a href="{{ route('phones.rankings') }}" class="rounded-full bg-teal-600 px-8 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 transition-all hover:scale-105 shadow-teal-500/30">
+                            View Rankings ->
+                        </a>
+                        <a href="{{ route('methodology.ueps') }}" class="text-sm font-semibold leading-6 text-gray-900 dark:text-white hover:text-teal-500 transition-colors">
+                            Learn Methodology <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
+                    <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 pb-32">
+                <div class="mx-auto max-w-2xl lg:max-w-none">
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-3">
+                        
+                        <!-- Feature 1 -->
+                        <div class="flex flex-col animate-stagger-fade-in delay-200">
+                            <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900 dark:text-white">
+                                <div class="h-10 w-10 flex items-center justify-center rounded-lg bg-teal-600">
+                                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                                    </svg>
+                                </div>
+                                UEPS 4.0 Score
+                            </dt>
+                            <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600 dark:text-gray-400">
+                                <p class="flex-auto">A comprehensive 200-point scoring system evaluating 40+ touchpoints including build quality, display efficiency, sustained performance, and camera versatility.</p>
+                                <p class="mt-6">
+                                    <a href="{{ route('methodology.ueps') }}" class="text-sm font-semibold leading-6 text-teal-600 hover:text-teal-500">Learn more <span aria-hidden="true">→</span></a>
+                                </p>
+                            </dd>
+                        </div>
+
+                        <!-- Feature 2 -->
+                        <div class="flex flex-col animate-stagger-fade-in delay-300">
+                            <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900 dark:text-white">
+                                <div class="h-10 w-10 flex items-center justify-center rounded-lg bg-blue-600">
+                                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" />
+                                    </svg>
+                                </div>
+                                Final Performance Index (FPI)
+                            </dt>
+                            <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600 dark:text-gray-400">
+                                <p class="flex-auto">A weighted metric combining AnTuTu v11 (40%), Geekbench (40%), and 3DMark (20%) scores to provide a single, normalized performance rating.</p>
+                                <p class="mt-6">
+                                    <a href="{{ route('methodology.fpi') }}" class="text-sm font-semibold leading-6 text-blue-600 hover:text-blue-500">See formula <span aria-hidden="true">→</span></a>
+                                </p>
+                            </dd>
+                        </div>
+
+                        <!-- Feature 3 -->
+                        <div class="flex flex-col animate-stagger-fade-in delay-500">
+                            <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-gray-900 dark:text-white">
+                                <div class="h-10 w-10 flex items-center justify-center rounded-lg bg-purple-600">
+                                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                Value Analysis
+                            </dt>
+                            <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600 dark:text-gray-400">
+                                <p class="flex-auto">We calculate the raw "Performance per Rupee" and "UEPS per Rupee" to help you identify the true budget kings and flagship killers.</p>
+                                <p class="mt-6">
+                                    <a href="{{ route('phones.rankings', ['tab' => 'value']) }}" class="text-sm font-semibold leading-6 text-purple-600 hover:text-purple-500">Check value -> <span aria-hidden="true">→</span></a>
+                                </p>
+                            </dd>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        
+        <!-- Footer -->
+        <footer class="bg-white dark:bg-black border-t border-gray-100 dark:border-white/5 py-12">
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 text-center text-gray-500 dark:text-gray-400 text-sm">
+                &copy; {{ date('Y') }} PhoneFinderHub. All rights reserved. Data-driven decisions.
+            </div>
+        </footer>
+    </body>
+</html>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
