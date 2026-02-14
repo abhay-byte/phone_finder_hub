@@ -70,30 +70,34 @@
                     </div>
                     <div>
                          @foreach($phone->ueps_score['breakdown'] as $category => $data)
-                            <details class="group border-b border-gray-100 dark:border-white/5 last:border-0">
-                                <summary class="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                            <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
+                                <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
                                     <div class="flex items-center gap-3">
                                         <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-xs font-bold">{{ $data['score'] }}</div>
                                         <span class="text-sm font-semibold">{{ $category }}</span>
                                     </div>
-                                    <svg class="w-4 h-4 text-gray-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                     </svg>
-                                </summary>
-                                <div class="px-4 pb-4 pt-0">
-                                    <div class="pl-[2.75rem] space-y-2">
-                                        @foreach($data['details'] as $detail)
-                                            <div class="flex justify-between items-start text-xs">
-                                                <span class="text-gray-500 w-2/3">{{ $detail['criterion'] }}</span>
-                                                <div class="text-right">
-                                                    <span class="font-bold block {{ $detail['points'] > 0 ? 'text-green-600 dark:text-green-400' : 'text-gray-400' }}">{{ $detail['points'] > 0 ? '+' . $detail['points'] : '0' }}</span>
-                                                    <span class="text-[10px] text-gray-400">{{ $detail['reason'] }}</span>
-                                                </div>
+                                </button>
+                                <div class="grid transition-all duration-300 ease-in-out" :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+                                    <div class="overflow-hidden">
+                                        <div class="px-4 pb-4 pt-0">
+                                            <div class="pl-[2.75rem] space-y-2">
+                                                @foreach($data['details'] as $detail)
+                                                    <div class="flex justify-between items-start text-xs">
+                                                        <span class="text-gray-500 w-2/3">{{ $detail['criterion'] }}</span>
+                                                        <div class="text-right">
+                                                            <span class="font-bold block {{ $detail['points'] > 0 ? 'text-green-600 dark:text-green-400' : 'text-gray-400' }}">{{ $detail['points'] > 0 ? '+' . $detail['points'] : '0' }}</span>
+                                                            <span class="text-[10px] text-gray-400">{{ $detail['reason'] }}</span>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
                                             </div>
-                                        @endforeach
+                                        </div>
                                     </div>
                                 </div>
-                            </details>
+                            </div>
                         @endforeach
                     </div>
                 </div>
