@@ -12,6 +12,9 @@ class SpecBattery extends Model
         'charging_wired',
         'charging_wireless',
         'charging_reverse',
+        'charging_specs_detailed',
+        'reverse_wired',
+        'reverse_wireless',
     ];
 
     public function phone()

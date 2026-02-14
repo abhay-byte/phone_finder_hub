@@ -8,15 +8,15 @@
         <div class="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-900/[0.04] bg-[bottom_1px_center] dark:bg-[bottom_1px_center]" style="mask-image: linear-gradient(to bottom, transparent, black);"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative z-10 text-center">
             <h1 class="text-5xl md:text-7xl font-black tracking-tight text-slate-900 dark:text-white mb-6">
-                Find Value, <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Not Hype.</span>
+                Find Value, <span class="text-teal-600 dark:text-teal-500">Not Hype.</span>
             </h1>
             <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
-                The only data-driven smartphone ranking ranking based on real-world performance per rupee. No bias, just math.
+                The only data-driven smartphone ranking based on real-world performance per rupee. No bias, just math.
             </p>
             
             <!-- Search & Filter Bar -->
             <div class="max-w-3xl mx-auto relative group">
-                <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                <div class="absolute -inset-1 bg-gradient-to-r from-teal-500 to-emerald-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                 <div class="relative flex items-center bg-white dark:bg-[#1A1A1A] rounded-xl shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 p-2">
                     <div class="pl-4 text-gray-400">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -35,17 +35,21 @@
 
             <!-- Quick Filters (Chips) -->
             <div class="flex flex-wrap justify-center gap-3 mt-8">
-                <button class="px-5 py-2 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 text-sm font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors border border-indigo-200 dark:border-indigo-800">
-                    🏆 Top Value
+                <button class="px-5 py-2 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 text-sm font-semibold hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors border border-teal-200 dark:border-teal-800 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                    Top Value
                 </button>
-                <button class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm">
-                    🎮 Gaming
+                <button class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
+                    Gaming
                 </button>
-                <button class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm">
-                    📸 Camera
+                <button class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Camera
                 </button>
-                <button class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm">
-                    🔋 Battery
+                <button class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    Battery
                 </button>
             </div>
         </div>
@@ -79,7 +83,7 @@
                 </div>
 
                 <!-- Image -->
-                 <div class="relative w-full aspect-[4/5] mb-6 flex items-center justify-center p-4 bg-slate-50 dark:bg-black/20 rounded-[1.5rem] group-hover:bg-indigo-50/30 dark:group-hover:bg-indigo-900/10 transition-colors">
+                 <div class="relative w-full aspect-[4/5] mb-6 flex items-center justify-center p-4 bg-slate-50 dark:bg-black/20 rounded-[1.5rem] group-hover:bg-teal-50/30 dark:group-hover:bg-teal-900/10 transition-colors">
                     @if($phone->image_url)
                         <img src="{{ $phone->image_url }}" alt="{{ $phone->name }}" class="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal filter group-hover:scale-105 transition-transform duration-500">
                     @else
@@ -91,8 +95,8 @@
 
                 <!-- Info -->
                 <div class="mt-auto">
-                    <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide mb-1">{{ $phone->brand }}</p>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $phone->name }}</h3>
+                    <p class="text-xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wide mb-1">{{ $phone->brand }}</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{{ $phone->name }}</h3>
                     <p class="text-2xl font-black text-slate-900 dark:text-white mb-4">₹{{ number_format($phone->price) }}</p>
                     
                      <!-- Mini Specs -->
@@ -100,7 +104,7 @@
                         @if($phone->platform)
                         <div class="flex items-center gap-1.5">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
-                            <span class="truncate">{{ $phone->platform->chipset }}</span>
+                            <span class="break-words line-clamp-2 text-left">{{ $phone->platform->chipset }}</span>
                         </div>
                         @endif
                         @if($phone->benchmarks)

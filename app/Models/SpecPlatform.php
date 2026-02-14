@@ -9,6 +9,7 @@ class SpecPlatform extends Model
     protected $fillable = [
         'phone_id',
         'os',
+        'os_details',
         'chipset',
         'cpu',
         'gpu',
@@ -19,6 +20,7 @@ class SpecPlatform extends Model
         'bootloader_unlockable',
         'turnip_support',
         'aosp_aesthetics_score',
+        'custom_rom_support',
     ];
 
     public function phone()

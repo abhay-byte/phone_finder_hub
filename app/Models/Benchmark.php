@@ -13,6 +13,13 @@ class Benchmark extends Model
         'geekbench_multi',
         'dmark_wild_life_extreme',
         'battery_endurance_hours',
+        'antutu_v10_score',
+        'dmark_test_type',
+        'repairability_score',
+        'energy_label',
+        'battery_active_use_score',
+        'charge_time_test',
+        'free_fall_rating',
     ];
 
     public function phone()

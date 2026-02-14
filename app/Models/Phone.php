@@ -20,11 +20,13 @@ class Phone extends Model
         'amazon_price',
         'flipkart_url',
         'flipkart_price',
+        'announced_date',
     ];
 
     protected $casts = [
         'release_date' => 'date',
         'price' => 'decimal:2',
+        'announced_date' => 'date',
     ];
 
     public function body()
