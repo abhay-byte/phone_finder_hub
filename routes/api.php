@@ -7,4 +7,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('phones', \App\Http\Controllers\PhoneController::class)->only(['index', 'show']);
+Route::apiResource('phones', \App\Http\Controllers\PhoneController::class)
+    ->only(['index', 'show'])
+    ->names([
+        'index' => 'api.phones.index',
+        'show' => 'api.phones.show',
+    ]);
