@@ -90,7 +90,7 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800">
+        <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 <p class="text-center text-sm text-gray-500 dark:text-gray-400">
                     &copy; {{ date('Y') }} PhoneFinderHub. Data-driven decisions.
@@ -107,7 +107,7 @@
          x-transition:leave="transition ease-in duration-300"
          x-transition:leave-start="translate-y-0 opacity-100"
          x-transition:leave-end="translate-y-full opacity-0"
-         class="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#1A1A1A] border-t border-gray-200 dark:border-white/10 shadow-lg z-50 p-4"
+         class="fixed bottom-0 left-0 right-0 bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-white/10 shadow-lg z-50 p-4"
          style="display: none;" x-cloak>
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-4">

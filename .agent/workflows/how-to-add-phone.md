@@ -62,8 +62,15 @@ $phone->body()->updateOrCreate([], [
     'display_type' => 'LTPO AMOLED, 1B colors, 165Hz, PWM, Dolby Vision, HDR10+, HDR Vivid',
     'display_size' => '6.78 inches',
     'display_resolution' => '1272 x 2772 pixels',
+    'pixel_density' => '~450 ppi density',
     'display_protection' => 'Corning Gorilla Glass Victus 2',
+    'screen_glass' => 'Gorilla Glass 7i / Crystal Shield',
     'display_features' => '800 nits (typ), 1364 nits (measured), 1800 nits (HBM), Ultra HDR support',
+    'display_brightness' => '800 nits (typ), 1800 nits (HBM)',
+    'pwm_dimming' => 'PWM Dimming',
+    'touch_sampling_rate' => '240Hz',
+    'screen_to_body_ratio' => '~90.8%',
+    'colors' => 'Charcoal Black, Silver, Blue',
 ]);
 
 // Platform
@@ -76,7 +83,12 @@ $phone->platform()->updateOrCreate([], [
     'internal_storage' => '256GB, 512GB, 1TB',
     'ram' => '12GB, 16GB',
     'storage_type' => 'UFS 4.1',
-]);
+    // Developer Freedom & Emulation (UEPS 4.5+)
+    'bootloader_unlockable' => true, // true/false
+    'os_openness' => 'Near-AOSP / Minimal restrictions / Easy root', // Options: 'Near-AOSP...', 'Moderately restricted', 'Restricted OEM skin'
+    'turnip_support_level' => 'Full', // Options: 'Full', 'Stable', 'Partial', 'None'
+    'gpu_emulation_tier' => 'Adreno 8xx Elite-class', // Options: 'Adreno 8xx...', 'Adreno 7xx...', 'Adreno 6xx...', 'Immortalis...', 'Mali Valhall...', 'Mali...'
+    'custom_rom_support' => 'Major', // Options: 'Major', 'Limited', 'None'
 
 // Camera
 $phone->camera()->updateOrCreate([], [
@@ -107,6 +119,7 @@ $phone->connectivity()->updateOrCreate([], [
     'network_bands' => 'GSM / HSPA / LTE / 5G',
     'sar_value' => '1.17 W/kg (head), 1.00 W/kg (body)',
     'loudness_test_result' => '-24.8 LUFS (Very good)',
+    'audio_quality' => '24-bit/192kHz Hi-Res audio',
 ]);
 
 // Battery

@@ -1,8 +1,8 @@
-# Ultra-Extensive Phone Scoring System (UEPS-40)
+# Ultra-Extensive Phone Scoring System (UEPS-45)
 
 This is an advanced, enthusiast-level scoring system designed for the 2026 flagship landscape. It evaluates **40 distinct criteria** across 7 categories.
 
-**Total Possible Score: 200 Points**
+**Total Possible Score: 245 Points**
 
 ## 1. Categories & Criteria
 
@@ -13,7 +13,7 @@ This is an advanced, enthusiast-level scoring system designed for the 2026 flags
 4.  **IP Rating**: IP68 (+5), IP69/K (High-pressure/temp) (+10).
 5.  **Bezel Size**: Under 1.5mm (+5).
 
-### B. Display Tech (40 pts)
+### B. Display Tech (30 pts)
 6.  **Panel Type**: LTPO AMOLED/OLED (+5), Standard AMOLED (+3), LCD (+1).
 7.  **Refresh Rate**: 120Hz (+3), 144Hz-165Hz (+5).
 8.  **Peak Brightness**: >2000 nits (+5), >4000 nits peak (+10).
@@ -60,6 +60,39 @@ This is an advanced, enthusiast-level scoring system designed for the 2026 flags
 39. **Fingerprint**: Optical (+3), Ultrasonic (+5).
 40. **Haptics**: X-axis Linear Motor / High-grade vibration (+5).
 
+### H. Developer Freedom & Emulation (55 pts)
+
+**Bootloader Unlockable:**
+*   Official unlock supported (+10)
+*   No official unlock (+0)
+
+**OS Openness:**
+*   Near-AOSP / Minimal restrictions / Easy root (+10)
+*   Moderately restricted (+5)
+*   Heavily restricted OEM skin (+0)
+
+**Turnip / Mesa Custom Driver Support (Adreno only):**
+*   Full latest Mesa Turnip support (actively maintained & stable) (+20)
+*   Stable but slightly outdated builds (+15)
+*   Partial / unofficial ports (+8)
+*   Not supported (+0)
+
+**GPU Emulation Compatibility Tier (20 pts total):**
+*   **Adreno GPUs:**
+    *   Adreno 8xx Elite-class (full modern driver compatibility) (+20)
+    *   Adreno 7xx strong support (+16)
+    *   Adreno 6xx moderate support (+10)
+*   **Immortalis GPUs:**
+    *   Immortalis G925 / G720 high-tier support (+14)
+*   **Mali GPUs:**
+    *   Mali Valhall (G710 / G715) (+10)
+    *   Older Mali (G78 and below) (+6)
+
+**Custom ROM Community Support:**
+*   Major active ROM ecosystem (LineageOS, Pixel Experience, etc.) (+10)
+*   Limited unofficial builds (+5)
+*   None (+0)
+
 ## 2. Example: OnePlus 15
-*   **Total Score**: 173 / 200 (86.5%)
+*   **Total Score**: 173 / 245 (70.6%)
 *   **Rating**: Enthusiast Grade

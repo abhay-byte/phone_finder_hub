@@ -1,6 +1,18 @@
 @import 'tailwindcss';
+@variant dark (&:where(.dark, .dark *));
 
-[x-cloak] { display: none !important; }
+[x-cloak] {
+    display: none !important;
+}
+
+@layer base {
+
+    *,
+    ::before,
+    ::after {
+        @apply transition-colors duration-300 ease-in-out;
+    }
+}
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';

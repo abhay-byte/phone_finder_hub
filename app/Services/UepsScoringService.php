@@ -126,8 +126,9 @@ class UepsScoringService
         // 12. Screen-to-Body
         $addPoints($catB_Score, $catB_Details, 'S2B Ratio', 5, '>90% (Est) (+5)');
 
-        $breakdown['Display Tech'] = ['score' => min($catB_Score, 40), 'max' => 40, 'details' => $catB_Details];
-        $totalScore += min($catB_Score, 40);
+        // UPDATED: Max score changed from 40 to 30
+        $breakdown['Display Tech'] = ['score' => min($catB_Score, 30), 'max' => 30, 'details' => $catB_Details];
+        $totalScore += min($catB_Score, 30);
 
 
         // --- C. Processing & Memory (30 pts) ---
@@ -342,12 +343,79 @@ class UepsScoringService
         $breakdown['Audio & Extras'] = ['score' => min($catG_Score, 15), 'max' => 15, 'details' => $catG_Details];
         $totalScore += min($catG_Score, 15);
 
-        // Calculate Percentage
-        $percentage = ($totalScore / 200) * 100;
+
+        // --- H. Developer Freedom & Emulation (55 pts) ---
+        $catH_Score = 0;
+        $catH_Details = [];
+        $bootloader = $phone->platform?->bootloader_unlockable ?? false;
+        $turnipLevel = $phone->platform?->turnip_support_level ?? '';
+        $osOpenness = $phone->platform?->os_openness ?? '';
+        $gpuTier = $phone->platform?->gpu_emulation_tier ?? '';
+        $romSupport = $phone->platform?->custom_rom_support ?? '';
+
+
+        // 41. Bootloader Unlockable
+        if ($bootloader) {
+             $addPoints($catH_Score, $catH_Details, 'Bootloader', 10, 'Official Unlock (+10)');
+        } else {
+             $addPoints($catH_Score, $catH_Details, 'Bootloader', 0, 'No Official Unlock (+0)');
+        }
+
+        // 42. OS Openness
+        if (stripos($osOpenness, 'Near-AOSP') !== false || stripos($osOpenness, 'Pixel') !== false || stripos($osOpenness, 'Nothing') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'OS Openness', 10, 'Near-AOSP / Easy Root (+10)');
+        } elseif (stripos($osOpenness, 'Moderate') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'OS Openness', 5, 'Moderately Restricted (+5)');
+        } else {
+             $addPoints($catH_Score, $catH_Details, 'OS Openness', 0, 'Restricted OEM Skin (+0)');
+        }
+
+        // 43. Turnip / Mesa Support
+        if (stripos($turnipLevel, 'Full') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Turnip Support', 20, 'Full Latest Mesa Support (+20)');
+        } elseif (stripos($turnipLevel, 'Stable') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Turnip Support', 15, 'Stable / Outdated (+15)');
+        } elseif (stripos($turnipLevel, 'Partial') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Turnip Support', 8, 'Partial / Unofficial (+8)');
+        } else {
+             $addPoints($catH_Score, $catH_Details, 'Turnip Support', 0, 'Not Supported (+0)');
+        }
+
+        // 44. GPU Emulation Tier
+        if (stripos($gpuTier, 'Adreno 8') !== false || stripos($gpuTier, 'Elite') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 20, 'Adreno 8xx Elite (+20)');
+        } elseif (stripos($gpuTier, 'Adreno 7') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 16, 'Adreno 7xx (+16)');
+        } elseif (stripos($gpuTier, 'Adreno 6') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 10, 'Adreno 6xx (+10)');
+        } elseif (stripos($gpuTier, 'Immortalis') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 14, 'Immortalis High-Tier (+14)');
+        } elseif (stripos($gpuTier, 'Mali Valhall') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 10, 'Mali Valhall (+10)');
+        } elseif (stripos($gpuTier, 'Mali') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 6, 'Older Mali (+6)');
+        }
+
+        // 45. Custom ROM Support
+        if (stripos($romSupport, 'Major') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Custom ROMs', 10, 'Major Active Ecosystem (+10)');
+        } elseif (stripos($romSupport, 'Limited') !== false) {
+             $addPoints($catH_Score, $catH_Details, 'Custom ROMs', 5, 'Limited/Unofficial (+5)');
+        } else {
+             $addPoints($catH_Score, $catH_Details, 'Custom ROMs', 0, 'None (+0)');
+        }
+
+        $breakdown['Developer Freedom'] = ['score' => min($catH_Score, 55), 'max' => 55, 'details' => $catH_Details];
+        $totalScore += min($catH_Score, 55);
+
+
+        // Calculate Percentage (New Total: 245)
+        // Original: 200. Display: -10. Dev Freedom: +55. Total: 245.
+        $percentage = ($totalScore / 245) * 100;
 
         return [
             'total_score' => $totalScore,
-            'max_score' => 200,
+            'max_score' => 245,
             'percentage' => round($percentage, 1),
             'breakdown' => $breakdown
         ];

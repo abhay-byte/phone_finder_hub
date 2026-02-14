@@ -38,7 +38,7 @@
             <div class="mt-4">
                 <h3 class="text-lg font-medium">
                     <span class="absolute inset-0" aria-hidden="true"></span>
-                    UEPS-40 Methodology
+                    UEPS-45 Methodology
                 </h3>
                 <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                     Unlock the details behind our Ultra-Extensive Phone Scoring system. 40 criteria across 7 categories.

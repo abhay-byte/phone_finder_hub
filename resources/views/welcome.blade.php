@@ -49,14 +49,14 @@
                 <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 text-center animate-fade-in-up">
                     <div class="hidden sm:mb-8 sm:flex sm:justify-center">
                         <div class="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-600 dark:text-gray-400 ring-1 ring-gray-900/10 dark:ring-white/10 hover:ring-gray-900/20 dark:hover:ring-white/20 transition-all">
-                            Announcing UEPS 4.0 & FPI Methodology. <a href="{{ route('methodology.ueps') }}" class="font-semibold text-teal-600 dark:text-teal-400"><span class="absolute inset-0" aria-hidden="true"></span>Read more <span aria-hidden="true">&rarr;</span></a>
+                            Announcing UEPS 4.5 & FPI Methodology. <a href="{{ route('methodology.ueps') }}" class="font-semibold text-teal-600 dark:text-teal-400"><span class="absolute inset-0" aria-hidden="true"></span>Read more <span aria-hidden="true">&rarr;</span></a>
                         </div>
                     </div>
                     <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-6xl mb-6">
                         Find Your Perfect Phone using <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500">Data, Not Hype.</span>
                     </h1>
                     <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
-                        Stop guessing. Use our scientific <b>UEPS 4.0</b> methodology and <b>Final Performance Index (FPI)</b> to find the absolute best device for your budget.
+                        Stop guessing. Use our scientific <b>UEPS 4.5</b> methodology and <b>Final Performance Index (FPI)</b> to find the absolute best device for your budget.
                     </p>
                     <div class="mt-10 flex items-center justify-center gap-x-6">
                         <a href="{{ route('phones.rankings') }}" class="rounded-full bg-teal-600 px-8 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 transition-all hover:scale-105 shadow-teal-500/30">
@@ -86,7 +86,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                                     </svg>
                                 </div>
-                                UEPS 4.0 Score
+                                UEPS 4.5 Score
                             </dt>
                             <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-gray-600 dark:text-gray-400">
                                 <p class="flex-auto">A comprehensive 200-point scoring system evaluating 40+ touchpoints including build quality, display efficiency, sustained performance, and camera versatility.</p>
