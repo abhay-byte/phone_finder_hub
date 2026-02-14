@@ -1,81 +1,118 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        
-        <!-- Hero / Search Section -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white sm:text-5xl sm:tracking-tight lg:text-6xl">
-                Find Value, <span class="text-indigo-600 dark:text-indigo-400">Not Hype</span>
+<div class="bg-gray-50 dark:bg-black min-h-screen">
+    
+    <!-- Hero Section -->
+    <div class="relative bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-white/5 overflow-hidden">
+        <div class="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-900/[0.04] bg-[bottom_1px_center] dark:bg-[bottom_1px_center]" style="mask-image: linear-gradient(to bottom, transparent, black);"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative z-10 text-center">
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight text-slate-900 dark:text-white mb-6">
+                Find Value, <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Not Hype.</span>
             </h1>
-            <p class="max-w-xl mt-5 mx-auto text-xl text-gray-500 dark:text-gray-400">
-                Data-driven rankings based on performance per rupee.
+            <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
+                The only data-driven smartphone ranking ranking based on real-world performance per rupee. No bias, just math.
             </p>
             
-            <div class="mt-8 flex justify-center">
-                <div class="relative w-full max-w-lg">
-                    <input type="text" class="block w-full rounded-md border-0 py-3 pl-4 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-slate-800 dark:ring-slate-700 dark:text-white" placeholder="Search phones, brands, chipsets...">
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                        <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+            <!-- Search & Filter Bar -->
+            <div class="max-w-3xl mx-auto relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                <div class="relative flex items-center bg-white dark:bg-[#1A1A1A] rounded-xl shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 p-2">
+                    <div class="pl-4 text-gray-400">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
+                    <input type="text" 
+                           placeholder="Search by name, brand, or chipset..." 
+                           class="w-full bg-transparent border-0 focus:ring-0 text-lg text-slate-900 dark:text-white placeholder-slate-400 h-12"
+                    >
+                    <button class="bg-slate-900 dark:bg-white text-white dark:text-black px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-opacity">
+                        Search
+                    </button>
                 </div>
             </div>
-            
-            <!-- Quick Filters -->
-            <div class="mt-4 flex justify-center gap-2 flex-wrap">
-                <span class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10 cursor-pointer hover:bg-indigo-100 dark:bg-indigo-400/10 dark:text-indigo-400 dark:ring-indigo-400/30">Under ₹20k</span>
-                <span class="inline-flex items-center rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 ring-1 ring-inset ring-purple-700/10 cursor-pointer hover:bg-purple-100 dark:bg-purple-400/10 dark:text-purple-400 dark:ring-purple-400/30">Gaming</span>
-                <span class="inline-flex items-center rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 cursor-pointer hover:bg-green-100 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/30">Best Value</span>
-                <span class="inline-flex items-center rounded-full bg-yellow-50 px-3 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20 cursor-pointer hover:bg-yellow-100 dark:bg-yellow-400/10 dark:text-yellow-500 dark:ring-yellow-400/30">Flagships</span>
+
+            <!-- Quick Filters (Chips) -->
+            <div class="flex flex-wrap justify-center gap-3 mt-8">
+                <button class="px-5 py-2 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 text-sm font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors border border-indigo-200 dark:border-indigo-800">
+                    🏆 Top Value
+                </button>
+                <button class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm">
+                    🎮 Gaming
+                </button>
+                <button class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm">
+                    📸 Camera
+                </button>
+                <button class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm">
+                    🔋 Battery
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phone Grid Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Latest Rankings</h2>
+             <div class="flex items-center gap-2 text-sm text-slate-500">
+                <span>Sort by:</span>
+                <select class="bg-transparent border-none font-semibold text-slate-900 dark:text-white focus:ring-0 cursor-pointer">
+                    <option>Value Score</option>
+                    <option>Price: Low to High</option>
+                    <option>Performance</option>
+                </select>
             </div>
         </div>
 
-        <!-- Phones Grid -->
-        <div class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach($phones as $phone)
-            <div class="group relative flex flex-col overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200 hover:ring-indigo-500 hover:shadow-md transition-all dark:bg-slate-800 dark:ring-slate-700 dark:hover:ring-indigo-400">
-                <div class="aspect-h-4 aspect-w-3 bg-gray-200 sm:aspect-none group-hover:opacity-75 sm:h-64 relative overflow-hidden">
-                    @if($phone->image_url)
-                        <img src="{{ $phone->image_url }}" alt="{{ $phone->name }}" class="h-full w-full object-cover object-center sm:h-full sm:w-full">
-                    @else
-                         <div class="flex items-center justify-center h-full w-full bg-gray-100 dark:bg-slate-700 text-gray-400">
-                            <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                         </div>
-                    @endif
-                    
-                    <!-- Value Badge -->
-                    @if($phone->value_score > 0)
-                    <div class="absolute top-2 right-2 rounded-md bg-emerald-500 px-2 py-1 text-xs font-bold text-white shadow-sm">
-                        {{ $phone->value_score }} pts/₹1k
-                    </div>
-                    @endif
-                </div>
-                <div class="flex flex-1 flex-col p-4">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-                        <a href="{{ route('phones.show', $phone) }}">
-                            <span aria-hidden="true" class="absolute inset-0"></span>
-                            {{ $phone->name }}
-                        </a>
-                    </h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $phone->brand }}</p>
-                    <div class="flex flex-1 flex-col justify-end">
-                        <p class="text-sm italic text-gray-500 dark:text-gray-400 mb-2">{{ $phone->platform?->chipset ?? 'Unknown Chipset' }}</p>
-                        <p class="text-base font-medium text-gray-900 dark:text-white">₹{{ number_format($phone->price) }}</p>
-                    </div>
-                </div>
+            <a href="{{ route('phones.show', $phone) }}" class="group relative bg-white dark:bg-[#1A1A1A] rounded-[2rem] p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-white/5 flex flex-col h-full hover:-translate-y-1">
                 
-                <!-- Expanded details on hover (optional enhancement later) -->
-            </div>
-            @endforeach
-        </div>
+                <!-- Value Badge -->
+                <div class="absolute top-4 right-4 z-10">
+                    <div class="bg-black/5 dark:bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-black/5 dark:border-white/5">
+                        <span class="text-xs font-bold text-slate-900 dark:text-white">
+                            {{ $phone->value_score }} <span class="text-slate-500 font-normal">pts/₹1k</span>
+                        </span>
+                    </div>
+                </div>
 
-        <div class="mt-8">
-            {{ $phones->links() }}
+                <!-- Image -->
+                 <div class="relative w-full aspect-[4/5] mb-6 flex items-center justify-center p-4 bg-slate-50 dark:bg-black/20 rounded-[1.5rem] group-hover:bg-indigo-50/30 dark:group-hover:bg-indigo-900/10 transition-colors">
+                    @if($phone->image_url)
+                        <img src="{{ $phone->image_url }}" alt="{{ $phone->name }}" class="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal filter group-hover:scale-105 transition-transform duration-500">
+                    @else
+                         <svg class="h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                    @endif
+                </div>
+
+                <!-- Info -->
+                <div class="mt-auto">
+                    <p class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide mb-1">{{ $phone->brand }}</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ $phone->name }}</h3>
+                    <p class="text-2xl font-black text-slate-900 dark:text-white mb-4">₹{{ number_format($phone->price) }}</p>
+                    
+                     <!-- Mini Specs -->
+                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-white/5 pt-4">
+                        @if($phone->platform)
+                        <div class="flex items-center gap-1.5">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
+                            <span class="truncate">{{ $phone->platform->chipset }}</span>
+                        </div>
+                        @endif
+                        @if($phone->benchmarks)
+                        <div class="flex items-center gap-1.5 justify-end">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                             <span class="font-bold text-slate-700 dark:text-slate-300">{{ number_format($phone->benchmarks->antutu_score) }}</span>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </a>
+            @endforeach
         </div>
     </div>
 </div>

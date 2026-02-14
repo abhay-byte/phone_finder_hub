@@ -16,6 +16,9 @@ class SpecPlatform extends Model
         'internal_storage',
         'ram',
         'storage_type',
+        'bootloader_unlockable',
+        'turnip_support',
+        'aosp_aesthetics_score',
     ];
 
     public function phone()
