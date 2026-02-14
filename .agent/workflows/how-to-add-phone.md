@@ -25,11 +25,11 @@ Data is distributed across 7 tables. When adding a phone, you must create record
 Phone images should have a transparent background and be stored in `storage/app/public/phones/`.
 
 **Helper Script**:
-Use the provided Python script to download, remove background, and save the image.
+Use the provided Python script (which uses `rembg`) to download, remove background (AI-powered), and save the image.
 
 ```bash
-# Usage: python3 scripts/process_image.py <URL> <OUTPUT_FILENAME>
-python3 scripts/process_image.py "https://example.com/phone.jpg" "oneplus-15.png"
+# Usage: .venv/bin/python scripts/process_image_rembg.py <URL> <OUTPUT_PATH>
+.venv/bin/python scripts/process_image_rembg.py "https://example.com/phone.jpg" "storage/app/public/phones/oneplus-15.png"
 ```
 
 ## 3. Populating Data (Tinker Method)
@@ -84,11 +84,11 @@ $phone->platform()->updateOrCreate([], [
     'ram' => '12GB, 16GB',
     'storage_type' => 'UFS 4.1',
     // Developer Freedom & Emulation (UEPS 4.5+)
-    'bootloader_unlockable' => true, // true/false
-    'os_openness' => 'Near-AOSP / Minimal restrictions / Easy root', // Options: 'Near-AOSP...', 'Moderately restricted', 'Restricted OEM skin'
-    'turnip_support_level' => 'Full', // Options: 'Full', 'Stable', 'Partial', 'None'
+    'bootloader_unlockable' => true, // true/false (False for Vivo/iQOO unless specific model exception)
+    'os_openness' => 'Near-AOSP / Minimal restrictions / Easy root', // Options: 'Near-AOSP...', 'Moderately restricted', 'Restricted OEM skin' (Vivo/iQOO = Restricted)
+    'turnip_support_level' => 'Full', // Options: 'Full', 'Stable', 'Partial', 'None' (Snapdragon 8 Gen 1+ usually 'Full' or 'Stable')
     'gpu_emulation_tier' => 'Adreno 8xx Elite-class', // Options: 'Adreno 8xx...', 'Adreno 7xx...', 'Adreno 6xx...', 'Immortalis...', 'Mali Valhall...', 'Mali...'
-    'custom_rom_support' => 'Major', // Options: 'Major', 'Limited', 'None'
+    'custom_rom_support' => 'Major', // Options: 'Major', 'Limited', 'None' (Vivo/iQOO usually 'None' or 'Low')
 
 // Camera
 $phone->camera()->updateOrCreate([], [

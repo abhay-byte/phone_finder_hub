@@ -33,7 +33,7 @@
 <body class="font-sans antialiased bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 selection:bg-teal-500 selection:text-white">
     <div class="min-h-screen flex flex-col">
         <!-- Navigation -->
-        <nav class="bg-white/80 dark:bg-black/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-white/5">
+        <nav x-data="{ mobileMenuOpen: false }" class="bg-white/80 dark:bg-black/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-white/5">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex">
@@ -69,7 +69,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center">
+                    <div class="flex items-center gap-2">
                         <!-- Theme Toggle -->
                         <button @click="darkMode = !darkMode" class="p-2 rounded-full text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-slate-800 dark:focus:bg-slate-800 transition duration-150 ease-in-out">
                             <svg x-show="!darkMode" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -79,7 +79,35 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </button>
+
+                        <!-- Mobile Menu Button -->
+                        <div class="flex items-center sm:hidden">
+                            <button @click="mobileMenuOpen = !mobileMenuOpen" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition duration-150 ease-in-out">
+                                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                                    <path :class="{'hidden': mobileMenuOpen, 'inline-flex': !mobileMenuOpen }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                                    <path :class="{'hidden': !mobileMenuOpen, 'inline-flex': mobileMenuOpen }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div x-show="mobileMenuOpen" class="sm:hidden bg-white/95 dark:bg-black/95 backdrop-blur-xl border-t border-gray-100 dark:border-white/5" x-transition.origin.top x-cloak style="display: none;">
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('home') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                        Home
+                    </a>
+                    <a href="{{ route('phones.rankings') }}" class="block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('phones.rankings') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                        Rankings
+                    </a>
+                    <a href="{{ route('phones.compare') }}" class="block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('phones.compare') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                        Compare
+                    </a>
+                    <a href="{{ route('docs.index') }}" class="block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                        Docs
+                    </a>
                 </div>
             </div>
         </nav>

@@ -55,7 +55,8 @@
                 
                 <!-- Dynamic Grid Config -->
                 <div class="grid gap-0 relative w-full"
-                     :style="`grid-template-columns: 200px repeat(${phones.length}, minmax(280px, 1fr)) ${phones.length < 4 ? 'minmax(280px, 1fr)' : ''}`">
+                     style="--label-width: 140px; --phone-width: 260px; @media (min-width: 768px) { --label-width: 200px; --phone-width: 280px; }"
+                     :style="`grid-template-columns: var(--label-width) repeat(${phones.length}, minmax(var(--phone-width), 1fr)) ${phones.length < 4 ? 'minmax(var(--phone-width), 1fr)' : ''}`">
 
                     <!-- STICKY HEADER ROW -->
                     <div class="contents group/header">

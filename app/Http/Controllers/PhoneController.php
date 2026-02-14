@@ -27,7 +27,7 @@ class PhoneController extends Controller
              $query->orderBy('ueps_score', 'desc');
         }
 
-        $phones = $query->take(10)->get();
+        $phones = $query->take(50)->get();
 
         return view('phones.index', compact('phones', 'sort'));
     }
@@ -50,7 +50,7 @@ class PhoneController extends Controller
              $query->orderBy('ueps_score', 'desc');
         }
 
-        $phones = $query->take(10)->get();
+        $phones = $query->take(50)->get();
 
         return response()
             ->view('phones.partials.grid', compact('phones'))
