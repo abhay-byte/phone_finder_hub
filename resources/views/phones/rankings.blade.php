@@ -17,7 +17,7 @@
             <div id="tabs-container" class="bg-gray-200 dark:bg-white/10 p-1.5 rounded-xl inline-flex font-bold text-sm animate-fade-in-up delay-200">
                 <a href="{{ route('phones.rankings', ['tab' => 'ueps']) }}" 
                    class="px-4 py-2 rounded-lg transition-all {{ $tab == 'ueps' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
-                   UEPS 4.0
+                   UEPS 4.5
                 </a>
                 <a href="{{ route('phones.rankings', ['tab' => 'performance']) }}" 
                    class="px-4 py-2 rounded-lg transition-all {{ $tab == 'performance' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
@@ -44,10 +44,10 @@
                                             <div>
                                                 <div class="flex items-center gap-3 mb-2">
                                                     <span class="px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-500/30">Methodology</span>
-                                                    <h3 class="text-xl font-bold text-white">What is UEPS 4.0?</h3>
+                                                    <h3 class="text-xl font-bold text-white">What is UEPS 4.5?</h3>
                                                 </div>
                                                 <p class="text-slate-300 text-sm max-w-xl">
-                                                    The <strong>Ultra-Extensive Phone Scoring System (UEPS-40)</strong> evaluates devices on a 200-point scale across 40+ touchpoints, including real-world build quality, display efficiency, sustained performance, and camera versatility.
+                                                    The <strong>Ultra-Extensive Phone Scoring System (UEPS-45)</strong> evaluates devices on a 245-point scale across 40+ touchpoints, including real-world build quality, display efficiency, sustained performance, and camera versatility.
                                                 </p>
                                             </div>
                                             <a href="{{ route('ueps.methodology') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all">
@@ -81,12 +81,12 @@
                                 </th>
                             @endif
                         </tr>
-                        <tr class="bg-slate-50/50 dark:bg-white/5 border-b border-slate-200 dark:border-white/5 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">
-                            <th class="px-6 py-4 sticky left-0 bg-slate-50/50 dark:bg-[#181818] z-10 w-16 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">#</th>
-                            <th class="px-6 py-4 sticky left-16 bg-slate-50/50 dark:bg-[#181818] z-10 text-xs font-bold text-slate-500 uppercase tracking-wider">Phone</th>
+                        <tr class="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/5 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold transition-colors duration-300">
+                            <th class="px-6 py-4 sticky left-0 bg-gray-50 dark:bg-[#181818] z-10 w-16 text-center text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">#</th>
+                            <th class="px-6 py-4 sticky left-16 bg-gray-50 dark:bg-[#181818] z-10 text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">Phone</th>
                             
                             <!-- Common: Price -->
-                            <th class="px-6 py-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/10 transition-colors group text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            <th class="px-6 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'price', 'direction' => $sort == 'price' && $direction == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center gap-1">
                                     Price
                                     @if($sort == 'price')
@@ -99,15 +99,15 @@
 
                             @if($tab == 'ueps')
                                 <!-- UEPS Columns -->
-                                <th class="px-6 py-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/10 transition-colors group text-right text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                <th class="px-6 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
                                     <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'ueps_score', 'direction' => $sort == 'ueps_score' && $direction == 'desc' ? 'asc' : 'desc']) }}" class="flex items-center justify-end gap-1 text-teal-600 dark:text-teal-400">
-                                        UEPS 4.0
+                                        UEPS 4.5
                                         @if($sort == 'ueps_score')
                                             <span>{{ $direction == 'asc' ? '↑' : '↓' }}</span>
                                         @endif
                                     </a>
                                 </th>
-                                <th class="px-6 py-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/10 transition-colors group text-right text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                <th class="px-6 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
                                     <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'price_per_ueps', 'direction' => $sort == 'price_per_ueps' && $direction == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center justify-end gap-1">
                                         Price / Point
                                         @if($sort == 'price_per_ueps')
@@ -117,7 +117,7 @@
                                 </th>
                             @elseif($tab == 'performance')
                                 <!-- Performance Columns -->
-                                <th class="p-5 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/10 transition-colors group text-right">
+                                <th class="p-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right">
                                     <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'overall_score', 'direction' => $sort == 'overall_score' && $direction == 'desc' ? 'asc' : 'desc']) }}" class="flex items-center justify-end gap-1 text-blue-600 dark:text-blue-400">
                                         FPI Score
                                         @if($sort == 'overall_score')
@@ -125,7 +125,7 @@
                                         @endif
                                     </a>
                                 </th>
-                                <th class="px-6 py-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/10 transition-colors group text-right text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                <th class="px-6 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
                                      <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'price_per_fpi', 'direction' => $sort == 'price_per_fpi' && $direction == 'asc' ? 'desc' : 'asc']) }}" class="flex items-center justify-end gap-1">
                                         Price / Point
                                         @if($sort == 'price_per_fpi')
@@ -133,7 +133,7 @@
                                         @endif
                                     </a>
                                 </th>
-                                <th class="p-5 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-right">
+                                <th class="p-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 text-right">
                                      <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'antutu_score', 'direction' => $sort == 'antutu_score' && $direction == 'desc' ? 'asc' : 'desc']) }}" class="flex items-center justify-end gap-1">
                                         AnTuTu
                                         @if($sort == 'antutu_score')
@@ -141,7 +141,7 @@
                                         @endif
                                     </a>
                                 </th>
-                                <th class="p-5 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-right">
+                                <th class="p-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 text-right">
                                      <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'geekbench_multi', 'direction' => $sort == 'geekbench_multi' && $direction == 'desc' ? 'asc' : 'desc']) }}" class="flex items-center justify-end gap-1">
                                         Geekbench
                                         @if($sort == 'geekbench_multi')
@@ -152,7 +152,7 @@
                                 <th class="p-5 text-right">3DMark</th>
                             @elseif($tab == 'value')
                                 <!-- Value Columns -->
-                                <th class="p-5 cursor-pointer hover:bg-slate-100 dark:hover:bg-white/10 transition-colors group text-right">
+                                <th class="p-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right">
                                     <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'value_score', 'direction' => $sort == 'value_score' && $direction == 'desc' ? 'asc' : 'desc']) }}" class="flex items-center justify-end gap-1 text-emerald-600 dark:text-emerald-400">
                                         Value Score
                                         @if($sort == 'value_score')
@@ -165,45 +165,45 @@
                             @endif
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-white/5 text-sm font-medium text-slate-700 dark:text-slate-300">
+                    <tbody class="divide-y divide-gray-100 dark:divide-white/5 text-sm font-medium text-gray-700 dark:text-gray-300">
                         @foreach($phones as $index => $phone)
-                        <tr class="hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group animate-stagger-fade-in" style="animation-delay: {{ ($index * 50) + 300 }}ms;">
-                            <td class="px-6 py-5 sticky left-0 bg-white dark:bg-[#121212] group-hover:bg-slate-50 dark:group-hover:bg-[#181818] text-center font-bold text-slate-400">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-[#181818] transition-colors duration-300 group animate-stagger-fade-in" style="animation-delay: {{ ($index * 50) + 300 }}ms;">
+                            <td class="px-6 py-5 sticky left-0 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] text-center font-bold text-gray-400 transition-colors duration-300">
                                 #{{ $ranks[$phone->id] ?? '-' }}
                             </td>
-                            <td class="px-6 py-5 sticky left-16 bg-white dark:bg-[#121212] group-hover:bg-slate-50 dark:group-hover:bg-[#181818]">
+                            <td class="px-6 py-5 sticky left-16 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] transition-colors duration-300">
                                 <a href="{{ route('phones.show', $phone) }}" class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-slate-100 dark:bg-white/5 rounded-xl flex items-center justify-center p-1.5 border border-slate-200 dark:border-white/5">
+                                    <div class="w-12 h-12 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center p-1.5 border border-gray-200 dark:border-white/5 transition-colors duration-300">
                                         @if($phone->image_url)
-                                            <img src="{{ $phone->image_url }}" alt="" class="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal">
+                                            <img src="{{ $phone->image_url }}" alt="" class="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal transition-opacity duration-300">
                                         @endif
                                     </div>
                                     <div>
-                                        <div class="font-bold text-slate-900 dark:text-white text-base leading-tight">{{ $phone->name }}</div>
-                                        <div class="text-xs text-slate-500 font-normal">{{ $phone->model_variant }}</div>
+                                        <div class="font-bold text-gray-900 dark:text-white text-base leading-tight">{{ $phone->name }}</div>
+                                        <div class="text-xs text-gray-500 font-normal">{{ $phone->model_variant }}</div>
                                     </div>
                                 </a>
                             </td>
-                            <td class="px-6 py-5 font-mono text-slate-600 dark:text-slate-400">₹{{ number_format($phone->price) }}</td>
+                            <td class="px-6 py-5 font-mono text-gray-600 dark:text-gray-400">₹{{ number_format($phone->price) }}</td>
 
                             @if($tab == 'ueps')
                                 <td class="px-6 py-5 text-right">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 font-bold border border-teal-100 dark:border-teal-800">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 font-bold border border-teal-100 dark:border-teal-800 transition-colors duration-300">
                                         {{ $phone->ueps_score ?? '-' }}
-                                        <span class="text-[10px] opacity-60 font-normal">/200</span>
+                                        <span class="text-[10px] opacity-60 font-normal">/245</span>
                                     </span>
                                 </td>
-                                <td class="px-6 py-5 text-right font-mono text-slate-500">
+                                <td class="px-6 py-5 text-right font-mono text-gray-500">
                                      ₹{{ $phone->ueps_score > 0 ? number_format($phone->price / $phone->ueps_score) : '-' }}
                                 </td>
                             @elseif($tab == 'performance')
                                 <td class="p-5 text-right">
-                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-bold border border-blue-100 dark:border-blue-800">
+                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-bold border border-blue-100 dark:border-blue-800 transition-colors duration-300">
                                         {{ $phone->overall_score }}
                                         <span class="text-[10px] opacity-60 font-normal">/100</span>
                                     </span>
                                 </td>
-                                <td class="px-6 py-5 text-right font-mono text-slate-500">
+                                <td class="px-6 py-5 text-right font-mono text-gray-500">
                                      ₹{{ $phone->overall_score > 0 ? number_format($phone->price / $phone->overall_score) : '-' }}
                                 </td>
                                 <td class="p-5 text-right font-mono {{ $phone->benchmarks && $phone->benchmarks->antutu_score > 2000000 ? 'text-green-600 dark:text-green-400 font-bold' : '' }}">
@@ -217,7 +217,7 @@
                                 </td>
                             @elseif($tab == 'value')
                                 <td class="px-6 py-5 text-right">
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 font-bold text-base border border-emerald-200 dark:border-emerald-800">
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 font-bold text-base border border-emerald-200 dark:border-emerald-800 transition-colors duration-300">
                                         {{ $phone->value_score }}
                                     </span>
                                 </td>
@@ -235,15 +235,10 @@
             </div>
             
             <!-- Pagination -->
-            <div class="bg-slate-50 dark:bg-white/5 border-t border-slate-200 dark:border-white/5 p-4">
+            <div class="bg-gray-50 dark:bg-white/5 border-t border-gray-200 dark:border-white/5 p-4 transition-colors duration-300">
                 {{ $phones->links() }}
             </div>
         </div>
     </div>
 </div>
-@endsection
-
-@section('content')
-<div class="bg-gray-50 dark:bg-black min-h-screen py-12 pt-24 font-sans selection:bg-teal-500 selection:text-white">
-    <!-- ... (rest of content) ... -->
 @endsection

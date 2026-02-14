@@ -32,6 +32,32 @@ class PhoneController extends Controller
         return view('phones.index', compact('phones', 'sort'));
     }
 
+    public function grid(Request $request)
+    {
+        $sort = $request->input('sort', 'value_score');
+
+        $query = \App\Models\Phone::with(['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks']);
+
+        if ($sort == 'value_score') {
+             $query->orderByRaw('overall_score / price desc');
+        } elseif ($sort == 'price_asc') {
+            $query->orderBy('price', 'asc');
+        } elseif ($sort == 'overall_score') {
+            $query->orderBy('overall_score', 'desc');
+        } elseif ($sort == 'ueps_score') {
+            $query->orderBy('ueps_score', 'desc');
+        } else {
+             $query->orderBy('ueps_score', 'desc');
+        }
+
+        $phones = $query->take(10)->get();
+
+        return response()
+            ->view('phones.partials.grid', compact('phones'))
+            ->header('Vary', 'X-Requested-With')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    }
+
     public function search(Request $request)
     {
         $query = $request->input('query');

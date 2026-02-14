@@ -20,7 +20,7 @@
     <!-- Hero Section -->
     <div class="relative bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-white/5">
         <div class="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-900/[0.04] bg-[bottom_1px_center] dark:bg-[bottom_1px_center]" style="mask-image: linear-gradient(to bottom, transparent, black);"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative z-10 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative z-30 text-center">
             <h1 class="text-5xl md:text-7xl font-black tracking-tight text-slate-900 dark:text-white mb-6 animate-fadeInUp">
                 Find Value, <span class="text-teal-600 dark:text-teal-500">Not Hype.</span>
             </h1>
@@ -29,7 +29,7 @@
             </p>
             
             <!-- Search & Filter Bar -->
-            <div class="max-w-3xl mx-auto relative group z-50"
+            <div class="max-w-3xl mx-auto relative group z-[100]"
                  x-data="{
                     query: '',
                     results: [],
@@ -94,21 +94,23 @@
                 
                 <!-- Input Container -->
                 <div class="relative flex items-center bg-white dark:bg-[#1A1A1A] rounded-xl shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 p-2">
-                    <div class="pl-4 text-gray-400">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
                     <input type="text" 
                            x-model="query"
                            :placeholder="placeholder"
-                           class="w-full bg-transparent border-0 focus:ring-0 text-lg text-slate-900 dark:text-white placeholder-slate-400/70 h-12 pl-4"
+                           class="w-full bg-transparent border-0 focus:ring-0 text-lg text-slate-900 dark:text-white placeholder-slate-400/70 h-12 pl-6 pr-14"
                     >
-                    <div x-show="isLoading" class="pr-4">
-                        <svg class="animate-spin h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                    <div class="absolute right-4 flex items-center gap-2 pointer-events-none">
+                        <div x-show="isLoading">
+                            <svg class="animate-spin h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-gray-400">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
 
@@ -178,68 +180,135 @@
     </div>
 
     <!-- Phone Grid Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+         x-data="{
+            searchOpen: false, 
+            sortOpen: false,
+            currentSort: '{{ $sort }}',
+            isLoading: false,
+            
+            init() {
+                // Handle browser back/forward buttons
+                window.addEventListener('popstate', (e) => {
+                    const params = new URLSearchParams(window.location.search);
+                    const sort = params.get('sort') || 'value_score';
+                    // Only update if sort changed
+                    if (this.currentSort !== sort) {
+                        this.currentSort = sort;
+                        this.fetchGrid(sort, false);
+                    }
+                });
+            },
+
+            updateSort(value) {
+                this.currentSort = value;
+                this.sortOpen = false;
+                this.fetchGrid(value, true);
+            },
+
+            fetchGrid(newSort, pushState = true) {
+                this.isLoading = true;
+
+                // Update URL without refresh if requested
+                if (pushState) {
+                    const url = new URL(window.location);
+                    url.searchParams.set('sort', newSort);
+                    window.history.pushState({sort: newSort}, '', url);
+                }
+                
+                // Fetch new results from dedicated grid route
+                fetch(`{{ route('phones.grid') }}?sort=${newSort}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                     // Check if response is valid (not a full page)
+                     if (!html.includes('<!DOCTYPE html>')) {
+                        this.$refs.gridContainer.innerHTML = html;
+                        // Re-initialize Alpine on new content if needed (though x-data is on parent, directives inside might need it)
+                        // Actually, plain innerHTML replacement doesn't re-init Alpine components inside the grid (like buttons).
+                        // But the grid items are mostly static links. If they have alpine directives, we need a plugin or manual walk.
+                        // However, standard links are fine.
+                     } else {
+                         // Fallback to full reload if we somehow got a full page
+                         window.location.reload();
+                     }
+                    this.isLoading = false;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    window.location.reload(); // Fallback
+                });
+            }
+         }"
+    >
         <div class="flex items-center justify-between mb-8">
             <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Latest Rankings</h2>
-             <div class="flex items-center gap-2 text-sm text-slate-500">
-                <span>Sort by:</span>
-                <select onchange="window.location.href='?sort='+this.value" class="bg-transparent border-none font-semibold text-slate-900 dark:text-white focus:ring-0 cursor-pointer">
-                    <option value="value_score" {{ request('sort') == 'value_score' ? 'selected' : '' }}>Value Score</option>
-                    <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
-                    <option value="overall_score" {{ request('sort') == 'overall_score' ? 'selected' : '' }}>Performance</option>
-                    <option value="ueps_score" {{ request('sort') == 'ueps_score' ? 'selected' : '' }}>UEPS Score</option>
-                </select>
+            <div class="flex items-center gap-3">
+                <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Sort by:</span>
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" @click.away="open = false" class="flex items-center gap-2 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-300 dark:hover:border-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-teal-500/20 shadow-sm min-w-[160px] justify-between group">
+                        <span>
+                            <span x-show="currentSort === 'value_score'">Value Score</span>
+                            <span x-show="currentSort === 'price_asc'">Price: Low to High</span>
+                            <span x-show="currentSort === 'overall_score'">Performance</span>
+                            <span x-show="currentSort === 'ueps_score'">UEPS Score</span>
+                        </span>
+                        <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    
+                    <div x-show="open" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="transform opacity-0 scale-95 translate-y-[-10px]"
+                         x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
+                         x-transition:leave-end="transform opacity-0 scale-95 translate-y-[-10px]"
+                         class="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-xl border border-gray-100 dark:border-white/10 py-2 z-50 origin-top-right focus:outline-none ring-1 ring-black/5 dark:ring-white/5" 
+                         style="display: none;">
+                        
+                        @foreach([
+                            'value_score' => 'Value Score',
+                            'price_asc' => 'Price: Low to High',
+                            'overall_score' => 'Performance',
+                            'ueps_score' => 'UEPS Score'
+                        ] as $key => $label)
+                        <button @click="updateSort('{{ $key }}'); open = false" class="w-full flex items-center justify-between px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-teal-600 dark:hover:text-teal-400 transition-colors group" :class="{ 'bg-teal-50/50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 font-semibold': currentSort === '{{ $key }}' }">
+                            <span>{{ $label }}</span>
+                            <template x-if="currentSort === '{{ $key }}'">
+                                <svg class="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </template>
+                        </button>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            @foreach($phones as $phone)
-            <a href="{{ route('phones.show', $phone) }}" class="group relative bg-white dark:bg-[#1A1A1A] rounded-[2rem] p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-white/5 flex flex-col h-full hover:-translate-y-1">
-                
-                <!-- Value Badge -->
-                <div class="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
-                    <div class="bg-black/5 dark:bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-black/5 dark:border-white/5">
-                        <span class="text-xs font-bold text-slate-900 dark:text-white">
-                            {{ $phone->value_score }} <span class="text-slate-500 font-normal">pts/₹1k</span>
-                        </span>
-                    </div>
-                </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative" x-ref="gridContainer">
+            <!-- Loading Overlay -->
+            <div x-show="isLoading" 
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-sm z-50 rounded-[2rem] flex items-center justify-center"
+                 style="display: none;">
+                <svg class="animate-spin h-10 w-10 text-teal-600 dark:text-teal-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
 
-                <!-- Image -->
-                 <div class="relative w-full aspect-[4/5] mb-6 flex items-center justify-center p-4 bg-slate-50 dark:bg-black/20 rounded-[1.5rem] group-hover:bg-teal-50/30 dark:group-hover:bg-teal-900/10 transition-colors">
-                    @if($phone->image_url)
-                        <img src="{{ $phone->image_url }}" alt="{{ $phone->name }}" class="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal filter group-hover:scale-105 transition-transform duration-500">
-                    @else
-                         <svg class="h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                        </svg>
-                    @endif
-                </div>
-
-                <!-- Info -->
-                <div class="mt-auto">
-                    <p class="text-xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wide mb-1">{{ $phone->brand }}</p>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{{ $phone->name }}</h3>
-                    <p class="text-2xl font-black text-slate-900 dark:text-white mb-4">₹{{ number_format($phone->price) }}</p>
-                    
-                     <!-- Mini Specs -->
-                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-white/5 pt-4">
-                        @if($phone->platform)
-                        <div class="flex items-center gap-1.5">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
-                            <span class="break-words line-clamp-2 text-left">{{ $phone->platform->chipset }}</span>
-                        </div>
-                        @endif
-                        @if($phone->benchmarks)
-                        <div class="flex items-center gap-1.5 justify-end">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                             <span class="font-bold text-slate-700 dark:text-slate-300">{{ number_format($phone->benchmarks->antutu_score) }}</span>
-                        </div>
-                        @endif
-                    </div>
-                </div>
-            </a>
-            @endforeach
+            @include('phones.partials.grid')
         </div>
     </div>
 </div>

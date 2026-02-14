@@ -31,8 +31,8 @@
         </div>
 
         <!-- Empty State -->
-        <div x-show="phones.length === 0" x-transition.opacity 
-             class="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-[2.5rem] bg-gray-50/50 dark:bg-white/5 backdrop-blur-sm w-full animate-fade-in-up delay-100">
+        <div x-show="phones.length === 0" x-cloak
+             class="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-[2.5rem] bg-gray-50/50 dark:bg-white/5 backdrop-blur-sm w-full animate-fade-in-up">
             <div class="w-24 h-24 bg-teal-50 dark:bg-teal-900/20 rounded-full flex items-center justify-center text-teal-600 mb-8">
                 <svg class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -55,7 +55,7 @@
                 
                 <!-- Dynamic Grid Config -->
                 <div class="grid gap-0 relative w-full"
-                     :style="`grid-template-columns: 200px repeat(${phones.length}, minmax(min(280px, 100%), 1fr)) ${phones.length < 4 ? 'minmax(200px, 1fr)' : ''}`">
+                     :style="`grid-template-columns: 200px repeat(${phones.length}, minmax(280px, 1fr)) ${phones.length < 4 ? 'minmax(280px, 1fr)' : ''}`">
 
                     <!-- STICKY HEADER ROW -->
                     <div class="contents group/header">
@@ -94,7 +94,7 @@
                                     <!-- UEPS -->
                                     <div class="w-full">
                                         <div class="flex justify-between items-end text-xs mb-1.5">
-                                            <span class="text-gray-400 font-bold uppercase tracking-wider">UEPS 4.0</span>
+                                            <span class="text-gray-400 font-bold uppercase tracking-wider">UEPS 4.5</span>
                                             <div class="flex items-center gap-1.5">
                                                  <template x-if="isWinner(phone, 'ueps_score')"><span class="text-[10px] bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-teal-200 dark:border-teal-800">👑 Best</span></template>
                                                  <span class="text-lg font-black text-gray-900 dark:text-white" x-text="formatScore(phone.ueps_score)"></span>
@@ -282,8 +282,8 @@
 
 
     <script>
-        function comparisonPage() {
-            return {
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('comparisonPage', () => ({
                 phones: @json($phones), // Initial payload from controller
                 isSearchOpen: false,
                 searchQuery: '',
@@ -539,8 +539,8 @@
                 syncState() {
                      // Local storage sync if needed in future
                 }
-            }
-        }
+            }));
+        });
     </script>
 </div>
 @endsection

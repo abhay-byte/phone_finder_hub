@@ -19,8 +19,11 @@ class SpecPlatform extends Model
         'storage_type',
         'bootloader_unlockable',
         'turnip_support',
+        'turnip_support_level', // New
+        'os_openness', // New
+        'gpu_emulation_tier', // New
         'aosp_aesthetics_score',
-        'custom_rom_support',
+        'custom_rom_support', // New
     ];
 
     public function phone()
