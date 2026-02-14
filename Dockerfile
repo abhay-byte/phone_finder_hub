@@ -1,3 +1,12 @@
+# Stage 1: Build Frontend Assets
+FROM node:20 AS node_builder
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# Stage 2: Build PHP Application
 FROM php:8.4-apache
 
 # Install dependencies
@@ -28,6 +37,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy application code
 COPY . /var/www/html
+
+# Copy compiled frontend assets from node_builder
+COPY --from=node_builder /app/public/build /var/www/html/public/build
 
 # Install dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
