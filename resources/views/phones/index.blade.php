@@ -35,7 +35,7 @@
                     results: [],
                     isLoading: false,
                     placeholder: '',
-                    phrases: ['Search for OnePlus 15...', 'Find the best gaming phone...', 'Compare flagship specs...', 'Search by chipset (e.g. Snapdragon 8)...'],
+                    phrases: ['Search for OnePlus 15...', 'Search for Snapdragon 8 Gen 2...', 'Search for iPhone 16...', 'Search for Dimensity 9000...'],
                     phraseIndex: 0,
                     charIndex: 0,
                     isDeleting: false,
