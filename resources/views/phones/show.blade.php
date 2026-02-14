@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-gray-50 dark:bg-[#0a0a0a] min-h-screen pt-24 pb-12 font-sans text-gray-900 dark:text-gray-100 selection:bg-teal-500 selection:text-white">
+<div class="bg-gray-50 dark:bg-[#0a0a0a] min-h-screen pt-14 pb-12 font-sans text-gray-900 dark:text-gray-100 selection:bg-teal-500 selection:text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Breadcrumb -->
@@ -36,10 +36,14 @@
                 </div>
 
                 <!-- Scores Grid moved from Right Column -->
-                <div class="relative overflow-hidden bg-gray-900 dark:bg-black rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group" style="background-color: #111827; color: white;">
-                     <div class="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 bg-teal-600 rounded-full blur-[60px] opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                <!-- Scores Grid moved from Right Column -->
+                <div class="relative bg-gray-900 dark:bg-black rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group" style="background-color: #111827; color: white;">
+                     <!-- Background Blur Container (Clipped) -->
+                     <div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+                        <div class="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 bg-teal-600 rounded-full blur-[60px] opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                     </div>
                     
-                    <div class="relative z-10 flex items-center justify-between">
+                    <div class="relative z-20 flex items-center justify-between">
                         <div>
                             <div class="flex items-center gap-2 mb-1">
                                 <h3 class="text-sm font-bold uppercase tracking-widest text-teal-300">UEPS Score</h3>
