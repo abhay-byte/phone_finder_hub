@@ -35,7 +35,33 @@
                     @endif
                 </div>
 
-                <!-- Scores Grid moved to Right Column -->
+                <!-- Scores Grid moved from Right Column -->
+                <div class="relative overflow-hidden bg-gray-900 dark:bg-black rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group" style="background-color: #111827; color: white;">
+                     <div class="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 bg-teal-600 rounded-full blur-[60px] opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                    
+                    <div class="relative z-10 flex items-center justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold uppercase tracking-widest text-teal-300 mb-1">UEPS Score</h3>
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-6xl font-black tracking-tighter text-white">{{ $phone->ueps_score['total_score'] }}</span>
+                                <span class="text-lg font-medium text-gray-400">/200</span>
+                            </div>
+                            <div class="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold border border-white/10 backdrop-blur-md text-teal-200">
+                                <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+                                {{ $phone->ueps_score['grade'] ?? 'Enthusiast' }} Grade
+                            </div>
+                        </div>
+                        
+                        <!-- Radial Chart Mini -->
+                        <div class="relative w-24 h-24">
+                            <svg class="w-full h-full -rotate-90">
+                                <circle cx="48" cy="48" r="42" stroke="currentColor" stroke-width="6" fill="transparent" class="text-white/10" />
+                                <circle cx="48" cy="48" r="42" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="264" stroke-dashoffset="{{ 264 - (264 * $phone->ueps_score['percentage'] / 100) }}" class="text-teal-500 transition-all duration-1000 ease-out" stroke-linecap="round" />
+                            </svg>
+                            <span class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">{{ $phone->ueps_score['percentage'] }}%</span>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Detailed Breakdown Accordion -->
                 <div class="bg-white dark:bg-[#121212] rounded-3xl shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10 overflow-hidden">
@@ -99,34 +125,7 @@
 
                 <!-- Scores Grid (Top Request) -->
                 <div class="grid grid-cols-2 gap-4">
-                    <!-- UEPS-40 Score Card -->
-                    <div class="col-span-2 relative overflow-hidden bg-gray-900 dark:bg-black rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group" style="background-color: #111827; color: white;">
-                         <div class="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 bg-teal-600 rounded-full blur-[60px] opacity-30 group-hover:opacity-50 transition-opacity"></div>
-                        
-                        <div class="relative z-10 flex items-center justify-between">
-                            <div>
-                                <h3 class="text-sm font-bold uppercase tracking-widest text-teal-300 mb-1">UEPS Score</h3>
-                                <div class="flex items-baseline gap-1">
-                                    <span class="text-6xl font-black tracking-tighter text-white">{{ $phone->ueps_score['total_score'] }}</span>
-                                    <span class="text-lg font-medium text-gray-400">/200</span>
-                                </div>
-                                <div class="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold border border-white/10 backdrop-blur-md text-teal-200">
-                                    <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
-                                    {{ $phone->ueps_score['grade'] ?? 'Enthusiast' }} Grade
-                                </div>
-                            </div>
-                            
-                            <!-- Radial Chart Mini -->
-                            <div class="relative w-24 h-24">
-                                <svg class="w-full h-full -rotate-90">
-                                    <circle cx="48" cy="48" r="42" stroke="currentColor" stroke-width="6" fill="transparent" class="text-white/10" />
-                                    <circle cx="48" cy="48" r="42" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="264" stroke-dashoffset="{{ 264 - (264 * $phone->ueps_score['percentage'] / 100) }}" class="text-teal-500 transition-all duration-1000 ease-out" stroke-linecap="round" />
-                                </svg>
-                                <span class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">{{ $phone->ueps_score['percentage'] }}%</span>
-                            </div>
-                        </div>
-                    </div>
-
+                    <!-- UEPS-40 Score Card Moved to Left Column -->
                     <!-- Value Score -->
                     <div class="bg-teal-600 dark:bg-teal-900 rounded-3xl p-5 text-white shadow-lg ring-1 ring-white/10 flex flex-col justify-between group h-32" style="background-color: #0d9488; color: white;">
                         <div class="flex justify-between items-start">
