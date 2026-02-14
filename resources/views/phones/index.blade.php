@@ -98,7 +98,7 @@
                     <input type="text" 
                            x-model="query"
                            :placeholder="placeholder"
-                           class="w-full bg-transparent border-0 focus:ring-0 text-lg text-slate-900 dark:text-white placeholder-slate-400/70 h-12"
+                           class="w-full bg-transparent border-0 focus:ring-0 text-lg text-slate-900 dark:text-white placeholder-slate-400/70 h-12 pl-4"
                     >
                     <div x-show="isLoading" class="pr-4">
                         <svg class="animate-spin h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -121,20 +121,30 @@
                      style="display: none;"
                 >
                     <template x-for="phone in results" :key="phone.id">
-                        <a :href="`/phones/${phone.id}`" class="block p-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-gray-100 dark:border-white/5 last:border-0 flex items-center gap-4">
-                            <div class="h-12 w-12 bg-gray-100 dark:bg-white/5 rounded-lg p-1 flex items-center justify-center">
+                        <a :href="`/phones/${phone.id}`" class="block p-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-gray-100 dark:border-white/5 last:border-0 flex items-center gap-4 group">
+                            <div class="h-16 w-16 bg-gray-100 dark:bg-white/5 rounded-xl p-2 flex items-center justify-center flex-shrink-0">
                                 <template x-if="phone.image">
-                                    <img :src="phone.image" :alt="phone.name" class="h-full w-full object-contain mix-blend-multiply dark:mix-blend-normal">
+                                    <img :src="phone.image" :alt="phone.name" class="h-full w-full object-contain mix-blend-multiply dark:mix-blend-normal transform group-hover:scale-110 transition-transform duration-300">
                                 </template>
                                 <template x-if="!phone.image">
-                                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </template>
                             </div>
-                            <div>
-                                <div class="font-bold text-slate-900 dark:text-white" x-text="phone.full_name"></div>
-                                <div class="text-xs text-slate-500 dark:text-slate-400">View detailed specs & score</div>
+                            <div class="flex-1">
+                                <div class="font-bold text-slate-900 dark:text-white text-lg font-display" x-text="phone.full_name"></div>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300">
+                                        Value Score: <span x-text="phone.value_score" class="ml-1 font-bold"></span>
+                                    </span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-mono" x-text="'₹' + new Intl.NumberFormat('en-IN').format(phone.price)"></span>
+                                </div>
+                            </div>
+                            <div class="text-slate-400 dark:text-slate-600 group-hover:text-teal-500 transition-colors">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
                             </div>
                         </a>
                     </template>
