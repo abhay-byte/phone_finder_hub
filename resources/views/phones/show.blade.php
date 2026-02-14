@@ -58,12 +58,12 @@
                                 </div>
                             </div>
                             <div class="flex items-baseline gap-1">
-                                <span class="text-6xl font-black tracking-tighter text-white">{{ $phone->ueps_score['total_score'] }}</span>
+                                <span class="text-6xl font-black tracking-tighter text-white">{{ $phone->ueps_details['total_score'] }}</span>
                                 <span class="text-lg font-medium text-gray-400">/200</span>
                             </div>
                             <div class="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold border border-white/10 backdrop-blur-md text-teal-200">
                                 <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
-                                {{ $phone->ueps_score['grade'] ?? 'Enthusiast' }} Grade
+                                {{ $phone->ueps_details['grade'] ?? 'Enthusiast' }} Grade
                             </div>
                         </div>
                         
@@ -71,9 +71,9 @@
                         <div class="relative w-24 h-24">
                             <svg class="w-full h-full -rotate-90">
                                 <circle cx="48" cy="48" r="42" stroke="currentColor" stroke-width="6" fill="transparent" class="text-white/10" />
-                                <circle cx="48" cy="48" r="42" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="264" stroke-dashoffset="{{ 264 - (264 * $phone->ueps_score['percentage'] / 100) }}" class="text-teal-500 transition-all duration-1000 ease-out" stroke-linecap="round" />
+                                <circle cx="48" cy="48" r="42" stroke="currentColor" stroke-width="6" fill="transparent" stroke-dasharray="264" stroke-dashoffset="{{ 264 - (264 * $phone->ueps_details['percentage'] / 100) }}" class="text-teal-500 transition-all duration-1000 ease-out" stroke-linecap="round" />
                             </svg>
-                            <span class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">{{ $phone->ueps_score['percentage'] }}%</span>
+                            <span class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">{{ $phone->ueps_details['percentage'] }}%</span>
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                         <h3 class="font-bold text-gray-900 dark:text-white">Detailed Breakdown</h3>
                     </div>
                     <div>
-                         @foreach($phone->ueps_score['breakdown'] as $category => $data)
+                         @foreach($phone->ueps_details['breakdown'] as $category => $data)
                             <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
                                 <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
                                     <div class="flex items-center gap-3">

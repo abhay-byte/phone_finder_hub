@@ -21,6 +21,7 @@ class Phone extends Model
         'flipkart_url',
         'flipkart_price',
         'announced_date',
+        'ueps_score',
     ];
 
     protected $casts = [
@@ -60,24 +61,20 @@ class Phone extends Model
     }
     public function getValueScoreAttribute()
     {
-        if (!$this->benchmarks || !$this->price || $this->price == 0) {
+        if (!$this->price || $this->price == 0) {
             return 0;
         }
 
-        // Value Score = (AnTuTu Score / Price) * 1000
-        // Example: 2,690,491 / 60,999 * 1000 = ~44,107 (This seems too high, maybe just / Price?)
-        // Let's stick to the UI/UX doc: "pts/₹1k"
-        // So (AnTuTu / Price) * 1000 is correct for "Points per 1000 Rupees".
-        $fpi = $this->calculateFPI();
-        $totalFpi = is_array($fpi) ? $fpi['total'] : 0;
+        // Use stored FPI (overall_score) if available, otherwise calculate
+        $fpi = $this->overall_score ?? ($this->calculateFPI()['total'] ?? 0);
 
-        if ($totalFpi == 0) return 0;
+        if ($fpi == 0) return 0;
 
         // Value Score = (FPI / Price) * 10,000
-        // Example: 92 / 60,000 * 10,000 = 15.3 points per ₹10k
-        $score = ($totalFpi / $this->price) * 10000;
+        $score = ($fpi / $this->price) * 10000;
         return round($score, 1);
     }
+
 
     public function calculateFPI()
     {
@@ -118,7 +115,8 @@ class Phone extends Model
             'max_possible' => 100 // Since we normalize to max in DB, the top phone will be 100
         ];
     }
-    public function getUepsScoreAttribute()
+
+    public function getUepsDetailsAttribute()
     {
         return \App\Services\UepsScoringService::calculate($this);
     }
