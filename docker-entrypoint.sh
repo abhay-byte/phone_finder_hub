@@ -41,6 +41,11 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
+# Link storage
+echo "Linking storage..."
+rm -rf /var/www/html/public/storage
+php artisan storage:link
+
 # Start Apache
 echo "Starting Apache..."
 exec apache2-foreground
