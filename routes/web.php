@@ -10,4 +10,4 @@ Route::get('/methodology/ueps', [\App\Http\Controllers\PhoneController::class, '
 Route::get('/methodology/fpi', [\App\Http\Controllers\PhoneController::class, 'fpiMethodology'])->name('fpi.methodology');
 Route::get('/compare', [\App\Http\Controllers\ComparisonController::class, 'index'])->name('phones.compare');
 Route::get('/docs', [\App\Http\Controllers\DocsController::class, 'index'])->name('docs.index');
-Route::resource('phones', \App\Http\Controllers\PhoneController::class)->only(['show']);
+Route::get('/phones/{phone}', [\App\Http\Controllers\PhoneController::class, 'show'])->name('phones.show');
