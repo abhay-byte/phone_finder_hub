@@ -6,7 +6,7 @@
         
         <!-- Breadcrumb -->
         <nav class="flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 mb-8 transition-colors hover:text-teal-600 dark:hover:text-teal-400">
-            <a href="{{ route('phones.index') }}" class="flex items-center gap-1 group">
+            <a href="{{ route('home') }}" class="flex items-center gap-1 group">
                 <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
