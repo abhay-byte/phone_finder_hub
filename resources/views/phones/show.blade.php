@@ -41,7 +41,18 @@
                     
                     <div class="relative z-10 flex items-center justify-between">
                         <div>
-                            <h3 class="text-sm font-bold uppercase tracking-widest text-teal-300 mb-1">UEPS Score</h3>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="text-sm font-bold uppercase tracking-widest text-teal-300">UEPS Score</h3>
+                                <div class="relative group/tooltip">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-teal-400/70 hover:text-teal-300 cursor-help transition-colors">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                    </svg>
+                                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-gray-900 text-white text-xs rounded-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 z-50 pointer-events-none shadow-xl border border-white/10 text-center">
+                                        User Experience Performance Score. A comprehensive rating based on real-world usage gaming, battery, and daily tasks.
+                                        <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="flex items-baseline gap-1">
                                 <span class="text-6xl font-black tracking-tighter text-white">{{ $phone->ueps_score['total_score'] }}</span>
                                 <span class="text-lg font-medium text-gray-400">/200</span>
@@ -133,7 +144,18 @@
                     <!-- Value Score -->
                     <div class="bg-teal-600 dark:bg-teal-900 rounded-3xl p-5 text-white shadow-lg ring-1 ring-white/10 flex flex-col justify-between group h-32" style="background-color: #0d9488; color: white;">
                         <div class="flex justify-between items-start">
-                             <h3 class="text-xs font-bold uppercase tracking-widest opacity-80 text-white">Value</h3>
+                             <div class="flex items-center gap-2">
+                                 <h3 class="text-xs font-bold uppercase tracking-widest opacity-80 text-white">Value</h3>
+                                 <div class="relative group/tooltip">
+                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-white/70 hover:text-white cursor-help transition-colors">
+                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                     </svg>
+                                     <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-gray-900 text-white text-xs rounded-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 z-50 pointer-events-none shadow-xl border border-white/10 text-center">
+                                         Points per ₹10k. Higher is better. Calculated by dividing the UEPS score by the current price.
+                                         <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                     </div>
+                                 </div>
+                             </div>
                              <svg class="w-5 h-5 opacity-60 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         </div>
                         <div>
@@ -146,7 +168,18 @@
                     @php $fpi = $phone->calculateFPI(); @endphp
                     <div class="bg-gray-100 dark:bg-white/5 rounded-3xl p-5 text-gray-900 dark:text-white shadow-sm ring-1 ring-black/5 dark:ring-white/10 flex flex-col justify-between h-32">
                          <div class="flex justify-between items-start">
-                             <h3 class="text-xs font-bold uppercase tracking-widest opacity-60 text-gray-500 dark:text-gray-400">Perf. Index</h3>
+                             <div class="flex items-center gap-2">
+                                 <h3 class="text-xs font-bold uppercase tracking-widest opacity-60 text-gray-500 dark:text-gray-400">Perf. Index</h3>
+                                 <div class="relative group/tooltip">
+                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-gray-400/70 hover:text-gray-500 dark:hover:text-gray-300 cursor-help transition-colors">
+                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                     </svg>
+                                     <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-gray-900 text-white text-xs rounded-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 z-50 pointer-events-none shadow-xl border border-white/10 text-center">
+                                         Raw performance capability based on synthetic benchmarks (AnTuTu, Geekbench, 3DMark).
+                                         <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                                     </div>
+                                 </div>
+                             </div>
                              <svg class="w-5 h-5 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                         </div>
                         <div>
