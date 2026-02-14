@@ -29,8 +29,66 @@
             </p>
             
             <!-- Search & Filter Bar -->
-            <div class="max-w-3xl mx-auto relative group animate-fadeInUp delay-200">
+            <div class="max-w-3xl mx-auto relative group z-50"
+                 x-data="{
+                    query: '',
+                    results: [],
+                    isLoading: false,
+                    placeholder: '',
+                    phrases: ['Search for OnePlus 15...', 'Find the best gaming phone...', 'Compare flagship specs...', 'Search by chipset (e.g. Snapdragon 8)...'],
+                    phraseIndex: 0,
+                    charIndex: 0,
+                    isDeleting: false,
+                    typeSpeed: 100,
+                    init() {
+                        this.typeLoop();
+                        this.$watch('query', (value) => {
+                            if (value.length < 2) {
+                                this.results = [];
+                                return;
+                            }
+                            this.isLoading = true;
+                            clearTimeout(this.debounce);
+                            this.debounce = setTimeout(() => {
+                                fetch(`/phones/search?query=${value}`)
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        this.results = data;
+                                        this.isLoading = false;
+                                    });
+                            }, 300);
+                        });
+                    },
+                    typeLoop() {
+                        const currentPhrase = this.phrases[this.phraseIndex];
+                        
+                        if (this.isDeleting) {
+                            this.placeholder = currentPhrase.substring(0, this.charIndex - 1);
+                            this.charIndex--;
+                            this.typeSpeed = 50;
+                        } else {
+                            this.placeholder = currentPhrase.substring(0, this.charIndex + 1);
+                            this.charIndex++;
+                            this.typeSpeed = 100;
+                        }
+
+                        if (!this.isDeleting && this.charIndex === currentPhrase.length) {
+                            this.isDeleting = true;
+                            this.typeSpeed = 2000; // Pause at end
+                        } else if (this.isDeleting && this.charIndex === 0) {
+                            this.isDeleting = false;
+                            this.phraseIndex = (this.phraseIndex + 1) % this.phrases.length;
+                            this.typeSpeed = 500; // Pause before typing next
+                        }
+
+                        setTimeout(() => this.typeLoop(), this.typeSpeed);
+                    }
+                 }"
+            >
+                <!-- Glow Effect -->
                 <div class="absolute -inset-1 bg-gradient-to-r from-teal-500 to-emerald-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                
+                <!-- Input Container -->
                 <div class="relative flex items-center bg-white dark:bg-[#1A1A1A] rounded-xl shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 p-2">
                     <div class="pl-4 text-gray-400">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -38,12 +96,48 @@
                         </svg>
                     </div>
                     <input type="text" 
-                           placeholder="Search by name, brand, or chipset..." 
-                           class="w-full bg-transparent border-0 focus:ring-0 text-lg text-slate-900 dark:text-white placeholder-slate-400 h-12"
+                           x-model="query"
+                           :placeholder="placeholder"
+                           class="w-full bg-transparent border-0 focus:ring-0 text-lg text-slate-900 dark:text-white placeholder-slate-400/70 h-12"
                     >
-                    <button class="bg-slate-900 dark:bg-white text-white dark:text-black px-6 py-3 rounded-lg font-bold hover:opacity-90 transition-opacity">
-                        Search
-                    </button>
+                    <div x-show="isLoading" class="pr-4">
+                        <svg class="animate-spin h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Dropdown Results -->
+                <div x-show="results.length > 0 && query.length >= 2" 
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 translate-y-2"
+                     @click.away="results = []"
+                     class="absolute top-full left-0 right-0 mt-4 bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-xl ring-1 ring-black/5 dark:ring-white/10 overflow-hidden z-50 max-h-96 overflow-y-auto"
+                     style="display: none;"
+                >
+                    <template x-for="phone in results" :key="phone.id">
+                        <a :href="`/phones/${phone.id}`" class="block p-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-gray-100 dark:border-white/5 last:border-0 flex items-center gap-4">
+                            <div class="h-12 w-12 bg-gray-100 dark:bg-white/5 rounded-lg p-1 flex items-center justify-center">
+                                <template x-if="phone.image">
+                                    <img :src="phone.image" :alt="phone.name" class="h-full w-full object-contain mix-blend-multiply dark:mix-blend-normal">
+                                </template>
+                                <template x-if="!phone.image">
+                                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                </template>
+                            </div>
+                            <div>
+                                <div class="font-bold text-slate-900 dark:text-white" x-text="phone.full_name"></div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">View detailed specs & score</div>
+                            </div>
+                        </a>
+                    </template>
                 </div>
             </div>
 
