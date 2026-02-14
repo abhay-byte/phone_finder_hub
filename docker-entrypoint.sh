@@ -1,52 +1,39 @@
 #!/bin/bash
 set -e
 
-echo "Starting Docker Entrypoint on Render..."
+echo "Starting Docker Entrypoint on Render (Ephemeral Mode)..."
 
 # Configure Apache to listen on $PORT (Render default: 10000)
 PORT=${PORT:-80}
 echo "Configuring Apache to listen on port $PORT..."
 sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
 
-# Ensure persistent database directory exists
-# Render Disk mount path (as defined in render.yaml)
-DB_DIR="/var/lib/data"
-DB_FILE="$DB_DIR/database.sqlite"
+# Database Configuration (Ephemeral)
+DB_FILE="/var/www/html/database/database.sqlite"
 
-# Check if mounted volume is available
-if [ ! -d "$DB_DIR" ]; then
-    echo "Warning: Persistent volume not mounted at $DB_DIR. Falling back to local database (ephemeral)."
-    DB_FILE="/var/www/html/database/database.sqlite"
+echo "Using internal database at $DB_FILE"
+
+if [ ! -f "$DB_FILE" ]; then
+    echo "Creating new database..."
     touch "$DB_FILE"
 else
-    echo "Using persistent volume at $DB_DIR"
-    if [ ! -f "$DB_FILE" ]; then
-        echo "Creating new database in persistent volume..."
-        touch "$DB_FILE"
-        chmod 666 "$DB_FILE"
-        chown www-data:www-data "$DB_FILE"
-        
-        # Optionally copy existing seed DB
-        if [ -f "/var/www/html/database/database.sqlite" ]; then
-             echo "Copying initial database..."
-             cp "/var/www/html/database/database.sqlite" "$DB_FILE"
-        fi
-
-        echo "Running initial migration..."
-        php artisan migrate --force
-    else
-        echo "Existing database found."
-        chmod 666 "$DB_FILE"
-        chown www-data:www-data "$DB_FILE"
-        
-        echo "Running pending migrations..."
-        php artisan migrate --force
-    fi
+    echo "Found existing database."
 fi
 
-# Set Environment Variables for DB Connection
-export DB_CONNECTION=sqlite
-export DB_DATABASE="$DB_FILE"
+# Ensure permissions
+echo "Setting permissions for storage and database..."
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+if [ -f "$DB_FILE" ]; then
+    chown www-data:www-data "$DB_FILE"
+    chmod 666 "$DB_FILE"
+fi
+# Also ensure the directory is writable for SQLite WAL files
+chown www-data:www-data /var/www/html/database
+chmod 775 /var/www/html/database
+
+# Run migrations (safe to run on every boot in ephemeral mode to ensure schema is up to date if we deployed new code)
+echo "Running migrations..."
+php artisan migrate --force
 
 # Cache configuration
 echo "Caching config..."
