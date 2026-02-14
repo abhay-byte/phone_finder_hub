@@ -13,7 +13,7 @@ class PhoneSeeder extends Seeder
     public function run(): void
     {
         try {
-            $phone = \App\Models\Phone::firstOrCreate(
+            $phone = \App\Models\Phone::updateOrCreate(
                 ['name' => 'OnePlus 13'],
                 [
                     'brand' => 'OnePlus',
@@ -21,7 +21,7 @@ class PhoneSeeder extends Seeder
                     'price' => 60999.00,
                     'overall_score' => 95,
                     'release_date' => '2024-11-01',
-                    'image_url' => 'https://fdn2.gsmarena.com/vv/bigpic/oneplus-13.jpg',
+                    'image_url' => 'https://raw.githubusercontent.com/abhay-byte/phone_finder_hub/master/public/assets/oneplus-13.jpg',
                 ]
             );
 
