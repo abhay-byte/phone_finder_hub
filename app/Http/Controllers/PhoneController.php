@@ -26,9 +26,14 @@ class PhoneController extends Controller
             return response()->json([]);
         }
 
-        $phones = \App\Models\Phone::where('name', 'like', "%{$query}%")
+        $phones = \App\Models\Phone::with('platform')
+            ->where('name', 'like', "%{$query}%")
             ->orWhere('brand_name', 'like', "%{$query}%")
-            ->select('id', 'name', 'brand_name', 'image_url')
+            ->orWhereHas('platform', function ($q) use ($query) {
+                $q->where('chipset', 'like', "%{$query}%")
+                  ->orWhere('cpu', 'like', "%{$query}%");
+            })
+            ->select('id', 'name', 'brand_name', 'image_url', 'price', 'value_score') // Added price, value_score
             ->limit(10)
             ->get();
 
@@ -39,6 +44,9 @@ class PhoneController extends Controller
                 'brand' => $phone->brand_name,
                 'image' => $phone->image_url,
                 'full_name' => $phone->brand_name . ' ' . $phone->name,
+                'price' => $phone->price,
+                'value_score' => $phone->value_score ?? 'N/A',
+                'chipset' => $phone->platform->chipset ?? null, // Optional: return chipset for UI
             ];
         });
 
