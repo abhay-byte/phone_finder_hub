@@ -18,7 +18,7 @@
 <div class="bg-gray-50 dark:bg-black min-h-screen">
     
     <!-- Hero Section -->
-    <div class="relative bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-white/5 overflow-hidden">
+    <div class="relative bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-white/5">
         <div class="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-900/[0.04] bg-[bottom_1px_center] dark:bg-[bottom_1px_center]" style="mask-image: linear-gradient(to bottom, transparent, black);"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative z-10 text-center">
             <h1 class="text-5xl md:text-7xl font-black tracking-tight text-slate-900 dark:text-white mb-6 animate-fadeInUp">
@@ -58,6 +58,10 @@
                                     });
                             }, 300);
                         });
+                    },
+                    formatPrice(price) {
+                        if (!price || isNaN(price)) return 'N/A';
+                        return '₹' + new Intl.NumberFormat('en-IN').format(price);
                     },
                     typeLoop() {
                         const currentPhrase = this.phrases[this.phraseIndex];
@@ -136,9 +140,9 @@
                                 <div class="font-bold text-slate-900 dark:text-white text-lg font-display" x-text="phone.full_name"></div>
                                 <div class="flex items-center gap-2 mt-1">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300">
-                                        Value Score: <span x-text="phone.value_score" class="ml-1 font-bold"></span>
+                                        Value Score: <span x-text="phone.value_score || 'N/A'" class="ml-1 font-bold"></span>
                                     </span>
-                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-mono" x-text="'₹' + new Intl.NumberFormat('en-IN').format(phone.price)"></span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400 font-mono" x-text="formatPrice(phone.price)"></span>
                                 </div>
                             </div>
                             <div class="text-slate-400 dark:text-slate-600 group-hover:text-teal-500 transition-colors">
@@ -179,10 +183,11 @@
             <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Latest Rankings</h2>
              <div class="flex items-center gap-2 text-sm text-slate-500">
                 <span>Sort by:</span>
-                <select class="bg-transparent border-none font-semibold text-slate-900 dark:text-white focus:ring-0 cursor-pointer">
-                    <option>Value Score</option>
-                    <option>Price: Low to High</option>
-                    <option>Performance</option>
+                <select onchange="window.location.href='?sort='+this.value" class="bg-transparent border-none font-semibold text-slate-900 dark:text-white focus:ring-0 cursor-pointer">
+                    <option value="value_score" {{ request('sort') == 'value_score' ? 'selected' : '' }}>Value Score</option>
+                    <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Price: Low to High</option>
+                    <option value="overall_score" {{ request('sort') == 'overall_score' ? 'selected' : '' }}>Performance</option>
+                    <option value="ueps_score" {{ request('sort') == 'ueps_score' ? 'selected' : '' }}>UEPS Score</option>
                 </select>
             </div>
         </div>

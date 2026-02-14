@@ -9,13 +9,27 @@ class PhoneController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $phones = \App\Models\Phone::with(['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks'])
-            ->orderBy('overall_score', 'desc')
-            ->paginate(12);
+        $sort = $request->input('sort', 'value_score'); // Default to Value Score
 
-        return view('phones.index', compact('phones'));
+        $query = \App\Models\Phone::with(['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks']);
+
+        if ($sort == 'value_score') {
+             $query->orderByRaw('overall_score / price desc');
+        } elseif ($sort == 'price_asc') {
+            $query->orderBy('price', 'asc');
+        } elseif ($sort == 'overall_score') {
+            $query->orderBy('overall_score', 'desc');
+        } elseif ($sort == 'ueps_score') {
+            $query->orderBy('ueps_score', 'desc');
+        } else {
+             $query->orderBy('ueps_score', 'desc');
+        }
+
+        $phones = $query->take(10)->get();
+
+        return view('phones.index', compact('phones', 'sort'));
     }
 
     public function search(Request $request)
