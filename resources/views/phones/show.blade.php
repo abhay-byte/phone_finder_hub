@@ -542,6 +542,13 @@
                                 </div>
                                 @endif
 
+                                @if($phone->camera->telephoto_camera_specs)
+                                <div class="mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                                    <h5 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-1">Telephoto</h5>
+                                    <p class="text-lg font-medium leading-relaxed">{{ $phone->camera->telephoto_camera_specs }}</p>
+                                </div>
+                                @endif
+
                                 @if($phone->camera->ultrawide_camera_specs)
                                 <div class="mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
                                     <h5 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-1">Ultrawide</h5>
