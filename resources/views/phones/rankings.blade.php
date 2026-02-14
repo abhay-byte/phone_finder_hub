@@ -47,7 +47,7 @@
                                                     <h3 class="text-xl font-bold text-white">What is UEPS 4.0?</h3>
                                                 </div>
                                                 <p class="text-slate-300 text-sm max-w-xl">
-                                                    The <strong>Ultra-Extensive Phone Scoring</strong> system evaluates devices on a 200-point scale across 40+ touchpoints, including real-world build quality, display efficiency, sustained performance, and camera versatility.
+                                                    The <strong>Ultra-Extensive Phone Scoring System (UEPS-40)</strong> evaluates devices on a 200-point scale across 40+ touchpoints, including real-world build quality, display efficiency, sustained performance, and camera versatility.
                                                 </p>
                                             </div>
                                             <a href="{{ route('ueps.methodology') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all">
@@ -243,72 +243,65 @@
 </div>
 @endsection
 
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const handleNavigation = async (url) => {
-            try {
-                // Show loading state (optional, e.g., reduce opacity)
-                const tableContainer = document.getElementById('rankings-table-container');
-                const tabsContainer = document.getElementById('tabs-container');
-                
-                if(tableContainer) tableContainer.style.opacity = '0.5';
-
-                const response = await fetch(url);
-                const text = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(text, 'text/html');
-
-                // Update Table
-                const newTable = doc.getElementById('rankings-table-container');
-                if (tableContainer && newTable) {
-                    tableContainer.innerHTML = newTable.innerHTML;
-                    // Reset animation classes to re-trigger if needed, or just fade in
-                    tableContainer.style.opacity = '1';
+@section('content')
+<div class="bg-gray-50 dark:bg-black min-h-screen py-12 pt-24 font-sans selection:bg-teal-500 selection:text-white">
+    <!-- ... (rest of content) ... -->
+    <!-- Script moved inline for AJAX support -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const handleInternalNavigation = async (url) => {
+                try {
+                    const tableContainer = document.getElementById('rankings-table-container');
+                    const tabsContainer = document.getElementById('tabs-container');
                     
-                    // Re-run any scripts inside if needed (though mostly styles here)
+                    if(tableContainer) tableContainer.style.opacity = '0.5';
+
+                    const response = await fetch(url);
+                    const text = await response.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(text, 'text/html');
+
+                    const newTable = doc.getElementById('rankings-table-container');
+                    if (tableContainer && newTable) {
+                        tableContainer.innerHTML = newTable.innerHTML;
+                        tableContainer.style.opacity = '1';
+                    }
+
+                    const newTabs = doc.getElementById('tabs-container');
+                    if (tabsContainer && newTabs) {
+                        tabsContainer.innerHTML = newTabs.innerHTML;
+                    }
+
+                    window.history.pushState({}, '', url);
+                } catch (error) {
+                    console.error('Internal Navigation failed:', error);
+                    window.location.href = url;
                 }
+            };
 
-                // Update Tabs (active state)
-                const newTabs = doc.getElementById('tabs-container');
-                if (tabsContainer && newTabs) {
-                    tabsContainer.innerHTML = newTabs.innerHTML;
-                }
-
-                // Update URL
-                window.history.pushState({}, '', url);
-            } catch (error) {
-                console.error('Navigation failed:', error);
-                window.location.href = url; // Fallback
-            }
-        };
-
-        const attachListeners = () => {
-             document.addEventListener('click', (e) => {
+            document.addEventListener('click', (e) => {
                 const link = e.target.closest('a');
                 if (!link) return;
 
-                // Check if link is inside tabs or table headers for sorting
                 const isTab = link.closest('#tabs-container');
                 const isSort = link.closest('th');
-                const isPagination = link.closest('.pagination'); // Assuming pagination uses standard classes
+                const isPagination = link.closest('.pagination');
 
                 if (isTab || isSort || isPagination) {
                     const href = link.getAttribute('href');
                     if (href && href.startsWith(window.location.origin)) {
                         e.preventDefault();
-                        handleNavigation(href);
+                        handleInternalNavigation(href);
                     }
                 }
             });
-        };
 
-        attachListeners();
-        
-        // Handle Back/Forward buttons
-        window.addEventListener('popstate', () => {
-            handleNavigation(window.location.href);
+            window.addEventListener('popstate', () => {
+                // If we are on rankings page, handle popstate locally for tabs?
+                // Or let global handler take over? 
+                // For now, let's reload to be safe or rely on global handler if implemented.
+            });
         });
-    });
-</script>
-@endpush
+    </script>
+</div>
+@endsection

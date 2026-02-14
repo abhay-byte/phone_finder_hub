@@ -104,6 +104,20 @@ class PhoneController extends Controller
     {
         $phone->load(['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks']);
         
+        // Lazy update UEPS score to ensure consistency
+        $ueps = \App\Services\UepsScoringService::calculate($phone);
+        if ($phone->ueps_score != $ueps['total_score']) {
+            $phone->ueps_score = $ueps['total_score'];
+            $phone->saveQuietly();
+        }
+
+        // Lazy update FPI (Overall Score) to ensure consistency
+        $fpi = $phone->calculateFPI();
+        if (is_array($fpi) && $phone->overall_score != $fpi['total']) {
+            $phone->overall_score = $fpi['total'];
+            $phone->saveQuietly();
+        }
+
         return view('phones.show', compact('phone'));
     }
 
