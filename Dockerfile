@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     libsqlite3-dev \
+    libicu-dev \
     && docker-php-ext-install pdo_sqlite mbstring exif pcntl bcmath gd intl
 
 # Enable Apache mod_rewrite
