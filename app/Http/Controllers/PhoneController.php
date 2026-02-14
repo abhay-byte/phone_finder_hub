@@ -18,6 +18,33 @@ class PhoneController extends Controller
         return view('phones.index', compact('phones'));
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        
+        if (empty($query)) {
+            return response()->json([]);
+        }
+
+        $phones = \App\Models\Phone::where('name', 'like', "%{$query}%")
+            ->orWhere('brand_name', 'like', "%{$query}%")
+            ->select('id', 'name', 'brand_name', 'image_url')
+            ->limit(10)
+            ->get();
+
+         $results = $phones->map(function ($phone) {
+            return [
+                'id' => $phone->id,
+                'name' => $phone->name,
+                'brand' => $phone->brand_name,
+                'image' => $phone->image_url,
+                'full_name' => $phone->brand_name . ' ' . $phone->name,
+            ];
+        });
+
+        return response()->json($results);
+    }
+
     public function rankings(Request $request)
     {
         $tab = $request->input('tab', 'ueps'); // Default tab
