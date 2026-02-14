@@ -63,10 +63,10 @@
             <div class="mt-4">
                 <h3 class="text-lg font-medium">
                     <span class="absolute inset-0" aria-hidden="true"></span>
-                    Flagship Performance Index (FPI)
+                    Final Performance Index (FPI)
                 </h3>
                 <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    How we define and calculate "Flagship" status based on raw specs, features, and performance.
+                    How we define and calculate "Final" status based on raw specs, features, and performance.
                 </p>
             </div>
         </a>
