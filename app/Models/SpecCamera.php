@@ -25,6 +25,7 @@ class SpecCamera extends Model
         'main_camera_zoom',
         'main_camera_pdaf',
         'selfie_video_features',
+        'ultrawide_camera_specs',
     ];
 
     public function phone()
