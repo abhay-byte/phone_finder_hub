@@ -20,10 +20,10 @@ class UepsScoringService
         // --- A. Build & Durability (30 pts) ---
         $catA_Score = 0;
         $catA_Details = [];
-        $build = $phone->body->build_material ?? '';
-        $dimensions = $phone->body->dimensions ?? '';
-        $ip = $phone->body->ip_rating ?? '';
-        $protection = $phone->body->display_protection ?? '';
+        $build = $phone->body?->build_material ?? '';
+        $dimensions = $phone->body?->dimensions ?? '';
+        $ip = $phone->body?->ip_rating ?? '';
+        $protection = $phone->body?->display_protection ?? '';
 
         // 1. Frame Material
         if (stripos($build, 'titanium') !== false || stripos($build, 'stainless') !== false) {
@@ -73,9 +73,9 @@ class UepsScoringService
         // --- B. Display Tech (40 pts) ---
         $catB_Score = 0;
         $catB_Details = [];
-        $dispType = $phone->body->display_type ?? '';
-        $dispFeat = $phone->body->display_features ?? '';
-        $dispRes = $phone->body->display_resolution ?? '';
+        $dispType = $phone->body?->display_type ?? '';
+        $dispFeat = $phone->body?->display_features ?? '';
+        $dispRes = $phone->body?->display_resolution ?? '';
 
         // 6. Panel Type
         if (stripos($dispType, 'LTPO') !== false) {
@@ -133,10 +133,10 @@ class UepsScoringService
         // --- C. Processing & Memory (30 pts) ---
         $catC_Score = 0;
         $catC_Details = [];
-        $chipset = $phone->platform->chipset ?? '';
-        $ram = $phone->platform->ram ?? '';
-        $storage = $phone->platform->storage_type ?? '';
-        $card = $phone->platform->memory_card_slot ?? '';
+        $chipset = $phone->platform?->chipset ?? '';
+        $ram = $phone->platform?->ram ?? '';
+        $storage = $phone->platform?->storage_type ?? '';
+        $card = $phone->platform?->memory_card_slot ?? '';
 
         // 13. Processor Tier
         if (stripos($chipset, 'Snapdragon 8 Elite') !== false || stripos($chipset, 'Dimensity 9400') !== false || stripos($chipset, 'Gen 4') !== false || stripos($chipset, 'Gen 5') !== false) {
@@ -177,10 +177,10 @@ class UepsScoringService
         // --- D. Power & Charging (30 pts) ---
         $catD_Score = 0;
         $catD_Details = [];
-        $battType = $phone->battery->battery_type ?? '';
-        $wired = $phone->battery->charging_wired ?? '';
-        $wireless = $phone->battery->charging_wireless ?? '';
-        $reverse = $phone->battery->charging_reverse ?? '';
+        $battType = $phone->battery?->battery_type ?? '';
+        $wired = $phone->battery?->charging_wired ?? '';
+        $wireless = $phone->battery?->charging_wireless ?? '';
+        $reverse = $phone->battery?->charging_reverse ?? '';
 
         // 19. Capacity
         if (preg_match('/([7-9]\d{3})/', $battType)) { // >7000
@@ -213,7 +213,7 @@ class UepsScoringService
         }
         
         // 24. Reverse Wired (Usually standard on USB-C 3.0 flagships)
-        $usb = $phone->connectivity->usb ?? '';
+        $usb = $phone->connectivity?->usb ?? '';
         if (stripos($usb, '3.') !== false) {
              $addPoints($catD_Score, $catD_Details, 'Reverse Wired', 5, 'Supported (+5)');
         }
@@ -225,10 +225,10 @@ class UepsScoringService
         // --- E. Camera Mastery (30 pts) ---
         $catE_Score = 0;
         $catE_Details = [];
-        $mainCam = $phone->camera->main_camera_specs ?? '';
-        $mainFeat = $phone->camera->main_camera_features ?? '';
-        $mainVideo = $phone->camera->main_video_capabilities ?? '';
-        $selfieFeat = $phone->camera->selfie_camera_features ?? '';
+        $mainCam = $phone->camera?->main_camera_specs ?? '';
+        $mainFeat = $phone->camera?->main_camera_features ?? '';
+        $mainVideo = $phone->camera?->main_video_capabilities ?? '';
+        $selfieFeat = $phone->camera?->selfie_camera_features ?? '';
 
         // 25. Main Sensor Size (1-inch)
         // Hard to parse from specs string usually. Let's assume 50MP periscope setups are high tier.
@@ -268,11 +268,11 @@ class UepsScoringService
         // --- F. Connectivity & Ports (25 pts) ---
         $catF_Score = 0;
         $catF_Details = [];
-        $usb = $phone->connectivity->usb ?? '';
-        $wlan = $phone->connectivity->wlan ?? '';
-        $bt = $phone->connectivity->bluetooth ?? '';
-        $nfc = $phone->connectivity->nfc ?? '';
-        $infra = $phone->connectivity->infrared ?? '';
+        $usb = $phone->connectivity?->usb ?? '';
+        $wlan = $phone->connectivity?->wlan ?? '';
+        $bt = $phone->connectivity?->bluetooth ?? '';
+        $nfc = $phone->connectivity?->nfc ?? '';
+        $infra = $phone->connectivity?->infrared ?? '';
 
         // 31. USB Speed
         if (stripos($usb, '3.') !== false) {
@@ -301,7 +301,7 @@ class UepsScoringService
 
         // 36. Satellite
         // Not in seeder yet, assume 0 or 5 if "Satellite" found.
-        if (stripos($phone->connectivity->positioning, 'Satellite') !== false) {
+        if (stripos($phone->connectivity?->positioning ?? '', 'Satellite') !== false) {
              $addPoints($catF_Score, $catF_Details, 'Satellite', 5, 'Supported (+5)');
         } else {
             // Give it 0 for now unless explicitly added.
@@ -314,9 +314,9 @@ class UepsScoringService
         // --- G. Audio & Extras (15 pts) ---
         $catG_Score = 0;
         $catG_Details = [];
-        $jack = $phone->connectivity->jack_3_5mm ?? '';
-        $radio = $phone->connectivity->radio ?? '';
-        $sensors = $phone->connectivity->sensors ?? '';
+        $jack = $phone->connectivity?->jack_3_5mm ?? '';
+        $radio = $phone->connectivity?->radio ?? '';
+        $sensors = $phone->connectivity?->sensors ?? '';
 
         // 37. Headphone Jack
         if (stripos($jack, 'Yes') !== false) {
