@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: phone-finder
+    runtime: docker
+    plan: starter # Persistent disk requires paid plan (Standard/Starter)
+    region: singapore # Asia Pacific (closest to India usually)
+    envVars:
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_DEBUG
+        value: true
+      - key: APP_ENV
+        value: production
+      - key: APP_URL
+        value: https://phone-finder.onrender.com # Update after deployment
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /var/lib/data/database.sqlite
+    disk:
+      name: sqlite-data
+      mountPath: /var/lib/data
+      sizeGB: 1
