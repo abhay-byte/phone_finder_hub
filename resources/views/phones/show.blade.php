@@ -128,7 +128,7 @@
                         {{ $phone->brand }}
                     </div>
                     <!-- Fix: Prevent word wrap as requested -->
-                    <h1 class="text-5xl md:text-7xl font-black tracking-tight text-gray-900 dark:text-white leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                    <h1 class="text-5xl md:text-7xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
                         {{ $phone->name }}
                     </h1>
                     <!-- Fix: Stacking on mobile to prevent overlap -->
@@ -442,7 +442,7 @@
                                     </div>
                                     <div>
                                         <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">CPU</dt>
-                                        <dd class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-medium">{{ $phone->platform->cpu }}</dd>
+                                        <dd class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed font-medium">{!! str_replace(' (', '<br>(', e($phone->platform->cpu)) !!}</dd>
                                     </div>
                                     <div>
                                         <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">GPU</dt>
