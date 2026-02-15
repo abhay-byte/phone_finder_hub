@@ -79,12 +79,18 @@
       hx-indicator="#global-loader">
     <div class="min-h-screen flex flex-col">
         <!-- Navigation -->
-        <nav x-data="{ mobileMenuOpen: false }" class="bg-white/80 dark:bg-black/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-white/5">
+        <nav x-data="{ mobileMenuOpen: false }" 
+             class="bg-white/80 dark:bg-black/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-white/5"
+             hx-boost="true" 
+             hx-target="#spa-content-wrapper" 
+             hx-select="#spa-content-wrapper" 
+             hx-swap="outerHTML show:window:top"
+             hx-indicator="#global-loader">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex">
                         <div class="shrink-0 flex items-center">
-                            <a href="{{ route('home') }}" class="flex items-center gap-3 group">
+                            <a href="{{ route('home') }}" class="flex items-center gap-3 group" hx-boost="false"> {{-- Logo usually goes to home, safe to keep standard or boost if handled --}}
                                 <div class="relative w-10 h-10 flex items-center justify-center bg-white dark:bg-black rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md">
                                     <img src="{{ asset('assets/logo.png') }}" alt="PhoneFinderHub Logo" class="w-8 h-8 object-contain relative z-10">
                                 </div>
@@ -95,21 +101,21 @@
                             </a>
                         </div>
 
-                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex" id="desktop-menu">
                             <a href="{{ route('home') }}" 
-                               class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('home') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
+                               class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('home') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
                                 Home
                             </a>
                             <a href="{{ route('phones.rankings') }}" 
-                               class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('phones.rankings') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
+                               class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('phones.rankings') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
                                 Rankings
                             </a>
                             <a href="{{ route('phones.compare') }}" 
-                               class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('phones.compare') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
+                               class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('phones.compare') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
                                 Compare
                             </a>
                             <a href="{{ route('docs.index') }}" 
-                               class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
+                               class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
                                 Docs
                             </a>
                         </div>
@@ -141,22 +147,23 @@
 
             <!-- Mobile Menu -->
             <div x-show="mobileMenuOpen" class="sm:hidden bg-white/95 dark:bg-black/95 backdrop-blur-xl border-t border-gray-100 dark:border-white/5" x-transition.origin.top x-cloak style="display: none;">
-                <div class="px-2 pt-2 pb-3 space-y-1">
-                    <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('home') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                <div class="px-2 pt-2 pb-3 space-y-1" id="mobile-menu">
+                    <a href="{{ route('home') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('home') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
                         Home
                     </a>
-                    <a href="{{ route('phones.rankings') }}" class="block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('phones.rankings') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                    <a href="{{ route('phones.rankings') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('phones.rankings') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
                         Rankings
                     </a>
-                    <a href="{{ route('phones.compare') }}" class="block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('phones.compare') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                    <a href="{{ route('phones.compare') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('phones.compare') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
                         Compare
                     </a>
-                    <a href="{{ route('docs.index') }}" class="block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                    <a href="{{ route('docs.index') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
                         Docs
                     </a>
                 </div>
             </div>
         </nav>
+
 
         <!-- SPA Content Wrapper -->
         <div id="spa-content-wrapper" 
@@ -282,9 +289,40 @@
                 showLoader();
             });
 
-            document.body.addEventListener('htmx:afterOnLoad', () => {
+            document.body.addEventListener('htmx:afterOnLoad', (evt) => {
                 // Small delay to make it feel smooth
                 setTimeout(hideLoader, 300);
+
+                // Update Navbar Active States manually since Nav isn't swapped
+                const path = new URL(evt.detail.xhr.responseURL).pathname;
+                
+                // Desktop
+                document.querySelectorAll('#desktop-menu .nav-link').forEach(link => {
+                    const href = new URL(link.href).pathname;
+                    const isActive = (path === '/' && href === '/') || (href !== '/' && path.startsWith(href));
+                    
+                    if (isActive) {
+                        link.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'dark:text-gray-400', 'dark:hover:text-gray-300');
+                        link.classList.add('border-teal-500', 'text-gray-900', 'dark:text-white');
+                    } else {
+                        link.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'dark:text-gray-400', 'dark:hover:text-gray-300');
+                        link.classList.remove('border-teal-500', 'text-gray-900', 'dark:text-white');
+                    }
+                });
+
+                // Mobile
+                document.querySelectorAll('#mobile-menu .mobile-nav-link').forEach(link => {
+                    const href = new URL(link.href).pathname;
+                    const isActive = (path === '/' && href === '/') || (href !== '/' && path.startsWith(href));
+                    
+                    if (isActive) {
+                        link.classList.remove('text-gray-700', 'hover:text-gray-900', 'hover:bg-gray-50', 'dark:text-gray-300', 'dark:hover:text-white', 'dark:hover:bg-gray-800');
+                        link.classList.add('bg-teal-50', 'text-teal-700', 'dark:bg-gray-800', 'dark:text-teal-400');
+                    } else {
+                        link.classList.add('text-gray-700', 'hover:text-gray-900', 'hover:bg-gray-50', 'dark:text-gray-300', 'dark:hover:text-white', 'dark:hover:bg-gray-800');
+                        link.classList.remove('bg-teal-50', 'text-teal-700', 'dark:bg-gray-800', 'dark:text-teal-400');
+                    }
+                });
             });
 
             document.body.addEventListener('htmx:historyRestore', () => {
