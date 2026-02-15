@@ -232,8 +232,8 @@
 
     @stack('scripts')
 
-    <!-- Global Loader (Full Screen) -->
-    <div id="global-loader" class="fixed inset-0 z-[100] bg-[#0a0a0a] flex items-center justify-center transition-opacity duration-300 pointer-events-none opacity-0">
+    <!-- Global Loader (Below Navbar) -->
+    <div id="global-loader" class="fixed top-[64px] bottom-0 left-0 right-0 z-40 bg-[#0a0a0a] flex items-center justify-center transition-opacity duration-300 pointer-events-none opacity-0">
         <div class="relative flex flex-col items-center">
             <!-- Logo Pulse Animation -->
             <div class="relative w-24 h-24 mb-4">
