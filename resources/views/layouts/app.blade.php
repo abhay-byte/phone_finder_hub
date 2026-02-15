@@ -233,7 +233,7 @@
     @stack('scripts')
 
     <!-- Global Loader (Below Navbar) -->
-    <div id="global-loader" class="fixed inset-0 top-16 z-40 bg-[#0a0a0a] flex items-center justify-center transition-opacity duration-300 pointer-events-none opacity-0">
+    <div id="global-loader" class="fixed left-0 right-0 bottom-0 top-[64px] z-40 bg-[#0a0a0a] flex items-center justify-center transition-opacity duration-300 pointer-events-none opacity-0">
         <div class="relative flex flex-col items-center">
             <!-- Logo Pulse Animation -->
             <div class="relative w-24 h-24 mb-4">
