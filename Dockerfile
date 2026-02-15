@@ -19,7 +19,8 @@ RUN apt-get update && apt-get install -y \
     git \
     libsqlite3-dev \
     libicu-dev \
-    && docker-php-ext-install pdo_sqlite mbstring exif pcntl bcmath gd intl
+    libpq-dev \
+    && docker-php-ext-install pdo_sqlite pdo_pgsql mbstring exif pcntl bcmath gd intl
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite

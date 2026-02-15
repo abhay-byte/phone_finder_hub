@@ -13,9 +13,5 @@ services:
         value: production
       - key: APP_URL
         value: https://phone-finder.onrender.com # Update after deployment
-      - key: DB_CONNECTION
-        value: sqlite
-      - key: DB_DATABASE
-        value: /var/www/html/database/database.sqlite
       - key: LOG_CHANNEL
         value: stderr
