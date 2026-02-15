@@ -23,18 +23,26 @@ $phone->body()->updateOrCreate([], [
     'build_material' => 'Glass front (Gorilla Glass 7i), glass back (Gorilla Glass Victus), aluminum frame',
     'sim' => 'Nano-SIM + Nano-SIM + eSIM (max 2 at a time)',
     'ip_rating' => 'IP68',
-    'display_type' => 'OLED, 1B colors, 120Hz, 960Hz PWM, HDR10+, 4500 nits (peak)',
+    'display_type' => 'OLED, 1B colors, 120Hz, HDR10+',
     'display_size' => '6.67 inches',
     'display_resolution' => '1260 x 2800 pixels',
     'display_protection' => 'Corning Gorilla Glass 7i',
-    'display_features' => '1507 nits (measured), 4500 nits (peak), Monochrome LED display on the back',
-    // 'colors' => 'White, Black', // Added to end as separate update if body relation doesn't auto-update? No, firstOrCreate on body handles it.
-     'colors' => 'White, Black',
+    'display_features' => 'Monochrome LED display on the back',
+    'colors' => 'White, Black',
+    // Granular Display Specs
+    'pixel_density' => '~460 ppi',
+    'screen_to_body_ratio' => '~88.5%',
+    'pwm_dimming' => '960Hz',
+    'display_brightness' => '4500 nits (peak)',
+    'measured_display_brightness' => '1507 nits (HBM)',
+    'touch_sampling_rate' => null, // Not specified
+    'aspect_ratio' => '20:9',
 ]);
 
 // Platform
 $phone->platform()->updateOrCreate([], [
-    'os' => 'Android 15, up to Android 16, Nothing OS 4.0',
+    'os' => 'Android 15, up to Android 16',
+    'os_details' => 'Nothing OS 4.0', // Add OS details
     'chipset' => 'Qualcomm SM8735 Snapdragon 8s Gen 4 (4 nm)',
     'cpu' => 'Octa-core (1x3.21 GHz Cortex-X4 & 3x3.0 GHz Cortex-A720 & 2x2.8 GHz Cortex-A720 & 2x2.0 GHz Cortex-A720)',
     'gpu' => 'Adreno 825',
@@ -52,12 +60,24 @@ $phone->platform()->updateOrCreate([], [
 
 // Camera
 $phone->camera()->updateOrCreate([], [
-    'main_camera_specs' => '50 MP, f/1.7, 24mm (wide), 1/1.3", PDAF, OIS + 50 MP, f/2.7, (periscope telephoto), 1/2.75", PDAF, 3x optical zoom, OIS + 50 MP, f/2.2, 114˚ (ultrawide), 1/2.76"',
+    'main_camera_specs' => '50 MP + 50 MP + 50 MP Triple Camera', // Simplified header
     'main_camera_features' => 'LED flash, panorama, HDR',
     'main_video_capabilities' => '4K@30/60fps, 1080p@30/60fps, gyro-EIS, OIS',
+    // Granular Camera Specs
+    'main_camera_sensors' => '1/1.3" (Main) + 1/2.75" (Tele) + 1/2.76" (UW)',
+    'main_camera_apertures' => 'f/1.7 (Main) + f/2.7 (Tele) + f/2.2 (UW)',
+    'main_camera_focal_lengths' => '24mm (Main)',
+    'main_camera_ois' => 'OIS (Main, Tele)',
+    'main_camera_zoom' => '3x optical zoom',
+    'main_camera_pdaf' => 'PDAF',
+    'ultrawide_camera_specs' => '50 MP, f/2.2, 114˚',
+    'telephoto_camera_specs' => '50 MP, f/2.7, periscope telephoto, 3x zoom',
+    
     'selfie_camera_specs' => '50 MP, f/2.2, (wide), 1/2.76"',
     'selfie_camera_features' => 'HDR',
     'selfie_video_capabilities' => '4K@60fps, 1080p@60fps',
+    'selfie_camera_aperture' => 'f/2.2',
+    'selfie_camera_sensor' => '1/2.76"',
 ]);
 
 // Connectivity
