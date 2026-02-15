@@ -6,6 +6,40 @@ use App\Models\Phone;
 
 class UepsScoringService
 {
+    /**
+     * Helper to check if any keyword exists in a target string with robust matching.
+     * 
+     * @param string $target The detailed spec string to search in.
+     * @param string|array $keywords Single keyword or array of keywords.
+     * @param bool $regex If true, treats keywords as regex patterns.
+     * @return bool True if match found.
+     */
+    private static function checkSpecs($target, $keywords, $regex = false)
+    {
+        if (empty($target)) return false;
+        
+        $keywords = (array) $keywords;
+        $normalizedTarget = strtolower(preg_replace('/\s+/', '', $target)); // Remove all spaces and lowercase
+
+        foreach ($keywords as $keyword) {
+            if ($regex) {
+                // For regex, we run it against the original string (case-insensitive)
+                // This preserves spaces if the regex specifically handles them (e.g. /120\s*Hz/)
+                if (preg_match($keyword, $target)) {
+                    return true;
+                }
+            } else {
+                // For standard keywords, we normalize them too
+                // "Snapdragon 8 Elite" -> "snapdragon8elite"
+                $normalizedKeyword = strtolower(preg_replace('/\s+/', '', $keyword));
+                if (str_contains($normalizedTarget, $normalizedKeyword)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static function calculate(Phone $phone)
     {
         $breakdown = [];
@@ -26,44 +60,40 @@ class UepsScoringService
         $protection = $phone->body?->display_protection ?? '';
 
         // 1. Frame Material
-        if (stripos($build, 'titanium') !== false || stripos($build, 'stainless') !== false) {
+        if (self::checkSpecs($build, ['titanium', 'stainless'])) {
             $addPoints($catA_Score, $catA_Details, 'Frame Material', 5, 'Titanium/Stainless (+5)');
-        } elseif (stripos($build, 'aluminum') !== false || stripos($build, 'metal') !== false) {
+        } elseif (self::checkSpecs($build, ['aluminum', 'metal', 'aluminium'])) {
              $addPoints($catA_Score, $catA_Details, 'Frame Material', 3, 'Aluminum (+3)');
         } else {
              $addPoints($catA_Score, $catA_Details, 'Frame Material', 0, 'Standard/Plastic (+0)');
         }
 
         // 2. Back Material
-        if (stripos($build, 'glass back') !== false || stripos($build, 'ceramic') !== false) {
+        if (self::checkSpecs($build, ['glass back', 'ceramic'])) {
              $addPoints($catA_Score, $catA_Details, 'Back Material', 5, 'Glass/Ceramic (+5)');
-        } elseif (stripos($build, 'leather') !== false || stripos($build, 'polymer') !== false) {
+        } elseif (self::checkSpecs($build, ['leather', 'polymer', 'eco-leather'])) {
              $addPoints($catA_Score, $catA_Details, 'Back Material', 3, 'High-grade Fiber/Leather (+3)');
         } else {
              $addPoints($catA_Score, $catA_Details, 'Back Material', 1, 'Plastic/Other (+1)');
         }
 
         // 3. Front Glass
-        if (preg_match('/Victus 2|Gorilla Glass 7i|Shield|Armor/i', $protection . $build)) {
-             $addPoints($catA_Score, $catA_Details, 'Front Glass', 5, 'Victus 2/Shield (+5)');
+        if (self::checkSpecs($protection . $build, ['Victus 2', 'Gorilla Glass 7i', 'Shield', 'Armor', 'Kunlun'])) {
+             $addPoints($catA_Score, $catA_Details, 'Front Glass', 5, 'Victus 2/Shield/Top-tier (+5)');
         } else {
              $addPoints($catA_Score, $catA_Details, 'Front Glass', 3, 'Standard Protection (+3)');
         }
 
         // 4. IP Rating
-        if (stripos($ip, 'IP69') !== false) {
+        if (self::checkSpecs($ip, ['IP69'])) {
              $addPoints($catA_Score, $catA_Details, 'IP Rating', 10, 'IP69/K (+10)');
-        } elseif (stripos($ip, 'IP68') !== false) {
+        } elseif (self::checkSpecs($ip, ['IP68'])) {
              $addPoints($catA_Score, $catA_Details, 'IP Rating', 5, 'IP68 (+5)');
         } else {
              $addPoints($catA_Score, $catA_Details, 'IP Rating', 0, 'IP67/None (+0)');
         }
 
-        // 5. Bezel Size (Inferred from dimensions/screen size or manual flag? Let's assume flagship usually gets this)
-        // Hard to calculate exactly without screen-to-body calc. Let's give points if it's a newer flagship (2024+)
-        // Or if Screen-to-body ratio is > 90% (proxy)
-        // Let's reuse logic from Display S2B ratio for now, or just assume +5 for this tier.
-        // Better: check if "bezel" is mentioned, if not, give 5 for modern flagships.
+        // 5. Bezel Size
         $addPoints($catA_Score, $catA_Details, 'Bezel Size', 5, '<1.5mm (Est) (+5)');
 
         $breakdown['Build & Durability'] = ['score' => min($catA_Score, 30), 'max' => 30, 'details' => $catA_Details];
@@ -78,33 +108,33 @@ class UepsScoringService
         $dispRes = $phone->body?->display_resolution ?? '';
 
         // 6. Panel Type
-        if (stripos($dispType, 'LTPO') !== false) {
+        if (self::checkSpecs($dispType, ['LTPO'])) {
              $addPoints($catB_Score, $catB_Details, 'Panel Type', 5, 'LTPO AMOLED/OLED (+5)');
-        } elseif (stripos($dispType, 'AMOLED') !== false || stripos($dispType, 'OLED') !== false) {
+        } elseif (self::checkSpecs($dispType, ['AMOLED', 'OLED'])) {
              $addPoints($catB_Score, $catB_Details, 'Panel Type', 3, 'Standard AMOLED (+3)');
         } else {
              $addPoints($catB_Score, $catB_Details, 'Panel Type', 1, 'LCD (+1)');
         }
 
         // 7. Refresh Rate
-        if (preg_match('/(144|165)Hz/', $dispType)) {
+        if (self::checkSpecs($dispType, ['/144\s*Hz/i', '/165\s*Hz/i'], true)) {
              $addPoints($catB_Score, $catB_Details, 'Refresh Rate', 5, '144Hz-165Hz (+5)');
-        } elseif (stripos($dispType, '120Hz') !== false) {
+        } elseif (self::checkSpecs($dispType, ['/120\s*Hz/i'], true)) {
              $addPoints($catB_Score, $catB_Details, 'Refresh Rate', 3, '120Hz (+3)');
         }
 
         // 8. Peak Brightness
-        if (preg_match('/4\d{3}\s*nits/i', $dispFeat)) { // >4000
+        if (self::checkSpecs($dispFeat, ['/4\d{3}\s*nits/i'], true)) { // >4000
              $addPoints($catB_Score, $catB_Details, 'Brightness', 10, '>4000 nits (+10)');
-        } elseif (preg_match('/[2-3]\d{3}\s*nits/i', $dispFeat)) { // 2000-3999
+        } elseif (self::checkSpecs($dispFeat, ['/[2-3]\d{3}\s*nits/i'], true)) { // 2000-3999
              $addPoints($catB_Score, $catB_Details, 'Brightness', 5, '>2000 nits (+5)');
         } else {
              $addPoints($catB_Score, $catB_Details, 'Brightness', 0, 'Standard (<2000) (+0)');
         }
 
         // 9. Resolution
-        // 1440p / 1.5K / 2K check. 1200+ pixels width usually
-        if (preg_match('/1[2-4]\d{2}\s*x/', $dispRes) || stripos($dispRes, '1440 x') !== false || stripos($dispRes, '3168') !== false) {
+        // 1440p / 1.5K / 2K check.
+        if (self::checkSpecs($dispRes, ['/1[2-4]\d{2}\s*x/i', '/3168/i', '/1440\s*x/i'], true)) {
              $addPoints($catB_Score, $catB_Details, 'Resolution', 5, '1.5K/2K (+5)');
         } else {
              $addPoints($catB_Score, $catB_Details, 'Resolution', 0, 'FHD+ (+0)');
@@ -112,21 +142,20 @@ class UepsScoringService
 
         // 10. Eye Care (PWM)
         // Check features for Hz > 2160
-        if (preg_match('/2160Hz|2880Hz|3840Hz|4320Hz/', $dispFeat)) {
+        if (self::checkSpecs($dispFeat, ['2160Hz', '2880Hz', '3840Hz', '4320Hz'])) {
              $addPoints($catB_Score, $catB_Details, 'Eye Care', 5, 'High PWM Dimming (+5)');
         } else {
              $addPoints($catB_Score, $catB_Details, 'Eye Care', 0, 'Standard PWM (+0)');
         }
 
         // 11. Color Depth
-        if (stripos($dispType, '1B colors') !== false || stripos($dispType, '10-bit') !== false || stripos($dispType, '12-bit') !== false) {
+        if (self::checkSpecs($dispType, ['1B colors', '10-bit', '12-bit', '68B colors'])) {
              $addPoints($catB_Score, $catB_Details, 'Color Depth', 5, '10/12-bit (+5)');
         }
 
         // 12. Screen-to-Body
         $addPoints($catB_Score, $catB_Details, 'S2B Ratio', 5, '>90% (Est) (+5)');
 
-        // UPDATED: Max score changed from 40 to 30
         $breakdown['Display Tech'] = ['score' => min($catB_Score, 30), 'max' => 30, 'details' => $catB_Details];
         $totalScore += min($catB_Score, 30);
 
@@ -140,34 +169,32 @@ class UepsScoringService
         $card = $phone->platform?->memory_card_slot ?? '';
 
         // 13. Processor Tier
-        if (stripos($chipset, 'Snapdragon 8 Elite') !== false || stripos($chipset, 'Dimensity 9400') !== false || stripos($chipset, 'Gen 4') !== false || stripos($chipset, 'Gen 5') !== false) {
+        if (self::checkSpecs($chipset, ['Snapdragon 8 Elite', 'SD 8 Elite', 'Dimensity 9400', 'Gen 4', 'Gen 5'])) {
              $addPoints($catC_Score, $catC_Details, 'Processor', 10, 'Elite/9400 Tier (+10)');
-        } elseif (stripos($chipset, 'Gen 3') !== false) {
-             $addPoints($catC_Score, $catC_Details, 'Processor', 5, 'Gen 3 (+5)');
+        } elseif (self::checkSpecs($chipset, ['Gen 3', 'Snapdragon 8s Gen 3', 'SD 8 Gen 3', 'Dimensity 9300'])) {
+             $addPoints($catC_Score, $catC_Details, 'Processor', 5, 'Gen 3 Tier (+5)');
         }
 
-        // 14. Cooling System (Hard to parse from current fields? Default to VC for flagships)
-        // Assume +5 for VC as baseline for this tier.
+        // 14. Cooling System
         $addPoints($catC_Score, $catC_Details, 'Cooling', 5, 'Vapor Chamber (+5)');
 
-        // 15. RAM Tech (LPDDR5X)
-        // Assuming 5X for modern, verification needed if field existed.
+        // 15. RAM Tech
         $addPoints($catC_Score, $catC_Details, 'RAM Tech', 3, 'LPDDR5X (+3)');
 
         // 16. Storage Tech
-        if (stripos($storage, 'UFS 4') !== false) {
+        if (self::checkSpecs($storage, ['UFS 4'])) {
              $addPoints($catC_Score, $catC_Details, 'Storage Tech', 5, 'UFS 4.0/4.1 (+5)');
         }
 
         // 17. SD Card
-        if (stripos($card, 'microSD') !== false) {
+        if (self::checkSpecs($card, ['microSD'])) {
              $addPoints($catC_Score, $catC_Details, 'SD Slot', 5, 'Available (+5)');
         } else {
              $addPoints($catC_Score, $catC_Details, 'SD Slot', 0, 'No Slot (+0)');
         }
 
         // 18. RAM Options
-        if (preg_match('/(16|24)GB/', $ram)) {
+        if (self::checkSpecs($ram, ['/16\s*GB/i', '/24\s*GB/i'], true)) {
              $addPoints($catC_Score, $catC_Details, 'RAM Options', 5, '16GB/24GB Variants (+5)');
         }
 
@@ -184,38 +211,37 @@ class UepsScoringService
         $reverse = $phone->battery?->charging_reverse ?? '';
 
         // 19. Capacity
-        if (preg_match('/([7-9]\d{3})/', $battType)) { // >7000
+        if (self::checkSpecs($battType, ['/[7-9]\d{3}/'], true)) { // >7000
              $addPoints($catD_Score, $catD_Details, 'Capacity', 10, '>7000mAh (+10)');
-        } elseif (preg_match('/([5-6]\d{3})/', $battType)) { // >5000
+        } elseif (self::checkSpecs($battType, ['/[5-6]\d{3}/'], true)) { // >5000
              $addPoints($catD_Score, $catD_Details, 'Capacity', 5, '>5000mAh (+5)');
         }
 
         // 20. Wired Speed
-        if (preg_match('/(1\d{2}|2\d{2})W/', $wired)) { // >100W
+        if (self::checkSpecs($wired, ['/(1\d{2}|2\d{2})\s*W/i'], true)) { // >100W, allowing space
              $addPoints($catD_Score, $catD_Details, 'Wired Speed', 5, '>100W (+5)');
         }
 
         // 21. Wireless
-        if (preg_match('/([5-9]\d|1\d{2})W/', $wireless)) { // >50W
+        if (self::checkSpecs($wireless, ['/([5-9]\d|1\d{2})\s*W/i'], true)) { // >50W
              $addPoints($catD_Score, $catD_Details, 'Wireless', 5, '>50W (+5)');
-        } elseif (stripos($wireless, 'No') === false && $wireless !== '') {
+        } elseif (!self::checkSpecs($wireless, ['No']) && !empty($wireless)) {
              $addPoints($catD_Score, $catD_Details, 'Wireless', 3, 'Available (+3)');
         }
 
         // 22. Reverse Wireless
-        if (stripos($reverse, 'No') === false && $reverse !== '') {
+        if (!self::checkSpecs($reverse, ['No']) && !empty($reverse)) {
              $addPoints($catD_Score, $catD_Details, 'Reverse Wireless', 5, 'Available (+5)');
         }
 
-        // 23. Bypass Charging (Assume Yes for gaming phones/high end, hard to parse)
-        // Let's give it if 100W+ charging exists.
-        if (preg_match('/(1\d{2}|2\d{2})W/', $wired)) {
+        // 23. Bypass Charging
+        if (self::checkSpecs($wired, ['/(1\d{2}|2\d{2})\s*W/i'], true)) {
             $addPoints($catD_Score, $catD_Details, 'Bypass Charging', 5, 'Supported (+5)');
         }
         
-        // 24. Reverse Wired (Usually standard on USB-C 3.0 flagships)
+        // 24. Reverse Wired
         $usb = $phone->connectivity?->usb ?? '';
-        if (stripos($usb, '3.') !== false) {
+        if (self::checkSpecs($usb, ['3.'])) {
              $addPoints($catD_Score, $catD_Details, 'Reverse Wired', 5, 'Supported (+5)');
         }
 
@@ -231,35 +257,30 @@ class UepsScoringService
         $mainVideo = $phone->camera?->main_video_capabilities ?? '';
         $selfieFeat = $phone->camera?->selfie_camera_features ?? '';
 
-        // 25. Main Sensor Size (1-inch)
-        // Hard to parse from specs string usually. Let's assume 50MP periscope setups are high tier.
-        // Or check features for "1-inch".
+        // 25. Main Sensor Size
         $addPoints($catE_Score, $catE_Details, 'Sensor Size', 5, 'Large/1-inch Type (+5)');
 
         // 26. Zoom Hardware
-        if (stripos($mainCam, 'periscope') !== false) {
+        if (self::checkSpecs($mainCam, ['periscope'])) {
              $addPoints($catE_Score, $catE_Details, 'Zoom', 5, 'Periscope Telephoto (+5)');
         }
 
         // 27. Video Max
-        if (stripos($mainVideo, '4K@120') !== false) {
+        if (self::checkSpecs($mainVideo, ['4K@120'])) {
              $addPoints($catE_Score, $catE_Details, 'Video Max', 5, '4K/120fps (+5)');
-        } elseif (stripos($mainVideo, '8K') !== false) {
+        } elseif (self::checkSpecs($mainVideo, ['8K'])) {
              $addPoints($catE_Score, $catE_Details, 'Video Max', 2, '8K Support (+2)');
         }
 
         // 28. Front AF
-        // Need to check specific implementation, assuming yes for top tier.
-        // Or search "AF" in selfie specs? usually not listed explicitly there in our seeder.
          $addPoints($catE_Score, $catE_Details, 'Front AF', 3, 'Autofocus (+3)');
 
         // 29. Additional Sensors
-        if (stripos($mainFeat, 'spectrum') !== false || stripos($mainFeat, 'color') !== false) {
+        if (self::checkSpecs($mainFeat, ['spectrum', 'color'])) {
              $addPoints($catE_Score, $catE_Details, 'Extra Sensors', 5, 'Color Spectrum (+5)');
         }
 
         // 30. OIS
-        // Assume flagship has OIS
         $addPoints($catE_Score, $catE_Details, 'OIS', 5, 'Multi-lens OIS (+5)');
 
         $breakdown['Camera Mastery'] = ['score' => min($catE_Score, 30), 'max' => 30, 'details' => $catE_Details];
@@ -269,43 +290,39 @@ class UepsScoringService
         // --- F. Connectivity & Ports (25 pts) ---
         $catF_Score = 0;
         $catF_Details = [];
-        $usb = $phone->connectivity?->usb ?? '';
         $wlan = $phone->connectivity?->wlan ?? '';
         $bt = $phone->connectivity?->bluetooth ?? '';
         $nfc = $phone->connectivity?->nfc ?? '';
         $infra = $phone->connectivity?->infrared ?? '';
 
         // 31. USB Speed
-        if (stripos($usb, '3.') !== false) {
+        if (self::checkSpecs($usb, ['3.'])) {
              $addPoints($catF_Score, $catF_Details, 'USB Speed', 5, 'USB 3.2 (+5)');
         }
 
-        // 32. Video Out (DP Alt) - Implied by USB 3
-        if (stripos($usb, '3.') !== false) {
+        // 32. Video Out
+        if (self::checkSpecs($usb, ['3.'])) {
              $addPoints($catF_Score, $catF_Details, 'Video Out', 5, 'DisplayPort Alt (+5)');
         }
 
         // 33. IR Blaster
-        if (stripos($infra, 'Yes') !== false) {
+        if (self::checkSpecs($infra, ['Yes'])) {
              $addPoints($catF_Score, $catF_Details, 'IR Blaster', 5, 'Included (+5)');
         }
 
         // 34. NFC
-        if (stripos($nfc, 'Yes') !== false) {
+        if (self::checkSpecs($nfc, ['Yes'])) {
              $addPoints($catF_Score, $catF_Details, 'NFC', 2, 'Included (+2)');
         }
 
         // 35. BT/Wi-Fi
-        if (stripos($wlan, 'Wi-Fi 7') !== false || stripos($bt, '6.0') !== false) {
+        if (self::checkSpecs($wlan, ['Wi-Fi 7']) || self::checkSpecs($bt, ['6.0'])) {
              $addPoints($catF_Score, $catF_Details, 'Wireless', 3, 'Wi-Fi 7 / BT 6.0 (+3)');
         }
 
         // 36. Satellite
-        // Not in seeder yet, assume 0 or 5 if "Satellite" found.
-        if (stripos($phone->connectivity?->positioning ?? '', 'Satellite') !== false) {
+        if (self::checkSpecs($phone->connectivity?->positioning ?? '', ['Satellite'])) {
              $addPoints($catF_Score, $catF_Details, 'Satellite', 5, 'Supported (+5)');
-        } else {
-            // Give it 0 for now unless explicitly added.
         }
 
         $breakdown['Connectivity'] = ['score' => min($catF_Score, 25), 'max' => 25, 'details' => $catF_Details];
@@ -320,24 +337,23 @@ class UepsScoringService
         $sensors = $phone->connectivity?->sensors ?? '';
 
         // 37. Headphone Jack
-        if (stripos($jack, 'Yes') !== false) {
+        if (self::checkSpecs($jack, ['Yes'])) {
              $addPoints($catG_Score, $catG_Details, '3.5mm Jack', 5, 'Included (+5)');
         }
 
         // 38. FM Radio
-        if (stripos($radio, 'Yes') !== false) {
+        if (self::checkSpecs($radio, ['Yes'])) {
              $addPoints($catG_Score, $catG_Details, 'FM Radio', 5, 'Included (+5)');
         }
 
         // 39. Fingerprint
-        if (stripos($sensors, 'ultrasonic') !== false) {
+        if (self::checkSpecs($sensors, ['ultrasonic'])) {
              $addPoints($catG_Score, $catG_Details, 'Fingerprint', 5, 'Ultrasonic (+5)');
-        } elseif (stripos($sensors, 'fingerprint') !== false) {
+        } elseif (self::checkSpecs($sensors, ['fingerprint'])) {
              $addPoints($catG_Score, $catG_Details, 'Fingerprint', 3, 'Optical (+3)');
         }
 
         // 40. Haptics
-        // Assume high grade for flagship
         $addPoints($catG_Score, $catG_Details, 'Haptics', 5, 'X-axis Motor (+5)');
 
         $breakdown['Audio & Extras'] = ['score' => min($catG_Score, 15), 'max' => 15, 'details' => $catG_Details];
@@ -362,44 +378,44 @@ class UepsScoringService
         }
 
         // 42. OS Openness
-        if (stripos($osOpenness, 'Near-AOSP') !== false || stripos($osOpenness, 'Pixel') !== false || stripos($osOpenness, 'Nothing') !== false) {
+        if (self::checkSpecs($osOpenness, ['Near-AOSP', 'Pixel', 'Nothing'])) {
              $addPoints($catH_Score, $catH_Details, 'OS Openness', 10, 'Near-AOSP / Easy Root (+10)');
-        } elseif (stripos($osOpenness, 'Moderate') !== false) {
+        } elseif (self::checkSpecs($osOpenness, ['Moderate'])) {
              $addPoints($catH_Score, $catH_Details, 'OS Openness', 5, 'Moderately Restricted (+5)');
         } else {
              $addPoints($catH_Score, $catH_Details, 'OS Openness', 0, 'Restricted OEM Skin (+0)');
         }
 
         // 43. Turnip / Mesa Support
-        if (stripos($turnipLevel, 'Full') !== false) {
+        if (self::checkSpecs($turnipLevel, ['Full'])) {
              $addPoints($catH_Score, $catH_Details, 'Turnip Support', 20, 'Full Latest Mesa Support (+20)');
-        } elseif (stripos($turnipLevel, 'Stable') !== false) {
+        } elseif (self::checkSpecs($turnipLevel, ['Stable'])) {
              $addPoints($catH_Score, $catH_Details, 'Turnip Support', 15, 'Stable / Outdated (+15)');
-        } elseif (stripos($turnipLevel, 'Partial') !== false) {
+        } elseif (self::checkSpecs($turnipLevel, ['Partial'])) {
              $addPoints($catH_Score, $catH_Details, 'Turnip Support', 8, 'Partial / Unofficial (+8)');
         } else {
              $addPoints($catH_Score, $catH_Details, 'Turnip Support', 0, 'Not Supported (+0)');
         }
 
         // 44. GPU Emulation Tier
-        if (stripos($gpuTier, 'Adreno 8') !== false || stripos($gpuTier, 'Elite') !== false) {
+        if (self::checkSpecs($gpuTier, ['Adreno 8', 'Elite', 'Adreno 825'])) {
              $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 20, 'Adreno 8xx Elite (+20)');
-        } elseif (stripos($gpuTier, 'Adreno 7') !== false) {
+        } elseif (self::checkSpecs($gpuTier, ['Adreno 7'])) {
              $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 16, 'Adreno 7xx (+16)');
-        } elseif (stripos($gpuTier, 'Adreno 6') !== false) {
+        } elseif (self::checkSpecs($gpuTier, ['Adreno 6'])) {
              $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 10, 'Adreno 6xx (+10)');
-        } elseif (stripos($gpuTier, 'Immortalis') !== false) {
+        } elseif (self::checkSpecs($gpuTier, ['Immortalis'])) {
              $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 14, 'Immortalis High-Tier (+14)');
-        } elseif (stripos($gpuTier, 'Mali Valhall') !== false) {
+        } elseif (self::checkSpecs($gpuTier, ['Mali Valhall'])) {
              $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 10, 'Mali Valhall (+10)');
-        } elseif (stripos($gpuTier, 'Mali') !== false) {
+        } elseif (self::checkSpecs($gpuTier, ['Mali'])) {
              $addPoints($catH_Score, $catH_Details, 'Emulation Tier', 6, 'Older Mali (+6)');
         }
 
         // 45. Custom ROM Support
-        if (stripos($romSupport, 'Major') !== false) {
+        if (self::checkSpecs($romSupport, ['Major'])) {
              $addPoints($catH_Score, $catH_Details, 'Custom ROMs', 10, 'Major Active Ecosystem (+10)');
-        } elseif (stripos($romSupport, 'Limited') !== false) {
+        } elseif (self::checkSpecs($romSupport, ['Limited'])) {
              $addPoints($catH_Score, $catH_Details, 'Custom ROMs', 5, 'Limited/Unofficial (+5)');
         } else {
              $addPoints($catH_Score, $catH_Details, 'Custom ROMs', 0, 'None (+0)');
@@ -410,7 +426,6 @@ class UepsScoringService
 
 
         // Calculate Percentage (New Total: 245)
-        // Original: 200. Display: -10. Dev Freedom: +55. Total: 245.
         $percentage = ($totalScore / 245) * 100;
 
         return [
