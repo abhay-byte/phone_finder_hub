@@ -406,7 +406,7 @@
                                      </div>
                                      <div>
                                          <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Colors</dt>
-                                          <dd class="text-base text-gray-700 dark:text-gray-300 whitespace-nowrap">{{ $phone->body->colors }}</dd>
+                                          <dd class="text-base text-gray-700 dark:text-gray-300">{{ $phone->body->colors }}</dd>
                                      </div>
                                       @if($phone->body->ip_rating)
                                      <div>
