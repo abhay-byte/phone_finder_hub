@@ -17,7 +17,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             
             <!-- LEFT COLUMN: Visuals & Scores (Sticky) -->
-            <div class="lg:col-span-5 lg:sticky lg:top-24 space-y-6 h-fit order-2 lg:order-1">
+            <div class="lg:col-span-5 lg:sticky lg:top-24 space-y-6 h-fit lg:order-1">
                 
                 <!-- Phone Image Card -->
                 <div class="relative w-full aspect-[4/5] bg-white dark:bg-[#121212] rounded-[2.5rem] shadow-xl ring-1 ring-gray-900/5 dark:ring-white/10 flex items-center justify-center p-10 overflow-hidden group">
