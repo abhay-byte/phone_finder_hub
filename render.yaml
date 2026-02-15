@@ -8,7 +8,7 @@ services:
       - key: APP_KEY
         generateValue: true
       - key: APP_DEBUG
-        value: true
+        value: false
       - key: APP_ENV
         value: production
       - key: APP_URL
