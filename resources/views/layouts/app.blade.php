@@ -1,10 +1,41 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" 
       x-data="{ 
-          darkMode: localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          darkMode: localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
+          selectedPhones: JSON.parse(localStorage.getItem('selectedPhones') || '[]'),
+          mobileMenuOpen: false, 
+          
+          toggleSelection(phone) {
+              const exists = this.selectedPhones.some(p => p.id === phone.id);
+              if (exists) {
+                  this.selectedPhones = this.selectedPhones.filter(p => p.id !== phone.id);
+              } else {
+                  if (this.selectedPhones.length >= 4) {
+                      alert('You can only compare up to 4 devices.');
+                      return;
+                  }
+                  this.selectedPhones.push(phone);
+              }
+              this.saveSelection();
+          },
+
+          clearSelection() {
+              this.selectedPhones = [];
+              this.saveSelection();
+          },
+
+          saveSelection() {
+              localStorage.setItem('selectedPhones', JSON.stringify(this.selectedPhones));
+          },
+
+          compare() {
+              if (this.selectedPhones.length < 2) return;
+              const ids = this.selectedPhones.map(p => p.id).join(',');
+              window.location.href = '/compare?ids=' + ids;
+          }
       }" 
       :class="{ 'dark': darkMode }" 
-      x-init="$watch('darkMode', val => localStorage.setItem('theme', val ? 'dark' : 'light'));">
+      x-init="$watch('darkMode', val => localStorage.setItem('theme', val ? 'dark' : 'light')); $watch('selectedPhones', val => saveSelection());">
 <script>
     // Immediate theme check to prevent FOUC
     if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
