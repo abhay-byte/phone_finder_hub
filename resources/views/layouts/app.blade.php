@@ -76,10 +76,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 selection:bg-teal-500 selection:text-white"
-      hx-boost="true" 
-      hx-target="#main-content" 
-      hx-select="#main-content" 
-      hx-swap="outerHTML show:window:top"
       hx-indicator="#global-loader">
     <div class="min-h-screen flex flex-col">
         <!-- Navigation -->
@@ -162,19 +158,29 @@
             </div>
         </nav>
 
-        <!-- Page Content -->
-        <main class="flex-grow" id="main-content">
-            @yield('content')
-        </main>
+        <!-- SPA Content Wrapper -->
+        <div id="spa-content-wrapper" 
+             class="flex-grow flex flex-col"
+             hx-boost="true" 
+             hx-target="#main-content" 
+             hx-select="#main-content" 
+             hx-swap="outerHTML show:window:top"
+             hx-indicator="#global-loader">
+            
+            <!-- Page Content -->
+            <main class="flex-grow" id="main-content">
+                @yield('content')
+            </main>
 
-        <!-- Footer -->
-        <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <p class="text-center text-sm text-gray-500 dark:text-gray-400">
-                    &copy; {{ date('Y') }} PhoneFinderHub. Data-driven decisions.
-                </p>
-            </div>
-        </footer>
+            <!-- Footer -->
+            <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+                        &copy; {{ date('Y') }} PhoneFinderHub. Data-driven decisions.
+                    </p>
+                </div>
+            </footer>
+        </div>
     </div>
 
     <!-- Floating Comparison Bar -->
@@ -282,6 +288,17 @@
             });
 
             document.body.addEventListener('htmx:historyRestore', () => {
+                hideLoader();
+            });
+            
+            // Error handling to prevent stuck loader
+            document.body.addEventListener('htmx:responseError', () => {
+                console.error('HTMX Error: Response Error');
+                hideLoader();
+            });
+
+            document.body.addEventListener('htmx:sendError', () => {
+                console.error('HTMX Error: Send Error');
                 hideLoader();
             });
             
