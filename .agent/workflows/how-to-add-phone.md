@@ -15,10 +15,10 @@ Data is distributed across 7 tables. When adding a phone, you must create record
 | `phones` | Core Info | `name`, `brand`, `price`, `release_date`, `image_url` |
 | `spec_bodies` | Physical & Display | `dimensions`, `weight`, `build_material`, `display_type`, `display_size`, `display_resolution` |
 | `spec_platforms`| OS & Hardware | `os`, `chipset`, `cpu`, `gpu`, `ram`, `internal_storage` |
-| `spec_cameras` | Camera Details | `main_camera_specs`, `main_video_capabilities`, `selfie_camera_specs`, `main_camera_sensors`, `main_camera_ois` |
+| `spec_cameras` | Camera Details | `main_camera_specs`, `main_video_capabilities`, `selfie_camera_specs`, `main_camera_sensors`, `main_camera_apertures`, `main_camera_focal_lengths`, `main_camera_ois` |
 | `spec_connectivities` | Comms & Sensors | `network_bands` (Required), `wlan`, `bluetooth`, `nfc`, `infrared`, `sensors`, `loudspeaker`, `jack_3_5mm`, `sar_value`, `audio_quality` |
 | `spec_batteries` | Power | `battery_type`, `charging_wired`, `charging_wireless`, `charging_reverse`, `charging_specs_detailed` |
-| `benchmarks` | Performance Scores | `antutu_score`, `geekbench_single`, `geekbench_multi` |
+| `benchmarks` | Performance Scores | `antutu_score`, `geekbench_single`, `geekbench_multi`, `dmark_wild_life_extreme` |
 
 ## 2. Image Processing
 
@@ -81,6 +81,7 @@ $phone->platform()->updateOrCreate([], [
     'turnip_support_level' => 'Full', // Options: 'Full', 'Stable', 'Partial', 'None' (Snapdragon 8 Gen 1+ usually 'Full' or 'Stable')
     'gpu_emulation_tier' => 'Adreno 8xx Elite-class', // Options: 'Adreno 8xx...', 'Adreno 7xx...', 'Adreno 6xx...', 'Immortalis...', 'Mali Valhall...', 'Mali...'
     'custom_rom_support' => 'Major', // Options: 'Major', 'Limited', 'None' (Vivo/iQOO usually 'None' or 'Low')
+]);
 
 // Camera
 $phone->camera()->updateOrCreate([], [
@@ -130,4 +131,9 @@ $phone->benchmarks()->updateOrCreate([], [
     'geekbench_multi' => 11062, // v6
     'dmark_wild_life_extreme' => 7370,
 ]);
+
+// Important QA checks (do before final save)
+// 1) Camera completeness: main_camera_sensors, main_camera_apertures, main_camera_focal_lengths must be filled when data is available.
+// 2) Benchmark completeness: include dmark_wild_life_extreme when available.
+// 3) URL safety: keep amazon_url / flipkart_url under DB varchar limits (strip tracking params if too long).
 ```
