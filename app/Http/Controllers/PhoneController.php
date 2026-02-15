@@ -197,25 +197,15 @@ class PhoneController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(\App\Models\Phone $phone)
+    public function show($id)
     {
-        $phone->load(['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks']);
-        
-        // Lazy update UEPS score to ensure consistency
-        $ueps = \App\Services\UepsScoringService::calculate($phone);
-        if ($phone->ueps_score != $ueps['total_score']) {
-            $phone->ueps_score = (int) $ueps['total_score'];
-            $phone->saveQuietly();
-        }
-
-        // Lazy update FPI (Overall Score) to ensure consistency
-        $fpi = $phone->calculateFPI();
-        if (is_array($fpi) && $phone->overall_score != $fpi['total']) {
-            $phone->overall_score = (int) $fpi['total'];
-            $phone->saveQuietly();
-        }
-
-        return view('phones.show', compact('phone'));
+        // Check cache first to avoid DB query (Model Binding bypass)
+        return Cache::remember('phone_show_' . $id, 3600, function () use ($id) {
+            $phone = \App\Models\Phone::with(['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks'])
+                ->findOrFail($id);
+                
+            return view('phones.show', compact('phone'))->render();
+        });
     }
 
     /**

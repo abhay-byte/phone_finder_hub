@@ -89,17 +89,21 @@ class Phone extends Model
             return 0;
         }
 
-        // 1. Get Max Scores dynamically
-        $maxAntutu = Benchmark::max('antutu_score') ?: 4000000; // Fallback to 4M
-        $maxGeekbenchMulti = Benchmark::max('geekbench_multi') ?: 12000;
-        $maxGeekbenchSingle = Benchmark::max('geekbench_single') ?: 3500;
-        $max3DMark = Benchmark::max('dmark_wild_life_extreme') ?: 8000;
+        // 1. Get Max Scores dynamically (Cached for performance)
+        $maxScores = \Illuminate\Support\Facades\Cache::remember('benchmark_max_scores', 3600, function () {
+            return [
+                'antutu' => Benchmark::max('antutu_score') ?: 4000000,
+                'geekbench_multi' => Benchmark::max('geekbench_multi') ?: 12000,
+                'geekbench_single' => Benchmark::max('geekbench_single') ?: 3500,
+                '3dmark' => Benchmark::max('dmark_wild_life_extreme') ?: 8000,
+            ];
+        });
 
         // 2. Normalize Scores (0-100)
-        $normAntutu = ($this->benchmarks->antutu_score / $maxAntutu) * 100;
-        $normGeekbenchMulti = ($this->benchmarks->geekbench_multi / $maxGeekbenchMulti) * 100;
-        $normGeekbenchSingle = ($this->benchmarks->geekbench_single / $maxGeekbenchSingle) * 100;
-        $norm3DMark = ($this->benchmarks->dmark_wild_life_extreme / $max3DMark) * 100;
+        $normAntutu = ($this->benchmarks->antutu_score / $maxScores['antutu']) * 100;
+        $normGeekbenchMulti = ($this->benchmarks->geekbench_multi / $maxScores['geekbench_multi']) * 100;
+        $normGeekbenchSingle = ($this->benchmarks->geekbench_single / $maxScores['geekbench_single']) * 100;
+        $norm3DMark = ($this->benchmarks->dmark_wild_life_extreme / $maxScores['3dmark']) * 100;
 
         // 3. Apply Weights
         // AnTuTu (40%), GB Multi (25%), GB Single (15%), 3DMark (20%)
@@ -121,6 +125,24 @@ class Phone extends Model
             ],
             'max_possible' => 100 // Since we normalize to max in DB, the top phone will be 100
         ];
+    }
+
+    /**
+     * Recalculate and save all scores for this phone.
+     */
+    public function updateScores()
+    {
+        // Calculate UEPS
+        $ueps = \App\Services\UepsScoringService::calculate($this);
+        $this->ueps_score = $ueps['total_score'];
+
+        // Calculate FPI
+        $fpi = $this->calculateFPI();
+        if (is_array($fpi)) {
+            $this->overall_score = $fpi['total'];
+        }
+        
+        $this->saveQuietly();
     }
 
     public function getUepsDetailsAttribute()
