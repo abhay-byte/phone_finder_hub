@@ -168,13 +168,31 @@
                     <template x-for="section in specs" :key="section.title">
                         <div class="contents">
                             <!-- Section Title Row -->
-                            <div class="col-span-full bg-gray-100 dark:bg-[#121212] border-b border-gray-200 dark:border-white/10 py-3 px-6 mt-0 sticky left-0">
-                                <h4 class="text-xs font-black uppercase tracking-widest text-teal-600 dark:text-teal-400" x-text="section.title"></h4>
+                            <div class="col-span-full bg-gray-100 dark:bg-[#121212] border-b border-gray-200 dark:border-white/10 py-3 px-6 mt-0 sticky left-0 z-20"
+                                 :class="{ 'cursor-pointer hover:bg-gray-200 dark:hover:bg-white/5 transition-colors': section.title === 'UEPS Breakdown' }"
+                                 @click="section.title === 'UEPS Breakdown' ? showUeps = !showUeps : null">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="text-xs font-black uppercase tracking-widest text-teal-600 dark:text-teal-400" x-text="section.title"></h4>
+                                    <template x-if="section.title === 'UEPS Breakdown'">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider" x-text="showUeps ? 'Hide Breakdown' : 'Show Breakdown'"></span>
+                                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" 
+                                                 :class="{ 'rotate-180': showUeps }"
+                                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    </template>
+                                </div>
                             </div>
 
                             <!-- Data Rows -->
                             <template x-for="row in section.rows" :key="row.key">
-                                <div class="contents hover:bg-white dark:hover:bg-[#121212] transition-colors group">
+                                <div class="contents hover:bg-white dark:hover:bg-[#121212] transition-colors group"
+                                     x-show="section.title !== 'UEPS Breakdown' || showUeps"
+                                     x-transition:enter="transition ease-out duration-300"
+                                     x-transition:enter-start="opacity-0 -translate-y-2"
+                                     x-transition:enter-end="opacity-100 translate-y-0">
                                     
                                     <!-- Label Column -->
                                     <div class="sticky left-0 bg-gray-50 dark:bg-black group-hover:bg-white dark:group-hover:bg-[#121212] border-r border-b border-gray-200 dark:border-white/5 p-6 flex items-center z-30 transition-colors">
@@ -186,8 +204,61 @@
                                         <div class="border-b border-r border-gray-200 dark:border-white/5 p-6 flex items-center justify-center text-center relative group-hover:bg-gray-50/30 dark:group-hover:bg-white/[0.02] transition-colors">
                                             
                                             <!-- Standard Text -->
-                                            <template x-if="section.title !== 'Raw Benchmarks'">
+                                            <template x-if="section.title !== 'Raw Benchmarks' && section.title !== 'UEPS Breakdown'">
                                                 <span class="text-sm font-medium text-gray-700 dark:text-gray-200 leading-relaxed" x-html="getSpecValue(phone, row.key)"></span>
+                                            </template>
+
+                                            <!-- UEPS Breakdown -->
+                                            <template x-if="section.title === 'UEPS Breakdown'">
+                                                <div class="w-full text-left">
+                                                    <!-- Check if data exists -->
+                                                    <template x-if="getRawSpecValue(phone, row.key)">
+                                                        <div>
+                                                            <!-- Score Bar Row -->
+                                                            <div class="flex justify-between items-end mb-1">
+                                                                <span class="text-xs font-bold text-gray-500 dark:text-gray-400" 
+                                                                      x-text="getRawSpecValue(phone, row.key).score + '/' + getRawSpecValue(phone, row.key).max"></span>
+                                                                <template x-if="getRawSpecValue(phone, row.key).score === getRawSpecValue(phone, row.key).max">
+                                                                    <span class="text-[10px] text-teal-600 dark:text-teal-400 font-bold">Max</span>
+                                                                </template>
+                                                            </div>
+                                                            <div class="h-2 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden mb-2">
+                                                                <div class="h-full rounded-full transition-all duration-500"
+                                                                     :class="getRawSpecValue(phone, row.key).score/getRawSpecValue(phone, row.key).max > 0.8 ? 'bg-teal-500' : (getRawSpecValue(phone, row.key).score/getRawSpecValue(phone, row.key).max > 0.5 ? 'bg-teal-400/70' : 'bg-gray-400')"
+                                                                     :style="`width: ${(getRawSpecValue(phone, row.key).score / getRawSpecValue(phone, row.key).max) * 100}%`"></div>
+                                                            </div>
+                                                            
+                                                            <!-- Compact Details (Expandable) -->
+                                                            <div class="flex flex-wrap gap-1 mt-1" x-data="{ expanded: false }">
+                                                                <template x-for="detail in getPositiveDetails(phone, row.key).slice(0, expanded ? undefined : 2)" :key="detail.criterion">
+                                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5">
+                                                                        <span x-text="detail.criterion"></span>
+                                                                        <span class="ml-1 text-teal-600 dark:text-teal-400" x-text="`+${detail.points}`"></span>
+                                                                    </span>
+                                                                </template>
+                                                                
+                                                                <!-- Show More Button -->
+                                                                <template x-if="!expanded && getPositiveDetails(phone, row.key).length > 2">
+                                                                    <button @click="expanded = true" 
+                                                                            class="text-[10px] text-teal-600 dark:text-teal-400 font-bold hover:underline self-center bg-transparent border-0 p-0 cursor-pointer ml-1 transition-colors">
+                                                                        <span x-text="`+${getPositiveDetails(phone, row.key).length - 2} more`"></span>
+                                                                    </button>
+                                                                </template>
+
+                                                                <!-- Show Less Button -->
+                                                                <template x-if="expanded && getPositiveDetails(phone, row.key).length > 2">
+                                                                    <button @click="expanded = false" 
+                                                                            class="text-[10px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 self-center bg-transparent border-0 p-0 cursor-pointer ml-1 transition-colors">
+                                                                        Less
+                                                                    </button>
+                                                                </template>
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                    <template x-if="!getRawSpecValue(phone, row.key)">
+                                                        <span class="text-gray-400">-</span>
+                                                    </template>
+                                                </div>
                                             </template>
 
                                             <!-- Benchmarks Bars -->

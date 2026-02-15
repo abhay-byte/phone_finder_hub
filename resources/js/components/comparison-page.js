@@ -6,11 +6,24 @@ export default (initialPhones) => ({
     isLoading: false,
     currentSlot: null,
     isScrolled: false,
+    showUeps: false,
 
     specs: [
         {
             title: 'Top Metrics',
             rows: [] // Handled in header now
+        },
+        {
+            title: 'UEPS Breakdown',
+            rows: [
+                { key: 'ueps_details.breakdown.Display Tech', label: 'Display & Design' },
+                { key: 'ueps_details.breakdown.Processing & Memory', label: 'Performance' },
+                { key: 'ueps_details.breakdown.Camera Mastery', label: 'Camera' },
+                { key: 'ueps_details.breakdown.Power & Charging', label: 'Battery' },
+                { key: 'ueps_details.breakdown.Connectivity', label: 'Connectivity' },
+                { key: 'ueps_details.breakdown.Audio & Extras', label: 'Audio & Extras' },
+                { key: 'ueps_details.breakdown.Developer Freedom', label: 'Dev Freedom' }
+            ]
         },
         {
             title: 'Raw Benchmarks',
@@ -195,6 +208,16 @@ export default (initialPhones) => ({
         let val = key.split('.').reduce((obj, k) => obj && obj[k], phone);
         if (!val) return '<span class="text-gray-400">-</span>';
         return val.toString().replace(/\n/g, '<br>');
+    },
+
+    getRawSpecValue(phone, key) {
+        return key.split('.').reduce((obj, k) => obj && obj[k], phone);
+    },
+
+    getPositiveDetails(phone, key) {
+        const raw = this.getRawSpecValue(phone, key);
+        if (!raw || !raw.details) return [];
+        return raw.details.filter(d => d.points > 0);
     },
 
     formatPrice(price) {
