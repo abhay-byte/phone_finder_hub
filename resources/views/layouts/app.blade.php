@@ -210,5 +210,48 @@
     </div>
 
     @stack('scripts')
+    <!-- Global Loader (Below Navbar) -->
+    <div id="global-loader" class="fixed inset-0 top-16 z-40 bg-[#0a0a0a] flex items-center justify-center transition-opacity duration-500">
+        <div class="relative flex flex-col items-center">
+            <!-- Logo Pulse Animation -->
+            <div class="relative w-24 h-24 mb-4">
+                <div class="absolute inset-0 bg-teal-500/20 rounded-full blur-xl animate-pulse"></div>
+                <img src="{{ asset('assets/logo.png') }}" alt="Loading" class="w-full h-full object-contain relative z-10 animate-[bounce_2s_infinite]">
+            </div>
+            <!-- Loading Bar -->
+            <div class="w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
+                <div class="h-full bg-teal-500 w-1/3 animate-[loading_1.5s_ease-in-out_infinite]"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); width: 50%; }
+            100% { transform: translateX(200%); }
+        }
+        body.loading { overflow: hidden; }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loading');
+        });
+
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('global-loader');
+            if (loader) {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    loader.style.pointerEvents = 'none';
+                    document.body.classList.remove('loading');
+                    setTimeout(() => {
+                        loader.remove(); // Remove from DOM after fade out
+                    }, 500);
+                }, 500); // Minimum view time
+            }
+        });
+    </script>
 </body>
 </html>
