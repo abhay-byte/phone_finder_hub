@@ -49,7 +49,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Phone Finder') }}</title>
+    <title>@stack('title', config('app.name', 'PhoneFinderHub'))</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="@stack('title', config('app.name', 'PhoneFinderHub'))">
+    <meta property="og:description" content="@stack('description', 'Compare latest smartphones with detailed specifications, benchmarks, and features.')">
+    <meta property="og:image" content="{{ asset('assets/logo.png') }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url()->current() }}">
+    <meta property="twitter:title" content="@stack('title', config('app.name', 'PhoneFinderHub'))">
+    <meta property="twitter:description" content="@stack('description', 'Compare latest smartphones with detailed specifications, benchmarks, and features.')">
+    <meta property="twitter:image" content="{{ asset('assets/logo.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
