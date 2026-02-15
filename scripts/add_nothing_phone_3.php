@@ -11,8 +11,8 @@ $phone = Phone::firstOrCreate(
         'overall_score' => 0, // Will be calculated
         'release_date' => '2025-07-15',
         'image_url' => '/storage/phones/nothing-phone-3.png',
-        'amazon_url' => 'https://www.amazon.in/Nothing-Phone-Black-12GB-256GB/dp/B0F7R6V1LM?crid=15OVYC3WCXEX6&dib=eyJ2IjoiMSJ9.5UionNV6FwkFEnE_U5kNIOL5PfSNQro6s5Ifv8-W1PSdqYy2AK2zCciBgRgrXorw2calp87lApuoNIv_6yRHhlTum8xcY8DWpTTfYzjV4JhMVUOj_71LQeOAShmS5UceN8TcKOWsWLcZCpKFWmDIuYVRWUNtl3UETpY983AzD-xI0J6RG10d7lHg0o5cEb7TaZf8gg0HlAQxezljfyNA6F6H4WPvJ_4X50qQUGAuRug.mLGgGITlwhf0zL7GYhTZjNfTTIoWLa1WvMaK9H3HDNc&dib_tag=se&keywords=nothing+3&qid=1771130657&sprefix=nothing+%2Caps%2C342&sr=8-3',
-        'flipkart_url' => 'https://www.flipkart.com/nothing-phone-3-black-256-gb/p/itm0c32a18b0df8a?pid=MOBHCY4CDV4Z6CRT&lid=LSTMOBHCY4CDV4Z6CRTRACX4Y&marketplace=FLIPKART&q=nothing+3&store=tyy%2F4io&srno=s_1_1&otracker=search&otracker1=search&fm=Search&iid=b466b59f-988d-4956-bfe1-0d8951f3e26c.MOBHCY4CDV4Z6CRT.SEARCH&ppt=sp&ppn=sp&ssid=wrv1l1ok9x7fm5fk1771130676252&qH=b525ce510adbd3d0&ov_redirect=true',
+        'amazon_url' => 'https://www.amazon.in/Nothing-Phone-Black-12GB-256GB/dp/B0F7R6V1LM',
+        'flipkart_url' => 'https://www.flipkart.com/nothing-phone-3-black-256-gb/p/itm0c32a18b0df8a',
     ]
 );
 
@@ -117,8 +117,8 @@ $phone->benchmarks()->updateOrCreate([], [
 // Trigger score calculations
 $phone->refresh();
 $ueps = \App\Services\UepsScoringService::calculate($phone);
-$phone->ueps_score = $ueps['total_score'];
-$phone->overall_score = $phone->calculateFPI()['total'];
+$phone->ueps_score = (int) $ueps['total_score'];
+$phone->overall_score = (int) $phone->calculateFPI()['total'];
 $phone->save();
 
 echo "Added Nothing Phone (3) with ID: " . $phone->id . "\n";

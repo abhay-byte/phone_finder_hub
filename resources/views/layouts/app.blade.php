@@ -232,69 +232,86 @@
 
     @stack('scripts')
 
-    <!-- Global Loader (Below Navbar) -->
-    <div id="global-loader" class="fixed top-[64px] bottom-0 left-0 right-0 z-40 bg-[#0a0a0a] flex items-center justify-center transition-opacity duration-300 pointer-events-none opacity-0">
-        <div class="relative flex flex-col items-center">
-            <!-- Logo Pulse Animation -->
-            <div class="relative w-24 h-24 mb-4">
-                <div class="absolute inset-0 bg-teal-500/20 rounded-full blur-xl animate-pulse"></div>
-                <img src="{{ asset('assets/logo.png') }}" alt="Loading" class="w-full h-full object-contain relative z-10 animate-[bounce_2s_infinite]">
-            </div>
-            <!-- Loading Bar -->
-            <div class="w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
-                <div class="h-full bg-teal-500 w-1/3 animate-[loading_1.5s_ease-in-out_infinite]"></div>
-            </div>
-        </div>
+    <!-- Top Progress Bar -->
+    <div id="top-loader" class="fixed top-0 left-0 right-0 h-1 bg-transparent z-[100] pointer-events-none transition-opacity duration-300 opacity-0">
+        <div class="h-full bg-teal-500 transition-all duration-300 w-0" id="top-loader-bar"></div>
     </div>
 
+    <!-- Global Skeleton Styles -->
     <style>
-        @keyframes loading {
-            0% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); width: 50%; }
-            100% { transform: translateX(200%); }
+        .skeleton {
+            background-color: #e5e7eb; /* gray-200 */
         }
-        /* Loader visibility classes */
-        .show-loader {
-            opacity: 1 !important;
-            pointer-events: auto !important;
+        .dark .skeleton {
+            background-color: #1f2937; /* gray-800 */
+        }
+        .skeleton-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-shimmer::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0,
+                rgba(255, 255, 255, 0.2) 20%,
+                rgba(255, 255, 255, 0.5) 60%,
+                rgba(255, 255, 255, 0)
+            );
+            animation: shimmer 2s infinite;
+        }
+        .dark .skeleton-shimmer::after {
+            background-image: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0,
+                rgba(255, 255, 255, 0.05) 20%,
+                rgba(255, 255, 255, 0.1) 60%,
+                rgba(255, 255, 255, 0)
+            );
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        /* Top Loader Classes */
+        .loading .top-loader-active {
+            opacity: 1;
         }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const loader = document.getElementById('global-loader');
-            let loadTimeout;
-
-            function showLoader() {
-                if (loader) {
-                    loader.classList.add('show-loader');
-                    // Safety timeout: auto-hide after 5 seconds if something gets stuck
-                    clearTimeout(loadTimeout);
-                    loadTimeout = setTimeout(hideLoader, 5000);
-                }
-            }
-
-            function hideLoader() {
-                if (loader) {
-                    loader.classList.remove('show-loader');
-                    clearTimeout(loadTimeout);
-                }
-            }
-
-            // Initial Page Load
-            // (Optional: can show loader here if needed, but often better to let it render fast)
-             
-            // HTMX Events
+            const topLoader = document.getElementById('top-loader');
+            const topLoaderBar = document.getElementById('top-loader-bar');
+            
+            // HTMX Events for Top Loader
             document.body.addEventListener('htmx:configRequest', () => {
-                showLoader();
+                if(topLoader && topLoaderBar) {
+                    topLoader.classList.remove('opacity-0');
+                    topLoaderBar.style.width = '30%';
+                }
             });
 
-            document.body.addEventListener('htmx:afterOnLoad', (evt) => {
-                // Small delay to make it feel smooth
-                setTimeout(hideLoader, 300);
+            document.body.addEventListener('htmx:afterOnLoad', () => {
+                 if(topLoader && topLoaderBar) {
+                    topLoaderBar.style.width = '100%';
+                    setTimeout(() => {
+                        topLoader.classList.add('opacity-0');
+                        topLoaderBar.style.width = '0';
+                    }, 300);
+                }
 
-                // Update Navbar Active States manually since Nav isn't swapped
-                const path = new URL(evt.detail.xhr.responseURL).pathname;
+                // Update Navbar Active States
+                const path = new URL(window.location.href).pathname;
                 
                 // Desktop
                 document.querySelectorAll('#desktop-menu .nav-link').forEach(link => {
@@ -324,26 +341,11 @@
                     }
                 });
             });
-
-            document.body.addEventListener('htmx:historyRestore', () => {
-                hideLoader();
-            });
-            
-            // Error handling to prevent stuck loader
-            document.body.addEventListener('htmx:responseError', () => {
-                console.error('HTMX Error: Response Error');
-                hideLoader();
-            });
-
-            document.body.addEventListener('htmx:sendError', () => {
-                console.error('HTMX Error: Send Error');
-                hideLoader();
-            });
             
             // Handle browser back/forward cache
             window.addEventListener('pageshow', (event) => {
-                if (event.persisted) {
-                    hideLoader();
+                if (event.persisted && topLoader) {
+                    topLoader.classList.add('opacity-0');
                 }
             });
         });

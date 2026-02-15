@@ -5,7 +5,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Header -->
-        <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in-up">
+        <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
                 <h1 class="text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Smartphone Rankings</h1>
                 <p class="text-slate-600 dark:text-slate-400 font-medium">
@@ -14,7 +14,7 @@
             </div>
             
             <!-- Tabs -->
-            <div id="tabs-container" class="bg-gray-200 dark:bg-white/10 p-1.5 rounded-xl inline-flex font-bold text-sm animate-fade-in-up delay-200">
+            <div id="tabs-container" class="bg-gray-200 dark:bg-white/10 p-1.5 rounded-xl inline-flex font-bold text-sm">
                 <a href="{{ route('phones.rankings', ['tab' => 'ueps']) }}" 
                    class="px-4 py-2 rounded-lg transition-all {{ $tab == 'ueps' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                    UEPS 4.5
@@ -31,13 +31,13 @@
         </div>
 
         <!-- Data Table -->
-        <div id="rankings-table-container" class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden animate-fade-in-up delay-300">
+        <div id="rankings-table-container" class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                             @if($tab == 'ueps')
                                 <!-- UEPS Info Card -->
-                                <th colspan="5" class="p-0 border-b-0 animate-fade-in-up delay-500">
+                                <th colspan="5" class="p-0 border-b-0">
                                     <div class="m-5 p-6 bg-zinc-900 dark:bg-white/5 rounded-2xl text-white relative overflow-hidden group hover:scale-[1.01] transition-transform duration-500">
                                         <div class="absolute top-0 right-0 w-64 h-64 bg-teal-500/20 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-teal-500/30 transition-colors duration-500"></div>
                                         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -59,7 +59,7 @@
                                 </th>
                             @elseif($tab == 'performance')
                                 <!-- FPI Info Card -->
-                                <th colspan="8" class="p-0 border-b-0 animate-fade-in-up delay-500">
+                                <th colspan="8" class="p-0 border-b-0">
                                     <div class="m-5 p-6 bg-zinc-900 dark:bg-white/5 rounded-2xl text-white relative overflow-hidden group hover:scale-[1.01] transition-transform duration-500">
                                          <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-blue-500/30 transition-colors duration-500"></div>
                                         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -167,7 +167,7 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-white/5 text-sm font-medium text-gray-700 dark:text-gray-300">
                         @foreach($phones as $index => $phone)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-[#181818] transition-colors duration-300 group animate-stagger-fade-in" style="animation-delay: {{ ($index * 50) + 300 }}ms;">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-[#181818] transition-colors duration-300 group">
                             <td class="px-6 py-5 sticky left-0 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] text-center font-bold text-gray-400 transition-colors duration-300">
                                 #{{ $ranks[$phone->id] ?? '-' }}
                             </td>

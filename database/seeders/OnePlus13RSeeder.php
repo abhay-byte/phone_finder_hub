@@ -15,6 +15,7 @@ class OnePlus13RSeeder extends Seeder
                 'brand' => 'OnePlus',
                 'model_variant' => '12GB/256GB', // Base variant
                 'price' => 39999,
+                'overall_score' => 90, // Estimated score to satisfy NOT NULL constraint
                 'release_date' => '2025-01-14',
                 'announced_date' => '2025-01-07',
                 'image_url' => 'http://127.0.0.1:8000/assets/oneplus-13r_nobg.png',

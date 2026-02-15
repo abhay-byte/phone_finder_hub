@@ -116,8 +116,8 @@ $phone->benchmarks()->updateOrCreate([], [
 // Trigger calculations
 $phone->refresh();
 $ueps = \App\Services\UepsScoringService::calculate($phone);
-$phone->ueps_score = $ueps['total_score'];
-$phone->overall_score = $phone->calculateFPI()['total'];
+$phone->ueps_score = (int) $ueps['total_score'];
+$phone->overall_score = (int) $phone->calculateFPI()['total'];
 $phone->save();
 
 echo "Added Nothing Phone (3a) with ID: " . $phone->id . "\n";

@@ -1,19 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<style>
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fadeInUp {
-        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        opacity: 0;
-    }
-    .delay-100 { animation-delay: 100ms; }
-    .delay-200 { animation-delay: 200ms; }
-    .delay-300 { animation-delay: 300ms; }
-</style>
+
 
 <div class="bg-gray-50 dark:bg-black min-h-screen">
     
@@ -21,10 +9,10 @@
     <div class="relative bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-white/5">
         <div class="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-900/[0.04] bg-[bottom_1px_center] dark:bg-[bottom_1px_center]" style="mask-image: linear-gradient(to bottom, transparent, black);"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative z-30 text-center">
-            <h1 class="text-5xl md:text-7xl font-black tracking-tight text-slate-900 dark:text-white mb-6 animate-fadeInUp">
+            <h1 class="text-5xl md:text-7xl font-black tracking-tight text-slate-900 dark:text-white mb-6">
                 Find Value, <span class="text-teal-600 dark:text-teal-500">Not Hype.</span>
             </h1>
-            <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed animate-fadeInUp delay-100">
+            <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
                 The only data-driven smartphone ranking based on real-world performance per rupee. No bias, just math.
             </p>
             
@@ -158,7 +146,7 @@
             </div>
 
             <!-- Quick Filters (Chips) -->
-            <div class="flex flex-wrap justify-center gap-3 mt-8 animate-fadeInUp delay-300">
+            <div class="flex flex-wrap justify-center gap-3 mt-8">
                 <button class="px-5 py-2 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 text-sm font-semibold hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors border border-teal-200 dark:border-teal-800 flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
                     Top Value
@@ -207,6 +195,28 @@
             },
 
             fetchGrid(newSort, pushState = true) {
+                // cache key includes sort and version to force refresh
+                const cacheKey = `phone_grid_${newSort}_v11`;
+                const cacheTTL = 5 * 60 * 1000; // 5 minutes
+
+                // Try to get from cache
+                const cached = localStorage.getItem(cacheKey);
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    const now = new Date().getTime();
+                    if (now - data.timestamp < cacheTTL) {
+                        // valid cache
+                        if (pushState) {
+                            const url = new URL(window.location);
+                            url.searchParams.set('sort', newSort);
+                            window.history.pushState({sort: newSort}, '', url);
+                        }
+                        this.$refs.gridContainer.innerHTML = data.html;
+                        this.isLoading = false;
+                        return;
+                    }
+                }
+
                 this.isLoading = true;
 
                 // Update URL without refresh if requested
@@ -227,10 +237,11 @@
                      // Check if response is valid (not a full page)
                      if (!html.includes('<!DOCTYPE html>')) {
                         this.$refs.gridContainer.innerHTML = html;
-                        // Re-initialize Alpine on new content if needed (though x-data is on parent, directives inside might need it)
-                        // Actually, plain innerHTML replacement doesn't re-init Alpine components inside the grid (like buttons).
-                        // But the grid items are mostly static links. If they have alpine directives, we need a plugin or manual walk.
-                        // However, standard links are fine.
+                        // Save to cache
+                        localStorage.setItem(cacheKey, JSON.stringify({
+                            timestamp: new Date().getTime(),
+                            html: html
+                        }));
                      } else {
                          // Fallback to full reload if we somehow got a full page
                          window.location.reload();
@@ -292,20 +303,40 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative" x-ref="gridContainer">
-            <!-- Loading Overlay -->
+            <!-- Skeleton Loading Grid -->
             <div x-show="isLoading" 
-                 x-transition:enter="transition ease-out duration-200"
-                 x-transition:enter-start="opacity-0"
-                 x-transition:enter-end="opacity-100"
-                 x-transition:leave="transition ease-in duration-150"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0"
-                 class="absolute inset-0 bg-white/50 dark:bg-black/50 backdrop-blur-sm z-50 rounded-[2rem] flex items-center justify-center"
+                 class="absolute inset-0 bg-gray-50 dark:bg-black z-40 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                  style="display: none;">
-                <svg class="animate-spin h-10 w-10 text-teal-600 dark:text-teal-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                
+                @for ($i = 0; $i < 8; $i++)
+                <div class="bg-white dark:bg-[#1A1A1A] rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-white/5 h-full flex flex-col">
+                    <!-- Image Skeleton -->
+                    <div class="relative mb-6">
+                        <div class="h-64 w-full bg-gray-100 dark:bg-white/5 rounded-2xl skeleton skeleton-shimmer"></div>
+                        <div class="absolute -bottom-3 right-4 h-6 w-20 rounded-full bg-gray-200 dark:bg-white/10 skeleton skeleton-shimmer"></div>
+                    </div>
+
+                    <!-- Content Skeleton -->
+                    <div class="flex-1 flex flex-col">
+                        <div class="mb-4 space-y-2">
+                            <div class="h-4 w-20 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer"></div>
+                            <div class="h-7 w-3/4 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer"></div>
+                        </div>
+
+                        <div class="space-y-3 mb-6 flex-1">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="h-10 bg-gray-100 dark:bg-white/5 rounded-lg skeleton skeleton-shimmer"></div>
+                                <div class="h-10 bg-gray-100 dark:bg-white/5 rounded-lg skeleton skeleton-shimmer"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
+                            <div class="h-6 w-24 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer"></div>
+                            <div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-white/10 skeleton skeleton-shimmer"></div>
+                        </div>
+                    </div>
+                </div>
+                @endfor
             </div>
 
             @include('phones.partials.grid')

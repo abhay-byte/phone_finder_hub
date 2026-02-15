@@ -3,11 +3,13 @@
     
     <!-- Value Badge -->
     <div class="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
+        @if($phone->value_score)
         <div class="bg-black/5 dark:bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-black/5 dark:border-white/5">
             <span class="text-xs font-bold text-slate-900 dark:text-white">
                 {{ $phone->value_score }} <span class="text-slate-500 font-normal">pts/₹1k</span>
             </span>
         </div>
+        @endif
     </div>
 
     <!-- Image -->

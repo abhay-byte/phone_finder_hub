@@ -5,14 +5,7 @@
     display: none !important;
 }
 
-@layer base {
-
-    *,
-    ::before,
-    ::after {
-        @apply transition-colors duration-300 ease-in-out;
-    }
-}
+@layer base {}
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -22,32 +15,6 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-
-    --animate-fade-in-up: fade-in-up 0.6s ease-out both;
-    --animate-stagger-fade-in: fade-in 0.5s ease-out both;
-    --animate-fade-in: fade-in 0.5s ease-out both;
-
-    @keyframes fade-in-up {
-        0% {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes fade-in {
-        0% {
-            opacity: 0;
-        }
-
-        100% {
-            opacity: 1;
-        }
-    }
 }
 
 /* Custom Utilities for Staggered Delays */

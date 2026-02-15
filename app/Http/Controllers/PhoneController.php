@@ -67,13 +67,13 @@ class PhoneController extends Controller
         }
 
         $phones = \App\Models\Phone::with('platform')
-            ->where('name', 'like', "%{$query}%")
-            ->orWhere('brand_name', 'like', "%{$query}%")
+            ->where('name', 'ilike', "%{$query}%")
+            ->orWhere('brand', 'ilike', "%{$query}%")
             ->orWhereHas('platform', function ($q) use ($query) {
-                $q->where('chipset', 'like', "%{$query}%")
-                  ->orWhere('cpu', 'like', "%{$query}%");
+                $q->where('chipset', 'ilike', "%{$query}%")
+                  ->orWhere('cpu', 'ilike', "%{$query}%");
             })
-            ->select('id', 'name', 'brand_name', 'image_url', 'price', 'value_score') // Added price, value_score
+            ->select('id', 'name', 'brand', 'image_url', 'price', 'overall_score')
             ->limit(10)
             ->get();
 
@@ -81,9 +81,9 @@ class PhoneController extends Controller
             return [
                 'id' => $phone->id,
                 'name' => $phone->name,
-                'brand' => $phone->brand_name,
+                'brand' => $phone->brand,
                 'image' => $phone->image_url,
-                'full_name' => $phone->brand_name . ' ' . $phone->name,
+                'full_name' => $phone->brand . ' ' . $phone->name,
                 'price' => $phone->price,
                 'value_score' => $phone->value_score ?? 'N/A',
                 'chipset' => $phone->platform->chipset ?? null, // Optional: return chipset for UI
@@ -182,14 +182,14 @@ class PhoneController extends Controller
         // Lazy update UEPS score to ensure consistency
         $ueps = \App\Services\UepsScoringService::calculate($phone);
         if ($phone->ueps_score != $ueps['total_score']) {
-            $phone->ueps_score = $ueps['total_score'];
+            $phone->ueps_score = (int) $ueps['total_score'];
             $phone->saveQuietly();
         }
 
         // Lazy update FPI (Overall Score) to ensure consistency
         $fpi = $phone->calculateFPI();
         if (is_array($fpi) && $phone->overall_score != $fpi['total']) {
-            $phone->overall_score = $fpi['total'];
+            $phone->overall_score = (int) $fpi['total'];
             $phone->saveQuietly();
         }
 
