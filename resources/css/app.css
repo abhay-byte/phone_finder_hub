@@ -33,3 +33,37 @@
 .animate-delay-500 {
     animation-delay: 500ms;
 }
+
+/* Loading Spinner Animation */
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+.spinner-circle circle {
+    animation: rotate 1.5s ease-in-out infinite;
+    transform-origin: center;
+}
+
+/* Page Loading Overlay Styles */
+#page-loading-overlay {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
