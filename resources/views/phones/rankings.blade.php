@@ -191,23 +191,23 @@
                                 <th class="p-5 text-right">UEPS</th>
                             @elseif($tab == 'gaming')
                                 <!-- Gaming Columns -->
-                                <th class="p-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right whitespace-nowrap">
+                                <th class="px-2 py-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right whitespace-nowrap">
                                     <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'gpx_score', 'direction' => $sort == 'gpx_score' && $direction == 'desc' ? 'asc' : 'desc']) }}" class="flex items-center justify-end gap-1 text-red-600 dark:text-red-400">
-                                        GPX Rating
+                                        GPX
                                         @if($sort == 'gpx_score')
                                             <span>{{ $direction == 'asc' ? '↑' : '↓' }}</span>
                                         @endif
                                     </a>
                                 </th>
-                                <th class="p-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="SoC & GPU Power (70)">SoC</th>
-                                <th class="p-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Sustained Performance (50)">Sustained</th>
-                                <th class="p-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Gaming Display (40)">Display</th>
-                                <th class="p-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Memory & Storage (25)">Mem</th>
-                                <th class="p-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Battery & Charging (25)">Batt</th>
-                                <th class="p-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Gaming Software (30)">Soft</th>
-                                <th class="p-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Connectivity (20)">Conn</th>
-                                <th class="p-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Audio & Haptics (10)">Audio</th>
-                                <th class="p-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Emulator & Developer (30)">Emulator</th>
+                                <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="SoC & GPU Power (70)">SoC</th>
+                                <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Sustained Performance (50)">Susp</th>
+                                <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Gaming Display (40)">Disp</th>
+                                <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Memory & Storage (25)">Mem</th>
+                                <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Battery & Charging (25)">Batt</th>
+                                <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Gaming Software (30)">Soft</th>
+                                <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Connectivity (20)">Conn</th>
+                                <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Audio & Haptics (10)">Aud</th>
+                                <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap" title="Emulator & Developer (30)">Emu</th>
                             @endif
                         </tr>
                     </thead>
@@ -274,37 +274,36 @@
                                     {{ $phone->ueps_score ?? '-' }}
                                 </td>
                             @elseif($tab == 'gaming')
-                                <td class="px-6 py-5 text-right">
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 font-bold text-base border border-red-200 dark:border-red-800 transition-colors duration-300">
+                                <td class="px-2 py-3 text-right">
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 font-bold text-sm border border-red-200 dark:border-red-800 transition-colors duration-300">
                                         {{ $phone->gpx_score }}
-                                        <span class="text-[10px] opacity-60 font-normal">/300</span>
                                     </span>
                                 </td>
-                                <td class="px-6 py-5 text-right font-mono text-gray-600 dark:text-gray-400">
+                                <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
                                     {{ $phone->gpx_details['soc_gpu'] ?? '-' }}
                                 </td>
-                                <td class="px-6 py-5 text-right font-mono text-gray-600 dark:text-gray-400">
+                                <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
                                     {{ $phone->gpx_details['sustained'] ?? '-' }}
                                 </td>
-                                <td class="px-6 py-5 text-right font-mono text-gray-600 dark:text-gray-400">
+                                <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
                                     {{ $phone->gpx_details['display'] ?? '-' }}
                                 </td>
-                                <td class="px-6 py-5 text-right font-mono text-gray-600 dark:text-gray-400">
+                                <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
                                     {{ $phone->gpx_details['memory'] ?? '-' }}
                                 </td>
-                                <td class="px-6 py-5 text-right font-mono text-gray-600 dark:text-gray-400">
+                                <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
                                     {{ $phone->gpx_details['battery'] ?? '-' }}
                                 </td>
-                                <td class="px-6 py-5 text-right font-mono text-gray-600 dark:text-gray-400">
+                                <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
                                     {{ $phone->gpx_details['software'] ?? '-' }}
                                 </td>
-                                <td class="px-6 py-5 text-right font-mono text-gray-600 dark:text-gray-400">
+                                <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
                                     {{ $phone->gpx_details['connectivity'] ?? '-' }}
                                 </td>
-                                <td class="px-6 py-5 text-right font-mono text-gray-600 dark:text-gray-400">
+                                <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
                                     {{ $phone->gpx_details['audio'] ?? '-' }}
                                 </td>
-                                 <td class="px-6 py-5 text-right font-mono text-gray-600 dark:text-gray-400">
+                                 <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
                                     {{ $phone->gpx_details['emulator'] ?? '-' }}
                                 </td>
                             @endif

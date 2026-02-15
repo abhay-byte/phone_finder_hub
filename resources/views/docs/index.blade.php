@@ -71,6 +71,27 @@
             </div>
         </a>
 
+        <!-- GPX Card -->
+        <a href="{{ route('docs.gpx') }}" class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-200">
+            <div>
+                 <span class="rounded-lg inline-flex p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 ring-4 ring-white dark:ring-gray-800">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </span>
+            </div>
+            <div class="mt-4">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                    <span class="absolute inset-0" aria-hidden="true"></span>
+                    GPX-300 Gaming Index
+                </h3>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    The new standard for competitive mobile gaming. 300-point system covering thermals, emulation, and input latency.
+                </p>
+            </div>
+        </a>
+
         <!-- Value Calculation Card -->
         <div class="group relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
             <div>

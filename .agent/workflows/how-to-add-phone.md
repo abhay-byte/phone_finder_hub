@@ -130,6 +130,7 @@ $phone->benchmarks()->updateOrCreate([], [
     'geekbench_single' => 0, 
     'geekbench_multi' => 11062, // v6
     'dmark_wild_life_extreme' => 7370,
+    'dmark_wild_life_stress_stability' => 98, // REQUIRED for GPX-300: Stability % (0-100) from 3DMark Wild Life Extreme Stress Test
 ]);
 
 // Important QA checks (do before final save)

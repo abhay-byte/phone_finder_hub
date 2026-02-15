@@ -112,12 +112,14 @@ class PhoneController extends Controller
         $rankExpression = match($tab) {
             'performance' => 'overall_score',
             'value' => 'value_score',
+            'gaming' => 'gpx_score',
             default => 'ueps_score',
         };
 
         $defaultSort = match($tab) {
             'performance' => 'overall_score',
             'value' => 'value_score',
+            'gaming' => 'gpx_score',
             default => 'ueps_score',
         };
 
@@ -156,6 +158,9 @@ class PhoneController extends Controller
             } elseif ($sort == 'value_score') {
                  $query->select('phones.*', 'rankings_table.computed_rank')
                        ->orderBy('value_score', $direction);
+            } elseif ($sort == 'gpx_score') {
+                 $query->select('phones.*', 'rankings_table.computed_rank')
+                       ->orderBy('gpx_score', $direction);
             } elseif ($sort == 'price_per_ueps') {
                  $query->select('phones.*', 'rankings_table.computed_rank')
                        ->orderByRaw('price / ueps_score ' . $direction);
@@ -243,5 +248,10 @@ class PhoneController extends Controller
     public function fpiMethodology()
     {
         return view('fpi.methodology');
+    }
+
+    public function gpxMethodology()
+    {
+        return view('docs.gpx');
     }
 }

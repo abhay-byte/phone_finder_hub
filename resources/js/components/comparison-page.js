@@ -26,6 +26,16 @@ export default (initialPhones) => ({
             ]
         },
         {
+            title: 'Gaming (GPX-300)',
+            rows: [
+                { key: 'gpx_score', label: 'Overall Score' },
+                { key: 'gpx_details.soc_gpu', label: 'SoC & GPU' },
+                { key: 'gpx_details.sustained', label: 'Stability' },
+                { key: 'gpx_details.display', label: 'Gaming Display' },
+                { key: 'gpx_details.emulator', label: 'Emulation' }
+            ]
+        },
+        {
             title: 'Raw Benchmarks',
             rows: [
                 { key: 'benchmarks.antutu_score', label: 'AnTuTu v11' },
