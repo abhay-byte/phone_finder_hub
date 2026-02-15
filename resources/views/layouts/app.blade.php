@@ -70,7 +70,7 @@
                     <div class="flex">
                         <div class="shrink-0 flex items-center">
                             <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                                <div class="relative w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md">
+                                <div class="relative w-10 h-10 flex items-center justify-center bg-white dark:bg-black rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md">
                                     <img src="{{ asset('assets/logo.png') }}" alt="PhoneFinderHub Logo" class="w-8 h-8 object-contain relative z-10">
                                 </div>
                                 <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 group-hover:to-indigo-500 transition-all duration-300 hidden sm:block">
