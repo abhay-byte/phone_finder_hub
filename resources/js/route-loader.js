@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 z-index: 9999;
                 opacity: 0;
                 pointer-events: none;
-                transition: opacity 0.3s ease;
+                transition: opacity 0.2s ease;
             `;
             
             document.body.appendChild(overlay);
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             overlay.style.opacity = '0';
             setTimeout(() => {
                 overlay.style.pointerEvents = 'none';
-            }, 300);
+            }, 200);
         }
     };
 
@@ -103,9 +103,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // 3. Update Body Class (for layout differences)
             document.body.className = doc.body.className;
 
+            // Preserve the loading overlay before body swap
+            const loadingOverlay = document.getElementById('page-loading-overlay');
+
             // 4. Swap Body Content
             document.body.innerHTML = doc.body.innerHTML;
             document.title = doc.title;
+
+            // Re-append loading overlay after body swap
+            if (loadingOverlay) {
+                document.body.appendChild(loadingOverlay);
+            }
 
             // Scroll to top after content is loaded
             window.scrollTo(0, 0);
@@ -115,8 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.Alpine.initTree(document.body);
             }
 
-            // 6. Execute Scripts
+            // 6. Execute Scripts and Styles
             executeScripts(document.body);
+            executeStyles(document.body);
 
             // 7. Lazy load images
             lazyLoadImages();
@@ -126,19 +135,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.history.pushState({}, '', url);
             }
 
-            // 9. End Transition (Fade In quickly)
+            // 9. End Transition - show content immediately
+            document.body.style.opacity = '1';
+            document.body.style.transition = '';
+            
+            // Hide overlay after content is visible
             requestAnimationFrame(() => {
-                document.body.style.opacity = '1';
                 hideLoadingOverlay();
-                setTimeout(() => {
-                    document.body.style.transition = '';
-                }, 150);
             });
 
         } catch (error) {
             console.error('Global Navigation Error:', error);
             hideLoadingOverlay();
-            window.location.href = url; // Robust fallback to full reload
+            // Show a brief error message to user
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #ef4444;
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                z-index: 10000;
+                font-size: 0.875rem;
+            `;
+            errorDiv.textContent = 'Navigation failed, reloading...';
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                window.location.href = url; // Robust fallback to full reload
+            }, 1000);
         }
     };
 
@@ -149,6 +177,16 @@ document.addEventListener('DOMContentLoaded', () => {
             Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
             newScript.appendChild(document.createTextNode(oldScript.innerHTML));
             oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+    };
+
+    const executeStyles = (element) => {
+        const styles = element.querySelectorAll('style');
+        styles.forEach(oldStyle => {
+            const newStyle = document.createElement('style');
+            Array.from(oldStyle.attributes).forEach(attr => newStyle.setAttribute(attr.name, attr.value));
+            newStyle.appendChild(document.createTextNode(oldStyle.innerHTML));
+            oldStyle.parentNode.replaceChild(newStyle, oldStyle);
         });
     };
 
@@ -185,23 +223,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const link = e.target.closest('a');
         if (!link) return;
 
+        const href = link.getAttribute('href');
+        if (!href) return;
+
         // Ignore external links, anchors, or special targets
         if (link.target === '_blank' ||
             link.hasAttribute('download') ||
-            link.getAttribute('href').startsWith('#') ||
-            link.getAttribute('href').startsWith('javascript:')) {
+            href.startsWith('#') ||
+            href.startsWith('javascript:') ||
+            href.startsWith('mailto:') ||
+            href.startsWith('tel:')) {
             return;
         }
 
-        const href = link.href;
         // Ensure same origin
-        if (new URL(href).origin !== window.location.origin) return;
+        try {
+            const url = new URL(href, window.location.origin);
+            if (url.origin !== window.location.origin) return;
+            
+            // Check if it's a "data-no-ajax" link (escape hatch)
+            if (link.hasAttribute('data-no-ajax')) return;
 
-        // Check if it's a "data-no-ajax" link (escape hatch)
-        if (link.hasAttribute('data-no-ajax')) return;
-
-        e.preventDefault();
-        handleGlobalNavigation(href, true);
+            e.preventDefault();
+            handleGlobalNavigation(url.href, true);
+        } catch (err) {
+            // If URL parsing fails, let it navigate normally
+            console.warn('Failed to parse URL:', href, err);
+            return;
+        }
     });
 
     // Handle History (Back/Forward)

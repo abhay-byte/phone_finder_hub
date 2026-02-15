@@ -40,6 +40,67 @@ class UepsScoringService
         return false;
     }
 
+     private static function scoreSocTier(string $chipset): array
+     {
+          if (empty($chipset)) {
+               return ['score' => 0, 'tier' => 'Unknown SoC'];
+          }
+
+          $normalized = preg_replace('/[^a-z0-9]+/', '', strtolower($chipset));
+
+          $socTiers = [
+               [
+                    'score' => 25,
+                    'tier' => 'Ultra Flagship (Gen-Next)',
+                    'patterns' => ['snapdragon8elitegen5', 'sd8elitegen5', 'dimensity9500', 'd9500', 'applea20pro', 'applea20', 'exynos2600'],
+               ],
+               [
+                    'score' => 20,
+                    'tier' => 'Top Flagship',
+                    'patterns' => ['snapdragon8elite', 'sd8elite', '8elite', 'dimensity9400plus', 'd9400plus', 'dimensity9400', 'd9400', 'applea19pro', 'applea19', 'tensorg5'],
+               ],
+               [
+                    'score' => 20,
+                    'tier' => 'Previous-Gen Flagship+',
+                    'patterns' => ['snapdragon8gen4', 'sd8gen4', 'snapdragon8gen3', 'sd8gen3', 'dimensity9300plus', 'd9300plus', 'dimensity9300', 'd9300', 'applea18pro', 'applea18', 'exynos2500', 'exynos2400'],
+               ],
+               [
+                    'score' => 17,
+                    'tier' => 'Strong Flagship',
+                    'patterns' => ['snapdragon8sgen4', 'sd8sgen4', 'snapdragon8sgen3', 'sd8sgen3', 'snapdragon8gen2', 'sd8gen2', 'dimensity9200plus', 'd9200plus', 'dimensity9200', 'd9200', 'applea17pro', 'exynos2200', 'tensorg4'],
+               ],
+               [
+                    'score' => 14,
+                    'tier' => 'Upper Midrange',
+                    'patterns' => ['snapdragon8plusgen1', 'sd8plusgen1', 'snapdragon8gen1', 'sd8gen1', 'snapdragon7plusgen3', 'sd7plusgen3', 'snapdragon7plusgen2', 'sd7plusgen2', 'dimensity8400', 'd8400', 'dimensity8300', 'd8300', 'dimensity8200', 'd8200', 'exynos1480', 'tensorg3'],
+               ],
+               [
+                    'score' => 10,
+                    'tier' => 'Midrange',
+                    'patterns' => ['snapdragon7gen3', 'sd7gen3', 'snapdragon7sgen3', 'sd7sgen3', 'snapdragon7gen1', 'sd7gen1', 'dimensity7300', 'd7300', 'dimensity7200', 'd7200', 'dimensity7050', 'd7050', 'dimensity7020', 'd7020', 'exynos1380', 'exynos1330'],
+               ],
+               [
+                    'score' => 7,
+                    'tier' => 'Entry / Lower Midrange',
+                    'patterns' => ['snapdragon6gen1', 'sd6gen1', 'snapdragon6gen3', 'sd6gen3', 'snapdragon695', 'snapdragon680', 'dimensity6100', 'd6100', 'dimensity6080', 'd6080', 'dimensity6020', 'd6020', 'heliog99', 'heliog95'],
+               ],
+          ];
+
+          foreach ($socTiers as $tier) {
+               foreach ($tier['patterns'] as $pattern) {
+                    if (str_contains($normalized, $pattern)) {
+                         return ['score' => $tier['score'], 'tier' => $tier['tier']];
+                    }
+               }
+          }
+
+          if (str_contains($normalized, 'snapdragon8') || str_contains($normalized, 'dimensity9') || str_contains($normalized, 'applea1')) {
+               return ['score' => 12, 'tier' => 'Unmapped Flagship-Class SoC'];
+          }
+
+          return ['score' => 6, 'tier' => 'Unmapped SoC'];
+     }
+
     public static function calculate(Phone $phone)
     {
         $breakdown = [];
@@ -160,7 +221,7 @@ class UepsScoringService
         $totalScore += min($catB_Score, 30);
 
 
-        // --- C. Processing & Memory (30 pts) ---
+        // --- C. Processing & Memory (40 pts) ---
         $catC_Score = 0;
         $catC_Details = [];
         $chipset = $phone->platform?->chipset ?? '';
@@ -169,17 +230,26 @@ class UepsScoringService
         $card = $phone->platform?->memory_card_slot ?? '';
 
         // 13. Processor Tier
-        if (self::checkSpecs($chipset, ['Snapdragon 8 Elite', 'SD 8 Elite', 'Dimensity 9400', 'Gen 4', 'Gen 5'])) {
-             $addPoints($catC_Score, $catC_Details, 'Processor', 10, 'Elite/9400 Tier (+10)');
-        } elseif (self::checkSpecs($chipset, ['Gen 3', 'Snapdragon 8s Gen 3', 'SD 8 Gen 3', 'Dimensity 9300'])) {
-             $addPoints($catC_Score, $catC_Details, 'Processor', 5, 'Gen 3 Tier (+5)');
-        }
+        $socScore = self::scoreSocTier($chipset);
+        $addPoints(
+            $catC_Score,
+            $catC_Details,
+            'Processor',
+            $socScore['score'],
+            $socScore['tier'] . ' (' . $chipset . ') (+' . $socScore['score'] . ')'
+        );
 
         // 14. Cooling System
         $addPoints($catC_Score, $catC_Details, 'Cooling', 5, 'Vapor Chamber (+5)');
 
         // 15. RAM Tech
-        $addPoints($catC_Score, $catC_Details, 'RAM Tech', 3, 'LPDDR5X (+3)');
+        if (self::checkSpecs($ram . ' ' . $storage, ['LPDDR6', 'LPDDR5X Ultra', 'LPDDR5T'])) {
+             $addPoints($catC_Score, $catC_Details, 'RAM Tech', 5, 'LPDDR6 / LPDDR5X Ultra (+5)');
+        } elseif (self::checkSpecs($ram . ' ' . $storage, ['LPDDR5X'])) {
+             $addPoints($catC_Score, $catC_Details, 'RAM Tech', 3, 'LPDDR5X (+3)');
+        } else {
+             $addPoints($catC_Score, $catC_Details, 'RAM Tech', 0, 'RAM tech not specified (+0)');
+        }
 
         // 16. Storage Tech
         if (self::checkSpecs($storage, ['UFS 4'])) {
@@ -198,8 +268,8 @@ class UepsScoringService
              $addPoints($catC_Score, $catC_Details, 'RAM Options', 5, '16GB/24GB Variants (+5)');
         }
 
-        $breakdown['Processing & Memory'] = ['score' => min($catC_Score, 30), 'max' => 30, 'details' => $catC_Details];
-        $totalScore += min($catC_Score, 30);
+     $breakdown['Processing & Memory'] = ['score' => min($catC_Score, 40), 'max' => 40, 'details' => $catC_Details];
+     $totalScore += min($catC_Score, 40);
 
 
         // --- D. Power & Charging (30 pts) ---
@@ -425,12 +495,12 @@ class UepsScoringService
         $totalScore += min($catH_Score, 55);
 
 
-        // Calculate Percentage (New Total: 245)
-        $percentage = ($totalScore / 245) * 100;
+     // Calculate Percentage (New Total: 255)
+     $percentage = ($totalScore / 255) * 100;
 
         return [
             'total_score' => $totalScore,
-            'max_score' => 245,
+            'max_score' => 255,
             'percentage' => round($percentage, 1),
             'breakdown' => $breakdown
         ];

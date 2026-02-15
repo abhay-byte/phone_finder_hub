@@ -1,8 +1,8 @@
 # Ultra-Extensive Phone Scoring System (UEPS-45)
 
-This is an advanced, enthusiast-level scoring system designed for the 2026 flagship landscape. It evaluates **40 distinct criteria** across 7 categories.
+This is an advanced, enthusiast-level scoring system designed for the 2026 flagship landscape. It evaluates **40 distinct criteria** across 8 categories.
 
-**Total Possible Score: 245 Points**
+**Total Possible Score: 255 Points**
 
 ## 1. Categories & Criteria
 
@@ -22,8 +22,11 @@ This is an advanced, enthusiast-level scoring system designed for the 2026 flags
 11. **Color Depth**: 10-bit or 12-bit support (+5).
 12. **Screen-to-Body Ratio**: >90% (+5).
 
-### C. Processing & Memory (30 pts)
-13. **Processor Tier**: Snapdragon 8 Elite / Dimensity 9400 (+10).
+### C. Processing & Memory (40 pts)
+13. **Processor Tier**: Uses an extensive SoC ranking table (max +25), including strict ordering like:
+    - Snapdragon 8 Elite Gen 5 > Snapdragon 8 Elite > Snapdragon 8 Gen 4/Gen 3 > Snapdragon 8 Gen 2.
+    - Dimensity 9500 > Dimensity 9400+ > Dimensity 9400 > Dimensity 9300+ > Dimensity 9300 > Dimensity 9200+ > Dimensity 9200.
+    - Also includes Apple A-series, Tensor, and Exynos flagship-to-midrange tiers.
 14. **Cooling System**: Large Vapor Chamber (+5), Active Inbuilt Fan (+10).
 15. **RAM Tech**: LPDDR5X (+3), LPDDR5X Ultra/LPDDR6 (+5).
 16. **Storage Tech**: UFS 4.0/4.1 (+5).
@@ -94,5 +97,5 @@ This is an advanced, enthusiast-level scoring system designed for the 2026 flags
 *   None (+0)
 
 ## 2. Example: OnePlus 15
-*   **Total Score**: 173 / 245 (70.6%)
+*   **Total Score**: 173 / 255 (67.8%)
 *   **Rating**: Enthusiast Grade

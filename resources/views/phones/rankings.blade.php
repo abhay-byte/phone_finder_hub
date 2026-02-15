@@ -47,7 +47,7 @@
                                                     <h3 class="text-xl font-bold text-white">What is UEPS 4.5?</h3>
                                                 </div>
                                                 <p class="text-slate-300 text-sm max-w-xl">
-                                                    The <strong>Ultra-Extensive Phone Scoring System (UEPS-45)</strong> evaluates devices on a 245-point scale across 40+ touchpoints, including real-world build quality, display efficiency, sustained performance, and camera versatility.
+                                                    The <strong>Ultra-Extensive Phone Scoring System (UEPS-45)</strong> evaluates devices on a 255-point scale across 40+ touchpoints, including real-world build quality, display efficiency, sustained performance, and camera versatility.
                                                 </p>
                                             </div>
                                             <a href="{{ route('ueps.methodology') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all">
@@ -190,7 +190,7 @@
                                 <td class="px-6 py-5 text-right">
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 font-bold border border-teal-100 dark:border-teal-800 transition-colors duration-300">
                                         {{ $phone->ueps_score ?? '-' }}
-                                        <span class="text-[10px] opacity-60 font-normal">/245</span>
+                                        <span class="text-[10px] opacity-60 font-normal">/255</span>
                                     </span>
                                 </td>
                                 <td class="px-6 py-5 text-right font-mono text-gray-500">

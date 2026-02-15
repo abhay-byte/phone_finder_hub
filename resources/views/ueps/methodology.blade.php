@@ -13,7 +13,7 @@
                 Ultra-Extensive Phone Scoring System (UEPS-45)
             </h1>
             <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                A comprehensive 245-point system designed to evaluate smartphones based on real-world usage, covering every aspect from build quality to connectivity and developer freedom.
+                A comprehensive 255-point system designed to evaluate smartphones based on real-world usage, covering every aspect from build quality to connectivity and developer freedom.
             </p>
         </div>
 
@@ -30,7 +30,7 @@
                 <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Display Tech</div>
             </div>
             <div class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
-                <div class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-teal-500 transition-colors">30</div>
+                <div class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-teal-500 transition-colors">40</div>
                 <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
                 <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Processing</div>
             </div>
@@ -121,25 +121,34 @@
              <!-- Section C -->
             <section class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
                 <div class="p-8 border-b border-slate-100 dark:border-white/5">
-                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">C. Processing & Memory (30 Points)</h2>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">C. Processing & Memory (40 Points)</h2>
                 </div>
                 <div class="p-8 space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                          <div>
                             <h3 class="font-bold text-slate-900 dark:text-white mb-2">Processor Tier</h3>
                             <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                                <li class="flex justify-between"><span>Latest Flagship (e.g., 8 Elite)</span> <span class="font-mono text-teal-600 font-bold">+10</span></li>
-                                <li class="flex justify-between"><span>Previous Gen Flagship (e.g., 8 Gen 3)</span> <span class="font-mono text-teal-600 font-bold">+5</span></li>
+                                <li class="flex justify-between"><span>8 Elite Gen 5 / Dimensity 9500 tier</span> <span class="font-mono text-teal-600 font-bold">+25</span></li>
+                                <li class="flex justify-between"><span>8 Elite / Dimensity 9400(+) tier</span> <span class="font-mono text-teal-600 font-bold">+20</span></li>
+                                <li class="flex justify-between"><span>8 Gen 4/3 / Dimensity 9300(+) tier</span> <span class="font-mono text-teal-600 font-bold">+20</span></li>
+                                <li class="flex justify-between"><span>8 Gen 2 / 8s Gen 3 tier</span> <span class="font-mono text-teal-600 font-bold">+17</span></li>
                             </ul>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900 dark:text-white mb-2">Storage & RAM</h3>
+                            <h3 class="font-bold text-slate-900 dark:text-white mb-2">Storage, RAM & Expansion</h3>
                             <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                 <li class="flex justify-between"><span>UFS 4.0</span> <span class="font-mono text-teal-600 font-bold">+5</span></li>
                                 <li class="flex justify-between"><span>16GB/24GB RAM Option</span> <span class="font-mono text-teal-600 font-bold">+5</span></li>
                                 <li class="flex justify-between"><span>SD Card Slot</span> <span class="font-mono text-teal-600 font-bold">+5</span></li>
                             </ul>
                         </div>
+                    </div>
+                    <div class="rounded-2xl border border-slate-200 dark:border-white/10 p-5 bg-slate-50 dark:bg-white/5">
+                        <h4 class="font-bold text-slate-900 dark:text-white mb-2">Extended SoC Mapping (examples)</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                            The live engine uses a broader SoC table across Snapdragon, Dimensity, Apple A-series, Tensor, and Exynos tiers. Priority is strictly ordered,
+                            e.g. Snapdragon 8 Elite Gen 5 &gt; 8 Elite &gt; 8 Gen 3 &gt; 8 Gen 2 and Dimensity 9500 &gt; 9400+ &gt; 9400 &gt; 9300+ &gt; 9300.
+                        </p>
                     </div>
                 </div>
             </section>
@@ -157,7 +166,7 @@
                             <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                 <li class="flex justify-between"><span>Bootloader Unlockable</span> <span class="font-mono text-teal-600 font-bold">+10</span></li>
                                 <li class="flex justify-between"><span>Major Custom ROM Support</span> <span class="font-mono text-teal-600 font-bold">+10</span></li>
-                                <li class="flex justify-between"><span>Near-AOSP / Easy Root</span> <span class="font-mono text-teal-600 font-bold">+5</span></li>
+                                <li class="flex justify-between"><span>Near-AOSP / Easy Root</span> <span class="font-mono text-teal-600 font-bold">+10</span></li>
                             </ul>
                         </div>
                         <div>
@@ -165,7 +174,7 @@
                             <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                 <li class="flex justify-between"><span>Adreno 8xx Elite-class + Turnip</span> <span class="font-mono text-teal-600 font-bold">+20</span></li>
                                 <li class="flex justify-between"><span>Adreno 7xx/6xx + Turnip</span> <span class="font-mono text-teal-600 font-bold">+15/10</span></li>
-                                <li class="flex justify-between"><span>Mali / Immortalis</span> <span class="font-mono text-slate-400">0</span></li>
+                                <li class="flex justify-between"><span>Mali / Immortalis</span> <span class="font-mono text-teal-600 font-bold">+14 / +10 / +6</span></li>
                             </ul>
                         </div>
                     </div>
