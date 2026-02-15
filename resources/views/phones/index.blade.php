@@ -3,7 +3,7 @@
 @section('content')
 
 
-<div class="bg-gray-50 dark:bg-black min-h-screen">
+<div class="bg-gray-50 dark:bg-black min-h-screen animate-fadeInUp">
     
     <!-- Hero Section -->
     <div class="relative bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-white/5">

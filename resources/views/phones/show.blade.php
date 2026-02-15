@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="bg-gray-50 dark:bg-[#0a0a0a] min-h-screen pt-14 pb-12 font-sans text-gray-900 dark:text-gray-100 selection:bg-teal-500 selection:text-white">
+<div class="bg-gray-50 dark:bg-[#0a0a0a] min-h-screen pt-14 pb-12 font-sans text-gray-900 dark:text-gray-100 selection:bg-teal-500 selection:text-white animate-fadeInUp">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Breadcrumb -->

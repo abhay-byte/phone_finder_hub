@@ -108,7 +108,13 @@ class PhoneController extends Controller
         $tab = $request->input('tab', 'ueps'); // Default tab
         $page = $request->input('page', 1);
         
-        // Define default sort based on tab if not provided
+        // Define ranking metric based on tab
+        $rankExpression = match($tab) {
+            'performance' => 'overall_score',
+            'value' => 'value_score',
+            default => 'ueps_score',
+        };
+
         $defaultSort = match($tab) {
             'performance' => 'overall_score',
             'value' => 'value_score',
@@ -119,71 +125,77 @@ class PhoneController extends Controller
         $direction = $request->input('direction', 'desc');
 
         // Cache key includes all query parameters
-        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}";
+        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_html";
 
-        $result = Cache::remember($cacheKey, 300, function() use ($tab, $sort, $direction) {
-            // Pre-calculate ranks based on the tab's primary metric
-            $rankMetric = match($tab) {
-                'performance' => 'overall_score',
-                'value' => 'value_score',
-                default => 'ueps_score',
-            };
+        $queryParams = $request->query();
 
-            // Fetch all phones ordered by the metric to determine rank
-            // For Value Score, we need to order by the calculated value
-            if ($rankMetric === 'value_score') {
-                 $rankedPhones = \App\Models\Phone::select('id', 'price', 'overall_score')
-                    ->get()
-                    ->sortByDesc(function ($phone) {
-                        return $phone->value_score; // Use accessor
-                    });
-            } else {
-                 $rankedPhones = \App\Models\Phone::select('id', $rankMetric)
-                    ->orderBy($rankMetric, 'desc')
-                    ->get();
-            }
+        $html = Cache::remember($cacheKey, 300, function() use ($tab, $sort, $direction, $rankExpression, $page, $queryParams) {
+            
+            // Subquery to calculate Rank for ALL phones based on the Tab's metric
+            $rankingSubquery = \App\Models\Phone::query()
+                ->select('id')
+                ->selectRaw("RANK() OVER (ORDER BY {$rankExpression} DESC) as computed_rank");
 
-            // Map Phone ID => Rank
-            $ranks = [];
-            $currentRank = 1;
-            foreach ($rankedPhones as $phone) {
-                $ranks[$phone->id] = $currentRank++;
-            }
+            $query = \App\Models\Phone::query()
+                ->joinSub($rankingSubquery, 'rankings_table', function ($join) {
+                    $join->on('phones.id', '=', 'rankings_table.id');
+                });
 
-            $query = \App\Models\Phone::query();
-
-            // Join benchmarks table if sorting by benchmark fields to allow ordering
+            // Join benchmarks table if sorting by benchmark fields
             if (in_array($sort, ['antutu_score', 'geekbench_multi', 'geekbench_single', 'dmark_wild_life_extreme', 'battery_endurance_hours'])) {
                  $query->with(['benchmarks', 'battery', 'body'])
                        ->leftJoin('benchmarks', 'phones.id', '=', 'benchmarks.phone_id')
-                       ->select('phones.*') // Select phones.* to avoid id conflicts
+                       ->select('phones.*', 'rankings_table.computed_rank') // Select phones.* explicitly
                        ->orderBy('benchmarks.' . $sort, $direction);
             } elseif ($sort == 'price') {
-                $query->orderBy('price', $direction);
+                $query->select('phones.*', 'rankings_table.computed_rank')
+                      ->orderBy('price', $direction);
             } elseif ($sort == 'ueps_score') {
-                $query->orderBy('ueps_score', $direction);
-            } elseif ($sort == 'value_score') { // Sort purely by the accessor logic if needed, but DB sort is harder for calculated attributes without raw SQL
-                 // For value_score sort, we need raw SQL since it's calculated
-                 if ($sort == 'value_score') {
-                    $query->orderByRaw('overall_score / price ' . $direction);
-                 }
+                $query->select('phones.*', 'rankings_table.computed_rank')
+                      ->orderBy('ueps_score', $direction);
+            } elseif ($sort == 'value_score') {
+                 $query->select('phones.*', 'rankings_table.computed_rank')
+                       ->orderBy('value_score', $direction);
             } elseif ($sort == 'price_per_ueps') {
-                 $query->orderByRaw('price / ueps_score ' . $direction);
+                 $query->select('phones.*', 'rankings_table.computed_rank')
+                       ->orderByRaw('price / ueps_score ' . $direction);
             } elseif ($sort == 'price_per_fpi') {
-                 $query->orderByRaw('price / overall_score ' . $direction);
+                 $query->select('phones.*', 'rankings_table.computed_rank')
+                       ->orderByRaw('price / overall_score ' . $direction);
             } else {
-                $query->orderBy('overall_score', $direction); // Default fallthrough to FPI/Overall
+                // Default sort (usually matches the tab metric)
+                $query->select('phones.*', 'rankings_table.computed_rank')
+                      ->orderBy('overall_score', $direction);
             }
 
-            $phones = $query->paginate(50)->withQueryString();
+            // Optimization: Manual pagination to avoid slow "count(*)" on complex subquery
+            // Since we are showing all phones, a simple Phone::count() is sufficient and instant.
+            $perPage = 50;
+            $total = \App\Models\Phone::count();
+            
+            $items = $query->skip(($page - 1) * $perPage)
+                           ->take($perPage)
+                           ->get();
 
-            return ['phones' => $phones, 'ranks' => $ranks];
+            $phones = new \Illuminate\Pagination\LengthAwarePaginator(
+                $items, 
+                $total, 
+                $perPage, 
+                $page, 
+                [
+                    'path' => \Illuminate\Support\Facades\Request::url(),
+                    'query' => $queryParams,
+                ]
+            );
+
+            // Extract ranks for the view compatibility
+            // The view likely expects $ranks[$id] = rank
+            $ranks = $phones->pluck('computed_rank', 'id')->toArray();
+
+            return view('phones.rankings', compact('phones', 'sort', 'direction', 'tab', 'ranks'))->render();
         });
 
-        $phones = $result['phones'];
-        $ranks = $result['ranks'];
-
-        return view('phones.rankings', compact('phones', 'sort', 'direction', 'tab', 'ranks'));
+        return response($html);
     }
 
     /**

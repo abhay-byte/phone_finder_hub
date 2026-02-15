@@ -21,7 +21,9 @@ class Phone extends Model
         'flipkart_url',
         'flipkart_price',
         'announced_date',
+        'announced_date',
         'ueps_score',
+        'value_score',
     ];
 
     protected $casts = [
@@ -30,6 +32,7 @@ class Phone extends Model
         'announced_date' => 'date',
         'overall_score' => 'decimal:1',
         'ueps_score' => 'decimal:1',
+        'value_score' => 'decimal:2',
     ];
 
     protected $appends = [
@@ -142,6 +145,13 @@ class Phone extends Model
             $this->overall_score = $fpi['total'];
         }
         
+        // Calculate Value Score (Persisted)
+        if ($this->price > 0 && $this->overall_score > 0) {
+            $this->value_score = round(($this->overall_score / $this->price) * 10000, 2);
+        } else {
+            $this->value_score = 0;
+        }
+
         $this->saveQuietly();
     }
 

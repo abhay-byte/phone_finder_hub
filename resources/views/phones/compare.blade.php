@@ -3,7 +3,7 @@
 @section('title', 'Compare Phones')
 
 @section('content')
-<div class="bg-white dark:bg-black min-h-screen pb-20 pt-24 selection:bg-teal-500 selection:text-white font-sans" 
+<div class="bg-white dark:bg-black min-h-screen pb-20 pt-24 selection:bg-teal-500 selection:text-white font-sans animate-fadeInUp" 
      x-data='comparisonPage(@json($phones, JSON_HEX_APOS))'>
 
     <!-- Main Container for Header & Search -->
