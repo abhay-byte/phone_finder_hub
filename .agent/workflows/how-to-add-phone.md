@@ -24,14 +24,6 @@ Data is distributed across 7 tables. When adding a phone, you must create record
 
 Phone images should have a transparent background and be stored in `storage/app/public/phones/`.
 
-**Helper Script**:
-Use the provided Python script (which uses `rembg`) to download, remove background (AI-powered), and save the image.
-
-```bash
-# Usage: .venv/bin/python scripts/process_image_rembg.py <URL> <OUTPUT_PATH>
-.venv/bin/python scripts/process_image_rembg.py "https://example.com/phone.jpg" "storage/app/public/phones/oneplus-15.png"
-```
-
 ## 3. Populating Data (Tinker Method)
 
 The most efficient way to add a single phone is using `php artisan tinker`.
