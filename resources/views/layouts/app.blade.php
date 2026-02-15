@@ -75,7 +75,12 @@
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 selection:bg-teal-500 selection:text-white">
+<body class="font-sans antialiased bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 selection:bg-teal-500 selection:text-white"
+      hx-boost="true" 
+      hx-target="#main-content" 
+      hx-select="#main-content" 
+      hx-swap="outerHTML show:window:top"
+      hx-indicator="#global-loader">
     <div class="min-h-screen flex flex-col">
         <!-- Navigation -->
         <nav x-data="{ mobileMenuOpen: false }" class="bg-white/80 dark:bg-black/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-white/5">
@@ -209,9 +214,13 @@
         </div>
     </div>
 
+    <!-- HTMX for SPA Navigation -->
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+
     @stack('scripts')
+
     <!-- Global Loader (Below Navbar) -->
-    <div id="global-loader" class="fixed inset-0 top-16 z-40 bg-[#0a0a0a] flex items-center justify-center transition-opacity duration-500">
+    <div id="global-loader" class="fixed inset-0 top-16 z-40 bg-[#0a0a0a] flex items-center justify-center transition-opacity duration-300 pointer-events-none opacity-0">
         <div class="relative flex flex-col items-center">
             <!-- Logo Pulse Animation -->
             <div class="relative w-24 h-24 mb-4">
@@ -231,26 +240,57 @@
             50% { transform: translateX(100%); width: 50%; }
             100% { transform: translateX(200%); }
         }
-        body.loading { overflow: hidden; }
+        /* Loader visibility classes */
+        .show-loader {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            document.body.classList.add('loading');
-        });
-
-        window.addEventListener('load', () => {
             const loader = document.getElementById('global-loader');
-            if (loader) {
-                setTimeout(() => {
-                    loader.style.opacity = '0';
-                    loader.style.pointerEvents = 'none';
-                    document.body.classList.remove('loading');
-                    setTimeout(() => {
-                        loader.remove(); // Remove from DOM after fade out
-                    }, 500);
-                }, 500); // Minimum view time
+            let loadTimeout;
+
+            function showLoader() {
+                if (loader) {
+                    loader.classList.add('show-loader');
+                    // Safety timeout: auto-hide after 5 seconds if something gets stuck
+                    clearTimeout(loadTimeout);
+                    loadTimeout = setTimeout(hideLoader, 5000);
+                }
             }
+
+            function hideLoader() {
+                if (loader) {
+                    loader.classList.remove('show-loader');
+                    clearTimeout(loadTimeout);
+                }
+            }
+
+            // Initial Page Load
+            // (Optional: can show loader here if needed, but often better to let it render fast)
+             
+            // HTMX Events
+            document.body.addEventListener('htmx:configRequest', () => {
+                showLoader();
+            });
+
+            document.body.addEventListener('htmx:afterOnLoad', () => {
+                // Small delay to make it feel smooth
+                setTimeout(hideLoader, 300);
+            });
+
+            document.body.addEventListener('htmx:historyRestore', () => {
+                hideLoader();
+            });
+            
+            // Handle browser back/forward cache
+            window.addEventListener('pageshow', (event) => {
+                if (event.persisted) {
+                    hideLoader();
+                }
+            });
         });
     </script>
 </body>
