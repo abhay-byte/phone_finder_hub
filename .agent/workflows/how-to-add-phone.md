@@ -16,7 +16,7 @@ Data is distributed across 7 tables. When adding a phone, you must create record
 | `spec_bodies` | Physical & Display | `dimensions`, `weight`, `build_material`, `display_type`, `display_size`, `display_resolution` |
 | `spec_platforms`| OS & Hardware | `os`, `chipset`, `cpu`, `gpu`, `ram`, `internal_storage` |
 | `spec_cameras` | Camera Details | `main_camera_specs`, `main_video_capabilities`, `selfie_camera_specs`, `main_camera_sensors`, `main_camera_ois` |
-| `spec_connectivities` | Comms & Sensors | `wlan`, `bluetooth`, `nfc`, `infrared`, `sensors`, `loudspeaker`, `jack_3_5mm`, `sar_value`, `audio_quality` |
+| `spec_connectivities` | Comms & Sensors | `network_bands` (Required), `wlan`, `bluetooth`, `nfc`, `infrared`, `sensors`, `loudspeaker`, `jack_3_5mm`, `sar_value`, `audio_quality` |
 | `spec_batteries` | Power | `battery_type`, `charging_wired`, `charging_wireless`, `charging_reverse`, `charging_specs_detailed` |
 | `benchmarks` | Performance Scores | `antutu_score`, `geekbench_single`, `geekbench_multi` |
 
@@ -108,7 +108,7 @@ $phone->connectivity()->updateOrCreate([], [
     'sensors' => 'Fingerprint (under display, ultrasonic), accelerometer, proximity, gyro (UAV-grade), compass, barometer',
     'loudspeaker' => 'Yes, with stereo speakers',
     'jack_3_5mm' => 'No',
-    'network_bands' => 'GSM / HSPA / LTE / 5G',
+    'network_bands' => 'GSM / HSPA / LTE / 5G', // Required for "Technology" row in comparison
     'sar_value' => '1.17 W/kg (head), 1.00 W/kg (body)',
     'loudness_test_result' => '-24.8 LUFS (Very good)',
     'audio_quality' => '24-bit/192kHz Hi-Res audio',
