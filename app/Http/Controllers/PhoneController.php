@@ -14,9 +14,9 @@ class PhoneController extends Controller
     {
         $sort = $request->input('sort', 'value_score'); // Default to Value Score
 
-        // Cache phones list for 5 minutes
-        $cacheKey = 'phones_index_' . $sort;
-        $phones = Cache::remember($cacheKey, 300, function () use ($sort) {
+        // Cache entire HTML response for 5 minutes
+        $cacheKey = 'phones_index_html_' . $sort;
+        return Cache::remember($cacheKey, 300, function () use ($sort) {
             $query = \App\Models\Phone::query();
 
             if ($sort == 'value_score') {
@@ -31,37 +31,41 @@ class PhoneController extends Controller
                 $query->orderBy('ueps_score', 'desc');
             }
 
-            return $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
+            $phones = $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
+            
+            return view('phones.index', compact('phones', 'sort'))->render();
         });
-
-        return view('phones.index', compact('phones', 'sort'));
     }
 
     public function grid(Request $request)
     {
         $sort = $request->input('sort', 'value_score');
 
-        // Only load minimal relations for grid view
-        $query = \App\Models\Phone::query()->with(['platform', 'benchmarks']);
+        $cacheKey = 'phones_grid_html_' . $sort;
+        $html = Cache::remember($cacheKey, 300, function () use ($sort) {
+            // Only load minimal relations for grid view
+            $query = \App\Models\Phone::query()->with(['platform', 'benchmarks']);
 
-        if ($sort == 'value_score') {
-             $query->orderByRaw('overall_score / price desc');
-        } elseif ($sort == 'price_asc') {
-            $query->orderBy('price', 'asc');
-        } elseif ($sort == 'overall_score') {
-            $query->orderBy('overall_score', 'desc');
-        } elseif ($sort == 'ueps_score') {
-            $query->orderBy('ueps_score', 'desc');
-        } else {
-             $query->orderBy('ueps_score', 'desc');
-        }
+            if ($sort == 'value_score') {
+                 $query->orderByRaw('overall_score / price desc');
+            } elseif ($sort == 'price_asc') {
+                $query->orderBy('price', 'asc');
+            } elseif ($sort == 'overall_score') {
+                $query->orderBy('overall_score', 'desc');
+            } elseif ($sort == 'ueps_score') {
+                $query->orderBy('ueps_score', 'desc');
+            } else {
+                 $query->orderBy('ueps_score', 'desc');
+            }
 
-        $phones = $query->take(50)->get();
+            $phones = $query->take(50)->get();
+            return view('phones.partials.grid', compact('phones'))->render();
+        });
 
-        return response()
-            ->view('phones.partials.grid', compact('phones'))
-            ->header('Vary', 'X-Requested-With')
-            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+        return response($html)
+            ->header('Vary', 'X-Requested-With');
+            // Removed no-cache headers to allow browser caching if desired, or keep them if strict freshness is needed.
+            // For now, removing them to let the server-side cache do the work.
     }
 
     public function search(Request $request)

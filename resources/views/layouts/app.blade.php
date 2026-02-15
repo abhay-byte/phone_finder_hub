@@ -240,6 +240,10 @@
     @stack('scripts')
 
     <!-- Top Progress Bar -->
+    <div id="global-loader" class="fixed inset-0 z-[100] flex items-center justify-center bg-white/50 dark:bg-black/50 backdrop-blur-sm transition-opacity duration-300 opacity-0 pointer-events-none htmx-indicator">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+    </div>
+
     <div id="top-loader" class="fixed top-0 left-0 right-0 h-1 bg-transparent z-[100] pointer-events-none transition-opacity duration-300 opacity-0">
         <div class="h-full bg-teal-500 transition-all duration-300 w-0" id="top-loader-bar"></div>
     </div>
