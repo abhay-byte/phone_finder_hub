@@ -89,6 +89,7 @@ $phone->connectivity()->updateOrCreate([], [
     'infrared' => 'No', // Doesn't say Yes
     'radio' => 'No',
     'usb' => 'USB Type-C 2.0, OTG',
+    'usb_details' => 'USB Type-C 2.0, OTG', // Start populating this for the view
     'sensors' => 'Fingerprint (under display, optical), accelerometer, proximity, gyro, compass',
     'loudspeaker' => 'Yes, with stereo speakers',
     'jack_3_5mm' => 'No',

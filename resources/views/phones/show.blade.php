@@ -668,12 +668,10 @@
                                      <span class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">NFC/IR</span>
                                      <span class="text-gray-900 dark:text-white font-bold">{{ $phone->connectivity->nfc }} / {{ $phone->connectivity->infrared }}</span>
                                  </li>
-                                 @if($phone->connectivity->usb_details)
                                   <li class="grid grid-cols-[80px_1fr] gap-3">
                                      <span class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">USB</span>
-                                     <span class="text-gray-900 dark:text-white font-bold">{{ $phone->connectivity->usb_details }}</span>
+                                     <span class="text-gray-900 dark:text-white font-bold">{{ $phone->connectivity->usb_details ?? $phone->connectivity->usb ?? 'Not specified' }}</span>
                                  </li>
-                                 @endif
                                   <li class="grid grid-cols-[80px_1fr] gap-3">
                                      <span class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">Sensors</span>
                                      <span class="text-gray-700 dark:text-gray-300 font-medium leading-relaxed">{{ $phone->connectivity->sensors }}</span>
