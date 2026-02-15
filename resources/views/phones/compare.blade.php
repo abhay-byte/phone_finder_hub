@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="bg-white dark:bg-black min-h-screen pb-20 pt-24 selection:bg-teal-500 selection:text-white font-sans" 
-     x-data="comparisonPage(@json($phones))">
+     x-data='comparisonPage(@json($phones, JSON_HEX_APOS))'>
 
     <!-- Main Container for Header & Search -->
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
