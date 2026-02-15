@@ -28,10 +28,10 @@ class PhoneController extends Controller
             } elseif ($sort == 'ueps_score') {
                 $query->orderBy('ueps_score', 'desc');
             } else {
-                 $query->orderBy('ueps_score', 'desc');
+                $query->orderBy('ueps_score', 'desc');
             }
 
-            return $query->take(50)->get();
+            return $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
         });
 
         return view('phones.index', compact('phones', 'sort'));
@@ -42,7 +42,7 @@ class PhoneController extends Controller
         $sort = $request->input('sort', 'value_score');
 
         // Only load minimal relations for grid view
-        $query = \App\Models\Phone::query();
+        $query = \App\Models\Phone::query()->with(['platform', 'benchmarks']);
 
         if ($sort == 'value_score') {
              $query->orderByRaw('overall_score / price desc');
