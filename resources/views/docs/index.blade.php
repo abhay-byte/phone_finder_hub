@@ -42,7 +42,7 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 gap-10 sm:grid-cols-3">
+        <div class="grid grid-cols-1 gap-10 sm:grid-cols-2">
             <!-- UEPS Card -->
             <a href="{{ route('ueps.methodology') }}"
                 class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-100">
