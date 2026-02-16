@@ -331,15 +331,22 @@ class UepsScoringService
         $addPoints($catE_Score, $catE_Details, 'Sensor Size', 5, 'Large/1-inch Type (+5)');
 
         // 26. Zoom Hardware
-        if (self::checkSpecs($mainCam, ['periscope'])) {
-             $addPoints($catE_Score, $catE_Details, 'Zoom', 5, 'Periscope Telephoto (+5)');
+        $zoomSpecs = $mainCam . ' ' . ($phone->camera?->telephoto_camera_specs ?? '') . ' ' . $mainFeat;
+        if (self::checkSpecs($zoomSpecs, ['periscope', '5x optical', '10x optical'])) {
+             $addPoints($catE_Score, $catE_Details, 'Zoom', 5, 'Periscope/High Optical Zoom (+5)');
+        } elseif (self::checkSpecs($zoomSpecs, ['telephoto', '2x optical', '3x optical'])) {
+             $addPoints($catE_Score, $catE_Details, 'Zoom', 3, 'Telephoto Lens (+3)');
         }
 
         // 27. Video Max
-        if (self::checkSpecs($mainVideo, ['4K@120'])) {
+        if (self::checkSpecs($mainVideo, ['4K@120', '4K 120fps'])) {
              $addPoints($catE_Score, $catE_Details, 'Video Max', 5, '4K/120fps (+5)');
         } elseif (self::checkSpecs($mainVideo, ['8K'])) {
-             $addPoints($catE_Score, $catE_Details, 'Video Max', 2, '8K Support (+2)');
+             $addPoints($catE_Score, $catE_Details, 'Video Max', 5, '8K Support (+5)');
+        } elseif (self::checkSpecs($mainVideo, ['4K@60', '4K 60fps'])) {
+             $addPoints($catE_Score, $catE_Details, 'Video Max', 3, '4K/60fps (+3)');
+        } else {
+             $addPoints($catE_Score, $catE_Details, 'Video Max', 1, 'Standard 4K (+1)');
         }
 
         // 28. Front AF
