@@ -20,6 +20,7 @@ class Benchmark extends Model
         'battery_active_use_score',
         'charge_time_test',
         'free_fall_rating',
+        'dmark_wild_life_stress_stability',
     ];
 
     public function phone()

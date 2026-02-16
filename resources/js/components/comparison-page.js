@@ -31,8 +31,13 @@ export default (initialPhones) => ({
             rows: [
                 { key: 'gpx_score', label: 'Overall Score' },
                 { key: 'gpx_details.soc_gpu', label: 'SoC & GPU' },
-                { key: 'gpx_details.sustained', label: 'Stability' },
+                { key: 'gpx_details.sustained', label: 'Sustained Performance' },
                 { key: 'gpx_details.display', label: 'Gaming Display' },
+                { key: 'gpx_details.memory', label: 'Memory & Storage' },
+                { key: 'gpx_details.battery', label: 'Battery & Charging' },
+                { key: 'gpx_details.software', label: 'Gaming Software' },
+                { key: 'gpx_details.connectivity', label: 'Connectivity & Latency' },
+                { key: 'gpx_details.audio', label: 'Audio & Haptics' },
                 { key: 'gpx_details.emulator', label: 'Emulation' }
             ]
         },
@@ -42,7 +47,8 @@ export default (initialPhones) => ({
                 { key: 'benchmarks.antutu_score', label: 'AnTuTu v11' },
                 { key: 'benchmarks.geekbench_single', label: 'Geekbench 6 (Single)' },
                 { key: 'benchmarks.geekbench_multi', label: 'Geekbench 6 (Multi)' },
-                { key: 'benchmarks.dmark_wild_life_extreme', label: '3DMark Wild Life Extreme' }
+                { key: 'benchmarks.dmark_wild_life_extreme', label: '3DMark Wild Life Extreme' },
+                { key: 'benchmarks.dmark_wild_life_stress_stability', label: '3DMark Stability (%)' }
             ]
         },
         {

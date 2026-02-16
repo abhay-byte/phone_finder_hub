@@ -280,31 +280,31 @@
                                     </span>
                                 </td>
                                 <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
-                                    {{ $phone->gpx_details['soc_gpu'] ?? '-' }}
+                                    {{ $phone->gpx_details['soc_gpu']['score'] ?? '-' }}
                                 </td>
                                 <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
-                                    {{ $phone->gpx_details['sustained'] ?? '-' }}
+                                    {{ $phone->gpx_details['sustained']['score'] ?? '-' }}
                                 </td>
                                 <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
-                                    {{ $phone->gpx_details['display'] ?? '-' }}
+                                    {{ $phone->gpx_details['display']['score'] ?? '-' }}
                                 </td>
                                 <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
-                                    {{ $phone->gpx_details['memory'] ?? '-' }}
+                                    {{ $phone->gpx_details['memory']['score'] ?? '-' }}
                                 </td>
                                 <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
-                                    {{ $phone->gpx_details['battery'] ?? '-' }}
+                                    {{ $phone->gpx_details['battery']['score'] ?? '-' }}
                                 </td>
                                 <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
-                                    {{ $phone->gpx_details['software'] ?? '-' }}
+                                    {{ $phone->gpx_details['software']['score'] ?? '-' }}
                                 </td>
                                 <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
-                                    {{ $phone->gpx_details['connectivity'] ?? '-' }}
+                                    {{ $phone->gpx_details['connectivity']['score'] ?? '-' }}
                                 </td>
                                 <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
-                                    {{ $phone->gpx_details['audio'] ?? '-' }}
+                                    {{ $phone->gpx_details['audio']['score'] ?? '-' }}
                                 </td>
                                  <td class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
-                                    {{ $phone->gpx_details['emulator'] ?? '-' }}
+                                    {{ $phone->gpx_details['emulator']['score'] ?? '-' }}
                                 </td>
                             @endif
                         </tr>

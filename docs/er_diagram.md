@@ -1,17 +1,29 @@
 # Phone Finder - Entity Relationship Diagram
 
+This diagram represents the complete database schema for the Phone Finder Hub application, including all tables, columns, relationships, indexes, and constraints.
+
+## Core Application Tables
+
 ```mermaid
 erDiagram
     PHONES {
         id integer PK
-        name string
-        brand string
+        name string UK "Unique constraint"
+        brand string "Indexed"
         model_variant string
-        price decimal
-        overall_score integer
-        release_date date
+        price decimal "Indexed"
+        overall_score decimal "Changed to decimal(5,1), Indexed"
+        ueps_score decimal "Indexed"
+        value_score decimal "Indexed"
+        gpx_score decimal "Indexed"
+        gpx_details json
+        release_date date "Indexed"
         announced_date date
         image_url string
+        amazon_url string
+        flipkart_url string
+        amazon_price decimal
+        flipkart_price decimal
         created_at timestamp
         updated_at timestamp
     }
@@ -30,12 +42,16 @@ erDiagram
         display_resolution string
         display_protection string
         display_brightness string
+        measured_display_brightness string
         pwm_dimming string
         screen_to_body_ratio string
         pixel_density string
         touch_sampling_rate string
         screen_glass string
         display_features text
+        screen_area string
+        aspect_ratio string
+        glass_protection_level string
         created_at timestamp
         updated_at timestamp
     }
@@ -45,13 +61,20 @@ erDiagram
         phone_id integer FK
         os string
         os_details string
+        os_openness string
         chipset string
         cpu string
         gpu string
+        gpu_emulation_tier string
         memory_card_slot string
         internal_storage string
         ram string
         storage_type string
+        bootloader_unlockable boolean
+        turnip_support boolean
+        turnip_support_level string
+        aosp_aesthetics_score integer
+        custom_rom_support string
         created_at timestamp
         updated_at timestamp
     }
@@ -60,18 +83,23 @@ erDiagram
         id integer PK
         phone_id integer FK
         main_camera_specs text
-        main_camera_features text
-        main_video_capabilities string
         main_camera_sensors text
         main_camera_apertures text
         main_camera_focal_lengths text
+        main_camera_features text
         main_camera_ois string
+        main_camera_zoom string
+        main_camera_pdaf string
+        main_video_capabilities string
+        ultrawide_camera_specs string
+        telephoto_camera_specs string
         selfie_camera_specs text
-        selfie_camera_features text
-        selfie_video_capabilities string
-        selfie_camera_aperture string
         selfie_camera_sensor string
+        selfie_camera_aperture string
+        selfie_camera_features text
         selfie_camera_autofocus boolean
+        selfie_video_capabilities string
+        selfie_video_features string
         video_features text
         created_at timestamp
         updated_at timestamp
@@ -84,6 +112,7 @@ erDiagram
         wifi_bands string
         bluetooth string
         positioning string
+        positioning_details text
         network_bands string
         nfc string
         infrared string
@@ -96,6 +125,7 @@ erDiagram
         loudness_test_result string
         sar_value string
         jack_3_5mm string
+        has_3_5mm_jack boolean
         created_at timestamp
         updated_at timestamp
     }
@@ -117,17 +147,19 @@ erDiagram
     BENCHMARKS {
         id integer PK
         phone_id integer FK
-        antutu_score integer
+        antutu_score integer "Indexed"
         antutu_v10_score integer
-        geekbench_single integer
-        geekbench_multi integer
-        dmark_wild_life_extreme integer
+        geekbench_single integer "Indexed"
+        geekbench_multi integer "Indexed"
+        dmark_wild_life_extreme integer "Indexed"
+        dmark_wild_life_stress_stability integer
         dmark_test_type string
-        battery_endurance_hours decimal
+        battery_endurance_hours decimal "Indexed"
         battery_active_use_score string
-        repairability_score string
-        energy_label string
         charge_time_test string
+        repairability_score string
+        free_fall_rating string
+        energy_label string
         created_at timestamp
         updated_at timestamp
     }
@@ -137,5 +169,151 @@ erDiagram
     PHONES ||--|| SPEC_CAMERAS : "has camera specs"
     PHONES ||--|| SPEC_CONNECTIVITIES : "has connectivity specs"
     PHONES ||--|| SPEC_BATTERIES : "has battery specs"
-    PHONES ||--|| BENCHMARKS : "has scores"
+    PHONES ||--|| BENCHMARKS : "has benchmark scores"
 ```
+
+## Authentication & Session Tables
+
+```mermaid
+erDiagram
+    USERS {
+        id integer PK
+        name string
+        email string UK "Unique constraint"
+        email_verified_at timestamp
+        password string
+        remember_token string
+        created_at timestamp
+        updated_at timestamp
+    }
+
+    PASSWORD_RESET_TOKENS {
+        email string PK
+        token string
+        created_at timestamp
+    }
+
+    SESSIONS {
+        id string PK
+        user_id integer FK "Indexed, nullable"
+        ip_address string
+        user_agent text
+        payload longtext
+        last_activity integer "Indexed"
+    }
+
+    PERSONAL_ACCESS_TOKENS {
+        id integer PK
+        tokenable_type string
+        tokenable_id integer
+        name text
+        token string UK "Unique constraint"
+        abilities text
+        last_used_at timestamp
+        expires_at timestamp "Indexed"
+        created_at timestamp
+        updated_at timestamp
+    }
+
+    USERS ||--o{ SESSIONS : "has sessions"
+```
+
+## System Tables (Cache & Jobs)
+
+```mermaid
+erDiagram
+    CACHE {
+        key string PK
+        value mediumtext
+        expiration integer "Indexed"
+    }
+
+    CACHE_LOCKS {
+        key string PK
+        owner string
+        expiration integer "Indexed"
+    }
+
+    JOBS {
+        id integer PK
+        queue string "Indexed"
+        payload longtext
+        attempts tinyint
+        reserved_at integer
+        available_at integer
+        created_at integer
+    }
+
+    JOB_BATCHES {
+        id string PK
+        name string
+        total_jobs integer
+        pending_jobs integer
+        failed_jobs integer
+        failed_job_ids longtext
+        options mediumtext
+        cancelled_at integer
+        created_at integer
+        finished_at integer
+    }
+
+    FAILED_JOBS {
+        id integer PK
+        uuid string UK "Unique constraint"
+        connection text
+        queue text
+        payload longtext
+        exception longtext
+        failed_at timestamp
+    }
+```
+
+## Schema Summary
+
+### Total Tables: 13
+
+#### Core Application Tables (7):
+1. **phones** - Main phone records with pricing, scores, and metadata
+2. **spec_bodies** - Physical specifications and display details
+3. **spec_platforms** - OS, chipset, and developer freedom metrics
+4. **spec_cameras** - Camera specifications for main, ultrawide, telephoto, and selfie
+5. **spec_connectivities** - Network, connectivity, and audio specifications
+6. **spec_batteries** - Battery capacity and charging specifications
+7. **benchmarks** - Performance benchmarks and test results
+
+#### Authentication Tables (4):
+8. **users** - User accounts
+9. **password_reset_tokens** - Password reset functionality
+10. **sessions** - User session management
+11. **personal_access_tokens** - API token authentication
+
+#### System Tables (2):
+12. **cache** & **cache_locks** - Application caching
+13. **jobs**, **job_batches**, **failed_jobs** - Queue management
+
+### Key Relationships
+
+- **One-to-One**: Each phone has exactly one record in each spec table (bodies, platforms, cameras, connectivities, batteries, benchmarks)
+- **Cascade Deletion**: All spec tables use `onDelete('cascade')` - deleting a phone removes all related specs
+- **Foreign Keys**: All spec tables reference `phones.id` via `phone_id`
+
+### Indexes
+
+**phones table:**
+- `name` (unique)
+- `overall_score`, `ueps_score`, `value_score`, `gpx_score`
+- `price`, `release_date`
+
+**benchmarks table:**
+- `antutu_score`, `geekbench_single`, `geekbench_multi`
+- `dmark_wild_life_extreme`, `battery_endurance_hours`
+
+### Notable Schema Features
+
+1. **Scoring System**: Multiple scoring metrics (overall_score, ueps_score, value_score, gpx_score) with gpx_details stored as JSON
+2. **E-commerce Integration**: Amazon and Flipkart URLs and prices
+3. **Developer Metrics**: Bootloader unlock, custom ROM support, Turnip support for gaming
+4. **Comprehensive Camera Specs**: Separate fields for main, ultrawide, telephoto, and selfie cameras
+5. **Detailed Display Specs**: Both claimed and measured brightness values
+6. **Multiple Benchmark Types**: AnTuTu, Geekbench, 3DMark with stability testing
+7. **Charging Specs**: Detailed wired, wireless, and reverse charging specifications

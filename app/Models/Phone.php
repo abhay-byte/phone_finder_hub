@@ -176,283 +176,445 @@ class Phone extends Model
     }
     
     /**
-     * Calculate GPX-300 Gaming Score
-     * Based on user provided rulebook.
-     */
-    /**
      * Calculate GPX-300 Gaming Score (Rulebook v2)
      * 300-point system focusing on stability, thermals, and specific hardware feature sets.
+     * Returns detailed breakdown similar to UEPS for comparison page display.
      */
     public function calculateGPX()
     {
         $breakdown = [];
         $total = 0;
 
+        // Helper to add points with details
+        $addPoints = function(&$categoryScore, &$categoryDetails, $criterion, $points, $reason) {
+            $categoryScore += $points;
+            $categoryDetails[] = ['criterion' => $criterion, 'points' => $points, 'reason' => $reason];
+        };
+
         // 1. SoC & GPU Power (70 pts)
         $socScore = 0;
+        $socDetails = [];
         $chipset = strtolower($this->platform->chipset ?? '');
+        $gpu = strtolower($this->platform->gpu ?? '');
         
-        // GPU Tier (45 pts)
-        if (str_contains($chipset, 'snapdragon 8 elite') && str_contains($chipset, 'gen 5')) {
-             $socScore += 45; // Ultra Elite - SD 8 Elite Gen 5
-        } elseif (str_contains($chipset, 'dimensity 9500')) {
-             $socScore += 45; // Ultra Elite - Dimensity 9500
-        } elseif (str_contains($chipset, 'snapdragon 8 elite')) {
-             $socScore += 38; // Flagship
-        } elseif (str_contains($chipset, 'dimensity 9400')) {
-             $socScore += 38; // Flagship
-        } elseif (str_contains($chipset, 'snapdragon 8 gen 3') || str_contains($chipset, 'dimensity 9300')) {
-            $socScore += 30; // Upper High
-        } elseif (str_contains($chipset, 'snapdragon 8 gen 2') || str_contains($chipset, 'dimensity 9200')) {
-            $socScore += 20; // Mid-tier
-        } else {
-             $socScore += 10; // Base
+        // GPU Tier (45 pts) - Based on 3DMark Wild Life Extreme score
+        $gpuPoints = 0;
+        $gpuTier = 'No benchmark data';
+        
+        if ($this->benchmarks && $this->benchmarks->dmark_wild_life_extreme) {
+            $wildLifeScore = $this->benchmarks->dmark_wild_life_extreme;
+            
+            // Normalize to 45 points based on score ranges
+            // Reference: Top phones score ~7000-7500, entry-level ~1000-1500
+            if ($wildLifeScore >= 7000) {
+                $gpuPoints = 45; // Ultra Elite
+                $gpuTier = sprintf('Ultra Elite (%d)', $wildLifeScore);
+            } elseif ($wildLifeScore >= 6000) {
+                $gpuPoints = 40; // Flagship+
+                $gpuTier = sprintf('Flagship+ (%d)', $wildLifeScore);
+            } elseif ($wildLifeScore >= 5000) {
+                $gpuPoints = 35; // Flagship
+                $gpuTier = sprintf('Flagship (%d)', $wildLifeScore);
+            } elseif ($wildLifeScore >= 4500) {
+                $gpuPoints = 32; // Upper High-End
+                $gpuTier = sprintf('Upper High-End (%d)', $wildLifeScore);
+            } elseif ($wildLifeScore >= 4000) {
+                $gpuPoints = 28; // High-End
+                $gpuTier = sprintf('High-End (%d)', $wildLifeScore);
+            } elseif ($wildLifeScore >= 3500) {
+                $gpuPoints = 24; // Upper Mid-tier
+                $gpuTier = sprintf('Upper Mid-tier (%d)', $wildLifeScore);
+            } elseif ($wildLifeScore >= 3000) {
+                $gpuPoints = 20; // Mid-tier+
+                $gpuTier = sprintf('Mid-tier+ (%d)', $wildLifeScore);
+            } elseif ($wildLifeScore >= 2000) {
+                $gpuPoints = 15; // Mid-tier
+                $gpuTier = sprintf('Mid-tier (%d)', $wildLifeScore);
+            } elseif ($wildLifeScore >= 1000) {
+                $gpuPoints = 10; // Entry-level
+                $gpuTier = sprintf('Entry-level (%d)', $wildLifeScore);
+            } else {
+                $gpuPoints = 5; // Low-end
+                $gpuTier = sprintf('Low-end (%d)', $wildLifeScore);
+            }
         }
+        
+        $addPoints($socScore, $socDetails, 'GPU Tier', $gpuPoints, $gpuTier);
 
         // CPU Power (25 pts) - Normalized Formula
-        // (Geekbench Multi × 60%) + (Geekbench Single × 40%)
-        // Scored as percentage of best-in-database.
-        $cpuScore = 0;
+        $cpuPoints = 0;
         if ($this->benchmarks) {
-            // Get max scores from DB or use static baselines if DB is empty/low
-            // To ensure consistency, we'll use high static baselines for "best in class" reference
-            $maxMulti = 13000; // Estimated SD 8 Elite Gen 5 / Dimensity 9500 level
+            $maxMulti = 13000;
             $maxSingle = 4000;
 
             $normMulti = min(($this->benchmarks->geekbench_multi / $maxMulti), 1);
             $normSingle = min(($this->benchmarks->geekbench_single / $maxSingle), 1);
             
             $percentage = ($normMulti * 0.60) + ($normSingle * 0.40);
-            $cpuScore = $percentage * 25;
+            $cpuPoints = $percentage * 25;
+            
+            $addPoints($socScore, $socDetails, 'CPU Power', round($cpuPoints, 1), 
+                sprintf('GB Multi: %d, Single: %d', $this->benchmarks->geekbench_multi, $this->benchmarks->geekbench_single));
+        } else {
+            $addPoints($socScore, $socDetails, 'CPU Power', 0, 'No benchmark data');
         }
-        $socScore += $cpuScore;
         
-        $breakdown['soc_gpu'] = round($socScore, 1);
+        $breakdown['soc_gpu'] = ['score' => round($socScore, 1), 'max' => 70, 'details' => $socDetails];
         $total += $socScore;
 
         // 2. Sustained Performance & Cooling (50 pts)
         $sustainedScore = 0;
+        $sustainedDetails = [];
         
         // Thermal Stability (30 pts)
-        // 3DMark Wild Life Extreme Stress Test stability
         if ($this->benchmarks && $this->benchmarks->dmark_wild_life_stress_stability) {
              $stability = $this->benchmarks->dmark_wild_life_stress_stability;
-             if ($stability >= 95) $sustainedScore += 30;
-             elseif ($stability >= 85) $sustainedScore += 22;
-             elseif ($stability >= 75) $sustainedScore += 15;
-             else $sustainedScore += 5;
+             $stabilityPoints = 0;
+             
+             if ($stability <= 50) {
+                 $stabilityPoints = 5;
+                 $addPoints($sustainedScore, $sustainedDetails, 'Thermal Stability', 5, sprintf('%d%% (Poor)', $stability));
+             } else {
+                 $stabilityPoints = 5 + (($stability - 50) * 0.5);
+                 $tier = $stability >= 90 ? 'Excellent' : ($stability >= 70 ? 'Good' : 'Fair');
+                 $addPoints($sustainedScore, $sustainedDetails, 'Thermal Stability', round($stabilityPoints, 1), sprintf('%d%% (%s)', $stability, $tier));
+             }
         } else {
-            // Penalty for missing stability data (Crucial for GPX)
-            $sustainedScore += 0; 
+            $addPoints($sustainedScore, $sustainedDetails, 'Thermal Stability', 0, 'No stability data');
         }
 
-        // Cooling Hardware (20 pts)
-        $coolingScore = 5; // Basic graphite default
-        $name = strtolower($this->name);
-        // Heuristics based on model name and known features
-        if (str_contains($name, 'rog') || str_contains($name, 'redmagic')) {
-             $coolingScore = 20; // Active fan
-        } elseif (str_contains($name, 'pro') || str_contains($name, 'ultra') || str_contains($name, 'gt') || str_contains($name, 'iqoo') || str_contains($name, 'oneplus')) {
-             // Assuming High-end phones have VC
-             // Refine this if we have a specific 'cooling' field in specs later
-             $coolingScore = 15; // Vapor Chamber (Dual or Large) - giving benefit of doubt to flagships
-             if (str_contains($name, '15') || str_contains($name, '16')) {
-                 $coolingScore = 15; // Modern flagships usually have good VC
-             }
+        // Cooling Hardware (20 pts) - Use actual data from database
+        $coolingType = $this->body->cooling_type ?? null;
+        $coolingPoints = 0; // Default to 0 if not specified
+        $coolingDisplay = $coolingType ?? 'Not Specified';
+        
+        if ($coolingType) {
+            $coolingLower = strtolower($coolingType);
+            if (str_contains($coolingLower, 'active fan')) {
+                $coolingPoints = 20;
+            } elseif (str_contains($coolingLower, 'vapor chamber')) {
+                $coolingPoints = 15;
+            } elseif (str_contains($coolingLower, 'graphite')) {
+                $coolingPoints = 5;
+            }
         }
         
-        $sustainedScore += $coolingScore;
-        $breakdown['sustained'] = $sustainedScore;
+        $addPoints($sustainedScore, $sustainedDetails, 'Cooling Hardware', $coolingPoints, $coolingDisplay);
+        
+        $breakdown['sustained'] = ['score' => round($sustainedScore, 1), 'max' => 50, 'details' => $sustainedDetails];
         $total += $sustainedScore;
 
         // 3. Gaming Display (40 pts)
         $displayScore = 0;
+        $displayDetails = [];
+        $name = strtolower($this->name); // Used for heuristics
         $displaySpecs = strtolower($this->body->display_type ?? '');
         $displayFeatures = strtolower($this->body->display_features ?? '');
+        $combinedDisplay = $displaySpecs . ' ' . $displayFeatures; // Check both fields
         
-        // Refresh Rate (10 pts) - parsing from string or separate field if available
-        // Heuristic mapping since we don't have separate column yet, using display_type text
-        if (str_contains($displaySpecs, '165hz') || str_contains($displaySpecs, '144hz')) {
-            if (str_contains($displaySpecs, '165hz')) $displayScore += 10;
-            else $displayScore += 8;
-        } elseif (str_contains($displaySpecs, '120hz')) {
-            $displayScore += 6;
-        } else {
-            $displayScore += 0;
+        // Refresh Rate (10 pts) - Parse from either field
+        $refreshPoints = 0;
+        $refreshRate = '60Hz';
+        
+        if (preg_match('/(\d+)\s*hz/i', $combinedDisplay, $matches)) {
+            $hz = intval($matches[1]);
+            if ($hz >= 165) {
+                $refreshPoints = 10;
+                $refreshRate = $hz . 'Hz';
+            } elseif ($hz >= 144) {
+                $refreshPoints = 8;
+                $refreshRate = $hz . 'Hz';
+            } elseif ($hz >= 120) {
+                $refreshPoints = 6;
+                $refreshRate = $hz . 'Hz';
+            } elseif ($hz >= 90) {
+                $refreshPoints = 3;
+                $refreshRate = $hz . 'Hz';
+            }
+        }
+        $addPoints($displayScore, $displayDetails, 'Refresh Rate', $refreshPoints, $refreshRate);
+
+        // Touch Sampling (10 pts) - Check actual field first, then heuristics
+        $touchRate = 240; // Default
+        
+        // Try to parse from touch_sampling_rate field
+        $touchField = $this->body->touch_sampling_rate ?? '';
+        if (preg_match('/(\d+)\s*hz/i', $touchField, $matches)) {
+            $touchRate = intval($matches[1]);
+        }
+        // Fallback heuristics if not found
+        elseif (str_contains($name, 'rog') || str_contains($name, 'redmagic')) {
+            $touchRate = 1000;
+        } elseif (str_contains($name, 'iqoo') || str_contains($name, 'gt') || str_contains($name, 'ultra')) {
+            $touchRate = 480;
         }
 
-        // Touch Sampling (10 pts)
-        // Using heuristics based on known gaming phones or high-end models
-        $touchRate = 240; // Default generic
-        if (str_contains($name, 'rog') || str_contains($name, 'redmagic')) $touchRate = 1000;
-        elseif (str_contains($name, 'iqoo') || str_contains($name, 'gt') || str_contains($name, 'ultra')) $touchRate = 480;
+        $touchPoints = 4; // Default
+        if ($touchRate >= 1000) $touchPoints = 10;
+        elseif ($touchRate >= 720) $touchPoints = 7;
         
-        // Check if explicit data is in display_features (rare but possible)
-        if (str_contains($this->body->touch_sampling_rate ?? '', 'hz')) {
-             $ts = intval($this->body->touch_sampling_rate);
-             if ($ts > $touchRate) $touchRate = $ts;
-        }
+        $addPoints($displayScore, $displayDetails, 'Touch Sampling', $touchPoints, sprintf('%dHz', $touchRate));
 
-        if ($touchRate >= 1000) $displayScore += 10;
-        elseif ($touchRate >= 720) $displayScore += 7;
-        else $displayScore += 4; // < 720Hz
-
-        // Brightness (10 pts)
-        // > 3000 nits -> 10, 2000-3000 -> 6
+        // Brightness (10 pts) - Parse from combined fields
         $nits = 0;
-        if (preg_match('/(\d+)\s*nits/', $displayFeatures, $matches)) {
+        
+        // Try multiple patterns: "4500 nits", "4500nits", "peak brightness"
+        if (preg_match('/(\d+)\s*nits/i', $combinedDisplay, $matches)) {
             $nits = intval($matches[1]);
         }
-        // Fallback or override for known recent flagships
+        
+        // Fallback heuristics for recent flagships if not found
         if ($nits == 0) {
-             if (str_contains($name, '15') || str_contains($name, '2025') || str_contains($name, '2026')) $nits = 4500; // Assumption for 2026 flagships
-             elseif (str_contains($name, '14') || str_contains($name, '24')) $nits = 2500;
-        }
-
-        if ($nits > 3000) $displayScore += 10;
-        elseif ($nits >= 2000) $displayScore += 6;
-        else $displayScore += 0;
-
-        // PWM / Eye Comfort (10 pts)
-        // 2160Hz+ -> 10, 1440Hz -> 6
-        // Heuristic: Recent flagships usually have high PWM
-        $pwm = 0;
-        if (str_contains($displayFeatures, 'pwm') || str_contains($this->body->pwm_dimming ?? '', 'pwm')) {
-             if (preg_match('/(\d+)\s*hz/', $this->body->pwm_dimming ?? '', $matches)) {
-                 $pwm = intval($matches[1]);
+             if (str_contains($name, '15') || str_contains($name, '2025') || str_contains($name, '2026')) {
+                 $nits = 4500;
+             } elseif (str_contains($name, '14') || str_contains($name, '24')) {
+                 $nits = 2500;
              }
         }
+
+        $brightnessPoints = 0;
+        if ($nits > 3000) $brightnessPoints = 10;
+        elseif ($nits >= 2000) $brightnessPoints = 6;
         
-        // Default high PWM for devices known to have it if not parsed
-        if ($pwm == 0 && (str_contains($name, 'honor') || str_contains($name, 'iqoo') || str_contains($name, 'oneplus'))) {
+        $addPoints($displayScore, $displayDetails, 'Brightness', $brightnessPoints, sprintf('%d nits', $nits));
+
+        // PWM / Eye Comfort (10 pts) - Check pwm_dimming field and combined display
+        $pwm = 0;
+        $pwmField = strtolower($this->body->pwm_dimming ?? '');
+        $pwmCombined = $pwmField . ' ' . $combinedDisplay;
+        
+        // Parse PWM frequency
+        if (preg_match('/(\d+)\s*hz\s*pwm/i', $pwmCombined, $matches)) {
+            $pwm = intval($matches[1]);
+        } elseif (preg_match('/pwm[:\s]*(\d+)\s*hz/i', $pwmCombined, $matches)) {
+            $pwm = intval($matches[1]);
+        }
+        
+        // Fallback heuristics for known brands
+        if ($pwm == 0 && (str_contains($name, 'honor') || str_contains($name, 'iqoo') || str_contains($name, 'oneplus') || str_contains($name, 'poco'))) {
             $pwm = 2160; 
         }
 
-        if ($pwm >= 2160) $displayScore += 10;
-        elseif ($pwm >= 1440) $displayScore += 6;
-        else $displayScore += 0;
+        $pwmPoints = 0;
+        if ($pwm >= 2160) $pwmPoints = 10;
+        elseif ($pwm >= 1440) $pwmPoints = 6;
+        
+        $addPoints($displayScore, $displayDetails, 'Eye Comfort (PWM)', $pwmPoints, sprintf('%dHz', $pwm));
 
-        $breakdown['display'] = $displayScore;
+        $breakdown['display'] = ['score' => round($displayScore, 1), 'max' => 40, 'details' => $displayDetails];
         $total += $displayScore;
 
         // 4. Memory & Storage (25 pts)
-        $memScore = 0;
-        $storage = strtolower($this->platform->storage_type ?? '');
-        $ramText = $this->platform->ram ?? '';
+        $memoryScore = 0;
+        $memoryDetails = [];
         
-        // Storage Speed
-        if (str_contains($storage, '4.1')) $memScore += 10;
-        elseif (str_contains($storage, '4.0')) $memScore += 8;
-        else $memScore += 5; // UFS 3.1 fallback
-
-        // RAM Size
-        $maxRam = 8;
-        if (preg_match_all('/(\d+)gb/', strtolower($ramText), $matches)) {
-            $maxRam = max($matches[1]);
+        // Storage Type (15 pts max)
+        $storageType = strtolower($this->platform->storage_type ?? '');
+        $storagePoints = 0;
+        $storageLabel = 'Unknown';
+        if (str_contains($storageType, 'ufs 4')) {
+            $storagePoints = 15;
+            $storageLabel = 'UFS 4.0';
+        } elseif (str_contains($storageType, 'ufs 3.1')) {
+            $storagePoints = 10;
+            $storageLabel = 'UFS 3.1';
+        } elseif (str_contains($storageType, 'ufs 3')) {
+            $storagePoints = 5;
+            $storageLabel = 'UFS 3.0';
         }
-        if ($maxRam >= 16) $memScore += 7;
-        if ($maxRam >= 24) $memScore += 3; // Bonus
-
-        // LPDDR5X Check (Heuristic if not in DB, usually paired with UFS 4.0+)
-        if (str_contains($storage, '4.0') || str_contains($storage, '4.1')) {
-            $memScore += 5; // Assume LPDDR5X for UFS 4.x devices
+        $addPoints($memoryScore, $memoryDetails, 'Storage Type', $storagePoints, $storageLabel);
+        
+        // RAM Capacity (10 pts max)
+        $ram = strtolower($this->platform->ram ?? '');
+        $ramPoints = 0;
+        $ramLabel = 'Unknown';
+        if (str_contains($ram, '16gb') || str_contains($ram, '18gb') || str_contains($ram, '24gb')) {
+            $ramPoints = 10;
+            $ramLabel = preg_match('/(\d+gb)/i', $ram, $m) ? $m[1] : '16GB+';
+        } elseif (str_contains($ram, '12gb')) {
+            $ramPoints = 7;
+            $ramLabel = '12GB';
+        } elseif (str_contains($ram, '8gb')) {
+            $ramPoints = 4;
+            $ramLabel = '8GB';
         }
-
-        $breakdown['memory'] = $memScore;
-        $total += $memScore;
+        $addPoints($memoryScore, $memoryDetails, 'RAM Capacity', $ramPoints, $ramLabel);
+        
+        $breakdown['memory'] = ['score' => round($memoryScore, 1), 'max' => 25, 'details' => $memoryDetails];
+        $total += $memoryScore;
 
         // 5. Battery & Charging (25 pts)
-        $batScore = 0;
-        if ($this->battery) {
-            // Capacity
-            if ($this->battery->capacity_mah >= 6000) $batScore += 10;
-            elseif ($this->battery->capacity_mah >= 5000) $batScore += 7;
-            
-            // Speed
-            if ($this->battery->charging_speed_w >= 120) $batScore += 10;
-            elseif ($this->battery->charging_speed_w >= 80) $batScore += 7;
-
-            // Bypass Charging (5 pts)
-            // Hard to detect from specs string, defaulting to "Yes" for gaming/flagship phones
-            if (str_contains($name, 'rog') || str_contains($name, 'redmagic') || str_contains($name, 'black shark') || str_contains($name, 'iqoo') || str_contains($name, 'pooc') || str_contains($name, 'gt')) {
-                $batScore += 5;
-            } elseif ($this->battery->charging_speed_w >= 100) {
-                 // Fast charging often implies advanced power mgt
-                 $batScore += 5; 
-            }
+        $batteryScore = 0;
+        $batteryDetails = [];
+        
+        // Battery Capacity (10 pts max)
+        $batteryType = $this->battery->battery_type ?? '';
+        $capacityPoints = 0;
+        $capacityLabel = '0 mAh';
+        if (preg_match('/(\d+)\s*mah/i', $batteryType, $matches)) {
+            $mah = intval($matches[1]);
+            $capacityLabel = $mah . ' mAh';
+            if ($mah >= 6000) $capacityPoints = 10;
+            elseif ($mah >= 5000) $capacityPoints = 7;
+            elseif ($mah >= 4500) $capacityPoints = 4;
         }
-        $breakdown['battery'] = $batScore;
-        $total += $batScore;
+        $addPoints($batteryScore, $batteryDetails, 'Battery Capacity', $capacityPoints, $capacityLabel);
+        
+        // Fast Charging (15 pts max)
+        $charging = $this->battery->charging_wired ?? '';
+        $chargingPoints = 0;
+        $chargingLabel = '0W';
+        if (preg_match('/(\d+)\s*w/i', $charging, $matches)) {
+            $watts = intval($matches[1]);
+            $chargingLabel = $watts . 'W';
+            if ($watts >= 100) $chargingPoints = 15;
+            elseif ($watts >= 80) $chargingPoints = 12;
+            elseif ($watts >= 65) $chargingPoints = 8;
+            elseif ($watts >= 45) $chargingPoints = 5;
+        }
+        $addPoints($batteryScore, $batteryDetails, 'Fast Charging', $chargingPoints, $chargingLabel);
+        
+        $breakdown['battery'] = ['score' => round($batteryScore, 1), 'max' => 25, 'details' => $batteryDetails];
+        $total += $batteryScore;
 
         // 6. Gaming Software (30 pts)
-        $softScore = 5; // Base
-        // Dedicated Gaming Mode / Profiles / Optimization
+        $softwareScore = 0;
+        $softwareDetails = [];
+        
+        // Dedicated Game Mode (20 pts max)
+        $gameModePoints = 10;
+        $gameModeLabel = 'Standard';
         if (str_contains($name, 'rog') || str_contains($name, 'redmagic')) {
-             $softScore = 30; // The kings of software suites
-        } elseif (str_contains($name, 'iqoo') || str_contains($name, 'gt') || str_contains($name, 'oneplus') || str_contains($name, 'xiaomi')) {
-             $softScore = 20; // Game Turbo, GT Mode, etc.
-        } elseif (str_contains($name, 'samsung')) {
-             $softScore = 15; // Game Booster
+            $gameModePoints = 20;
+            $gameModeLabel = 'Gaming Phone';
+        } elseif (str_contains($name, 'iqoo') || str_contains($name, 'oneplus') || str_contains($name, 'poco') || str_contains($name, 'gt')) {
+            $gameModePoints = 15;
+            $gameModeLabel = 'Performance Focused';
         }
-        $breakdown['software'] = $softScore;
-        $total += $softScore;
+        $addPoints($softwareScore, $softwareDetails, 'Game Mode', $gameModePoints, $gameModeLabel);
+        
+        // OS Optimization (10 pts max)
+        $osPoints = 5;
+        $osLabel = 'Moderate';
+        if (str_contains($name, 'nothing') || str_contains($name, 'oneplus')) {
+            $osPoints = 10;
+            $osLabel = 'Near-AOSP';
+        }
+        $addPoints($softwareScore, $softwareDetails, 'OS Optimization', $osPoints, $osLabel);
+        
+        $breakdown['software'] = ['score' => round($softwareScore, 1), 'max' => 30, 'details' => $softwareDetails];
+        $total += $softwareScore;
 
         // 7. Connectivity & Latency (20 pts)
-        $connScore = 0;
-        // WiFi 7 (8 pts)
-        $wlan = strtolower($this->connectivity->wlan ?? '');
-        if (str_contains($wlan, '7') || str_contains($wlan, 'be')) $connScore += 8;
+        $connectivityScore = 0;
+        $connectivityDetails = [];
         
-        // 5G Advanced (5 pts) - Assume all modern flagships have it
-        if (str_contains($chipset, 'snapdragon 8') || str_contains($chipset, 'dimensity 9')) $connScore += 5;
-
-        // Gaming Antenna (4 pts) - Heuristic for gaming phones
-        if (str_contains($name, 'rog') || str_contains($name, 'redmagic')) $connScore += 4;
-
-        // BT 5.4 Low Latency (3 pts)
-        $bt = strtolower($this->connectivity->bluetooth ?? '');
-        if (str_contains($bt, '5.4') || str_contains($bt, '5.3')) $connScore += 3;
-
-        $breakdown['connectivity'] = $connScore;
-        $total += $connScore;
+        // Wi-Fi (10 pts max)
+        $wlan = strtolower($this->connectivity->wlan ?? '');
+        $wifiPoints = 0;
+        $wifiLabel = 'Unknown';
+        
+        // Check for Wi-Fi 7 (802.11be or ".../7")
+        if (str_contains($wlan, 'wi-fi 7') || str_contains($wlan, '802.11be') || preg_match('/[\/,]7(?![0-9])/', $wlan)) {
+            $wifiPoints = 10;
+            $wifiLabel = 'Wi-Fi 7';
+        } 
+        // Check for Wi-Fi 6E (802.11ax extended or ".../6e")
+        elseif (str_contains($wlan, 'wi-fi 6e') || str_contains($wlan, '6e') || preg_match('/[\/,]6e/', $wlan)) {
+            $wifiPoints = 7;
+            $wifiLabel = 'Wi-Fi 6E';
+        } 
+        // Check for Wi-Fi 6 (802.11ax or ".../6")
+        elseif (str_contains($wlan, 'wi-fi 6') || str_contains($wlan, '802.11ax') || preg_match('/[\/,]6(?![e0-9])/', $wlan)) {
+            $wifiPoints = 5;
+            $wifiLabel = 'Wi-Fi 6';
+        }
+        $addPoints($connectivityScore, $connectivityDetails, 'Wi-Fi', $wifiPoints, $wifiLabel);
+        
+        // Bluetooth (5 pts max)
+        $bluetooth = $this->connectivity->bluetooth ?? '';
+        $btPoints = 0;
+        $btLabel = 'Unknown';
+        if (str_contains($bluetooth, '5.4') || str_contains($bluetooth, '5.5')) {
+            $btPoints = 5;
+            $btLabel = preg_match('/5\.[45]/i', $bluetooth, $m) ? 'BT ' . $m[0] : 'BT 5.4+';
+        } elseif (str_contains($bluetooth, '5.3')) {
+            $btPoints = 3;
+            $btLabel = 'BT 5.3';
+        }
+        $addPoints($connectivityScore, $connectivityDetails, 'Bluetooth', $btPoints, $btLabel);
+        
+        // 5G (5 pts)
+        $network = strtolower($this->connectivity->network_bands ?? '');
+        $fiveGPoints = str_contains($network, '5g') ? 5 : 0;
+        $fiveGLabel = str_contains($network, '5g') ? 'Yes' : 'No';
+        $addPoints($connectivityScore, $connectivityDetails, '5G Support', $fiveGPoints, $fiveGLabel);
+        
+        $breakdown['connectivity'] = ['score' => round($connectivityScore, 1), 'max' => 20, 'details' => $connectivityDetails];
+        $total += $connectivityScore;
 
         // 8. Audio & Haptics (10 pts)
-        // Dual speakers (5 pts) + X-axis motor (5 pts)
         $audioScore = 0;
-        if (str_contains(strtolower($this->connectivity->loudspeaker ?? ''), 'stereo')) $audioScore += 5;
-        else $audioScore += 5; // Default assumption for high-end
-
-        // Haptics (tough to parse, assuming high end = good haptics)
-        if ($this->price > 400 || str_contains($name, 'pro')) $audioScore += 5;
-
-        $breakdown['audio'] = $audioScore;
+        $audioDetails = [];
+        
+        // Stereo Speakers (5 pts)
+        $loudspeaker = strtolower($this->connectivity->loudspeaker ?? '');
+        $speakerPoints = str_contains($loudspeaker, 'stereo') ? 5 : 0;
+        $speakerLabel = str_contains($loudspeaker, 'stereo') ? 'Stereo' : 'Mono';
+        $addPoints($audioScore, $audioDetails, 'Speakers', $speakerPoints, $speakerLabel);
+        
+        // Haptics (5 pts max)
+        $hapticsPoints = 3;
+        $hapticsLabel = 'Standard';
+        if (str_contains($name, 'rog') || str_contains($name, 'redmagic') || str_contains($name, 'iqoo')) {
+            $hapticsPoints = 5;
+            $hapticsLabel = 'Gaming-Grade';
+        }
+        $addPoints($audioScore, $audioDetails, 'Haptics', $hapticsPoints, $hapticsLabel);
+        
+        $breakdown['audio'] = ['score' => round($audioScore, 1), 'max' => 10, 'details' => $audioDetails];
         $total += $audioScore;
-
+        
         // 9. Emulator & Developer Advantage (30 pts)
         $emuScore = 0;
+        $emuDetails = [];
         
         // GPU Driver & Emulation Support (20 pts)
+        $gpuEmuPoints = 10; // Default
+        $gpuEmuTier = 'Standard';
+        
         if (str_contains($chipset, 'snapdragon')) {
-             if (str_contains($chipset, 'elite')) $emuScore += 20; // Adreno Elite + Turnip
-             elseif (str_contains($chipset, 'gen 3') || str_contains($chipset, 'gen 2')) $emuScore += 16; // Adreno 7xx
-             else $emuScore += 10;
+             if (str_contains($chipset, 'elite')) {
+                 $gpuEmuPoints = 20;
+                 $gpuEmuTier = 'Adreno Elite + Turnip';
+             } elseif (str_contains($chipset, 'gen 3') || str_contains($chipset, 'gen 2')) {
+                 $gpuEmuPoints = 16;
+                 $gpuEmuTier = 'Adreno 7xx';
+             }
         } elseif (str_contains($chipset, 'dimensity')) {
              if (str_contains($chipset, '9400') || str_contains($chipset, '9500') || str_contains($chipset, '9300')) {
-                 $emuScore += 14; // Immortalis G925/G720
-             } else {
-                 $emuScore += 10; // Mali
+                 $gpuEmuPoints = 14;
+                 $gpuEmuTier = 'Immortalis G925/G720';
              }
         }
+        
+        $addPoints($emuScore, $emuDetails, 'GPU Emulation', $gpuEmuPoints, $gpuEmuTier);
 
         // Bootloader / Root / ROM (10 pts)
-        // Custom ROM community support
+        $romPoints = 0;
+        $romSupport = 'Locked';
+        
         if (str_contains($this->brand, 'OnePlus') || str_contains($this->brand, 'Xiaomi') || str_contains($this->brand, 'Nothing') || str_contains($this->brand, 'Google')) {
-            $emuScore += 10;
+            $romPoints = 10;
+            $romSupport = 'Unlockable + ROM Support';
         } elseif (str_contains($name, 'rog')) {
-            $emuScore += 5;
+            $romPoints = 5;
+            $romSupport = 'Unlockable';
         }
         
-        $breakdown['emulator'] = $emuScore;
+        $addPoints($emuScore, $emuDetails, 'Bootloader/ROM', $romPoints, $romSupport);
+        
+        $breakdown['emulator'] = ['score' => round($emuScore, 1), 'max' => 30, 'details' => $emuDetails];
         $total += $emuScore;
         
         // 10. GPM Multiplier

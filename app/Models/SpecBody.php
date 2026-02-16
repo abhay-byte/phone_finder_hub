@@ -11,6 +11,7 @@ class SpecBody extends Model
         'dimensions',
         'weight',
         'build_material',
+        'cooling_type',
         'sim',
         'ip_rating',
         'colors',
