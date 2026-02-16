@@ -41,7 +41,7 @@
                     class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-purple-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-purple-500 transition-colors">
-                        80</div>
+                        200</div>
                     <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Focus & Stability</div>
                 </div>
@@ -49,7 +49,7 @@
                     class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-purple-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-purple-500 transition-colors">
-                        120</div>
+                        200</div>
                     <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Video System</div>
                 </div>
@@ -57,7 +57,7 @@
                     class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-purple-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-purple-500 transition-colors">
-                        50</div>
+                        200</div>
                     <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Multi-Camera Fusion</div>
                 </div>
@@ -65,7 +65,7 @@
                     class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-purple-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-purple-500 transition-colors">
-                        30</div>
+                        100</div>
                     <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Special Features</div>
                 </div>
@@ -215,7 +215,8 @@
                 <section
                     class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">3. Focus 3. Focus & Stability (80 Points) Stability (200 Points)</h2>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">3. Focus & Stability (200 Points)
+                        </h2>
                     </div>
                     <div class="p-8 space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -223,30 +224,30 @@
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Autofocus (100 pts)</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                     <li class="flex justify-between"><span>Dual-Pixel + Laser</span> <span
-                                            class="font-mono text-purple-600 font-bold">+40</span></li>
+                                            class="font-mono text-purple-600 font-bold">+100</span></li>
                                     <li class="flex justify-between"><span>Dual-Pixel AF</span> <span
-                                            class="font-mono text-purple-600 font-bold">+32</span></li>
+                                            class="font-mono text-purple-600 font-bold">+80</span></li>
                                     <li class="flex justify-between"><span>Multi-PDAF</span> <span
-                                            class="font-mono text-purple-600 font-bold">+24</span></li>
+                                            class="font-mono text-purple-600 font-bold">+60</span></li>
                                     <li class="flex justify-between"><span>PDAF</span> <span
-                                            class="font-mono text-purple-600 font-bold">+16</span></li>
+                                            class="font-mono text-purple-600 font-bold">+40</span></li>
                                     <li class="flex justify-between"><span>Contrast AF</span> <span
-                                            class="font-mono text-purple-600 font-bold">+8</span></li>
+                                            class="font-mono text-purple-600 font-bold">+20</span></li>
                                 </ul>
                             </div>
                             <div>
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Stabilization (100 pts)</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                     <li class="flex justify-between"><span>OIS + gyro-EIS</span> <span
-                                            class="font-mono text-purple-600 font-bold">+40</span></li>
+                                            class="font-mono text-purple-600 font-bold">+100</span></li>
                                     <li class="flex justify-between"><span>OIS + EIS</span> <span
-                                            class="font-mono text-purple-600 font-bold">+32</span></li>
+                                            class="font-mono text-purple-600 font-bold">+80</span></li>
                                     <li class="flex justify-between"><span>OIS</span> <span
-                                            class="font-mono text-purple-600 font-bold">+25</span></li>
+                                            class="font-mono text-purple-600 font-bold">+60</span></li>
                                     <li class="flex justify-between"><span>EIS</span> <span
-                                            class="font-mono text-purple-600 font-bold">+15</span></li>
+                                            class="font-mono text-purple-600 font-bold">+40</span></li>
                                     <li class="flex justify-between"><span>None</span> <span
-                                            class="font-mono text-slate-400">+5</span></li>
+                                            class="font-mono text-slate-400">+10</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -267,23 +268,23 @@
                                 <span class="text-xs font-bold opacity-90">8K60</span>
                             </div>
                             <div class="flex flex-col items-center p-6 rounded-xl bg-slate-50 dark:bg-white/5">
-                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">90</span>
+                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">170</span>
                                 <span class="text-xs font-bold text-slate-600 dark:text-slate-400">8K30</span>
                             </div>
                             <div class="flex flex-col items-center p-6 rounded-xl bg-slate-50 dark:bg-white/5">
-                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">70</span>
+                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">140</span>
                                 <span class="text-xs font-bold text-slate-600 dark:text-slate-400">6K</span>
                             </div>
                             <div class="flex flex-col items-center p-6 rounded-xl bg-slate-50 dark:bg-white/5">
-                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">200</span>
+                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">100</span>
                                 <span class="text-xs font-bold text-slate-600 dark:text-slate-400">4K60</span>
                             </div>
                             <div class="flex flex-col items-center p-6 rounded-xl bg-slate-50 dark:bg-white/5">
-                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">100</span>
+                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">60</span>
                                 <span class="text-xs font-bold text-slate-600 dark:text-slate-400">4K30</span>
                             </div>
                             <div class="flex flex-col items-center p-6 rounded-xl bg-slate-50 dark:bg-white/5">
-                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">10</span>
+                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">20</span>
                                 <span class="text-xs font-bold text-slate-600 dark:text-slate-400">1080p</span>
                             </div>
                         </div>
@@ -301,25 +302,34 @@
                         <div class="space-y-3">
                             <div
                                 class="flex justify-between items-center p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-200 dark:border-purple-900/30">
-                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">AI fusion
-                                    multi-sensor</span>
-                                <span class="font-mono text-purple-600 font-bold text-lg">+50</span>
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">AI fusion +
+                                    Computational Photography (Elite)</span>
+                                <span class="font-mono text-purple-600 font-bold text-lg">+200</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
+                                <span class="text-sm text-slate-700 dark:text-slate-300">AI fusion multi-sensor
+                                    (Advanced)</span>
+                                <span class="font-mono text-purple-600 font-bold">+180</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
+                                <span class="text-sm text-slate-700 dark:text-slate-300">Penta camera (5+)</span>
+                                <span class="font-mono text-purple-600 font-bold">+160</span>
                             </div>
                             <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-sm text-slate-700 dark:text-slate-300">Quad camera</span>
-                                <span class="font-mono text-purple-600 font-bold">+40</span>
+                                <span class="font-mono text-purple-600 font-bold">+140</span>
                             </div>
                             <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-sm text-slate-700 dark:text-slate-300">Triple camera</span>
-                                <span class="font-mono text-purple-600 font-bold">+30</span>
+                                <span class="font-mono text-purple-600 font-bold">+100</span>
                             </div>
                             <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-sm text-slate-700 dark:text-slate-300">Dual camera</span>
-                                <span class="font-mono text-purple-600 font-bold">+15</span>
+                                <span class="font-mono text-purple-600 font-bold">+60</span>
                             </div>
                             <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-sm text-slate-700 dark:text-slate-300">Single camera</span>
-                                <span class="font-mono text-purple-600 font-bold">+5</span>
+                                <span class="font-mono text-purple-600 font-bold">+20</span>
                             </div>
                         </div>
                     </div>
@@ -330,33 +340,51 @@
                     class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
                         <h2 class="text-2xl font-bold text-slate-900 dark:text-white">6. Special Features (100 Points)</h2>
-                        <p class="text-sm text-slate-500 mt-2">Each feature awards +5 points (cumulative)</p>
+                        <p class="text-sm text-slate-500 mt-2">Each feature awards points (cumulative)</p>
                     </div>
                     <div class="p-8 space-y-6">
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                             <div class="flex items-center gap-3 p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-2xl">📸</span>
-                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">RAW Capture</span>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-700 dark:text-slate-300">RAW Capture</div>
+                                    <div class="text-xs text-purple-600 font-bold">+15 pts</div>
+                                </div>
                             </div>
                             <div class="flex items-center gap-3 p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-2xl">🌅</span>
-                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Multi-frame HDR</span>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Multi-frame HDR</div>
+                                    <div class="text-xs text-purple-600 font-bold">+15 pts</div>
+                                </div>
                             </div>
                             <div class="flex items-center gap-3 p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-2xl">🌈</span>
-                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Spectrum Sensor</span>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Spectrum Sensor</div>
+                                    <div class="text-xs text-purple-600 font-bold">+20 pts</div>
+                                </div>
                             </div>
                             <div class="flex items-center gap-3 p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-2xl">🌙</span>
-                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Night Mode</span>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Night Mode</div>
+                                    <div class="text-xs text-purple-600 font-bold">+15 pts</div>
+                                </div>
                             </div>
                             <div class="flex items-center gap-3 p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-2xl">🎬</span>
-                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Pro Video (LOG)</span>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Pro Video (LOG)</div>
+                                    <div class="text-xs text-purple-600 font-bold">+20 pts</div>
+                                </div>
                             </div>
                             <div class="flex items-center gap-3 p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-2xl">📏</span>
-                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Depth/LiDAR</span>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Depth/LiDAR</div>
+                                    <div class="text-xs text-purple-600 font-bold">+15 pts</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -390,7 +418,7 @@
                                     <div class="font-bold text-slate-900 dark:text-white">Other Benchmarks</div>
                                     <div class="text-xs text-slate-500">GSMArena, AnandTech, etc.</div>
                                 </div>
-                                <span class="font-mono text-purple-600 font-bold text-2xl">200</span>
+                                <span class="font-mono text-purple-600 font-bold text-2xl">80</span>
                             </div>
                         </div>
 
@@ -426,32 +454,32 @@
                     <div class="p-8 space-y-3">
                         <div
                             class="flex justify-between items-center p-4 rounded-xl bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30">
-                            <span class="font-bold text-slate-900 dark:text-white">900–1000</span>
+                            <span class="font-bold text-slate-900 dark:text-white">1197–1330</span>
                             <span class="text-sm font-bold text-yellow-700 dark:text-yellow-400">Imaging Excellence</span>
                         </div>
                         <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
-                            <span class="font-bold text-slate-900 dark:text-white">800–899</span>
+                            <span class="font-bold text-slate-900 dark:text-white">1064–1196</span>
                             <span class="text-sm font-bold text-slate-600 dark:text-slate-400">Professional Grade</span>
                         </div>
                         <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
-                            <span class="font-bold text-slate-900 dark:text-white">700–799</span>
+                            <span class="font-bold text-slate-900 dark:text-white">931–1063</span>
                             <span class="text-sm font-bold text-slate-600 dark:text-slate-400">Enthusiast Grade</span>
                         </div>
                         <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
-                            <span class="font-bold text-slate-900 dark:text-white">600–699</span>
+                            <span class="font-bold text-slate-900 dark:text-white">798–930</span>
                             <span class="text-sm font-bold text-slate-600 dark:text-slate-400">Mainstream Plus</span>
                         </div>
                         <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
-                            <span class="font-bold text-slate-900 dark:text-white">500–599</span>
+                            <span class="font-bold text-slate-900 dark:text-white">665–797</span>
                             <span class="text-sm font-bold text-slate-600 dark:text-slate-400">Mainstream</span>
                         </div>
                         <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
-                            <span class="font-bold text-slate-900 dark:text-white">400–499</span>
+                            <span class="font-bold text-slate-900 dark:text-white">532–664</span>
                             <span class="text-sm font-bold text-slate-600 dark:text-slate-400">Budget Plus</span>
                         </div>
                         <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                             <span class="font-bold text-slate-900 dark:text-white">
-                                <400< /span>
+                                < 532 </span>
                                     <span class="text-sm font-bold text-slate-600 dark:text-slate-400">Entry Level</span>
                         </div>
                     </div>
