@@ -8,13 +8,13 @@
             <div class="text-center mb-16">
                 <div
                     class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-sm font-bold mb-4 border border-purple-200 dark:border-purple-800">
-                    CMS-1000
+                    CMS-1330
                 </div>
                 <h1 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-6">
                     Camera Mastery Score
                 </h1>
                 <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                    A comprehensive 1000-point system evaluating smartphone camera hardware, imaging capabilities, and
+                    A comprehensive 1330-point system evaluating smartphone camera hardware, imaging capabilities, and
                     real-world performance benchmarks.
                 </p>
             </div>
@@ -81,7 +81,7 @@
             <div class="mb-12">
                 <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-1 rounded-3xl mb-12">
                     <div class="bg-white dark:bg-[#121212] rounded-[22px] p-8">
-                        <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4">🧩 Core System — 610 Points</h2>
+                        <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4">🧩 Core System — 940 Points</h2>
                         <p class="text-slate-600 dark:text-slate-400">Pure hardware and measurable features, evaluated
                             independently of subjective testing.</p>
                     </div>
@@ -215,12 +215,12 @@
                 <section
                     class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">3. Focus & Stability (80 Points)</h2>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">3. Focus 3. Focus & Stability (80 Points) Stability (200 Points)</h2>
                     </div>
                     <div class="p-8 space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <h3 class="font-bold text-slate-900 dark:text-white mb-2">Autofocus (40 pts)</h3>
+                                <h3 class="font-bold text-slate-900 dark:text-white mb-2">Autofocus (100 pts)</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                     <li class="flex justify-between"><span>Dual-Pixel + Laser</span> <span
                                             class="font-mono text-purple-600 font-bold">+40</span></li>
@@ -235,7 +235,7 @@
                                 </ul>
                             </div>
                             <div>
-                                <h3 class="font-bold text-slate-900 dark:text-white mb-2">Stabilization (40 pts)</h3>
+                                <h3 class="font-bold text-slate-900 dark:text-white mb-2">Stabilization (100 pts)</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                     <li class="flex justify-between"><span>OIS + gyro-EIS</span> <span
                                             class="font-mono text-purple-600 font-bold">+40</span></li>
@@ -257,13 +257,13 @@
                 <section
                     class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">4. Video System (120 Points)</h2>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">4. Video System (200 Points)</h2>
                     </div>
                     <div class="p-8 space-y-6">
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                             <div
                                 class="flex flex-col items-center p-6 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 text-white">
-                                <span class="text-3xl font-black mb-1">120</span>
+                                <span class="text-3xl font-black mb-1">200</span>
                                 <span class="text-xs font-bold opacity-90">8K60</span>
                             </div>
                             <div class="flex flex-col items-center p-6 rounded-xl bg-slate-50 dark:bg-white/5">
@@ -275,11 +275,11 @@
                                 <span class="text-xs font-bold text-slate-600 dark:text-slate-400">6K</span>
                             </div>
                             <div class="flex flex-col items-center p-6 rounded-xl bg-slate-50 dark:bg-white/5">
-                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">50</span>
+                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">200</span>
                                 <span class="text-xs font-bold text-slate-600 dark:text-slate-400">4K60</span>
                             </div>
                             <div class="flex flex-col items-center p-6 rounded-xl bg-slate-50 dark:bg-white/5">
-                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">30</span>
+                                <span class="text-3xl font-black text-slate-900 dark:text-white mb-1">100</span>
                                 <span class="text-xs font-bold text-slate-600 dark:text-slate-400">4K30</span>
                             </div>
                             <div class="flex flex-col items-center p-6 rounded-xl bg-slate-50 dark:bg-white/5">
@@ -294,7 +294,7 @@
                 <section
                     class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">5. Multi-Camera Fusion (50 Points)
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">5. Multi-Camera Fusion (200 Points)
                         </h2>
                     </div>
                     <div class="p-8 space-y-6">
@@ -329,7 +329,7 @@
                 <section
                     class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">6. Special Features (30 Points)</h2>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">6. Special Features (100 Points)</h2>
                         <p class="text-sm text-slate-500 mt-2">Each feature awards +5 points (cumulative)</p>
                     </div>
                     <div class="p-8 space-y-6">
@@ -390,7 +390,7 @@
                                     <div class="font-bold text-slate-900 dark:text-white">Other Benchmarks</div>
                                     <div class="text-xs text-slate-500">GSMArena, AnandTech, etc.</div>
                                 </div>
-                                <span class="font-mono text-purple-600 font-bold text-2xl">80</span>
+                                <span class="font-mono text-purple-600 font-bold text-2xl">200</span>
                             </div>
                         </div>
 
@@ -409,10 +409,10 @@
                     <div class="p-8">
                         <h2 class="text-2xl font-bold text-white mb-6">🧮 Final Formula</h2>
                         <div class="bg-black/30 rounded-2xl p-6 font-mono text-sm">
-                            <div class="text-purple-300 mb-2">FINAL CMS-1000 SCORE =</div>
-                            <div class="text-white pl-8 mb-1">CORE SYSTEM (max 610)</div>
+                            <div class="text-purple-300 mb-2">FINAL CMS-1330 SCORE =</div>
+                            <div class="text-white pl-8 mb-1">CORE SYSTEM (max 940)</div>
                             <div class="text-white pl-8 mb-1">+ ONLINE BENCHMARK SYSTEM (max 390)</div>
-                            <div class="text-purple-300 mt-2">= 1000 points</div>
+                            <div class="text-purple-300 mt-2">= 1330 points</div>
                         </div>
                     </div>
                 </section>
