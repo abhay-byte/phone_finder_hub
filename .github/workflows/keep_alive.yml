@@ -1,13 +1,42 @@
-name: Keep Alive
+name: Keep Render App Alive
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/14 * * * *'
   workflow_dispatch:
 
 jobs:
-  ping:
+  keep-alive:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
     steps:
-      - name: Ping URL
-        run: curl -I https://phone-finder-shjs.onrender.com/
+      - name: Ping with Retry Logic
+        run: |
+          URL="https://phone-finder-shjs.onrender.com/"
+          MAX_RETRIES=3
+          RETRY_DELAY=10
+          
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES"
+            
+            if curl -I --max-time 60 "$URL"; then
+              echo "✅ Successfully pinged server at $(date -u)"
+              exit 0
+            else
+              echo "⚠️ Failed, retrying in ${RETRY_DELAY}s..."
+              sleep $RETRY_DELAY
+            fi
+          done
+          
+          echo "❌ All retry attempts failed"
+          exit 1
+
+  keepalive-workflow:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gautamkrishnar/keepalive-workflow@v2
