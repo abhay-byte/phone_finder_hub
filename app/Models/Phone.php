@@ -535,12 +535,26 @@ class Phone extends Model
         $bluetooth = $this->connectivity->bluetooth ?? '';
         $btPoints = 0;
         $btLabel = 'Unknown';
-        if (str_contains($bluetooth, '5.4') || str_contains($bluetooth, '5.5')) {
+        
+        // Check for Bluetooth 6.x
+        if (preg_match('/6\.\d/', $bluetooth) || str_contains($bluetooth, '6.0')) {
             $btPoints = 5;
-            $btLabel = preg_match('/5\.[45]/i', $bluetooth, $m) ? 'BT ' . $m[0] : 'BT 5.4+';
-        } elseif (str_contains($bluetooth, '5.3')) {
+            $btLabel = 'BT 6.0';
+        }
+        // Check for Bluetooth 5.4/5.5
+        elseif (preg_match('/5\.[45]/', $bluetooth) || str_contains($bluetooth, '5.4') || str_contains($bluetooth, '5.5')) {
+            $btPoints = 4;
+            $btLabel = 'BT 5.4';
+        }
+        // Check for Bluetooth 5.3
+        elseif (preg_match('/5\.3/', $bluetooth) || str_contains($bluetooth, '5.3')) {
             $btPoints = 3;
             $btLabel = 'BT 5.3';
+        }
+        // Check for Bluetooth 5.2 and below
+        elseif (preg_match('/5\.[0-2]/', $bluetooth)) {
+            $btPoints = 2;
+            $btLabel = 'BT 5.0+';
         }
         $addPoints($connectivityScore, $connectivityDetails, 'Bluetooth', $btPoints, $btLabel);
         
