@@ -225,10 +225,43 @@ export default (initialPhones) => ({
         return key.split('.').reduce((obj, k) => obj && obj[k], phone);
     },
 
-    getPositiveDetails(phone, key) {
+    getVisualData(phone, key) {
+        const GPX_MAX = {
+            'gpx_details.soc_gpu': 70,
+            'gpx_details.sustained': 50,
+            'gpx_details.display': 40,
+            'gpx_details.memory': 25,
+            'gpx_details.battery': 25,
+            'gpx_details.software': 30,
+            'gpx_details.connectivity': 20,
+            'gpx_details.audio': 10,
+            'gpx_details.emulator': 30
+        };
+
         const raw = this.getRawSpecValue(phone, key);
-        if (!raw || !raw.details) return [];
-        return raw.details.filter(d => d.points > 0);
+
+        // UEPS Logic (Already has score/max object)
+        if (raw && typeof raw === 'object' && 'score' in raw && 'max' in raw) {
+            return raw;
+        }
+
+        // GPX Logic (Flat value, construct object)
+        if (GPX_MAX[key] !== undefined) {
+            const score = parseFloat(raw) || 0;
+            return {
+                score: score,
+                max: GPX_MAX[key],
+                details: [] // GPX currently doesn't send breakdown details to frontend
+            };
+        }
+
+        return null;
+    },
+
+    getPositiveDetails(phone, key) {
+        const data = this.getVisualData(phone, key);
+        if (!data || !data.details) return [];
+        return data.details.filter(d => d.points > 0);
     },
 
     formatPrice(price) {

@@ -205,11 +205,10 @@
                                 </div>
                             </div>
 
-                            <!-- Data Rows (Generic + Collapsible) -->
+                            <!-- Data Rows (Generic) -->
                             <template x-if="
-                                section.title === 'UEPS Breakdown' ? showUeps : 
-                                section.title === 'Gaming (GPX-300)' ? showGpx : 
-                                true
+                                section.title !== 'UEPS Breakdown' && 
+                                section.title !== 'Gaming (GPX-300)'
                             ">
                                 <div class="contents">
                                     <template x-for="row in section.rows" :key="row.key">
@@ -263,9 +262,11 @@
                                 </div>
                             </template>
 
-                            <!-- Data Rows (UEPS Breakdown with Collapse) -->
-                            <template x-if="section.title === 'UEPS Breakdown'">
-                                <div class="col-span-full" x-show="showUeps" x-collapse>
+                            <!-- Data Rows (Visual Breakdown: UEPS & GPX) -->
+                            <template x-if="section.title === 'UEPS Breakdown' || section.title === 'Gaming (GPX-300)'">
+                                <div class="col-span-full" 
+                                     x-show="section.title === 'UEPS Breakdown' ? showUeps : showGpx" 
+                                     x-collapse>
                                     <div class="grid gap-0 w-full" 
                                          :style="`grid-template-columns: var(--label-width) repeat(${phones.length}, minmax(var(--phone-width), 1fr)) ${phones.length < 4 ? 'minmax(var(--phone-width), 1fr)' : ''}`">
                                         
@@ -281,57 +282,53 @@
                                                     <div class="border-b border-r border-gray-200 dark:border-white/5 p-6 flex items-center justify-center text-center relative group-hover:bg-gray-50/30 dark:group-hover:bg-white/[0.02] transition-colors">
                                                         <div class="w-full text-left">
                                                             <!-- Check if data exists -->
-                                                            <template x-if="getRawSpecValue(phone, row.key)">
+                                                            <template x-if="getVisualData(phone, row.key)">
                                                                 <div>
                                                                     <!-- Score Bar Row -->
                                                                     <div class="flex justify-between items-end mb-1">
                                                                         <span class="text-xs font-bold text-gray-500 dark:text-gray-400" 
-                                                                              x-text="getRawSpecValue(phone, row.key).score + '/' + getRawSpecValue(phone, row.key).max"></span>
-                                                                        <template x-if="getRawSpecValue(phone, row.key).score === getRawSpecValue(phone, row.key).max">
+                                                                              x-text="getVisualData(phone, row.key).score + '/' + getVisualData(phone, row.key).max"></span>
+                                                                        <template x-if="getVisualData(phone, row.key).score === getVisualData(phone, row.key).max">
                                                                             <span class="text-[10px] text-teal-600 dark:text-teal-400 font-bold">Max</span>
                                                                         </template>
                                                                     </div>
                                                                     <div class="h-2 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden mb-2">
                                                                         <div class="h-full rounded-full transition-all duration-500"
-                                                                             :class="getRawSpecValue(phone, row.key).score/getRawSpecValue(phone, row.key).max > 0.8 ? 'bg-teal-500' : (getRawSpecValue(phone, row.key).score/getRawSpecValue(phone, row.key).max > 0.5 ? 'bg-teal-400/70' : 'bg-gray-400')"
-                                                                             :style="`width: ${(getRawSpecValue(phone, row.key).score / getRawSpecValue(phone, row.key).max) * 100}%`"></div>
+                                                                             :class="section.title === 'Gaming (GPX-300)' 
+                                                                                ? (getVisualData(phone, row.key).score/getVisualData(phone, row.key).max > 0.8 ? 'bg-red-500' : 'bg-red-400/70')
+                                                                                : (getVisualData(phone, row.key).score/getVisualData(phone, row.key).max > 0.8 ? 'bg-teal-500' : 'bg-teal-400/70')"
+                                                                             :style="`width: ${(getVisualData(phone, row.key).score / getVisualData(phone, row.key).max) * 100}%`"></div>
                                                                     </div>
                                                                     
-                                                                    <!-- Compact Details (Expandable) -->
-                                                                    <div class="flex flex-wrap gap-1 mt-1" x-data="{ expanded: false }">
-                                                                        <template x-for="detail in getPositiveDetails(phone, row.key).slice(0, expanded ? undefined : 2)" :key="detail.criterion">
-                                                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5">
-                                                                                <span x-text="detail.criterion"></span>
-                                                                                <span class="ml-1 text-teal-600 dark:text-teal-400" x-text="`+${detail.points}`"></span>
-                                                                            </span>
-                                                                        </template>
-                                                                        
-                                                                        <!-- Show More Button -->
-                                                                        <template x-if="!expanded && getPositiveDetails(phone, row.key).length > 2">
-                                                                            <button @click="expanded = true" 
-                                                                                    class="text-[10px] text-teal-600 dark:text-teal-400 font-bold hover:underline self-center bg-transparent border-0 p-0 cursor-pointer ml-1 transition-colors">
-                                                                                <span x-text="`+${getPositiveDetails(phone, row.key).length - 2} more`"></span>
-                                                                            </button>
-                                                                        </template>
-
-                                                                        <!-- Show Less Button -->
-                                                                        <template x-if="expanded && getPositiveDetails(phone, row.key).length > 2">
-                                                                            <button @click="expanded = false" 
-                                                                                    class="text-[10px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 self-center bg-transparent border-0 p-0 cursor-pointer ml-1 transition-colors">
-                                                                                Less
-                                                                            </button>
-                                                                        </template>
-                                                                    </div>
+                                                                    <!-- Compact Details (Expandable) - Only if details exist -->
+                                                                    <template x-if="getPositiveDetails(phone, row.key).length > 0">
+                                                                        <div class="flex flex-wrap gap-1 mt-1" x-data="{ expanded: false }">
+                                                                            <template x-for="detail in getPositiveDetails(phone, row.key).slice(0, expanded ? undefined : 2)" :key="detail.criterion">
+                                                                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5">
+                                                                                    <span x-text="detail.criterion"></span>
+                                                                                    <span class="ml-1 text-teal-600 dark:text-teal-400" x-text="`+${detail.points}`"></span>
+                                                                                </span>
+                                                                            </template>
+                                                                            
+                                                                            <!-- Show More / Less Logic -->
+                                                                            <template x-if="!expanded && getPositiveDetails(phone, row.key).length > 2">
+                                                                                <button @click="expanded = true" class="text-[10px] text-teal-600 font-bold hover:underline ml-1">More</button>
+                                                                            </template>
+                                                                            <template x-if="expanded">
+                                                                                <button @click="expanded = false" class="text-[10px] text-gray-400 ml-1">Less</button>
+                                                                            </template>
+                                                                        </div>
+                                                                    </template>
                                                                 </div>
                                                             </template>
-                                                            <template x-if="!getRawSpecValue(phone, row.key)">
+                                                            <template x-if="!getVisualData(phone, row.key)">
                                                                 <span class="text-gray-400">-</span>
                                                             </template>
                                                         </div>
                                                     </div>
                                                 </template>
                                                 
-                                                <!-- Empty Cell for Add Button Column -->
+                                                <!-- Empty Cell -->
                                                 <div x-show="phones.length < 4" class="border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-black/50"></div>
                                             </div>
                                         </template>
