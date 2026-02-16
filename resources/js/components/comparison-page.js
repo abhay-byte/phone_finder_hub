@@ -227,6 +227,7 @@ export default (initialPhones) => ({
 
     getVisualData(phone, key) {
         const GPX_MAX = {
+            'gpx_score': 300,
             'gpx_details.soc_gpu': 70,
             'gpx_details.sustained': 50,
             'gpx_details.display': 40,

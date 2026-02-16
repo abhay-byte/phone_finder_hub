@@ -131,6 +131,20 @@
                                                  :style="`width: ${getBarWidth(phone, 'overall_score')}%`"></div>
                                         </div>
                                     </div>
+                                    <!-- GPX-300 -->
+                                    <div class="w-full">
+                                        <div class="flex justify-between items-end text-xs mb-1.5">
+                                            <span class="text-gray-400 font-bold uppercase tracking-wider">GPX-300</span>
+                                             <div class="flex items-center gap-1.5">
+                                                 <template x-if="isWinner(phone, 'gpx_score')"><span class="text-[10px] bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-red-200 dark:border-red-800">👑 Best</span></template>
+                                                 <span class="text-lg font-black text-gray-900 dark:text-white" x-text="formatScore(phone.gpx_score)"></span>
+                                            </div>
+                                        </div>
+                                        <div class="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-full rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
+                                                 :style="`width: ${getBarWidth(phone, 'gpx_score')}%`"></div>
+                                        </div>
+                                    </div>
                                     <!-- Value -->
                                     <div class="w-full">
                                         <div class="flex justify-between items-end text-xs mb-1.5">
