@@ -1,16 +1,16 @@
-# Camera Mastery Score (CMS-1000)
+# Camera Mastery Score (CMS-1330)
 
 **A Comprehensive Multi-Camera Smartphone Imaging Evaluation System**
 
-The Camera Mastery Score (CMS-1000) is an advanced scoring methodology designed to objectively evaluate smartphone camera systems across hardware specifications, imaging capabilities, and real-world performance benchmarks.
+The Camera Mastery Score (CMS-1330) is an advanced scoring methodology designed to objectively evaluate smartphone camera systems across hardware specifications, imaging capabilities, and real-world performance benchmarks.
 
-**Total Possible Score: 1000 Points**
+**Total Possible Score: 1330 Points**
 
 ---
 
 ## System Architecture
 
-### 🧩 Core System — 610 Points
+### 🧩 Core System — 940 Points
 Pure hardware and measurable features, evaluated independently of subjective testing.
 
 ### 🌐 Online Benchmark System — 390 Points
@@ -90,67 +90,69 @@ Scores are weighted by camera role:
 
 ---
 
-## 3. Focus & Stability (80 pts)
+## 3. Focus & Stability (200 pts)
 
-### Autofocus — 40 pts
+### Autofocus — 100 pts
 
 | Type | Points |
 |------|--------|
-| Contrast AF | 8 |
-| PDAF | 16 |
-| Multi-PDAF | 24 |
-| Dual-Pixel AF | 32 |
-| Dual-Pixel + Laser | 40 |
+| Contrast AF | 20 |
+| PDAF | 40 |
+| Multi-PDAF | 60 |
+| Dual-Pixel AF | 80 |
+| Dual-Pixel + Laser | 100 |
 
-### Stabilization — 40 pts
+### Stabilization — 100 pts
 
 | System | Points |
 |--------|--------|
-| None | 5 |
-| EIS | 15 |
-| OIS | 25 |
-| OIS + EIS | 32 |
-| OIS + gyro-EIS | 40 |
+| None | 10 |
+| EIS | 40 |
+| OIS | 60 |
+| OIS + EIS | 80 |
+| OIS + gyro-EIS | 100 |
 
 ---
 
-## 4. Video System (120 pts)
+## 4. Video System (200 pts)
 
 | Capability | Points |
 |------------|--------|
-| 1080p | 10 |
-| 4K30 | 30 |
-| 4K60 | 50 |
-| 6K | 70 |
-| 8K30 | 90 |
-| 8K60 | 120 |
+| 1080p | 20 |
+| 4K30 | 60 |
+| 4K60 | 100 |
+| 6K | 140 |
+| 8K30 | 170 |
+| 8K60 | 200 |
 
 ---
 
-## 5. Multi-Camera Fusion (50 pts)
+## 5. Multi-Camera Fusion (200 pts)
 
 | System | Points |
 |--------|--------|
-| Single camera | 5 |
-| Dual camera | 15 |
-| Triple camera | 30 |
-| Quad camera | 40 |
-| AI fusion multi-sensor | 50 |
+| Single camera | 20 |
+| Dual camera | 60 |
+| Triple camera | 100 |
+| Quad camera | 140 |
+| Penta camera (5+) | 160 |
+| AI fusion multi-sensor (Advanced) | 180 |
+| AI fusion + Computational Photography (Elite) | 200 |
 
 ---
 
-## 6. Special Features (30 pts)
+## 6. Special Features (100 pts)
 
-Each feature awards **5 points** (cumulative):
+Each feature awards points (cumulative):
 
-- RAW capture support
-- Multi-frame HDR
-- Spectrum sensor
-- Dedicated night mode
-- Pro video (LOG/DV/ProRes)
-- Depth sensor / LiDAR
+- RAW capture support: **15 pts**
+- Multi-frame HDR: **15 pts**
+- Spectrum sensor: **20 pts**
+- Dedicated night mode: **15 pts**
+- Pro video (LOG/DV/ProRes): **20 pts**
+- Depth sensor / LiDAR: **15 pts**
 
-**Maximum: 30 points**
+**Maximum: 100 points**
 
 ---
 
@@ -171,9 +173,9 @@ Professional camera testing scores from established review platforms:
 ## 🧮 Final Formula
 
 ```
-FINAL CMS-1000 SCORE = CORE SYSTEM (max 610)
+FINAL CMS-1330 SCORE = CORE SYSTEM (max 940)
                      + ONLINE BENCHMARK SYSTEM (max 390)
-                     = 1000 points
+                     = 1330 points
 ```
 
 ---
@@ -221,12 +223,12 @@ Measures multi-camera integration sophistication.
 **Core System:**
 - Sensor & Optics: 210/240
 - Resolution & Binning: 80/90
-- Focus & Stability: 72/80
-- Video System: 90/120
-- Multi-Camera Fusion: 50/50
-- Special Features: 25/30
+- Focus & Stability: 180/200
+- Video System: 170/200
+- Multi-Camera Fusion: 180/200
+- Special Features: 85/100
 
-**Core Total: 527/610**
+**Core Total: 905/940**
 
 **Online Benchmarks:**
 - DxOMark: 160/180
@@ -235,7 +237,7 @@ Measures multi-camera integration sophistication.
 
 **Benchmark Total: 340/390**
 
-**Final CMS-1000 Score: 867/1000 (86.7%)**
+**Final CMS-1330 Score: 1245/1330 (93.6%)**
 
 ---
 
@@ -243,13 +245,13 @@ Measures multi-camera integration sophistication.
 
 | Score Range | Rating |
 |-------------|--------|
-| 900–1000 | Imaging Excellence |
-| 800–899 | Professional Grade |
-| 700–799 | Enthusiast Grade |
-| 600–699 | Mainstream Plus |
-| 500–599 | Mainstream |
-| 400–499 | Budget Plus |
-| <400 | Entry Level |
+| 1197–1330 | Imaging Excellence |
+| 1064–1196 | Professional Grade |
+| 931–1063 | Enthusiast Grade |
+| 798–930 | Mainstream Plus |
+| 665–797 | Mainstream |
+| 532–664 | Budget Plus |
+| <532 | Entry Level |
 
 ---
 
