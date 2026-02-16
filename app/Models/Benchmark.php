@@ -21,6 +21,8 @@ class Benchmark extends Model
         'charge_time_test',
         'free_fall_rating',
         'dmark_wild_life_stress_stability',
+        'dxomark_score',
+        'phonearena_camera_score',
     ];
 
     public function phone()

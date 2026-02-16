@@ -113,6 +113,7 @@ class PhoneController extends Controller
             'performance' => 'overall_score',
             'value' => 'value_score',
             'gaming' => 'gpx_score',
+            'cms' => 'cms_score',
             default => 'ueps_score',
         };
 
@@ -120,6 +121,7 @@ class PhoneController extends Controller
             'performance' => 'overall_score',
             'value' => 'value_score',
             'gaming' => 'gpx_score',
+            'cms' => 'cms_score',
             default => 'ueps_score',
         };
 
@@ -144,7 +146,7 @@ class PhoneController extends Controller
                 });
 
             // Join benchmarks table if sorting by benchmark fields
-            if (in_array($sort, ['antutu_score', 'geekbench_multi', 'geekbench_single', 'dmark_wild_life_extreme', 'battery_endurance_hours'])) {
+            if (in_array($sort, ['antutu_score', 'geekbench_multi', 'geekbench_single', 'dmark_wild_life_extreme', 'battery_endurance_hours', 'dxomark_score', 'phonearena_camera_score'])) {
                  $query->with(['benchmarks', 'battery', 'body'])
                        ->leftJoin('benchmarks', 'phones.id', '=', 'benchmarks.phone_id')
                        ->select('phones.*', 'rankings_table.computed_rank') // Select phones.* explicitly
@@ -161,12 +163,18 @@ class PhoneController extends Controller
             } elseif ($sort == 'gpx_score') {
                  $query->select('phones.*', 'rankings_table.computed_rank')
                        ->orderBy('gpx_score', $direction);
+            } elseif ($sort == 'cms_score') {
+                 $query->select('phones.*', 'rankings_table.computed_rank')
+                       ->orderBy('cms_score', $direction);
             } elseif ($sort == 'price_per_ueps') {
                  $query->select('phones.*', 'rankings_table.computed_rank')
                        ->orderByRaw('price / ueps_score ' . $direction);
             } elseif ($sort == 'price_per_fpi') {
                  $query->select('phones.*', 'rankings_table.computed_rank')
                        ->orderByRaw('price / overall_score ' . $direction);
+            } elseif ($sort == 'price_per_cms') {
+                 $query->select('phones.*', 'rankings_table.computed_rank')
+                       ->orderByRaw('price / cms_score ' . $direction);
             } else {
                 // Default sort (usually matches the tab metric)
                 $query->select('phones.*', 'rankings_table.computed_rank')

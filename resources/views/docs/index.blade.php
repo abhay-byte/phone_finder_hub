@@ -122,12 +122,12 @@
                 </div>
             </a>
 
-            <!-- CMS-1000 Card -->
+            <!-- CMS-1330 Card -->
             <a href="{{ route('cms.methodology') }}"
-                class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-purple-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
+                class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-amber-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
                 <div>
                     <span
-                        class="rounded-lg inline-flex p-3 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 ring-4 ring-white dark:ring-gray-800">
+                        class="rounded-lg inline-flex p-3 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 ring-4 ring-white dark:ring-gray-800">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -139,10 +139,10 @@
                 <div class="mt-4">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                         <span class="absolute inset-0" aria-hidden="true"></span>
-                        CMS-1000 Camera Mastery
+                        CMS-1330 Camera Mastery
                     </h3>
                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                        Comprehensive 1000-point camera scoring system evaluating hardware specs, imaging capabilities, and
+                        Comprehensive 1330-point camera scoring system evaluating hardware specs, imaging capabilities, and
                         professional benchmarks.
                     </p>
                 </div>

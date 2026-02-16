@@ -17,6 +17,8 @@ erDiagram
         value_score decimal "Indexed"
         gpx_score decimal "Indexed"
         gpx_details json
+        cms_score decimal "Indexed, nullable, default 0"
+        cms_details json "Nullable"
         release_date date "Indexed"
         announced_date date
         image_url string
@@ -160,6 +162,8 @@ erDiagram
         repairability_score string
         free_fall_rating string
         energy_label string
+        dxomark_score integer "Nullable, for CMS calculation"
+        phonearena_camera_score integer "Nullable, for CMS calculation"
         created_at timestamp
         updated_at timestamp
     }
@@ -301,7 +305,7 @@ erDiagram
 
 **phones table:**
 - `name` (unique)
-- `overall_score`, `ueps_score`, `value_score`, `gpx_score`
+- `overall_score`, `ueps_score`, `value_score`, `gpx_score`, `cms_score`
 - `price`, `release_date`
 
 **benchmarks table:**
@@ -310,10 +314,12 @@ erDiagram
 
 ### Notable Schema Features
 
-1. **Scoring System**: Multiple scoring metrics (overall_score, ueps_score, value_score, gpx_score) with gpx_details stored as JSON
-2. **E-commerce Integration**: Amazon and Flipkart URLs and prices
-3. **Developer Metrics**: Bootloader unlock, custom ROM support, Turnip support for gaming
-4. **Comprehensive Camera Specs**: Separate fields for main, ultrawide, telephoto, and selfie cameras
-5. **Detailed Display Specs**: Both claimed and measured brightness values
-6. **Multiple Benchmark Types**: AnTuTu, Geekbench, 3DMark with stability testing
-7. **Charging Specs**: Detailed wired, wireless, and reverse charging specifications
+1. **Scoring System**: Multiple scoring metrics (overall_score, ueps_score, value_score, gpx_score, cms_score) with gpx_details and cms_details stored as JSON
+2. **CMS-1330 Camera Scoring**: Dedicated cms_score (0-1330) and cms_details (JSON breakdown) for comprehensive camera evaluation
+3. **Camera Benchmarks**: DxOMark and PhoneArena camera scores stored in benchmarks table for CMS calculation
+4. **E-commerce Integration**: Amazon and Flipkart URLs and prices
+5. **Developer Metrics**: Bootloader unlock, custom ROM support, Turnip support for gaming
+6. **Comprehensive Camera Specs**: Separate fields for main, ultrawide, telephoto, and selfie cameras
+7. **Detailed Display Specs**: Both claimed and measured brightness values
+8. **Multiple Benchmark Types**: AnTuTu, Geekbench, 3DMark with stability testing
+9. **Charging Specs**: Detailed wired, wireless, and reverse charging specifications

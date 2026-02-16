@@ -26,6 +26,8 @@ class Phone extends Model
         'value_score',
         'gpx_score',
         'gpx_details',
+        'cms_score',
+        'cms_details',
     ];
 
     protected $casts = [
@@ -37,6 +39,8 @@ class Phone extends Model
         'value_score' => 'decimal:2',
         'gpx_score' => 'decimal:2',
         'gpx_details' => 'array',
+        'cms_score' => 'decimal:1',
+        'cms_details' => 'array',
     ];
 
     protected $appends = [
@@ -159,6 +163,11 @@ class Phone extends Model
         $gpx = $this->calculateGPX();
         $this->gpx_score = $gpx['score'];
         $this->gpx_details = $gpx['details'];
+
+        // Calculate CMS
+        $cms = \App\Services\CmsScoringService::calculate($this);
+        $this->cms_score = $cms['total_score'];
+        $this->cms_details = $cms['breakdown'];
 
         // Calculate Value Score (Persisted)
         if ($this->price > 0 && $this->overall_score > 0) {

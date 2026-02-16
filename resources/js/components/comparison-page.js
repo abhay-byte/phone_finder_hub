@@ -8,6 +8,7 @@ export default (initialPhones) => ({
     isScrolled: false,
     showUeps: false,
     showGpx: false,
+    showCms: false,
 
     specs: [
         {
@@ -39,6 +40,19 @@ export default (initialPhones) => ({
                 { key: 'gpx_details.connectivity', label: 'Connectivity & Latency' },
                 { key: 'gpx_details.audio', label: 'Audio & Haptics' },
                 { key: 'gpx_details.emulator', label: 'Emulation' }
+            ]
+        },
+        {
+            title: 'Camera (CMS-1330)',
+            rows: [
+                { key: 'cms_score', label: 'Overall Score' },
+                { key: 'cms_details.sensor_optics', label: 'Sensor & Optics' },
+                { key: 'cms_details.resolution', label: 'Resolution & Binning' },
+                { key: 'cms_details.focus_stability', label: 'Focus & Stability' },
+                { key: 'cms_details.video', label: 'Video System' },
+                { key: 'cms_details.fusion', label: 'MC Fusion' },
+                { key: 'cms_details.features', label: 'Special Features' },
+                { key: 'cms_details.benchmarks', label: 'Benchmarks' },
             ]
         },
         {
@@ -247,9 +261,19 @@ export default (initialPhones) => ({
 
         const raw = this.getRawSpecValue(phone, key);
 
-        // UEPS Logic (Already has score/max object)
+        // UEPS & CMS Logic (Already has score/max object from backend)
         if (raw && typeof raw === 'object' && 'score' in raw && 'max' in raw) {
             return raw;
+        }
+
+        // CMS Overall Score Logic
+        if (key === 'cms_score') {
+            const score = parseFloat(raw) || 0;
+            return {
+                score: score,
+                max: 1330,
+                details: []
+            };
         }
 
         // GPX Logic (Flat value, construct object)
