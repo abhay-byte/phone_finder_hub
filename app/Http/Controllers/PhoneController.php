@@ -254,4 +254,9 @@ class PhoneController extends Controller
     {
         return view('docs.gpx');
     }
+
+    public function cmsMethodology()
+    {
+        return view('cms.methodology');
+    }
 }

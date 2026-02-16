@@ -9,6 +9,7 @@ Route::get('/rankings', [\App\Http\Controllers\PhoneController::class, 'rankings
 Route::get('/methodology/ueps', [\App\Http\Controllers\PhoneController::class, 'methodology'])->name('ueps.methodology');
 Route::get('/methodology/fpi', [\App\Http\Controllers\PhoneController::class, 'fpiMethodology'])->name('fpi.methodology');
 Route::get('/methodology/gpx', [\App\Http\Controllers\PhoneController::class, 'gpxMethodology'])->name('docs.gpx');
+Route::get('/methodology/cms', [\App\Http\Controllers\PhoneController::class, 'cmsMethodology'])->name('cms.methodology');
 Route::get('/compare', [\App\Http\Controllers\ComparisonController::class, 'index'])->name('phones.compare');
 Route::get('/docs', [\App\Http\Controllers\DocsController::class, 'index'])->name('docs.index');
 Route::get('/phones/{phone}', [\App\Http\Controllers\PhoneController::class, 'show'])->name('phones.show');
