@@ -7,6 +7,7 @@ export default (initialPhones) => ({
     currentSlot: null,
     isScrolled: false,
     showUeps: false,
+    showGpx: false,
 
     specs: [
         {

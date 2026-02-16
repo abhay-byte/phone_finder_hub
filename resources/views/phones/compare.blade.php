@@ -169,10 +169,17 @@
                         <div class="contents">
                             <!-- Section Title Row -->
                             <div class="col-span-full bg-gray-100 dark:bg-[#121212] border-b border-gray-200 dark:border-white/10 py-3 px-6 mt-0 sticky left-0 z-20"
-                                 :class="{ 'cursor-pointer hover:bg-gray-200 dark:hover:bg-white/5 transition-colors': section.title === 'UEPS Breakdown' }"
-                                 @click="section.title === 'UEPS Breakdown' ? showUeps = !showUeps : null">
+                                 :class="{ 
+                                     'cursor-pointer hover:bg-gray-200 dark:hover:bg-white/5 transition-colors': section.title === 'UEPS Breakdown' || section.title === 'Gaming (GPX-300)' 
+                                 }"
+                                 @click="
+                                    section.title === 'UEPS Breakdown' ? showUeps = !showUeps : 
+                                    section.title === 'Gaming (GPX-300)' ? showGpx = !showGpx : null
+                                 ">
                                 <div class="flex justify-between items-center">
                                     <h4 class="text-xs font-black uppercase tracking-widest text-teal-600 dark:text-teal-400" x-text="section.title"></h4>
+                                    
+                                    <!-- UEPS Toggle -->
                                     <template x-if="section.title === 'UEPS Breakdown'">
                                         <div class="flex items-center gap-2">
                                             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider" x-text="showUeps ? 'Hide Breakdown' : 'Show Breakdown'"></span>
@@ -183,11 +190,27 @@
                                             </svg>
                                         </div>
                                     </template>
+
+                                    <!-- GPX Toggle -->
+                                    <template x-if="section.title === 'Gaming (GPX-300)'">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider" x-text="showGpx ? 'Hide Index' : 'Show Index'"></span>
+                                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" 
+                                                 :class="{ 'rotate-180': showGpx }"
+                                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    </template>
                                 </div>
                             </div>
 
-                            <!-- Data Rows (Generic) -->
-                            <template x-if="section.title !== 'UEPS Breakdown'">
+                            <!-- Data Rows (Generic + Collapsible) -->
+                            <template x-if="
+                                section.title === 'UEPS Breakdown' ? showUeps : 
+                                section.title === 'Gaming (GPX-300)' ? showGpx : 
+                                true
+                            ">
                                 <div class="contents">
                                     <template x-for="row in section.rows" :key="row.key">
                                         <div class="contents hover:bg-white dark:hover:bg-[#121212] transition-colors group">
