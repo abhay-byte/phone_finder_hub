@@ -257,10 +257,42 @@ $phone->updateScores();
 - `custom_rom_support`: "Major", "Limited", "None"
 
 #### Spec Cameras
-- `ultrawide_camera_specs`: Ultrawide camera specifications
-- `telephoto_camera_specs`: Telephoto/periscope camera specs
+- `main_camera_specs`: **CRITICAL** - All camera specs in multi-line format (see CMS section below)
+- `main_camera_features`: Special features like laser focus, brand partnerships
+- `main_video_capabilities`: Video specs including stabilization (gyro-EIS)
+- `ultrawide_camera_specs`: **IMPORTANT** - Separate ultrawide specs for per-camera CMS scoring
+- `telephoto_camera_specs`: **IMPORTANT** - Separate telephoto/periscope specs for per-camera CMS scoring
+- `main_camera_sensors`: Sensor sizes for all cameras
+- `main_camera_apertures`: Apertures for all cameras
 - `main_camera_pdaf`: PDAF support details
+- `selfie_camera_specs`: Front camera specs (resolution, aperture, autofocus)
 - `selfie_video_features`: Selfie video specific features
+
+**⚠️ CRITICAL for CMS-1370 Granular Scoring**:
+The new per-camera Focus & Stability scoring requires **separate** telephoto and ultrawide fields to be populated. If you only populate `main_camera_specs` with all cameras, the granular scoring will give 0 points for telephoto/ultrawide autofocus and OIS.
+
+**Example - OnePlus 13R**:
+```php
+// ✅ CORRECT - Populate both combined AND separate fields
+$camera->main_camera_specs = "50 MP, f/1.8, 24mm (wide), 1/1.56\", 1.0µm, multi-directional PDAF, OIS
+50 MP, f/2.0, 47mm (telephoto), 1/2.75\", 0.64µm, PDAF, 2x optical zoom
+8 MP, f/2.2, 16mm, 112˚ (ultrawide), 1/4.0\", 1.12µm";
+
+// ALSO populate separate fields for granular CMS scoring:
+$camera->telephoto_camera_specs = "50 MP, f/2.0, 47mm (telephoto), 1/2.75\", 0.64µm, PDAF, 2x optical zoom";
+$camera->ultrawide_camera_specs = "8 MP, f/2.2, 16mm, 112˚ (ultrawide), 1/4.0\", 1.12µm";
+
+// Result: Main AF 28pts + Tele AF 10pts + UW AF 4pts = 42pts total
+```
+
+```php
+// ❌ WRONG - Only combined field
+$camera->main_camera_specs = "50 MP... + 50 MP... + 8 MP...";
+// telephoto_camera_specs = NULL
+// ultrawide_camera_specs = NULL
+
+// Result: Main AF 28pts + Tele AF 0pts + UW AF 0pts = 28pts total (lost 14pts!)
+```
 
 #### Spec Connectivities
 - `positioning_details`: Detailed GPS/GNSS info
@@ -308,6 +340,73 @@ $phone->updateScores();
 - Geekbench 6 Multi → `geekbench_multi`
 - 3DMark Wild Life Extreme → `dmark_wild_life_extreme`
 - **3DMark Stability %** → `dmark_wild_life_stress_stability` (CRITICAL!)
+
+### ⚠️ CRITICAL: CMS-1290 Camera Scoring Data Extraction
+
+The **CMS-1290 (Camera Mastery Score)** system requires **precise camera data extraction** for accurate scoring. Pay special attention to these fields:
+
+#### Camera Specs Field (`main_camera_specs`)
+Extract **ALL** camera details in one field, including:
+- **Resolution**: "50 MP", "64 MP", "108 MP", "200 MP"
+- **Aperture**: "f/1.6", "f/1.8", "f/2.0"
+- **Sensor size**: "1/1.43\"", "1/1.95\"", "1/2.75\""
+- **Pixel size**: "1.12µm", "0.8µm", "0.64µm"
+- **Autofocus type**: "**multi-directional PDAF**", "**PDAF**", "**Dual-Pixel AF**", "**DPAF**"
+- **Stabilization**: "**OIS**" (optical image stabilization)
+- **Zoom**: "3x optical zoom", "5x optical zoom"
+
+**Example (OnePlus 13)**:
+```
+50 MP, f/1.6, 23mm (wide), 1/1.43", 1.12µm, multi-directional PDAF, OIS
+50 MP, f/2.6, 73mm (periscope telephoto), 1/1.95", 0.8µm, 3x optical zoom, PDAF, OIS
+50 MP, f/2.0, 15mm, 120˚ (ultrawide), 1/2.75", 0.64µm, PDAF
+```
+
+#### Camera Features Field (`main_camera_features`)
+Extract **special features** that affect CMS scoring:
+- **Laser focus** (adds 90pts when combined with PDAF!)
+- **Brand partnerships**: "Hasselblad Color Calibration", "Leica optics", "Zeiss optics"
+- **Special sensors**: "color spectrum sensor", "flicker sensor"
+- **Advanced features**: "RAW capture", "Pro mode", "Night mode"
+
+**Example (OnePlus 13)**:
+```
+Laser focus, Hasselblad Color Calibration, color spectrum sensor, Dual-LED flash, HDR, panorama
+```
+
+#### Video Capabilities Field (`main_video_capabilities`)
+Extract **video specs** including stabilization:
+- **Resolution \u0026 FPS**: "8K@30fps", "4K@60fps", "1080p@240fps"
+- **Stabilization**: "**gyro-EIS**" (adds 100pts when combined with OIS!)
+- **HDR**: "Auto HDR", "Dolby Vision", "HDR10+"
+
+**Example (OnePlus 13)**:
+```
+8K@30fps, 4K@30/60fps, 1080p@30/60/240/480fps, Auto HDR, gyro-EIS, Dolby Vision
+```
+
+#### Why This Matters for CMS Scoring:
+
+| Missing Data | Points Lost | Example |
+|--------------|-------------|---------|
+| Missing "multi-directional PDAF" | -50 pts | Defaults to "Contrast AF" (20pts) instead of "Multi-PDAF" (70pts) |
+| Missing "Laser focus" | -50 pts | Laser + PDAF = 90pts, PDAF alone = 40pts |
+| Missing "gyro-EIS" in video | -40 pts | OIS + Gyro-EIS = 100pts, OIS alone = 60pts |
+| Missing sensor sizes | -32 pts | Can't score sensor size category |
+| Missing pixel sizes | -20 pts | Can't score pixel size category |
+
+**Total potential loss from incomplete data: ~200 points out of 1290!**
+
+#### CMS Scoring Breakdown (1290 points total):
+1. **Sensor \u0026 Optics**: 240 pts (sensor size, pixel size, aperture, optics quality, periscope, camera count)
+2. **Resolution \u0026 Binning**: 50 pts (megapixels + binning technology)
+3. **Focus \u0026 Stability**: 200 pts (autofocus type + stabilization)
+4. **Video System**: 200 pts (8K/4K/1080p capabilities)
+5. **Multi-Camera Fusion**: 200 pts (camera count + computational photography)
+6. **Special Features**: 100 pts (RAW, HDR, Night Mode, LiDAR, etc.)
+7. **Online Benchmarks**: 390 pts (DxOMark, PhoneArena scores)
+
+**Total Core System**: 900 pts | **Benchmarks**: 390 pts | **Grand Total**: 1290 pts
 
 ## 7. QA Checklist Before Saving
 

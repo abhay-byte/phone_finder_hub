@@ -25,7 +25,7 @@
                     class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-amber-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-amber-500 transition-colors">
-                        240</div>
+                        280</div>
                     <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Sensor & Optics</div>
                 </div>
@@ -81,7 +81,7 @@
             <div class="mb-12">
                 <div class="bg-gradient-to-r from-amber-500 to-amber-600 p-1 rounded-3xl mb-12">
                     <div class="bg-white dark:bg-[#121212] rounded-[22px] p-8">
-                        <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4">🧩 Core System — 940 Points</h2>
+                        <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4">🧩 Core System — 980 Points</h2>
                         <p class="text-slate-600 dark:text-slate-400">Pure hardware and measurable features, evaluated
                             independently of subjective testing.</p>
                     </div>
@@ -95,8 +95,8 @@
                 <section
                     class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">1. Sensor & Optics (240 Points)</h2>
-                        <p class="text-sm text-slate-500 mt-2">Per-camera evaluation with weighted fusion</p>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">1. Sensor & Optics (280 Points)</h2>
+                        <p class="text-sm text-slate-500 mt-2">Rear + front camera evaluation with weighted scoring</p>
                     </div>
                     <div class="p-8 space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -171,6 +171,57 @@
                                 0.1
                             </p>
                         </div>
+                        <div
+                            class="rounded-2xl border border-blue-200 dark:border-blue-900/30 p-5 bg-blue-50 dark:bg-blue-900/10 mt-6">
+                            <h4 class="font-bold text-slate-900 dark:text-white mb-3">📸 Front Camera Scoring (40 Points)
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <div class="font-semibold text-slate-700 dark:text-slate-300 mb-2">Resolution (20 pts)
+                                    </div>
+                                    <ul class="space-y-1 text-slate-600 dark:text-slate-400">
+                                        <li class="flex justify-between"><span>≥50MP</span> <span
+                                                class="font-mono text-blue-600 font-bold">+20</span></li>
+                                        <li class="flex justify-between"><span>32-49MP</span> <span
+                                                class="font-mono text-blue-600 font-bold">+16</span></li>
+                                        <li class="flex justify-between"><span>20-31MP</span> <span
+                                                class="font-mono text-blue-600 font-bold">+12</span></li>
+                                        <li class="flex justify-between"><span>12-19MP</span> <span
+                                                class="font-mono text-blue-600 font-bold">+8</span></li>
+                                        <li class="flex justify-between"><span>\u003c12MP</span> <span
+                                                class="font-mono text-blue-600 font-bold">+4</span></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-slate-700 dark:text-slate-300 mb-2">Aperture (15 pts)
+                                    </div>
+                                    <ul class="space-y-1 text-slate-600 dark:text-slate-400">
+                                        <li class="flex justify-between"><span>≤f/1.8</span> <span
+                                                class="font-mono text-blue-600 font-bold">+15</span></li>
+                                        <li class="flex justify-between"><span>f/1.9-2.0</span> <span
+                                                class="font-mono text-blue-600 font-bold">+12</span></li>
+                                        <li class="flex justify-between"><span>f/2.1-2.4</span> <span
+                                                class="font-mono text-blue-600 font-bold">+8</span></li>
+                                        <li class="flex justify-between"><span>\u003ef/2.4</span> <span
+                                                class="font-mono text-blue-600 font-bold">+4</span></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div class="font-semibold text-slate-700 dark:text-slate-300 mb-2">Autofocus (5 pts)
+                                    </div>
+                                    <ul class="space-y-1 text-slate-600 dark:text-slate-400">
+                                        <li class="flex justify-between"><span>PDAF/AF</span> <span
+                                                class="font-mono text-blue-600 font-bold">+5</span></li>
+                                        <li class="flex justify-between"><span>Fixed focus</span> <span
+                                                class="font-mono text-blue-600 font-bold">+0</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-500 mt-3 italic">
+                                Front camera quality matters for video calls, selfies, and content creation. Premium phones
+                                now feature 32-50MP selfie cameras with autofocus.
+                            </p>
+                        </div>
                     </div>
                 </section>
 
@@ -185,27 +236,27 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-sm text-slate-700 dark:text-slate-300">≥200MP (multi-bin)</span>
-                                <span class="font-mono text-amber-600 font-bold">+90</span>
+                                <span class="font-mono text-amber-600 font-bold">+50</span>
                             </div>
                             <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-sm text-slate-700 dark:text-slate-300">108MP (tetra-bin)</span>
-                                <span class="font-mono text-amber-600 font-bold">+80</span>
+                                <span class="font-mono text-amber-600 font-bold">+44</span>
                             </div>
                             <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-sm text-slate-700 dark:text-slate-300">50–64MP (quad-bin)</span>
-                                <span class="font-mono text-amber-600 font-bold">+65</span>
+                                <span class="font-mono text-amber-600 font-bold">+36</span>
                             </div>
                             <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
                                 <span class="text-sm text-slate-700 dark:text-slate-300">48MP (quad-bin)</span>
-                                <span class="font-mono text-amber-600 font-bold">+45</span>
-                            </div>
-                            <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
-                                <span class="text-sm text-slate-700 dark:text-slate-300">16–24MP</span>
                                 <span class="font-mono text-amber-600 font-bold">+25</span>
                             </div>
                             <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
-                                <span class="text-sm text-slate-700 dark:text-slate-300">≤12MP (no binning)</span>
-                                <span class="font-mono text-amber-600 font-bold">+10</span>
+                                <span class="text-sm text-slate-700 dark:text-slate-300">16–24MP</span>
+                                <span class="font-mono text-amber-600 font-bold">+14</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 rounded-xl bg-slate-50 dark:bg-white/5">
+                                <span class="text-sm text-slate-700 dark:text-slate-300">≤12MP</span>
+                                <span class="font-mono text-amber-600 font-bold">+6</span>
                             </div>
                         </div>
                     </div>
@@ -222,34 +273,39 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Autofocus (100 pts)</h3>
+                                <h3 class="font-bold text-slate-900 dark:text-white mb-2">Autofocus (AF)</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                                    <li class="flex justify-between"><span>Dual-Pixel + Laser</span> <span
-                                            class="font-mono text-amber-600 font-bold">+100</span></li>
-                                    <li class="flex justify-between"><span>Dual-Pixel AF</span> <span
-                                            class="font-mono text-amber-600 font-bold">+80</span></li>
-                                    <li class="flex justify-between"><span>Multi-PDAF</span> <span
-                                            class="font-mono text-amber-600 font-bold">+60</span></li>
-                                    <li class="flex justify-between"><span>PDAF</span> <span
-                                            class="font-mono text-amber-600 font-bold">+40</span></li>
+                                    <li class="flex justify-between"><span>Main (Laser/Dual-Pixel)</span> <span
+                                            class="font-mono text-amber-600 font-bold">40 pts</span></li>
+                                    <li class="flex justify-between"><span>Tele/Ultrawide (PDAF)</span> <span
+                                            class="font-mono text-amber-600 font-bold">20 pts total</span></li>
+                                    <li class="flex justify-between"><span>Front Camera AF</span> <span
+                                            class="font-mono text-amber-600 font-bold">8 pts</span></li>
                                     <li class="flex justify-between"><span>Contrast AF</span> <span
-                                            class="font-mono text-amber-600 font-bold">+20</span></li>
+                                            class="font-mono text-slate-400">0 pts</span></li>
                                 </ul>
                             </div>
                             <div>
-                                <h3 class="font-bold text-slate-900 dark:text-white mb-2">Stabilization (100 pts)</h3>
+                                <h3 class="font-bold text-slate-900 dark:text-white mb-2">Stabilization (OIS/EIS)</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                                    <li class="flex justify-between"><span>OIS + gyro-EIS</span> <span
-                                            class="font-mono text-amber-600 font-bold">+100</span></li>
-                                    <li class="flex justify-between"><span>OIS + EIS</span> <span
-                                            class="font-mono text-amber-600 font-bold">+80</span></li>
-                                    <li class="flex justify-between"><span>OIS</span> <span
-                                            class="font-mono text-amber-600 font-bold">+60</span></li>
-                                    <li class="flex justify-between"><span>EIS</span> <span
-                                            class="font-mono text-amber-600 font-bold">+40</span></li>
-                                    <li class="flex justify-between"><span>None</span> <span
-                                            class="font-mono text-slate-400">+10</span></li>
+                                    <li class="flex justify-between"><span>Main/Tele OIS</span> <span
+                                            class="font-mono text-amber-600 font-bold">60 pts</span></li>
+                                    <li class="flex justify-between"><span>Rear Video Stab.</span> <span
+                                            class="font-mono text-amber-600 font-bold">15 pts</span></li>
+                                    <li class="flex justify-between"><span>Front Video Stab.</span> <span
+                                            class="font-mono text-amber-600 font-bold">10 pts</span></li>
+                                    <li class="flex justify-between"><span>Gimbal/Horizon</span> <span
+                                            class="font-mono text-amber-600 font-bold">10 pts</span></li>
                                 </ul>
                             </div>
+                        </div>
+                        <div
+                            class="rounded-2xl border border-amber-200 dark:border-amber-900/30 p-5 bg-amber-50 dark:bg-amber-900/10 mt-6">
+                            <h4 class="font-bold text-slate-900 dark:text-white mb-2">Intelligent Parsing</h4>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                The system intelligently extracts telephoto and ultrawide specs even if they are combined in
+                                the main camera field, ensuring accurate per-camera scoring.
+                            </p>
                         </div>
                     </div>
                 </section>
@@ -438,9 +494,9 @@
                         <h2 class="text-2xl font-bold text-white mb-6">🧮 Final Formula</h2>
                         <div class="bg-black/30 rounded-2xl p-6 font-mono text-sm">
                             <div class="text-amber-300 mb-2">FINAL CMS-1330 SCORE =</div>
-                            <div class="text-white pl-8 mb-1">CORE SYSTEM (max 940)</div>
+                            <div class="text-white pl-8 mb-1">CORE SYSTEM (max 980)</div>
                             <div class="text-white pl-8 mb-1">+ ONLINE BENCHMARK SYSTEM (max 390)</div>
-                            <div class="text-amber-300 mt-2">= 1330 points</div>
+                            <div class="text-amber-300 mt-2">= 1370 points</div>
                         </div>
                     </div>
                 </section>

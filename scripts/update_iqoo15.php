@@ -9,12 +9,16 @@ $app = require_once __DIR__ . '/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
-$phoneName = 'OnePlus 15';
+$phoneName = 'vivo iQOO 15'; // Assuming name in DB is 'vivo iQOO 15' or 'iQOO 15'
 $phone = Phone::where('name', $phoneName)->first();
 
 if (!$phone) {
-    echo "❌ $phoneName not found!\n";
-    exit;
+    echo "❌ $phoneName not found! Trying 'iQOO 15'...\n";
+    $phone = Phone::where('name', 'iQOO 15')->first();
+    if (!$phone) {
+        echo "❌ iQOO 15 not found either!\n";
+        exit;
+    }
 }
 
 echo "📱 Updating Camera Specs for {$phone->name}...\n";
@@ -27,19 +31,19 @@ if (!$camera) {
 }
 
 // Update Specs
-$camera->main_camera_specs = "50 MP, f/1.8, 24mm (wide), 1/1.56\", 1.0µm, multi-directional PDAF, OIS\n" .
-                             "50 MP, f/2.8, 80mm (periscope telephoto), 1/2.76\", 0.64µm, 3.5x optical zoom, PDAF, OIS\n" .
-                             "50 MP, f/2.0, 16mm, 116˚ (ultrawide), 1/2.88\", 0.61µm, PDAF";
+$camera->main_camera_specs = "50 MP, f/1.9, 24mm (wide), 1/1.56\", 1.0µm, PDAF, OIS\n" .
+                             "50 MP, f/2.6, 85mm (periscope telephoto), 1/1.95\", 0.8µm, PDAF, OIS, 3x optical zoom\n" .
+                             "50 MP, f/2.1, 15mm (ultrawide), 1/2.76\", 0.64µm, AF";
 
-$camera->telephoto_camera_specs = "50 MP, f/2.8, 80mm (periscope telephoto), 1/2.76\", 0.64µm, 3.5x optical zoom, PDAF, OIS";
-$camera->ultrawide_camera_specs = "50 MP, f/2.0, 16mm, 116˚ (ultrawide), 1/2.88\", 0.61µm, PDAF";
+$camera->telephoto_camera_specs = "50 MP, f/2.6, 85mm (periscope telephoto), 1/1.95\", 0.8µm, PDAF, OIS, 3x optical zoom";
+$camera->ultrawide_camera_specs = "50 MP, f/2.1, 15mm (ultrawide), 1/2.76\", 0.64µm, AF";
 
-$camera->main_camera_features = "Laser focus, color spectrum sensor, LED flash, HDR, panorama, LUT preview";
-$camera->main_video_capabilities = "8K@30fps, 4K@30/60/120fps, 1080p@30/60/240fps, Auto HDR, gyro-EIS, Dolby Vision, LUT";
+$camera->main_camera_features = "LED flash, HDR, panorama";
+$camera->main_video_capabilities = "8K@30fps, 4K@24/30/60fps, 1080p@30/60/120/240fps, gyro-EIS";
 
-$camera->selfie_camera_specs = "32 MP, f/2.4, 21mm (wide), 1/2.74\", 0.64µm, AF";
-$camera->selfie_camera_features = "HDR, panorama";
-$camera->selfie_video_features = "4K@30/60fps, 1080p@30/60fps, gyro-EIS, HDR";
+$camera->selfie_camera_specs = "32 MP, f/2.2, 21mm (wide), 1/3.1\", 0.7µm";
+$camera->selfie_camera_features = "HDR";
+$camera->selfie_video_features = "4K@30/60fps, 1080p@30/60fps";
 
 $camera->save();
 
