@@ -373,7 +373,7 @@
              class="fixed inset-0 bg-gray-900/80 backdrop-blur-md"
              style="z-index: 9998;"></div>
 
-        <div class="flex min-h-screen items-start justify-center p-4 pt-[15vh] text-center sm:p-0">
+        <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
             <div x-show="isSearchOpen" 
                  x-transition:enter="ease-out duration-300"
                  x-transition:enter-start="opacity-0 scale-95"
