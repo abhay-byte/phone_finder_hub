@@ -9,8 +9,12 @@ use App\Models\SpecBattery;
 use App\Models\Benchmark;
 use Illuminate\Support\Facades\DB;
 
+require __DIR__ . '/../vendor/autoload.php';
+$app = require_once __DIR__ . '/../bootstrap/app.php';
+$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
 // Find the phone
-$phone = Phone::where('model_variant', 'CPH2769')->first();
+$phone = Phone::where('model_variant', 'CPH2769')->orWhere('name', 'OnePlus 15R')->first();
 
 if (!$phone) {
     echo "OnePlus 15R not found!\n";
@@ -74,11 +78,11 @@ DB::transaction(function () use ($phone) {
         [
             'main_camera_specs' => '50 MP, f/1.8, 24mm (wide), 1/1.56", 1.0µm, PDAF, OIS',
             'main_camera_features' => 'Color spectrum sensor, LED flash, HDR, panorama',
-            'main_camera_video' => '4K@30/60/120fps, 1080p@30/60/120/240fps, gyro-EIS, OIS',
+            'main_video_capabilities' => '4K@30/60/120fps, 1080p@30/60/120/240fps, gyro-EIS, OIS',
             'ultrawide_camera_specs' => '8 MP, f/2.2, 16mm, 112˚ (ultrawide), 1/4.0", 1.12µm',
             'selfie_camera_specs' => '32 MP, f/2.0, 25mm (wide), AF',
             'selfie_camera_features' => 'HDR, panorama',
-            'selfie_camera_video' => '4K@30fps, 1080p@30fps, gyro-EIS, OIS',
+            'selfie_video_capabilities' => '4K@30fps, 1080p@30fps, gyro-EIS, OIS',
             // Assigning features to new granular columns
             'main_camera_pdaf' => 'PDAF', // Extracted
             'selfie_video_features' => '4K@30fps, 1080p@30fps, gyro-EIS, OIS',

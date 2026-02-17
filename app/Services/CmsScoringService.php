@@ -125,13 +125,29 @@ class CmsScoringService
         
         $secondaryScore = 0;
         
-        // Count cameras based on specs presence if sensors array is empty
-        $camCount = 1;
-        if (!empty($phone->camera->telephoto_camera_specs)) $camCount++;
-        if (!empty($phone->camera->ultrawide_camera_specs)) $camCount++;
+        // Count valid cameras (excluding low-res depth/macro)
+        $validMainCameras = 0;
+        $allSpecParts = preg_split('/(\n|\+)/', $phone->camera->main_camera_specs ?? '');
+        foreach ($allSpecParts as $part) {
+            $pLower = strtolower($part);
+            $mp = self::extractMP($pLower);
+            if ($mp > 0) {
+                // Check if it's a "filler" camera
+                if ((str_contains($pLower, 'depth') || str_contains($pLower, 'macro')) && $mp < 12) {
+                    continue; // Skip low res depth/macro
+                }
+                $validMainCameras++;
+            }
+        }
+        // Check explicit columns for additional useful cameras
+        $explicitExtras = 0;
+        if (!empty($phone->camera->telephoto_camera_specs)) $explicitExtras++;
+        if (!empty($phone->camera->ultrawide_camera_specs)) $explicitExtras++;
         
-        // Use max of sensors list or explicit specs
-        $hasCams = max(count($sensors), $camCount);
+        // Use the higher count: detailed main parsing vs 1 (Main) + Explicit Extras
+        // This ensures phones with "Main \n UW" string work (count=2)
+        // And phones with "Main" string + "UW" column work (max(1, 1+1)=2)
+        $hasCams = max($validMainCameras, 1 + $explicitExtras);
         
         if ($hasCams >= 3) $secondaryScore += 80; // Tele + UW
         elseif ($hasCams >= 2) $secondaryScore += 40; // UW only
@@ -476,6 +492,8 @@ class CmsScoringService
         
         if (str_contains($videoCaps, '8k')) {
             $resScore = 100; $resLabel = '8K Video';
+        } elseif (str_contains($videoCaps, '4k') && (str_contains($videoCaps, '120fps') || str_contains($videoCaps, '120 fps'))) {
+            $resScore = 90; $resLabel = '4K @ 120fps';
         } elseif (str_contains($videoCaps, '4k') && (str_contains($videoCaps, '60fps') || str_contains($videoCaps, '60 fps'))) {
             $resScore = 80; $resLabel = '4K @ 60fps';
         } elseif (str_contains($videoCaps, '4k')) {
@@ -657,9 +675,17 @@ class CmsScoringService
             $addPoints($benchScore, $benchDetails, 'PhoneArena', 0, 'No Data');
         }
         
-        // Other Benchmarks: Max 80 points (reserved for future use)
-        // Currently not implemented - would include GSMArena, AnandTech, etc.
-        $addPoints($benchScore, $benchDetails, 'Other Benchmarks', 0, 'Not Available');
+        // Other Benchmarks: Max 80 points
+        // Assuming input score is out of 100 (e.g. Percentage, or generic rating)
+        $other = $phone->benchmarks->other_benchmark_score ?? null;
+        $otherPoints = 0;
+        if ($other !== null && $other > 0) {
+            // Scale: (score / 100) * 80, capped at 80
+            $otherPoints = min(($other / 100) * 80, 80);
+            $addPoints($benchScore, $benchDetails, 'Other Benchmarks', round($otherPoints, 1), "Score: {$other}");
+        } else {
+            $addPoints($benchScore, $benchDetails, 'Other Benchmarks', 0, 'Not Available');
+        }
         
         $breakdown['benchmarks'] = ['score' => $benchScore, 'max' => 390, 'details' => $benchDetails];
         $total += $benchScore;
