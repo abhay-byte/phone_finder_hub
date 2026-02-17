@@ -911,6 +911,10 @@
 
     <script>
         function initFilters() {
+            // Select buttons
+            const applyBtn = document.getElementById('apply-filters');
+            const resetBtn = document.getElementById('reset-filters');
+            
             // --- ToolCool Slider Event Listeners ---
             const attachSliderListeners = (sliderId, minInputId, maxInputId, minDisplayId, maxDisplayId, formatFn) => {
                 const slider = document.getElementById(sliderId);
