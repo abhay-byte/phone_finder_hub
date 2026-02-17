@@ -40,10 +40,12 @@ if (!$camera) {
 // Features LED flash, HDR, panorama
 // Video 4K@30/60fps, 1080p, gyro-EIS, OIS
 
-$camera->main_camera_specs = '50 MP, f/1.8, (wide), 1/1.95", 0.8µm, multi-directional PDAF, OIS';
+$camera->main_camera_specs = '50 MP, f/1.8, (wide), 1/1.95", 0.8µm, multi-directional PDAF, OIS + 8 MP, f/2.2, (ultrawide)';
 $camera->ultrawide_camera_specs = '8 MP, f/2.2, (ultrawide)';
 $camera->main_camera_features = 'LED flash, HDR, panorama';
 $camera->main_video_capabilities = '4K@30/60fps, 1080p, gyro-EIS, OIS';
+$camera->selfie_camera_specs = '32 MP, f/2.5, (wide)';
+$camera->selfie_video_capabilities = '4K@30/60fps, 1080p, gyro-EIS';
 
 // Save
 $camera->save();

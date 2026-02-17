@@ -20,7 +20,7 @@ class PhoneController extends Controller
             $query = \App\Models\Phone::query();
 
             if ($sort == 'value_score') {
-                 $query->orderByRaw('overall_score / price desc');
+                 $query->orderBy('value_score', 'desc');
             } elseif ($sort == 'price_asc') {
                 $query->orderBy('price', 'asc');
             } elseif ($sort == 'overall_score') {
@@ -47,7 +47,7 @@ class PhoneController extends Controller
             $query = \App\Models\Phone::query()->with(['platform', 'benchmarks']);
 
             if ($sort == 'value_score') {
-                 $query->orderByRaw('overall_score / price desc');
+                 $query->orderBy('value_score', 'desc');
             } elseif ($sort == 'price_asc') {
                 $query->orderBy('price', 'asc');
             } elseif ($sort == 'overall_score') {
