@@ -154,13 +154,15 @@
                         <!-- IP Rating Filter -->
                         <div class="mb-6">
                             <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">IP Rating</label>
-                            <div class="grid grid-cols-2 gap-2">
+                            <div class="flex flex-wrap gap-2">
                                 @foreach($filterOptions['ip_ratings'] as $ip)
-                                    <label class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/5 rounded px-1 py-0.5 transition-colors">
+                                    <label class="cursor-pointer group relative">
                                         <input type="checkbox" name="ip_ratings[]" value="{{ $ip }}" 
-                                            class="rounded border-gray-300 text-teal-600 focus:ring-teal-500 dark:bg-white/5 dark:border-white/10"
+                                            class="peer hidden" style="display:none"
                                             {{ in_array($ip, request('ip_ratings', [])) ? 'checked' : '' }}>
-                                        <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">{{ $ip }}</span>
+                                        <span class="inline-block px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-xs font-bold text-slate-600 dark:text-slate-400 peer-checked:bg-teal-50 peer-checked:text-teal-700 peer-checked:border-teal-200 dark:peer-checked:bg-teal-900/30 dark:peer-checked:text-teal-300 dark:peer-checked:border-teal-800 transition-all hover:bg-slate-50 dark:hover:bg-white/10">
+                                            {{ \Illuminate\Support\Str::before($ip, ' ') }}
+                                        </span>
                                     </label>
                                 @endforeach
                             </div>
@@ -514,7 +516,7 @@
                             <tr
                                 class="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/5 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold transition-colors duration-300">
                                 <th
-                                class="px-3 py-4 sticky left-0 bg-gray-50 dark:bg-[#181818] z-10 w-16 text-center text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
+                                class="px-3 py-4 sticky left-0 bg-gray-50 dark:bg-[#181818] z-10 w-16 min-w-[4rem] max-w-[4rem] text-center text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
                                     #</th>
                                 <th
                                 class="px-3 py-4 sticky left-16 bg-gray-50 dark:bg-[#181818] z-10 text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
@@ -764,11 +766,11 @@
                             @foreach ($phones as $index => $phone)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-[#181818] transition-colors duration-300 group">
                                     <td
-                                        class="px-3 py-5 sticky left-0 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] text-center font-bold text-gray-400 transition-colors duration-300">
+                                        class="px-3 py-4 sticky left-0 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] text-center font-bold text-gray-400 transition-colors duration-300 w-16 min-w-[4rem] max-w-[4rem]">
                                         #{{ $ranks[$phone->id] ?? '-' }}
                                     </td>
                                     <td
-                                        class="px-3 py-5 sticky left-16 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] transition-colors duration-300">
+                                        class="px-3 py-4 sticky left-16 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] transition-colors duration-300">
                                         <a href="{{ route('phones.show', $phone) }}" class="flex items-center gap-4">
                                             <div
                                                 class="w-12 h-12 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center p-1.5 border border-gray-200 dark:border-white/5 transition-colors duration-300">
@@ -786,17 +788,20 @@
                                             </div>
                                         </a>
                                     </td>
-                                    <td class="px-3 py-5 font-mono text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                                    <td class="px-3 py-4 font-mono text-gray-600 dark:text-gray-400 whitespace-nowrap">
                                         ₹{{ number_format($phone->price) }}</td>
 
                                     @if ($tab == 'overall')
-                                        <td class="px-3 py-5 text-left text-sm text-gray-600 dark:text-gray-400 max-w-[200px] truncate" title="{{ $phone->platform->chipset }}">
+                                        <td class="px-2 py-4 text-left text-sm text-gray-600 dark:text-gray-400 w-[160px] min-w-[160px] whitespace-normal break-words leading-tight">
                                             {{ $phone->platform->chipset ?? '-' }}
                                         </td>
-                                        <td class="px-3 py-5 text-left text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
-                                            {{ $phone->platform->ram ?? '-' }} / {{ $phone->platform->internal_storage ?? '-' }}
+                                        <td class="px-2 py-4 text-left text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                                            <div class="flex flex-col gap-0.5 leading-none">
+                                                <span class="font-bold text-sm block">{{ (int)($phone->platform->ram ?? 0) }}GB</span>
+                                                <span class="text-[10px] opacity-70 block">{{ (int)($phone->platform->internal_storage ?? 0) }}GB</span>
+                                            </div>
                                         </td>
-                                        <td class="px-3 py-5 text-right whitespace-nowrap">
+                                        <td class="px-2 py-4 text-right whitespace-nowrap">
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 font-bold text-base border border-indigo-200 dark:border-indigo-800 transition-colors duration-300">
                                                 {{ $phone->expert_score ?? '-' }}
