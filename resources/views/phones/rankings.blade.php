@@ -448,15 +448,15 @@
                             <tr
                                 class="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/5 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold transition-colors duration-300">
                                 <th
-                                    class="px-6 py-4 sticky left-0 bg-gray-50 dark:bg-[#181818] z-10 w-16 text-center text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
+                                class="px-2 py-4 sticky left-0 bg-gray-50 dark:bg-[#181818] z-10 w-16 text-center text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
                                     #</th>
                                 <th
-                                    class="px-6 py-4 sticky left-16 bg-gray-50 dark:bg-[#181818] z-10 text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
+                                class="px-2 py-4 sticky left-16 bg-gray-50 dark:bg-[#181818] z-10 text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
                                     Phone</th>
 
                                 <!-- Common: Price -->
                                 <th
-                                    class="px-6 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    class="px-2 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-xs font-bold text-gray-500 uppercase tracking-wider">
                                     <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'price', 'direction' => $sort == 'price' && $direction == 'asc' ? 'desc' : 'asc']) }}"
                                         class="flex items-center gap-1">
                                         Price
@@ -470,14 +470,14 @@
 
                                 @if ($tab == 'overall')
                                     <!-- Overall/Expert Columns -->
-                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    <th class="px-2 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                         SoC
                                     </th>
-                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    <th class="px-2 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                         Config
                                     </th>
                                     <th
-                                        class="px-6 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                        class="px-2 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
                                         <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'expert_score', 'direction' => $sort == 'expert_score' && $direction == 'desc' ? 'asc' : 'desc']) }}"
                                             class="flex items-center justify-end gap-1 text-indigo-600 dark:text-indigo-400">
                                             Expert Score
@@ -486,7 +486,7 @@
                                             @endif
                                         </a>
                                     </th>
-                                    <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider min-w-[100px]">
+                                    <th class="px-2 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider min-w-[100px]">
                                         Buy
                                     </th>
                                 @endif
@@ -698,11 +698,11 @@
                             @foreach ($phones as $index => $phone)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-[#181818] transition-colors duration-300 group">
                                     <td
-                                        class="px-6 py-5 sticky left-0 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] text-center font-bold text-gray-400 transition-colors duration-300">
+                                        class="px-2 py-5 sticky left-0 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] text-center font-bold text-gray-400 transition-colors duration-300">
                                         #{{ $ranks[$phone->id] ?? '-' }}
                                     </td>
                                     <td
-                                        class="px-6 py-5 sticky left-16 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] transition-colors duration-300">
+                                        class="px-2 py-5 sticky left-16 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] transition-colors duration-300">
                                         <a href="{{ route('phones.show', $phone) }}" class="flex items-center gap-4">
                                             <div
                                                 class="w-12 h-12 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center p-1.5 border border-gray-200 dark:border-white/5 transition-colors duration-300">
@@ -720,23 +720,23 @@
                                             </div>
                                         </a>
                                     </td>
-                                    <td class="px-6 py-5 font-mono text-gray-600 dark:text-gray-400">
+                                    <td class="px-2 py-5 font-mono text-gray-600 dark:text-gray-400">
                                         ₹{{ number_format($phone->price) }}</td>
 
                                     @if ($tab == 'overall')
-                                        <td class="px-6 py-5 text-left text-sm text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-5 text-left text-sm text-gray-600 dark:text-gray-400">
                                             {{ $phone->platform->chipset ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-5 text-left text-sm text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-5 text-left text-sm text-gray-600 dark:text-gray-400">
                                             {{ $phone->platform->ram ?? '-' }} / {{ $phone->platform->internal_storage ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-5 text-right">
+                                        <td class="px-2 py-5 text-right">
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 font-bold text-base border border-indigo-200 dark:border-indigo-800 transition-colors duration-300">
                                                 {{ $phone->expert_score ?? '-' }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-5 text-center">
+                                        <td class="px-2 py-5 text-center">
                                             <div class="flex items-center justify-center gap-2">
                                                 @if ($phone->amazon_url)
                                                     <a href="{{ $phone->amazon_url }}" target="_blank" rel="nofollow noopener"
