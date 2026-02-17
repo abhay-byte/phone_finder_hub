@@ -740,16 +740,14 @@
                                             <div class="flex items-center justify-center gap-2">
                                                 @if ($phone->amazon_url)
                                                     <a href="{{ $phone->amazon_url }}" target="_blank" rel="nofollow noopener"
-                                                        class="text-[#FF9900] hover:scale-110 transition-transform" title="Buy on Amazon">
-                                                        <!-- Amazon Icon -->
-                                                        <svg role="img" viewBox="0 0 24 24" class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"><title>Amazon</title><path d="M13.9 13.15c.5-1.07.67-2.18.3-3.08-1-2.45-5.2-1.9-6.32.74-.2.48-.25 1.05-.1 1.63.1.4.3.78.53 1.13l.2.26c.27.37.2.9-.17 1.18l-.5.36c-.36.27-.87.2-1.14-.15-.36-.46-.6-1-.66-1.57-.08-.75.02-1.52.3-2.22 1.63-3.86 7.6-4.66 9.04-1.15.5 1.25.26 2.76-.36 4.14-.2.43-.46.85-.75 1.23l-.1.12c-.44.5-.3.8.17.8.46 0 .9-.22 1.23-.55.75-.7 1.3-1.6 1.54-2.6.1-.4.13-.8.1-1.22-.16-1.6-1.2-2.78-2.65-3.03-3.1-.53-6.66 1.48-6.17 5.42.06.44.2.86.43 1.25.96 1.6 3.12 1.63 4.5.38.24-.22.45-.48.63-.76.12-.2.27-.37.44-.5.17-.14.36-.2.55-.2.4 0 .73.22.86.58.14.38.03.8-.27 1.05-.3.26-.64.5-1 .73-.34.2-.7.37-1.05.47-.94.27-1.92.1-2.73-.5-.87-.64-1.42-1.63-1.55-2.7-.13-1.07.2-2.13.92-2.95 2.06-2.3 8.04-1.33 8.35 3.3.03.5.02 1-.36 1.34l-.4.32c-.37.33-.94.28-1.26-.1l-.1-.1c-.34-.45-.44-1.03-.27-1.57zm-1.8 5.7c2.32-1.18 4.77-1.52 7.1-.64.6.22 1.25 0 1.5-.6.23-.62.06-1.3-.57-1.57-2.22-.9-5.4-.73-8.6 1.05-.38.2-.55.67-.37 1.07.18.4.65.6 1.05.4.1 0 .2-.04.3-.08l-.4.36z"/></svg>
+                                                        class="hover:scale-110 transition-transform" title="Buy on Amazon">
+                                                        <img src="{{ asset('assets/amazon-icon.png') }}" alt="Amazon" class="w-6 h-6 object-contain">
                                                     </a>
                                                 @endif
                                                 @if ($phone->flipkart_url)
                                                     <a href="{{ $phone->flipkart_url }}" target="_blank" rel="nofollow noopener"
-                                                        class="text-[#2874F0] hover:scale-110 transition-transform" title="Buy on Flipkart">
-                                                        <!-- Flipkart Icon (Simplified) -->
-                                                        <svg role="img" viewBox="0 0 24 24" class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"><title>Flipkart</title><path d="M19.1 11.83l-1.9-5.9H12l2.3 5.9h4.8zM4.9 1.4h6.4l-2.6 9h4.7L6.6 22.6l1.3-9H4.2l.7-12.2z"/><circle cx="15.8" cy="15.6" r="2.2" class="fill-[#FF9900]"/></svg>
+                                                        class="hover:scale-110 transition-transform" title="Buy on Flipkart">
+                                                        <img src="{{ asset('assets/flipkart-icon.png') }}" alt="Flipkart" class="w-6 h-6 object-contain">
                                                     </a>
                                                 @endif
                                             </div>
