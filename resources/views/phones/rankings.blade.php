@@ -25,10 +25,6 @@
                         class="px-4 py-2 rounded-lg transition-all {{ $tab == 'performance' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Performance
                     </a>
-                    <a href="{{ route('phones.rankings', ['tab' => 'value']) }}"
-                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'value' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
-                        Value
-                    </a>
                     <a href="{{ route('phones.rankings', ['tab' => 'gaming']) }}"
                         class="px-4 py-2 rounded-lg transition-all {{ $tab == 'gaming' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Gaming (GPX)
@@ -39,7 +35,11 @@
                     </a>
                     <a href="{{ route('phones.rankings', ['tab' => 'endurance']) }}"
                         class="px-4 py-2 rounded-lg transition-all {{ $tab == 'endurance' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
-                        Endurance (Beta)
+                        Endurance
+                    </a>
+                    <a href="{{ route('phones.rankings', ['tab' => 'value']) }}"
+                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'value' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                        Value
                     </a>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                         <thead>
                             @if ($tab == 'ueps')
                                 <!-- UEPS Info Card -->
-                                <th colspan="5" class="p-0 border-b-0">
+                                <th colspan="7" class="p-0 border-b-0">
                                     <div
                                         class="m-5 p-6 bg-zinc-900 dark:bg-white/5 rounded-2xl text-white relative overflow-hidden group hover:scale-[1.01] transition-transform duration-500">
                                         <div
@@ -122,7 +122,7 @@
                                 </th>
                             @elseif($tab == 'gaming')
                                 <!-- GPX Info Card -->
-                                <th colspan="13" class="p-0 border-b-0">
+                                <th colspan="9" class="p-0 border-b-0">
                                     <div
                                         class="m-5 p-6 bg-zinc-900 dark:bg-white/5 rounded-2xl text-white relative overflow-hidden group hover:scale-[1.01] transition-transform duration-500">
                                         <div
@@ -227,6 +227,43 @@
                                         </div>
                                     </div>
                                 </th>
+                            @elseif($tab == 'value')
+                                <!-- Value Info Card -->
+                                <th colspan="9" class="p-0 border-b-0">
+                                    <div
+                                        class="m-5 p-6 bg-zinc-900 dark:bg-white/5 rounded-2xl text-white relative overflow-hidden group hover:scale-[1.01] transition-transform duration-500">
+                                        <div
+                                            class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-emerald-500/30 transition-colors duration-500">
+                                        </div>
+                                        <div
+                                            class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                            <div>
+                                                <div class="flex items-center gap-3 mb-2">
+                                                    <span
+                                                        class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30">New
+                                                        Standard</span>
+                                                    <h3 class="text-xl font-bold text-white">Bang for Buck Index</h3>
+                                                </div>
+                                                <p class="text-slate-300 text-sm max-w-xl">
+                                                    The <strong>Bang for Buck Index</strong> evaluates price-to-performance
+                                                    using a weighted formula:
+                                                    <strong>UEPS (25%)</strong>, <strong>FPI (25%)</strong>, <strong>CMS
+                                                        (25%)</strong>,
+                                                    <strong>GPX (15%)</strong>, and <strong>Endurance (10%)</strong>.
+                                                </p>
+                                            </div>
+                                            <a href="{{ route('docs.index') }}"
+                                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all">
+                                                View Formula
+                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </th>
                             @endif
 
                             </tr>
@@ -318,20 +355,6 @@
                                         </a>
                                     </th>
                                     <th class="p-5 text-right">3DMark</th>
-                                @elseif($tab == 'value')
-                                    <!-- Value Columns -->
-                                    <th
-                                        class="p-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right">
-                                        <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'value_score', 'direction' => $sort == 'value_score' && $direction == 'desc' ? 'asc' : 'desc']) }}"
-                                            class="flex items-center justify-end gap-1 text-emerald-600 dark:text-emerald-400">
-                                            Value Score
-                                            @if ($sort == 'value_score')
-                                                <span>{{ $direction == 'asc' ? '↑' : '↓' }}</span>
-                                            @endif
-                                        </a>
-                                    </th>
-                                    <th class="p-5 text-right">FPI</th>
-                                    <th class="p-5 text-right">UEPS</th>
                                 @elseif($tab == 'gaming')
                                     <!-- Gaming Columns -->
                                     <th
@@ -440,6 +463,23 @@
                                     </th>
                                     <th class="p-5 text-right text-xs font-bold text-gray-500 uppercase">Capacity</th>
                                     <th class="p-5 text-right text-xs font-bold text-gray-500 uppercase">Charging</th>
+                                @elseif($tab == 'value')
+                                    <!-- Value Columns -->
+                                    <th
+                                        class="p-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right">
+                                        <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'value_score', 'direction' => $sort == 'value_score' && $direction == 'desc' ? 'asc' : 'desc']) }}"
+                                            class="flex items-center justify-end gap-1 text-emerald-600 dark:text-emerald-400">
+                                            Value Score
+                                            @if ($sort == 'value_score')
+                                                <span>{{ $direction == 'asc' ? '↑' : '↓' }}</span>
+                                            @endif
+                                        </a>
+                                    </th>
+                                    <th class="p-5 text-right">FPI</th>
+                                    <th class="p-5 text-right">UEPS</th>
+                                    <th class="p-5 text-right">CMS</th>
+                                    <th class="p-5 text-right">GPX</th>
+                                    <th class="p-5 text-right whitespace-nowrap">Batt Index</th>
                                 @endif
                             </tr>
                         </thead>
@@ -505,62 +545,38 @@
                                         <td class="p-5 text-right font-mono text-orange-600 dark:text-orange-400">
                                             {{ $phone->benchmarks ? number_format($phone->benchmarks->dmark_wild_life_extreme ?? 0) : '-' }}
                                         </td>
-                                    @elseif($tab == 'value')
-                                        <td class="px-6 py-5 text-right">
-                                            <span
-                                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 font-bold text-base border border-emerald-200 dark:border-emerald-800 transition-colors duration-300">
-                                                {{ $phone->value_score }}
-                                            </span>
-                                        </td>
-                                        <td
-                                            class="px-6 py-5 text-right font-mono font-bold text-blue-600 dark:text-blue-400">
-                                            {{ $phone->overall_score }}
-                                        </td>
-                                        <td
-                                            class="px-6 py-5 text-right font-mono font-bold text-teal-600 dark:text-teal-400">
-                                            {{ $phone->ueps_score ?? '-' }}
-                                        </td>
                                     @elseif($tab == 'gaming')
                                         <td class="px-2 py-3 text-right">
                                             <span
-                                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 font-bold text-sm border border-red-200 dark:border-red-800 transition-colors duration-300">
-                                                {{ $phone->gpx_score }}
+                                                class="inline-flex items-center px-1.5 py-0.5 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 font-bold border border-red-100 dark:border-red-800 transition-colors duration-300">
+                                                {{ $phone->gpx_score ?? '-' }}
                                             </span>
                                         </td>
-                                        <td
-                                            class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-3 text-right text-gray-500 font-mono">
                                             {{ $phone->gpx_details['soc_gpu']['score'] ?? '-' }}
                                         </td>
-                                        <td
-                                            class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-3 text-right text-gray-500 font-mono">
                                             {{ $phone->gpx_details['sustained']['score'] ?? '-' }}
                                         </td>
-                                        <td
-                                            class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-3 text-right text-gray-500 font-mono">
                                             {{ $phone->gpx_details['display']['score'] ?? '-' }}
                                         </td>
-                                        <td
-                                            class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-3 text-right text-gray-500 font-mono">
                                             {{ $phone->gpx_details['memory']['score'] ?? '-' }}
                                         </td>
-                                        <td
-                                            class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-3 text-right text-gray-500 font-mono">
                                             {{ $phone->gpx_details['battery']['score'] ?? '-' }}
                                         </td>
-                                        <td
-                                            class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-3 text-right text-gray-500 font-mono">
                                             {{ $phone->gpx_details['software']['score'] ?? '-' }}
                                         </td>
-                                        <td
-                                            class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-3 text-right text-gray-500 font-mono">
                                             {{ $phone->gpx_details['connectivity']['score'] ?? '-' }}
                                         </td>
-                                        <td
-                                            class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-3 text-right text-gray-500 font-mono">
                                             {{ $phone->gpx_details['audio']['score'] ?? '-' }}
                                         </td>
-                                        <td
-                                            class="px-2 py-3 text-right font-mono text-xs text-gray-600 dark:text-gray-400">
+                                        <td class="px-2 py-3 text-right text-gray-500 font-mono">
                                             {{ $phone->gpx_details['emulator']['score'] ?? '-' }}
                                         </td>
                                     @elseif($tab == 'cms')
@@ -574,27 +590,27 @@
                                         <td class="px-6 py-5 text-right font-mono text-gray-500">
                                             ₹{{ $phone->cms_score > 0 ? number_format($phone->price / $phone->cms_score) : '-' }}
                                         </td>
-                                        <td class="p-5 text-right font-mono">
+                                        <td class="p-5 text-right font-mono text-orange-600 dark:text-orange-400">
                                             {{ $phone->benchmarks && $phone->benchmarks->dxomark_score ? $phone->benchmarks->dxomark_score : '-' }}
                                         </td>
-                                        <td class="p-5 text-right font-mono">
+                                        <td class="p-5 text-right font-mono text-blue-600 dark:text-blue-400">
                                             {{ $phone->benchmarks && $phone->benchmarks->phonearena_camera_score ? $phone->benchmarks->phonearena_camera_score : '-' }}
                                         </td>
-                                        <td class="p-5 text-right text-xs text-gray-500">
-                                            {{ $phone->cms_details['sensor_optics']['details'][0]['reason'] ?? 'Unknown' }}
+                                        <td class="p-5 text-right text-xs">
+                                            {{ $phone->camera && $phone->camera->main_camera_sensors ? explode(',', $phone->camera->main_camera_sensors)[0] : '-' }}
                                         </td>
                                     @elseif($tab == 'endurance')
                                         <td class="p-5 text-right">
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-bold border border-purple-100 dark:border-purple-800 transition-colors duration-300">
-                                                {{ $phone->endurance_score }}
-                                                @if ($phone->endurance_score >= 100)
+                                                {{ $phone->calculateEnduranceScore() }}
+                                                @if ($phone->calculateEnduranceScore() >= 100)
                                                     <span class="text-[10px]">👑</span>
                                                 @endif
                                             </span>
                                         </td>
                                         <td class="px-6 py-5 text-right font-mono text-gray-500">
-                                            ₹{{ $phone->endurance_score > 0 ? number_format($phone->price / $phone->endurance_score) : '-' }}
+                                            ₹{{ $phone->calculateEnduranceScore() > 0 ? number_format($phone->price / $phone->calculateEnduranceScore()) : '-' }}
                                         </td>
                                         <td
                                             class="p-5 text-right font-mono {{ $phone->benchmarks && $phone->benchmarks->battery_endurance_hours > 14 ? 'text-green-600 dark:text-green-400 font-bold' : '' }}">
@@ -605,6 +621,33 @@
                                         </td>
                                         <td class="p-5 text-right font-mono text-xs text-gray-500">
                                             {{ $phone->battery->charging_wired ?? '-' }}
+                                        </td>
+                                    @elseif($tab == 'value')
+                                        <td
+                                            class="px-6 py-5 text-right font-mono font-bold text-blue-600 dark:text-blue-400">
+                                            {{ $phone->overall_score }}
+                                        </td>
+                                        <td
+                                            class="px-6 py-5 text-right font-mono font-bold text-teal-600 dark:text-teal-400">
+                                            {{ $phone->ueps_score ?? '-' }}
+                                        </td>
+                                        <td
+                                            class="px-6 py-5 text-right font-mono font-bold text-amber-600 dark:text-amber-400">
+                                            {{ $phone->cms_score ?? '-' }}
+                                        </td>
+                                        <td
+                                            class="px-6 py-5 text-right font-mono font-bold text-red-600 dark:text-red-400">
+                                            {{ $phone->gpx_score ?? '-' }}
+                                        </td>
+                                        <td
+                                            class="px-6 py-5 text-right font-mono font-bold text-purple-600 dark:text-purple-400">
+                                            {{ $phone->endurance_score ?? $phone->calculateEnduranceScore() }}
+                                        </td>
+                                        <td class="px-6 py-5 text-right">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 font-bold text-base border border-emerald-200 dark:border-emerald-800 transition-colors duration-300">
+                                                {{ $phone->value_score }}
+                                            </span>
                                         </td>
                                     @endif
                                 </tr>
