@@ -234,6 +234,70 @@
                         </div>
                     @endif
 
+                    @php $enduranceScore = $phone->calculateEnduranceScore(); @endphp
+                    @if ($enduranceScore > 0)
+                        <!-- Endurance Score Grid -->
+                        <div class="relative bg-zinc-900 dark:bg-black rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group mt-6 transition-all hover:ring-purple-500/50"
+                            style="background-color: #111827; color: white;">
+                            <!-- Background Blur Container (Clipped) -->
+                            <div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+                                <div
+                                    class="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 bg-purple-600 rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity">
+                                </div>
+                            </div>
+
+                            <div class="relative z-20 flex items-center justify-between">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h3 class="text-sm font-bold uppercase tracking-widest text-purple-300">Endurance
+                                            Score</h3>
+                                        <div class="relative group/tooltip">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                                class="w-4 h-4 text-purple-400/70 hover:text-purple-300 cursor-help transition-colors">
+                                                <path fill-rule="evenodd"
+                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            <div
+                                                class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-gray-900 text-white text-xs rounded-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 z-50 pointer-events-none shadow-xl border border-white/10 text-center">
+                                                Adaptive battery rating combining capacity (mAh) and active use efficiency.
+                                                <div
+                                                    class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-baseline gap-1">
+                                        <span
+                                            class="text-6xl font-black tracking-tighter text-white">{{ $enduranceScore }}</span>
+                                        <span class="text-lg font-medium text-gray-400">/160</span>
+                                    </div>
+                                    <div
+                                        class="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold border border-white/10 backdrop-blur-md text-purple-200">
+                                        <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
+                                        Battery & Efficiency
+                                    </div>
+                                </div>
+
+                                <!-- Radial Chart Mini -->
+                                <div class="relative w-24 h-24">
+                                    <svg class="w-full h-full -rotate-90">
+                                        <circle cx="48" cy="48" r="42" stroke="currentColor"
+                                            stroke-width="6" fill="transparent" class="text-white/10" />
+                                        <circle cx="48" cy="48" r="42" stroke="currentColor"
+                                            stroke-width="6" fill="transparent" stroke-dasharray="264"
+                                            stroke-dashoffset="{{ 264 - (264 * $enduranceScore) / 160 }}"
+                                            class="text-purple-500 transition-all duration-1000 ease-out"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    <span
+                                        class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white">{{ round(($enduranceScore / 160) * 100) }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Detailed Breakdown Accordion -->
                     <div
                         class="bg-white dark:bg-[#121212] rounded-3xl shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10 overflow-hidden mt-6">

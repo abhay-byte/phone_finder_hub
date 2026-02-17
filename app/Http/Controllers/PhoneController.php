@@ -114,6 +114,7 @@ class PhoneController extends Controller
             'value' => 'value_score',
             'gaming' => 'gpx_score',
             'cms' => 'cms_score',
+            'endurance' => 'endurance_score',
             default => 'ueps_score',
         };
 
@@ -122,6 +123,7 @@ class PhoneController extends Controller
             'value' => 'value_score',
             'gaming' => 'gpx_score',
             'cms' => 'cms_score',
+            'endurance' => 'endurance_score',
             default => 'ueps_score',
         };
 
@@ -129,7 +131,7 @@ class PhoneController extends Controller
         $direction = $request->input('direction', 'desc');
 
         // Cache key includes all query parameters
-        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_html";
+        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_html_v2"; // v2 for endurance update
 
         $queryParams = $request->query();
 
@@ -166,6 +168,9 @@ class PhoneController extends Controller
             } elseif ($sort == 'cms_score') {
                  $query->select('phones.*', 'rankings_table.computed_rank')
                        ->orderBy('cms_score', $direction);
+            } elseif ($sort == 'endurance_score') {
+                 $query->select('phones.*', 'rankings_table.computed_rank')
+                       ->orderBy('endurance_score', $direction);
             } elseif ($sort == 'price_per_ueps') {
                  $query->select('phones.*', 'rankings_table.computed_rank')
                        ->orderByRaw('price / ueps_score ' . $direction);
@@ -175,6 +180,9 @@ class PhoneController extends Controller
             } elseif ($sort == 'price_per_cms') {
                  $query->select('phones.*', 'rankings_table.computed_rank')
                        ->orderByRaw('price / cms_score ' . $direction);
+            } elseif ($sort == 'price_per_endurance') {
+                 $query->select('phones.*', 'rankings_table.computed_rank')
+                       ->orderByRaw('price / endurance_score ' . $direction);
             } else {
                 // Default sort (usually matches the tab metric)
                 $query->select('phones.*', 'rankings_table.computed_rank')
@@ -248,9 +256,14 @@ class PhoneController extends Controller
     {
         //
     }
-    public function methodology()
+    public function uepsMethodology()
     {
         return view('ueps.methodology');
+    }
+
+    public function cmsMethodology()
+    {
+        return view('cms.methodology');
     }
 
     public function fpiMethodology()
@@ -258,13 +271,13 @@ class PhoneController extends Controller
         return view('fpi.methodology');
     }
 
+    public function enduranceMethodology()
+    {
+        return view('endurance.methodology');
+    }
+
     public function gpxMethodology()
     {
         return view('docs.gpx');
-    }
-
-    public function cmsMethodology()
-    {
-        return view('cms.methodology');
     }
 }

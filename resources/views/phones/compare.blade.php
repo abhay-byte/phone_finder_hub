@@ -184,6 +184,24 @@
                                                     :style="`width: ${getBarWidth(phone, 'cms_score')}%`"></div>
                                             </div>
                                         </div>
+                                        <!-- Endurance Score -->
+                                        <div class="w-full">
+                                            <div class="flex justify-between items-end text-xs mb-1.5">
+                                                <span class="text-gray-400 font-bold uppercase tracking-wider">Endurance
+                                                    Rating</span>
+                                                <div class="flex items-center gap-1.5">
+                                                    <template x-if="isWinner(phone, 'endurance_score')"><span
+                                                            class="text-[10px] bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-purple-200 dark:border-purple-800">👑
+                                                            Best</span></template>
+                                                    <span class="text-lg font-black text-gray-900 dark:text-white"
+                                                        x-text="formatScore(phone.endurance_score)"></span>
+                                                </div>
+                                            </div>
+                                            <div class="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                                <div class="h-full rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.3)]"
+                                                    :style="`width: ${getBarWidth(phone, 'endurance_score')}%`"></div>
+                                            </div>
+                                        </div>
                                         <!-- Value -->
                                         <div class="w-full">
                                             <div class="flex justify-between items-end text-xs mb-1.5">

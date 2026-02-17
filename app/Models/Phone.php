@@ -83,6 +83,42 @@ class Phone extends Model
     {
         return $this->hasOne(Benchmark::class);
     }
+
+    /**
+     * Calculate Endurance Score (Adaptive)
+     */
+    public function calculateEnduranceScore()
+    {
+        $mah = 0;
+        if ($this->battery && $this->battery->battery_type) {
+            if (preg_match('/(\d{3,5})\s*mAh/i', $this->battery->battery_type, $matches)) {
+                $mah = intval($matches[1]);
+            }
+        }
+        
+        $hours = 0;
+        if ($this->benchmarks && $this->benchmarks->battery_endurance_hours) {
+            $hours = floatval($this->benchmarks->battery_endurance_hours);
+        }
+        
+        if ($mah === 0 && $hours === 0) return 0;
+
+        // Base Score from Capacity (e.g. 5000mAh -> 50pts)
+        $capacityScore = $mah / 100;
+
+        // Adaptive Endurance Score
+        // IF hours > 30, assume Legacy Endurance Rating (e.g. 100h)
+        // ELSE, assume Active Use Score (e.g. 15h)
+        if ($hours > 30) {
+            $enduranceScore = $hours * 0.45; // 120h -> 54pts
+        } else {
+            $enduranceScore = $hours * 3.5; // 16h -> 56pts
+        }
+        
+        $totalScore = $capacityScore + $enduranceScore;
+        return round($totalScore, 1);
+    }
+
     public function getValueScoreAttribute()
     {
         if (!$this->price || $this->price == 0) {
@@ -175,6 +211,9 @@ class Phone extends Model
         } else {
             $this->value_score = 0;
         }
+
+        // Calculate Endurance Score
+        $this->endurance_score = $this->calculateEnduranceScore();
 
         $this->saveQuietly();
     }

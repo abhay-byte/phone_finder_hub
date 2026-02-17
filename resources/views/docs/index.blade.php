@@ -44,7 +44,7 @@
 
         <div class="grid grid-cols-1 gap-10 sm:grid-cols-2">
             <!-- UEPS Card -->
-            <a href="{{ route('ueps.methodology') }}"
+            <a href="{{ route('methodology.ueps') }}"
                 class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-100">
                 <div>
                     <span
@@ -74,7 +74,7 @@
             </a>
 
             <!-- FPI Card -->
-            <a href="{{ route('fpi.methodology') }}"
+            <a href="{{ route('methodology.fpi') }}"
                 class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-200">
                 <div>
                     <span
@@ -97,7 +97,7 @@
             </a>
 
             <!-- GPX Card -->
-            <a href="{{ route('docs.gpx') }}"
+            <a href="{{ route('methodology.gpx') }}"
                 class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-200">
                 <div>
                     <span
@@ -123,7 +123,7 @@
             </a>
 
             <!-- CMS-1330 Card -->
-            <a href="{{ route('cms.methodology') }}"
+            <a href="{{ route('methodology.cms') }}"
                 class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-amber-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
                 <div>
                     <span
@@ -144,6 +144,30 @@
                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         Comprehensive 1330-point camera scoring system evaluating hardware specs, imaging capabilities, and
                         professional benchmarks.
+                    </p>
+                </div>
+            </a>
+
+            <!-- Endurance Card -->
+            <a href="{{ route('methodology.endurance') }}"
+                class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-purple-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
+                <div>
+                    <span
+                        class="rounded-lg inline-flex p-3 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 ring-4 ring-white dark:ring-gray-800">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="mt-4">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                        <span class="absolute inset-0" aria-hidden="true"></span>
+                        Endurance Score Beta
+                    </h3>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        Our adaptive system for rating battery life. Combines raw capacity (mAh) with active efficiency
+                        (hours).
                     </p>
                 </div>
             </a>

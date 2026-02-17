@@ -19,7 +19,7 @@
                 <div id="tabs-container" class="bg-gray-200 dark:bg-white/10 p-1.5 rounded-xl inline-flex font-bold text-sm">
                     <a href="{{ route('phones.rankings', ['tab' => 'ueps']) }}"
                         class="px-4 py-2 rounded-lg transition-all {{ $tab == 'ueps' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
-                        UEPS 4.5
+                        UEPS 45
                     </a>
                     <a href="{{ route('phones.rankings', ['tab' => 'performance']) }}"
                         class="px-4 py-2 rounded-lg transition-all {{ $tab == 'performance' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
@@ -36,6 +36,10 @@
                     <a href="{{ route('phones.rankings', ['tab' => 'cms']) }}"
                         class="px-4 py-2 rounded-lg transition-all {{ $tab == 'cms' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Camera (CMS)
+                    </a>
+                    <a href="{{ route('phones.rankings', ['tab' => 'endurance']) }}"
+                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'endurance' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                        Endurance (Beta)
                     </a>
                 </div>
             </div>
@@ -60,7 +64,7 @@
                                                 <div class="flex items-center gap-3 mb-2">
                                                     <span
                                                         class="px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-xs font-bold border border-teal-500/30">Methodology</span>
-                                                    <h3 class="text-xl font-bold text-white">What is UEPS 4.5?</h3>
+                                                    <h3 class="text-xl font-bold text-white">What is UEPS 45?</h3>
                                                 </div>
                                                 <p class="text-slate-300 text-sm max-w-xl">
                                                     The <strong>Ultra-Extensive Phone Scoring System (UEPS-45)</strong>
@@ -69,7 +73,7 @@
                                                     camera versatility.
                                                 </p>
                                             </div>
-                                            <a href="{{ route('ueps.methodology') }}"
+                                            <a href="{{ route('methodology.ueps') }}"
                                                 class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all">
                                                 View Methodology
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -104,7 +108,7 @@
                                                     a single, normalized performance rating.
                                                 </p>
                                             </div>
-                                            <a href="{{ route('fpi.methodology') }}"
+                                            <a href="{{ route('methodology.fpi') }}"
                                                 class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all">
                                                 View Formula
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -118,7 +122,7 @@
                                 </th>
                             @elseif($tab == 'gaming')
                                 <!-- GPX Info Card -->
-                                <th colspan="12" class="p-0 border-b-0">
+                                <th colspan="13" class="p-0 border-b-0">
                                     <div
                                         class="m-5 p-6 bg-zinc-900 dark:bg-white/5 rounded-2xl text-white relative overflow-hidden group hover:scale-[1.01] transition-transform duration-500">
                                         <div
@@ -140,9 +144,9 @@
                                                     burst benchmarks.
                                                 </p>
                                             </div>
-                                            <a href="{{ route('docs.gpx') }}"
+                                            <a href="{{ route('methodology.gpx') }}"
                                                 class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all">
-                                                View Breakdown
+                                                View Methodology
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
                                                     stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -177,7 +181,41 @@
                                                     <strong>PhoneArena</strong>.
                                                 </p>
                                             </div>
-                                            <a href="{{ route('cms.methodology') }}"
+                                            <a href="{{ route('methodology.cms') }}"
+                                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all">
+                                                View Methodology
+                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </th>
+                            @elseif($tab == 'endurance')
+                                <!-- Endurance Info Card -->
+                                <th colspan="8" class="p-0 border-b-0">
+                                    <div
+                                        class="m-5 p-6 bg-zinc-900 dark:bg-white/5 rounded-2xl text-white relative overflow-hidden group hover:scale-[1.01] transition-transform duration-500">
+                                        <div
+                                            class="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-purple-500/30 transition-colors duration-500">
+                                        </div>
+                                        <div
+                                            class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                            <div>
+                                                <div class="flex items-center gap-3 mb-2">
+                                                    <span
+                                                        class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-xs font-bold border border-purple-500/30">New</span>
+                                                    <h3 class="text-xl font-bold text-white">Endurance Score</h3>
+                                                </div>
+                                                <p class="text-slate-300 text-sm max-w-xl">
+                                                    Calculated based on <strong>Battery Capacity (mAh)</strong> and
+                                                    <strong>Active Use Hours</strong>, normalizing legacy endurance ratings
+                                                    for modern contexts.
+                                                </p>
+                                            </div>
+                                            <a href="{{ route('methodology.endurance') }}"
                                                 class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-slate-900 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all">
                                                 View Methodology
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -221,7 +259,7 @@
                                         class="px-6 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
                                         <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'ueps_score', 'direction' => $sort == 'ueps_score' && $direction == 'desc' ? 'asc' : 'desc']) }}"
                                             class="flex items-center justify-end gap-1 text-teal-600 dark:text-teal-400">
-                                            UEPS 4.5
+                                            UEPS 45
                                             @if ($sort == 'ueps_score')
                                                 <span>{{ $direction == 'asc' ? '↑' : '↓' }}</span>
                                             @endif
@@ -322,7 +360,8 @@
                                         title="Connectivity (20)">Conn</th>
                                     <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap"
                                         title="Audio & Haptics (10)">Aud</th>
-                                    title="Emulator & Developer (30)">Emu</th>
+                                    <th class="px-2 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap"
+                                        title="Emulator & Developer (30)">Emu</th>
                                 @elseif($tab == 'cms')
                                     <!-- CMS Columns -->
                                     <th
@@ -367,6 +406,40 @@
                                     </th>
                                     <th class="p-5 text-right text-xs font-bold text-gray-500 uppercase">Primary Sensor
                                     </th>
+                                @elseif($tab == 'endurance')
+                                    <!-- Endurance Columns -->
+                                    <th
+                                        class="p-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right">
+                                        <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'endurance_score', 'direction' => $sort == 'endurance_score' && $direction == 'desc' ? 'asc' : 'desc']) }}"
+                                            class="flex items-center justify-end gap-1 text-purple-600 dark:text-purple-400">
+                                            Endurance Score
+                                            @if ($sort == 'endurance_score')
+                                                <span>{{ $direction == 'asc' ? '↑' : '↓' }}</span>
+                                            @endif
+                                        </a>
+                                    </th>
+                                    <th
+                                        class="px-6 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                        <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'price_per_endurance', 'direction' => $sort == 'price_per_endurance' && $direction == 'asc' ? 'desc' : 'asc']) }}"
+                                            class="flex items-center justify-end gap-1">
+                                            Price / Point
+                                            @if ($sort == 'price_per_endurance')
+                                                <span>{{ $direction == 'asc' ? '↑' : '↓' }}</span>
+                                            @endif
+                                        </a>
+                                    </th>
+                                    <th
+                                        class="p-5 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 text-right">
+                                        <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'battery_endurance_hours', 'direction' => $sort == 'battery_endurance_hours' && $direction == 'desc' ? 'asc' : 'desc']) }}"
+                                            class="flex items-center justify-end gap-1">
+                                            Active Use
+                                            @if ($sort == 'battery_endurance_hours')
+                                                <span>{{ $direction == 'asc' ? '↑' : '↓' }}</span>
+                                            @endif
+                                        </a>
+                                    </th>
+                                    <th class="p-5 text-right text-xs font-bold text-gray-500 uppercase">Capacity</th>
+                                    <th class="p-5 text-right text-xs font-bold text-gray-500 uppercase">Charging</th>
                                 @endif
                             </tr>
                         </thead>
@@ -509,6 +582,29 @@
                                         </td>
                                         <td class="p-5 text-right text-xs text-gray-500">
                                             {{ $phone->cms_details['sensor_optics']['details'][0]['reason'] ?? 'Unknown' }}
+                                        </td>
+                                    @elseif($tab == 'endurance')
+                                        <td class="p-5 text-right">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-bold border border-purple-100 dark:border-purple-800 transition-colors duration-300">
+                                                {{ $phone->endurance_score }}
+                                                @if ($phone->endurance_score >= 100)
+                                                    <span class="text-[10px]">👑</span>
+                                                @endif
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-5 text-right font-mono text-gray-500">
+                                            ₹{{ $phone->endurance_score > 0 ? number_format($phone->price / $phone->endurance_score) : '-' }}
+                                        </td>
+                                        <td
+                                            class="p-5 text-right font-mono {{ $phone->benchmarks && $phone->benchmarks->battery_endurance_hours > 14 ? 'text-green-600 dark:text-green-400 font-bold' : '' }}">
+                                            {{ $phone->benchmarks && $phone->benchmarks->battery_endurance_hours ? $phone->benchmarks->battery_endurance_hours . 'h' : '-' }}
+                                        </td>
+                                        <td class="p-5 text-right font-mono text-gray-600 dark:text-gray-400">
+                                            {{ $phone->battery->battery_type ?? '-' }}
+                                        </td>
+                                        <td class="p-5 text-right font-mono text-xs text-gray-500">
+                                            {{ $phone->battery->charging_wired ?? '-' }}
                                         </td>
                                     @endif
                                 </tr>
