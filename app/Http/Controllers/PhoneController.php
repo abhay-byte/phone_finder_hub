@@ -152,7 +152,16 @@ class PhoneController extends Controller
 
         $queryParams = $request->query();
 
-        $html = Cache::remember($cacheKey, 300, function() use ($tab, $sort, $direction, $rankExpression, $page, $queryParams, $minPrice, $maxPrice, $maxDatabasePrice, $minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
+        // Fetch Filter Options (Cached)
+        $filterOptions = Cache::remember('ranking_filter_options_v1', 3600, function() {
+            return [
+                'brands' => \App\Models\Phone::distinct()->orderBy('brand')->pluck('brand')->toArray(),
+                'ip_ratings' => \App\Models\SpecBody::distinct()->whereNotNull('ip_rating')->where('ip_rating', '!=', '')->orderBy('ip_rating')->pluck('ip_rating')->toArray(),
+                'max_antutu' => \App\Models\Benchmark::max('antutu_score') ?? 3000000,
+            ];
+        });
+
+        $html = Cache::remember($cacheKey, 300, function() use ($tab, $sort, $direction, $rankExpression, $page, $queryParams, $minPrice, $maxPrice, $maxDatabasePrice, $minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip, $filterOptions, $request) {
             
             // Subquery to calculate Rank for ALL phones based on the Tab's metric
             $rankingSubquery = \App\Models\Phone::query()
@@ -173,6 +182,27 @@ class PhoneController extends Controller
                     if ($turnip) {
                         $q->where('turnip_support', true);
                     }
+                })
+                // Brand Filter
+                ->when($request->has('brands'), function($q) use ($request) {
+                     $q->whereIn('brand', $request->input('brands'));
+                })
+                // IP Rating Filter
+                ->when($request->has('ip_ratings'), function($q) use ($request) {
+                     $q->whereHas('body', function($sq) use ($request) {
+                         $sq->whereIn('ip_rating', $request->input('ip_ratings'));
+                     });
+                })
+                // AnTuTu Filter
+                ->when($request->filled('min_antutu') || $request->filled('max_antutu'), function($q) use ($request) {
+                    $q->whereHas('benchmarks', function($sq) use ($request) {
+                        if ($request->filled('min_antutu')) {
+                            $sq->where('antutu_score', '>=', $request->input('min_antutu'));
+                        }
+                        if ($request->filled('max_antutu')) {
+                            $sq->where('antutu_score', '<=', $request->input('max_antutu'));
+                        }
+                    });
                 })
                 ->select('id')
                 ->selectRaw("RANK() OVER (ORDER BY {$rankExpression} DESC) as computed_rank");
@@ -195,6 +225,27 @@ class PhoneController extends Controller
                     if ($turnip) {
                         $q->where('turnip_support', true);
                     }
+                })
+                // Brand Filter
+                ->when($request->has('brands'), function($q) use ($request) {
+                     $q->whereIn('brand', $request->input('brands'));
+                })
+                // IP Rating Filter
+                ->when($request->has('ip_ratings'), function($q) use ($request) {
+                     $q->whereHas('body', function($sq) use ($request) {
+                         $sq->whereIn('ip_rating', $request->input('ip_ratings'));
+                     });
+                })
+                // AnTuTu Filter
+                ->when($request->filled('min_antutu') || $request->filled('max_antutu'), function($q) use ($request) {
+                    $q->whereHas('benchmarks', function($sq) use ($request) {
+                        if ($request->filled('min_antutu')) {
+                            $sq->where('antutu_score', '>=', $request->input('min_antutu'));
+                        }
+                        if ($request->filled('max_antutu')) {
+                            $sq->where('antutu_score', '<=', $request->input('max_antutu'));
+                        }
+                    });
                 })
                 ->joinSub($rankingSubquery, 'rankings_table', function ($join) {
                     $join->on('phones.id', '=', 'rankings_table.id');
@@ -288,7 +339,7 @@ class PhoneController extends Controller
             return view('phones.rankings', compact(
                 'phones', 'sort', 'direction', 'tab', 'ranks', 
                 'minPrice', 'maxPrice', 'maxDatabasePrice',
-                'minRam', 'maxRam', 'minStorage', 'maxStorage', 'bootloader', 'turnip'
+                'minRam', 'maxRam', 'minStorage', 'maxStorage', 'bootloader', 'turnip', 'filterOptions'
             ))->render();
         });
 

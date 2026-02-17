@@ -136,6 +136,71 @@
                             <input type="hidden" id="max_storage" name="max_storage" value="{{ $maxStorage ?? 1024 }}">
                         </div>
 
+                        <!-- Brand Filter -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Brands</label>
+                            <div class="max-h-40 overflow-y-auto space-y-2 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-gray-50 dark:bg-black/20">
+                                @foreach($filterOptions['brands'] as $brand)
+                                    <label class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/5 rounded px-1 py-0.5 transition-colors">
+                                        <input type="checkbox" name="brands[]" value="{{ $brand }}" 
+                                            class="rounded border-gray-300 text-teal-600 focus:ring-teal-500 dark:bg-white/5 dark:border-white/10"
+                                            {{ in_array($brand, request('brands', [])) ? 'checked' : '' }}>
+                                        <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">{{ $brand }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- IP Rating Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">IP Rating</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                @foreach($filterOptions['ip_ratings'] as $ip)
+                                    <label class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/5 rounded px-1 py-0.5 transition-colors">
+                                        <input type="checkbox" name="ip_ratings[]" value="{{ $ip }}" 
+                                            class="rounded border-gray-300 text-teal-600 focus:ring-teal-500 dark:bg-white/5 dark:border-white/10"
+                                            {{ in_array($ip, request('ip_ratings', [])) ? 'checked' : '' }}>
+                                        <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">{{ $ip }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+
+                         <!-- AnTuTu Filter -->
+                        <div class="mb-8">
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-4">AnTuTu Score</label>
+                            <tc-range-slider
+                                id="antutu-slider"
+                                min="0"
+                                max="{{ $filterOptions['max_antutu'] }}"
+                                step="10000"
+                                value1="{{ request('min_antutu', 0) }}"
+                                value2="{{ request('max_antutu', $filterOptions['max_antutu']) }}"
+                                round="0"
+                                slider-width="100%"
+                                slider-height="12px"
+                                slider-radius="6px"
+                                pointer-width="4px"
+                                pointer-height="24px"
+                                pointer-radius="2px"
+                                slider-bg="#e2e8f0"
+                                slider-bg-hover="#e2e8f0"
+                                slider-bg-fill="#0d9488"
+                                pointer-bg="#ffffff"
+                                pointer-bg-hover="#ffffff"
+                                pointer-bg-focus="#ffffff"
+                                pointer-shadow="0 1px 3px rgba(0,0,0,0.3)"
+                                pointer-shadow-hover="0 2px 5px rgba(0,0,0,0.4)"
+                                pointer-shadow-focus="0 2px 5px rgba(0,0,0,0.4)"
+                            ></tc-range-slider>
+                            <div class="flex items-center justify-between text-sm font-mono text-slate-600 dark:text-slate-400 mt-2">
+                                <span id="antutu-min-display">{{ number_format(request('min_antutu', 0)) }}</span>
+                                <span id="antutu-max-display">{{ number_format(request('max_antutu', $filterOptions['max_antutu'])) }}</span>
+                            </div>
+                            <input type="hidden" id="min_antutu" name="min_antutu" value="{{ request('min_antutu', 0) }}">
+                            <input type="hidden" id="max_antutu" name="max_antutu" value="{{ request('max_antutu', $filterOptions['max_antutu']) }}">
+                        </div>
+
                         <!-- Enthusiast Filters -->
                         <div class="mb-8 space-y-4">
                             <label class="flex items-center justify-between cursor-pointer group">
@@ -300,7 +365,8 @@
                                 </th>
                             @elseif($tab == 'gaming')
                                 <!-- GPX Info Card -->
-                                <th colspan="9" class="p-0 border-b-0">
+                                <!-- GPX Info Card -->
+                                <th colspan="13" class="p-0 border-b-0">
                                     <div
                                         class="m-5 p-6 bg-zinc-900 dark:bg-white/5 rounded-2xl text-white relative overflow-hidden group hover:scale-[1.01] transition-transform duration-500">
                                         <div
@@ -448,15 +514,15 @@
                             <tr
                                 class="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/5 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold transition-colors duration-300">
                                 <th
-                                class="px-2 py-4 sticky left-0 bg-gray-50 dark:bg-[#181818] z-10 w-16 text-center text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
+                                class="px-3 py-4 sticky left-0 bg-gray-50 dark:bg-[#181818] z-10 w-16 text-center text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
                                     #</th>
                                 <th
-                                class="px-2 py-4 sticky left-16 bg-gray-50 dark:bg-[#181818] z-10 text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
+                                class="px-3 py-4 sticky left-16 bg-gray-50 dark:bg-[#181818] z-10 text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors duration-300">
                                     Phone</th>
 
                                 <!-- Common: Price -->
                                 <th
-                                    class="px-2 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    class="px-3 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                                     <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'price', 'direction' => $sort == 'price' && $direction == 'asc' ? 'desc' : 'asc']) }}"
                                         class="flex items-center gap-1">
                                         Price
@@ -470,14 +536,14 @@
 
                                 @if ($tab == 'overall')
                                     <!-- Overall/Expert Columns -->
-                                    <th class="px-2 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    <th class="px-3 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                                         SoC
                                     </th>
-                                    <th class="px-2 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    <th class="px-3 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                                         Config
                                     </th>
                                     <th
-                                        class="px-2 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                        class="px-3 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                                         <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'expert_score', 'direction' => $sort == 'expert_score' && $direction == 'desc' ? 'asc' : 'desc']) }}"
                                             class="flex items-center justify-end gap-1 text-indigo-600 dark:text-indigo-400">
                                             Expert Score
@@ -486,7 +552,7 @@
                                             @endif
                                         </a>
                                     </th>
-                                    <th class="px-2 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider min-w-[100px]">
+                                    <th class="px-3 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider min-w-[100px] whitespace-nowrap">
                                         Buy
                                     </th>
                                 @endif
@@ -698,11 +764,11 @@
                             @foreach ($phones as $index => $phone)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-[#181818] transition-colors duration-300 group">
                                     <td
-                                        class="px-2 py-5 sticky left-0 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] text-center font-bold text-gray-400 transition-colors duration-300">
+                                        class="px-3 py-5 sticky left-0 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] text-center font-bold text-gray-400 transition-colors duration-300">
                                         #{{ $ranks[$phone->id] ?? '-' }}
                                     </td>
                                     <td
-                                        class="px-2 py-5 sticky left-16 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] transition-colors duration-300">
+                                        class="px-3 py-5 sticky left-16 bg-white dark:bg-[#121212] group-hover:bg-gray-50 dark:group-hover:bg-[#181818] transition-colors duration-300">
                                         <a href="{{ route('phones.show', $phone) }}" class="flex items-center gap-4">
                                             <div
                                                 class="w-12 h-12 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center p-1.5 border border-gray-200 dark:border-white/5 transition-colors duration-300">
@@ -720,23 +786,23 @@
                                             </div>
                                         </a>
                                     </td>
-                                    <td class="px-2 py-5 font-mono text-gray-600 dark:text-gray-400">
+                                    <td class="px-3 py-5 font-mono text-gray-600 dark:text-gray-400 whitespace-nowrap">
                                         ₹{{ number_format($phone->price) }}</td>
 
                                     @if ($tab == 'overall')
-                                        <td class="px-2 py-5 text-left text-sm text-gray-600 dark:text-gray-400">
+                                        <td class="px-3 py-5 text-left text-sm text-gray-600 dark:text-gray-400 max-w-[200px] truncate" title="{{ $phone->platform->chipset }}">
                                             {{ $phone->platform->chipset ?? '-' }}
                                         </td>
-                                        <td class="px-2 py-5 text-left text-sm text-gray-600 dark:text-gray-400">
+                                        <td class="px-3 py-5 text-left text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">
                                             {{ $phone->platform->ram ?? '-' }} / {{ $phone->platform->internal_storage ?? '-' }}
                                         </td>
-                                        <td class="px-2 py-5 text-right">
+                                        <td class="px-3 py-5 text-right whitespace-nowrap">
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 font-bold text-base border border-indigo-200 dark:border-indigo-800 transition-colors duration-300">
                                                 {{ $phone->expert_score ?? '-' }}
                                             </span>
                                         </td>
-                                        <td class="px-2 py-5 text-center">
+                                        <td class="px-3 py-5 text-center">
                                             <div class="flex items-center justify-center gap-2">
                                                 @if ($phone->amazon_url)
                                                     <a href="{{ $phone->amazon_url }}" target="_blank" rel="nofollow noopener"
@@ -967,6 +1033,9 @@
             attachSliderListeners('price-slider', 'min_price', 'max_price', 'price-min-display', 'price-max-display', formatCurrency);
             attachSliderListeners('ram-slider', 'min_ram', 'max_ram', 'ram-min-display', 'ram-max-display', formatGB);
             attachSliderListeners('storage-slider', 'min_storage', 'max_storage', 'storage-min-display', 'storage-max-display', formatStorage);
+            
+            const formatScore = (val) => Math.round(val).toLocaleString('en-IN');
+            attachSliderListeners('antutu-slider', 'min_antutu', 'max_antutu', 'antutu-min-display', 'antutu-max-display', formatScore);
 
             // --- Apply Filters Button ---
             if (applyBtn) {
@@ -980,6 +1049,8 @@
                     const curMaxRam = document.getElementById('max_ram');
                     const curMinStorage = document.getElementById('min_storage');
                     const curMaxStorage = document.getElementById('max_storage');
+                    const curMinAntutu = document.getElementById('min_antutu');
+                    const curMaxAntutu = document.getElementById('max_antutu');
                     const curBootloader = document.getElementById('bootloader');
                     const curTurnip = document.getElementById('turnip');
 
@@ -989,6 +1060,15 @@
                     if (curMaxRam) url.searchParams.set('max_ram', curMaxRam.value);
                     if (curMinStorage) url.searchParams.set('min_storage', curMinStorage.value);
                     if (curMaxStorage) url.searchParams.set('max_storage', curMaxStorage.value);
+                    if (curMinAntutu) url.searchParams.set('min_antutu', curMinAntutu.value);
+                    if (curMaxAntutu) url.searchParams.set('max_antutu', curMaxAntutu.value);
+
+                    // Collect Checkboxes (Brands & IP)
+                    const brandCheckboxes = document.querySelectorAll('input[name="brands[]"]:checked');
+                    brandCheckboxes.forEach(cb => url.searchParams.append('brands[]', cb.value));
+
+                    const ipCheckboxes = document.querySelectorAll('input[name="ip_ratings[]"]:checked');
+                    ipCheckboxes.forEach(cb => url.searchParams.append('ip_ratings[]', cb.value));
                     
                     if (curBootloader) {
                         if (curBootloader.checked) url.searchParams.set('bootloader', '1');
@@ -1007,7 +1087,10 @@
             if(resetBtn) {
                  resetBtn.addEventListener('click', () => {
                     const url = new URL(window.location.href);
-                    const params = ['min_price', 'max_price', 'min_ram', 'max_ram', 'min_storage', 'max_storage', 'bootloader', 'turnip', 'page'];
+                    const params = [
+                        'min_price', 'max_price', 'min_ram', 'max_ram', 'min_storage', 'max_storage', 
+                        'min_antutu', 'max_antutu', 'bootloader', 'turnip', 'page', 'brands[]', 'ip_ratings[]'
+                    ];
                     params.forEach(p => url.searchParams.delete(p));
                     window.location.href = url.toString();
                 });
