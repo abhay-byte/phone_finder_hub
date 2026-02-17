@@ -2,8 +2,8 @@ name: Keep Render App Alive
 
 on:
   schedule:
-    # Runs every 14 minutes (safely under Render's 15-minute sleep timer)
-    - cron: '*/14 * * * *'
+    # Runs every 10 minutes (safely under Render's 15-minute sleep timer)
+    - cron: '*/10 * * * *'
   workflow_dispatch: # Allows manual testing
 
 jobs:
