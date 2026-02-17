@@ -53,6 +53,7 @@ $phone->platform()->updateOrCreate([], [
     // Developer Freedom defaults based on general Moto policy unless specified
     'bootloader_unlockable' => true, 
     'os_openness' => 'Near-AOSP / Minimal restrictions',
+    'turnip_support' => false,
     'turnip_support_level' => 'None', // Mali GPU
     'custom_rom_support' => 'Limited', // Mediatek usually limited
 ]);

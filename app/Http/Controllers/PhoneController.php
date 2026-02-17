@@ -105,9 +105,26 @@ class PhoneController extends Controller
 
     public function rankings(Request $request)
     {
-        $tab = $request->input('tab', 'ueps'); // Default tab
+        $tab = $request->input('tab', 'overall'); // Default tab to Overall
         $page = $request->input('page', 1);
         
+        // Dynamic Price Range
+        $maxDatabasePrice = \App\Models\Phone::max('price');
+        // Round up to nearest 1000 for cleaner UI
+        $maxDatabasePrice = ceil($maxDatabasePrice / 1000) * 1000;
+
+        // Filter Params
+        $minPrice = $request->input('min_price', 0);
+        $maxPrice = $request->input('max_price', $maxDatabasePrice);
+        
+        // Advanced Filters
+        $minRam = $request->input('min_ram', 4);
+        $maxRam = $request->input('max_ram', 24);
+        $minStorage = $request->input('min_storage', 64);
+        $maxStorage = $request->input('max_storage', 1024); // 1TB
+        $bootloader = $request->boolean('bootloader');
+        $turnip = $request->boolean('turnip');
+
         // Define ranking metric based on tab
         $rankExpression = match($tab) {
             'performance' => 'overall_score',
@@ -115,7 +132,7 @@ class PhoneController extends Controller
             'gaming' => 'gpx_score',
             'cms' => 'cms_score',
             'endurance' => 'endurance_score',
-            default => 'ueps_score',
+            default => 'expert_score', // Default to Expert/Overall Score
         };
 
         $defaultSort = match($tab) {
@@ -124,25 +141,61 @@ class PhoneController extends Controller
             'gaming' => 'gpx_score',
             'cms' => 'cms_score',
             'endurance' => 'endurance_score',
-            default => 'ueps_score',
+            default => 'expert_score',
         };
 
         $sort = $request->input('sort', $defaultSort);
         $direction = $request->input('direction', 'desc');
 
-        // Cache key includes all query parameters
-        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_html_v2"; // v2 for endurance update
+        // Cache key includes all filter parameters
+        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_p{$minPrice}-{$maxPrice}_r{$minRam}-{$maxRam}_s{$minStorage}-{$maxStorage}_b{$bootloader}_t{$turnip}_html_v5";
 
         $queryParams = $request->query();
 
-        $html = Cache::remember($cacheKey, 300, function() use ($tab, $sort, $direction, $rankExpression, $page, $queryParams) {
+        $html = Cache::remember($cacheKey, 300, function() use ($tab, $sort, $direction, $rankExpression, $page, $queryParams, $minPrice, $maxPrice, $maxDatabasePrice, $minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
             
             // Subquery to calculate Rank for ALL phones based on the Tab's metric
             $rankingSubquery = \App\Models\Phone::query()
+                ->whereBetween('price', [$minPrice, $maxPrice])
+                ->whereHas('platform', function($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
+                    $q->where(function($query) use ($minRam, $maxRam) {
+                         $query->where('ram_max', '>=', $minRam)
+                               ->where('ram_min', '<=', $maxRam);
+                    })
+                    ->where(function($query) use ($minStorage, $maxStorage) {
+                         $query->where('storage_max', '>=', $minStorage)
+                               ->where('storage_min', '<=', $maxStorage);
+                    });
+                    
+                    if ($bootloader) {
+                        $q->where('bootloader_unlockable', true);
+                    }
+                    if ($turnip) {
+                        $q->where('turnip_support', true);
+                    }
+                })
                 ->select('id')
                 ->selectRaw("RANK() OVER (ORDER BY {$rankExpression} DESC) as computed_rank");
 
             $query = \App\Models\Phone::query()
+                ->whereBetween('price', [$minPrice, $maxPrice])
+                ->whereHas('platform', function($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
+                    $q->where(function($query) use ($minRam, $maxRam) {
+                         $query->where('ram_max', '>=', $minRam)
+                               ->where('ram_min', '<=', $maxRam);
+                    })
+                    ->where(function($query) use ($minStorage, $maxStorage) {
+                         $query->where('storage_max', '>=', $minStorage)
+                               ->where('storage_min', '<=', $maxStorage);
+                    });
+                    
+                    if ($bootloader) {
+                        $q->where('bootloader_unlockable', true);
+                    }
+                    if ($turnip) {
+                        $q->where('turnip_support', true);
+                    }
+                })
                 ->joinSub($rankingSubquery, 'rankings_table', function ($join) {
                     $join->on('phones.id', '=', 'rankings_table.id');
                 });
@@ -162,6 +215,9 @@ class PhoneController extends Controller
             } elseif ($sort == 'value_score') {
                  $query->select('phones.*', 'rankings_table.computed_rank')
                        ->orderBy('value_score', $direction);
+            } elseif ($sort == 'expert_score') {
+                 $query->select('phones.*', 'rankings_table.computed_rank')
+                       ->orderBy('expert_score', $direction);
             } elseif ($sort == 'gpx_score') {
                  $query->select('phones.*', 'rankings_table.computed_rank')
                        ->orderBy('gpx_score', $direction);
@@ -186,13 +242,29 @@ class PhoneController extends Controller
             } else {
                 // Default sort (usually matches the tab metric)
                 $query->select('phones.*', 'rankings_table.computed_rank')
-                      ->orderBy('overall_score', $direction);
+                      ->orderBy('expert_score', $direction);
             }
 
-            // Optimization: Manual pagination to avoid slow "count(*)" on complex subquery
-            // Since we are showing all phones, a simple Phone::count() is sufficient and instant.
+            // Optimization: Manual pagination
             $perPage = 50;
-            $total = \App\Models\Phone::count();
+            $total = \App\Models\Phone::whereBetween('price', [$minPrice, $maxPrice])
+                ->whereHas('platform', function($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
+                    $q->where(function($query) use ($minRam, $maxRam) {
+                         $query->where('ram_max', '>=', $minRam)
+                               ->where('ram_min', '<=', $maxRam);
+                    })
+                    ->where(function($query) use ($minStorage, $maxStorage) {
+                         $query->where('storage_max', '>=', $minStorage)
+                               ->where('storage_min', '<=', $maxStorage);
+                    });
+                    
+                    if ($bootloader) {
+                        $q->where('bootloader_unlockable', true);
+                    }
+                    if ($turnip) {
+                        $q->where('turnip_support', true);
+                    }
+                })->count();
             
             $items = $query->skip(($page - 1) * $perPage)
                            ->take($perPage)
@@ -213,7 +285,11 @@ class PhoneController extends Controller
             // The view likely expects $ranks[$id] = rank
             $ranks = $phones->pluck('computed_rank', 'id')->toArray();
 
-            return view('phones.rankings', compact('phones', 'sort', 'direction', 'tab', 'ranks'))->render();
+            return view('phones.rankings', compact(
+                'phones', 'sort', 'direction', 'tab', 'ranks', 
+                'minPrice', 'maxPrice', 'maxDatabasePrice',
+                'minRam', 'maxRam', 'minStorage', 'maxStorage', 'bootloader', 'turnip'
+            ))->render();
         });
 
         return response($html);

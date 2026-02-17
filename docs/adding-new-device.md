@@ -14,7 +14,7 @@ Data is distributed across 7 tables. When adding a phone, you must create record
 | :--- | :--- | :--- |
 | `phones` | Core Info | `name`, `brand`, `model_variant`, `price`, `release_date`, `announced_date`, `image_url`, `amazon_url`, `flipkart_url`, `amazon_price`, `flipkart_price` |
 | `spec_bodies` | Physical & Display | `dimensions`, `weight`, `build_material`, `sim`, `ip_rating`, `colors`, `display_type`, `display_size`, `display_resolution`, `display_brightness`, `pwm_dimming`, `screen_to_body_ratio`, `pixel_density`, `aspect_ratio` |
-| `spec_platforms`| OS & Hardware | `os`, `os_details`, `chipset`, `cpu`, `gpu`, `ram`, `internal_storage`, `storage_type`, `bootloader_unlockable`, `turnip_support_level`, `os_openness`, `custom_rom_support` |
+| `spec_platforms`| OS & Hardware | `os`, `os_details`, `chipset`, `cpu`, `gpu`, `ram`, `internal_storage`, `storage_type`, `bootloader_unlockable`, `turnip_support`, `turnip_support_level`, `os_openness`, `custom_rom_support`, `ram_min`, `ram_max`, `storage_min`, `storage_max` |
 | `spec_cameras` | Camera Details | `main_camera_specs`, `main_camera_sensors`, `main_camera_apertures`, `main_camera_ois`, `ultrawide_camera_specs`, `telephoto_camera_specs`, `selfie_camera_specs`, `main_video_capabilities`, `selfie_video_capabilities` |
 | `spec_connectivities` | Comms & Sensors | `network_bands` (Required), `wlan`, `bluetooth`, `positioning`, `nfc`, `infrared`, `usb`, `sensors`, `loudspeaker`, `jack_3_5mm`, `has_3_5mm_jack` |
 | `spec_batteries` | Power | `battery_type`, `charging_wired`, `charging_wireless`, `charging_reverse`, `reverse_wired`, `reverse_wireless`, `charging_specs_detailed` |

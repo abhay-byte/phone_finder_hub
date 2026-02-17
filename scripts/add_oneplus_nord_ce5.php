@@ -69,7 +69,7 @@ DB::transaction(function () {
         // Developer Freedom
         'bootloader_unlockable' => true, // OnePlus generally allows this
         'turnip_support' => false, // Mali GPU
-        'turnip_support_level' => 'None',
+    'turnip_support_level' => 'None',
         'os_openness' => 'Moderately restricted', // ColorOS codebase
         'gpu_emulation_tier' => 'Mali Mid-tier',
         'aosp_aesthetics_score' => 6,

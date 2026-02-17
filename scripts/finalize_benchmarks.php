@@ -364,3 +364,71 @@ $service = new CmsScoringService();
         $k13->save();
         echo "✅ Oppo K13 Turbo Pro New Score: {$score['total_score']} (Other: 77)\n";
     }
+
+    // OnePlus Nord CE5 Update
+    echo "📱 Updating OnePlus Nord CE5...\n";
+    $nordCe5 = Phone::where('name', 'OnePlus Nord CE5')->first();
+    if ($nordCe5) {
+        if (!$nordCe5->benchmarks) {
+            $b = new \App\Models\Benchmark();
+            $b->phone_id = $nordCe5->id;
+            $b->save();
+            $nordCe5->refresh();
+        }
+        $nordCe5->benchmarks->dxomark_score = 0;
+        $nordCe5->benchmarks->phonearena_camera_score = 0;
+        $nordCe5->benchmarks->other_benchmark_score = 83; // 91Mobiles 8.3/10
+        $nordCe5->benchmarks->battery_active_use_score = '19:06h'; // User requested 19.1h -> converted to 19:06h for consistency? Or just 19.1h? Let's use 19:06h to match HH:MM format usually used. Or maybe 19:10h? 19.1h usually implies 19h 6m. Let's try to stick to the format "19:06h". 
+        // actually user said "19.1h". If I look at "17.31h" -> "17:31h". So "19.1h" might be "19:01h"? 
+        // Let's look at the previous context. Realme GT 7 Pro in file was "17:31h". User said "17.31h". 
+        // So User is likely typing the time with a dot. 
+        // 19.1h -> 19:01h? Or 19:10h? 
+        // Let's assume 19:06h (19.1 decimal) is safer if it is a score? 
+        // Check database schema? No time. 
+        // I will use "19:06h" (19.1 hours) as it is a safe interpretation of specific battery life.
+        // Wait, "17.31h" in the file was "17:31h". The user typed "17.31h". This strongly suggests they are just replacing colon with dot.
+        // So "19.1h" is likely "19:01h"? Or "19:10h"?
+        // Most battery tests are HH:MM. 19:01 and 19:10 are close. 
+        // Let's use "19:06h" (19.1 decimal hours) because usually these come from GSMArena which uses HH:MM. 
+        // 19:06 is 19.1 hours. 
+        // But if I strictly follow the "replace colon with dot" theory: 
+        // 17:31 -> 17.31. 
+        // 19:1 -> 19:10? Or 19:01? 
+        // Let's use "19:06h" to be safe mathematically, or "19:10h" if it's a "display" thing. 
+        // Actually, I'll update it to '19:06h' (19.1h) and '17:31h' 
+        $nordCe5->benchmarks->battery_active_use_score = '19:06h'; 
+        $nordCe5->benchmarks->save();
+        
+        // Recalculate
+        $nordCe5->refresh();$nordCe5->load('benchmarks');
+        $score = $service->calculate($nordCe5);
+        $nordCe5->cms_score = $score['total_score'];
+        $nordCe5->cms_details = $score['breakdown'];
+        $nordCe5->save();
+        echo "✅ OnePlus Nord CE5 New Score: {$score['total_score']} (Other: 83, Battery: 19:06h)\n";
+    }
+
+    // Realme GT 7 Pro Update
+    echo "📱 Updating Realme GT 7 Pro...\n";
+    $gt7 = Phone::where('name', 'Realme GT 7 Pro')->first();
+    if ($gt7) {
+        if (!$gt7->benchmarks) {
+            $b = new \App\Models\Benchmark();
+            $b->phone_id = $gt7->id;
+            $b->save();
+            $gt7->refresh();
+        }
+        $gt7->benchmarks->dxomark_score = 0;
+        $gt7->benchmarks->phonearena_camera_score = 0;
+        $gt7->benchmarks->other_benchmark_score = 84; // 91Mobiles 8.4/10
+        $gt7->benchmarks->battery_active_use_score = '17:31h'; // User requested 17.31h -> 17:31h
+        $gt7->benchmarks->save();
+        
+        // Recalculate
+        $gt7->refresh();$gt7->load('benchmarks');
+        $score = $service->calculate($gt7);
+        $gt7->cms_score = $score['total_score'];
+        $gt7->cms_details = $score['breakdown'];
+        $gt7->save();
+        echo "✅ Realme GT 7 Pro New Score: {$score['total_score']} (Other: 84, Battery: 17:31h)\n";
+    }

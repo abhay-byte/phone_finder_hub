@@ -54,6 +54,7 @@ $phone->platform()->updateOrCreate([], [
     'storage_type' => 'UFS 4.0',
     'bootloader_unlockable' => true,
     'os_openness' => 'Moderately restricted',
+    'turnip_support' => false,
     'turnip_support_level' => 'None',
     'gpu_emulation_tier' => 'Mali Valhall',
     'custom_rom_support' => 'Limited',

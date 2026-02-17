@@ -11,12 +11,167 @@
                     <h1 class="text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Smartphone Rankings
                     </h1>
                     <p class="text-slate-600 dark:text-slate-400 font-medium">
-                        Detailed performance & value analysis
                     </p>
                 </div>
+            </div>
 
-                <!-- Tabs -->
-                <div id="tabs-container" class="bg-gray-200 dark:bg-white/10 p-1.5 rounded-xl inline-flex font-bold text-sm">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                @if($tab == 'overall')
+                <!-- Sidebar (Only on Expert Tab) -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Filter Card -->
+                    <div class="bg-white dark:bg-[#121212] rounded-2xl shadow-sm border border-slate-200 dark:border-white/5 p-6 sticky top-24">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="font-bold text-lg text-slate-900 dark:text-white">Filters</h3>
+                            <button id="reset-filters" class="text-xs text-slate-500 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-400 font-medium transition-colors">
+                                Reset
+                            </button>
+                        </div>
+                        
+                        <!-- ToolCool CDN -->
+                        <script src="https://cdn.jsdelivr.net/npm/toolcool-range-slider/dist/toolcool-range-slider.min.js"></script>
+
+                        <!-- Price Range -->
+                        <div class="mb-8">
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-4">Price Range</label>
+                            <tc-range-slider
+                                id="price-slider"
+                                min="0"
+                                max="{{ $maxDatabasePrice ?? 200000 }}"
+                                step="1000"
+                                value1="{{ $minPrice ?? 0 }}"
+                                value2="{{ $maxPrice ?? $maxDatabasePrice ?? 200000 }}"
+                                round="0"
+                                slider-width="100%"
+                                slider-height="12px"
+                                slider-radius="6px"
+                                pointer-width="4px"
+                                pointer-height="24px"
+                                pointer-radius="2px"
+                                slider-bg="#e2e8f0"
+                                slider-bg-hover="#e2e8f0"
+                                slider-bg-fill="#0d9488"
+                                pointer-bg="#ffffff"
+                                pointer-bg-hover="#ffffff"
+                                pointer-bg-focus="#ffffff"
+                                pointer-shadow="0 1px 3px rgba(0,0,0,0.3)"
+                                pointer-shadow-hover="0 2px 5px rgba(0,0,0,0.4)"
+                                pointer-shadow-focus="0 2px 5px rgba(0,0,0,0.4)"
+                            ></tc-range-slider>
+                            <div class="flex items-center justify-between text-sm font-mono text-slate-600 dark:text-slate-400 mt-2">
+                                <span id="price-min-display">₹{{ number_format($minPrice ?? 0) }}</span>
+                                <span id="price-max-display">₹{{ number_format($maxPrice ?? $maxDatabasePrice ?? 200000) }}</span>
+                            </div>
+                            <input type="hidden" id="min_price" name="min_price" value="{{ $minPrice ?? 0 }}">
+                            <input type="hidden" id="max_price" name="max_price" value="{{ $maxPrice ?? $maxDatabasePrice ?? 200000 }}">
+                        </div>
+
+                        <!-- RAM Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-4">RAM (GB)</label>
+                            <tc-range-slider
+                                id="ram-slider"
+                                min="2"
+                                max="24"
+                                step="1"
+                                value1="{{ $minRam ?? 4 }}"
+                                value2="{{ $maxRam ?? 24 }}"
+                                round="0"
+                                slider-width="100%"
+                                slider-height="12px"
+                                slider-radius="6px"
+                                pointer-width="4px"
+                                pointer-height="24px"
+                                pointer-radius="2px"
+                                slider-bg="#e2e8f0"
+                                slider-bg-hover="#e2e8f0"
+                                slider-bg-fill="#0d9488"
+                                pointer-bg="#ffffff"
+                                pointer-bg-hover="#ffffff"
+                                pointer-bg-focus="#ffffff"
+                                pointer-shadow="0 1px 3px rgba(0,0,0,0.3)"
+                                pointer-shadow-hover="0 2px 5px rgba(0,0,0,0.4)"
+                                pointer-shadow-focus="0 2px 5px rgba(0,0,0,0.4)"
+                            ></tc-range-slider>
+                            <div class="flex items-center justify-between text-sm font-mono text-slate-600 dark:text-slate-400 mt-2">
+                                <span id="ram-min-display">{{ $minRam ?? 4 }} GB</span>
+                                <span id="ram-max-display">{{ $maxRam ?? 24 }} GB</span>
+                            </div>
+                            <input type="hidden" id="min_ram" name="min_ram" value="{{ $minRam ?? 4 }}">
+                            <input type="hidden" id="max_ram" name="max_ram" value="{{ $maxRam ?? 24 }}">
+                        </div>
+
+                        <!-- Storage Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-4">Storage</label>
+                            <tc-range-slider
+                                id="storage-slider"
+                                min="32"
+                                max="1024"
+                                step="32"
+                                value1="{{ $minStorage ?? 64 }}"
+                                value2="{{ $maxStorage ?? 1024 }}"
+                                round="0"
+                                slider-width="100%"
+                                slider-height="12px"
+                                slider-radius="6px"
+                                pointer-width="4px"
+                                pointer-height="24px"
+                                pointer-radius="2px"
+                                slider-bg="#e2e8f0"
+                                slider-bg-hover="#e2e8f0"
+                                slider-bg-fill="#0d9488"
+                                pointer-bg="#ffffff"
+                                pointer-bg-hover="#ffffff"
+                                pointer-bg-focus="#ffffff"
+                                pointer-shadow="0 1px 3px rgba(0,0,0,0.3)"
+                                pointer-shadow-hover="0 2px 5px rgba(0,0,0,0.4)"
+                                pointer-shadow-focus="0 2px 5px rgba(0,0,0,0.4)"
+                            ></tc-range-slider>
+                            <div class="flex items-center justify-between text-sm font-mono text-slate-600 dark:text-slate-400 mt-2">
+                                <span id="storage-min-display">{{ $minStorage < 1000 ? $minStorage . ' GB' : ($minStorage/1024) . ' TB' }}</span>
+                                <span id="storage-max-display">{{ $maxStorage < 1000 ? $maxStorage . ' GB' : ($maxStorage/1024) . ' TB' }}</span>
+                            </div>
+                            <input type="hidden" id="min_storage" name="min_storage" value="{{ $minStorage ?? 64 }}">
+                            <input type="hidden" id="max_storage" name="max_storage" value="{{ $maxStorage ?? 1024 }}">
+                        </div>
+
+                        <!-- Enthusiast Filters -->
+                        <div class="mb-8 space-y-4">
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-teal-600 transition-colors">Unlock Bootloader</span>
+                                <div class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="bootloader" name="bootloader" value="1" {{ $bootloader ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-teal-600 transition-colors">Turnip Driver Support</span>
+                                <div class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="turnip" name="turnip" value="1" {{ $turnip ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <button id="apply-filters"
+                            class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-teal-500/20 active:scale-95">
+                            Apply Filters
+                        </button>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Main Content -->
+                <div class="{{ $tab == 'overall' ? 'lg:col-span-3' : 'lg:col-span-4' }} space-y-6">
+                    <div class="flex flex-col md:flex-row justify-end items-start md:items-center gap-4">
+                        <!-- Tabs -->
+                        <div id="tabs-container" class="bg-gray-200 dark:bg-white/10 p-1.5 rounded-xl inline-flex font-bold text-sm overflow-x-auto max-w-full">
+                    <a href="{{ route('phones.rankings', ['tab' => 'overall']) }}"
+                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'overall' ? 'bg-white dark:bg-black shadow-sm text-indigo-600 dark:text-indigo-400 font-extrabold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                        Expert Score
+                    </a>
                     <a href="{{ route('phones.rankings', ['tab' => 'ueps']) }}"
                         class="px-4 py-2 rounded-lg transition-all {{ $tab == 'ueps' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         UEPS 45
@@ -50,7 +205,30 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            @if ($tab == 'ueps')
+                            @if ($tab == 'overall')
+                                <!-- Expert Score Info Card -->
+                                <th colspan="6" class="p-0 border-b-0">
+                                    <div
+                                        class="m-5 p-6 bg-zinc-900 dark:bg-white/5 rounded-2xl text-white relative overflow-hidden group hover:scale-[1.01] transition-transform duration-500">
+                                        <div
+                                            class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-indigo-500/30 transition-colors duration-500">
+                                        </div>
+                                        <div
+                                            class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                            <div>
+                                                <div class="flex items-center gap-3 mb-2">
+                                                    <span
+                                                        class="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-500/30">Definitive Ranking</span>
+                                                    <h3 class="text-xl font-bold text-white">Expert Score</h3>
+                                                </div>
+                                                <p class="text-slate-300 text-sm max-w-xl">
+                                                    The comprehensive <strong>Expert Score</strong> identifies the absolute best device by analyzing key specs and performance metrics.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                            @elseif ($tab == 'ueps')
                                 <!-- UEPS Info Card -->
                                 <th colspan="7" class="p-0 border-b-0">
                                     <div
@@ -290,6 +468,26 @@
                                     </a>
                                 </th>
 
+                                @if ($tab == 'overall')
+                                    <!-- Overall/Expert Columns -->
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                        SoC
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                        Config
+                                    </th>
+                                    <th
+                                        class="px-6 py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors duration-300 group text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                        <a href="{{ route('phones.rankings', ['tab' => $tab, 'sort' => 'expert_score', 'direction' => $sort == 'expert_score' && $direction == 'desc' ? 'asc' : 'desc']) }}"
+                                            class="flex items-center justify-end gap-1 text-indigo-600 dark:text-indigo-400">
+                                            Expert Score
+                                            @if ($sort == 'expert_score')
+                                                <span>{{ $direction == 'asc' ? '↑' : '↓' }}</span>
+                                            @endif
+                                        </a>
+                                    </th>
+                                @endif
+
                                 @if ($tab == 'ueps')
                                     <!-- UEPS Columns -->
                                     <th
@@ -522,7 +720,20 @@
                                     <td class="px-6 py-5 font-mono text-gray-600 dark:text-gray-400">
                                         ₹{{ number_format($phone->price) }}</td>
 
-                                    @if ($tab == 'ueps')
+                                    @if ($tab == 'overall')
+                                        <td class="px-6 py-5 text-left text-sm text-gray-600 dark:text-gray-400">
+                                            {{ $phone->platform->chipset ?? '-' }}
+                                        </td>
+                                        <td class="px-6 py-5 text-left text-sm text-gray-600 dark:text-gray-400">
+                                            {{ $phone->platform->ram ?? '-' }} / {{ $phone->platform->internal_storage ?? '-' }}
+                                        </td>
+                                        <td class="px-6 py-5 text-right">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 font-bold text-base border border-indigo-200 dark:border-indigo-800 transition-colors duration-300">
+                                                {{ $phone->expert_score ?? '-' }}
+                                            </span>
+                                        </td>
+                                    @elseif ($tab == 'ueps')
                                         <td class="px-6 py-5 text-right">
                                             <span
                                                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 font-bold border border-teal-100 dark:border-teal-800 transition-colors duration-300">
@@ -622,8 +833,14 @@
                                             ₹{{ $phone->calculateEnduranceScore() > 0 ? number_format($phone->price / $phone->calculateEnduranceScore()) : '-' }}
                                         </td>
                                         <td
-                                            class="p-5 text-right font-mono {{ $phone->benchmarks && $phone->benchmarks->battery_endurance_hours > 14 ? 'text-green-600 dark:text-green-400 font-bold' : '' }}">
-                                            {{ $phone->benchmarks && $phone->benchmarks->battery_endurance_hours ? $phone->benchmarks->battery_endurance_hours . 'h' : '-' }}
+                                            class="p-5 text-right font-mono {{ ($phone->benchmarks && (($phone->benchmarks->battery_active_use_score && floatval($phone->benchmarks->battery_active_use_score) > 13) || $phone->benchmarks->battery_endurance_hours > 110)) ? 'text-green-600 dark:text-green-400 font-bold' : '' }}">
+                                            @if($phone->benchmarks && $phone->benchmarks->battery_active_use_score)
+                                                {{ $phone->benchmarks->battery_active_use_score }}
+                                            @elseif($phone->benchmarks && $phone->benchmarks->battery_endurance_hours)
+                                                {{ $phone->benchmarks->battery_endurance_hours . 'h' }}
+                                            @else
+                                                -
+                                            @endif
                                         </td>
                                         <td class="p-5 text-right font-mono text-gray-600 dark:text-gray-400">
                                             {{ $phone->battery->battery_type ?? '-' }}
@@ -671,6 +888,111 @@
                     {{ $phones->links() }}
                 </div>
             </div>
+            
+            </div> <!-- End Main Content -->
+        </div> <!-- End Grid -->
+
         </div>
     </div>
+
+
+
+    <style>
+        /* Force ToolCool Slider Handle to White */
+        tc-range-slider {
+            --pointer-bg: #ffffff !important;
+            --pointer-bg-hover: #ffffff !important;
+            --pointer-bg-focus: #ffffff !important;
+            --pointer-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+            --pointer-shadow-hover: 0 2px 5px rgba(0,0,0,0.4) !important;
+            --pointer-shadow-focus: 0 2px 5px rgba(0,0,0,0.4) !important;
+        }
+    </style>
+
+    <script>
+        function initFilters() {
+            // --- ToolCool Slider Event Listeners ---
+            const attachSliderListeners = (sliderId, minInputId, maxInputId, minDisplayId, maxDisplayId, formatFn) => {
+                const slider = document.getElementById(sliderId);
+                const minInput = document.getElementById(minInputId);
+                const maxInput = document.getElementById(maxInputId);
+                const minDisplay = document.getElementById(minDisplayId);
+                const maxDisplay = document.getElementById(maxDisplayId);
+
+                if (slider) {
+                    slider.addEventListener('change', (evt) => {
+                        const val1 = evt.detail.value1;
+                        const val2 = evt.detail.value2;
+
+                        if (minInput) minInput.value = val1;
+                        if (maxInput) maxInput.value = val2;
+
+                        if (minDisplay) minDisplay.textContent = formatFn(val1);
+                        if (maxDisplay) maxDisplay.textContent = formatFn(val2);
+                    });
+                }
+            };
+
+            const formatCurrency = (val) => '₹' + Math.round(val).toLocaleString('en-IN');
+            const formatGB = (val) => Math.round(val) + ' GB';
+            const formatStorage = (val) => {
+                return val < 1000 ? Math.round(val) + ' GB' : (Math.round(val) / 1024).toFixed(0) + ' TB';
+            };
+
+            attachSliderListeners('price-slider', 'min_price', 'max_price', 'price-min-display', 'price-max-display', formatCurrency);
+            attachSliderListeners('ram-slider', 'min_ram', 'max_ram', 'ram-min-display', 'ram-max-display', formatGB);
+            attachSliderListeners('storage-slider', 'min_storage', 'max_storage', 'storage-min-display', 'storage-max-display', formatStorage);
+
+            // --- Apply Filters Button ---
+            if (applyBtn) {
+                applyBtn.addEventListener('click', () => {
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('page');
+                    
+                    const curMinPrice = document.getElementById('min_price');
+                    const curMaxPrice = document.getElementById('max_price');
+                    const curMinRam = document.getElementById('min_ram');
+                    const curMaxRam = document.getElementById('max_ram');
+                    const curMinStorage = document.getElementById('min_storage');
+                    const curMaxStorage = document.getElementById('max_storage');
+                    const curBootloader = document.getElementById('bootloader');
+                    const curTurnip = document.getElementById('turnip');
+
+                    if (curMinPrice) url.searchParams.set('min_price', curMinPrice.value);
+                    if (curMaxPrice) url.searchParams.set('max_price', curMaxPrice.value);
+                    if (curMinRam) url.searchParams.set('min_ram', curMinRam.value);
+                    if (curMaxRam) url.searchParams.set('max_ram', curMaxRam.value);
+                    if (curMinStorage) url.searchParams.set('min_storage', curMinStorage.value);
+                    if (curMaxStorage) url.searchParams.set('max_storage', curMaxStorage.value);
+                    
+                    if (curBootloader) {
+                        if (curBootloader.checked) url.searchParams.set('bootloader', '1');
+                        else url.searchParams.delete('bootloader');
+                    }
+                    
+                    if (curTurnip) {
+                        if (curTurnip.checked) url.searchParams.set('turnip', '1');
+                        else url.searchParams.delete('turnip');
+                    }
+ 
+                    window.location.href = url.toString();
+                });
+            }
+
+            if(resetBtn) {
+                 resetBtn.addEventListener('click', () => {
+                    const url = new URL(window.location.href);
+                    const params = ['min_price', 'max_price', 'min_ram', 'max_ram', 'min_storage', 'max_storage', 'bootloader', 'turnip', 'page'];
+                    params.forEach(p => url.searchParams.delete(p));
+                    window.location.href = url.toString();
+                });
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFilters);
+        } else {
+            initFilters();
+        }
+    </script>
 @endsection

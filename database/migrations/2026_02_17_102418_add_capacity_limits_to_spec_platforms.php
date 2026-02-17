@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('spec_platforms', function (Blueprint $table) {
-            $table->boolean('bootloader_unlockable')->default(true)->after('storage_type');
-            $table->boolean('turnip_support')->default(false)->after('bootloader_unlockable');
-            $table->integer('aosp_aesthetics_score')->default(8)->after('turnip_support');
+            $table->integer('ram_min')->nullable()->after('ram');
+            $table->integer('ram_max')->nullable()->after('ram_min');
+            $table->integer('storage_min')->nullable()->after('internal_storage');
+            $table->integer('storage_max')->nullable()->after('storage_min');
         });
     }
 
@@ -24,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('spec_platforms', function (Blueprint $table) {
-            $table->dropColumn(['bootloader_unlockable', 'turnip_support', 'aosp_aesthetics_score']);
+            $table->dropColumn(['ram_min', 'ram_max', 'storage_min', 'storage_max']);
         });
     }
 };

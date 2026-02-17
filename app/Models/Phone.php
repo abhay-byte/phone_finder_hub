@@ -28,6 +28,7 @@ class Phone extends Model
         'gpx_details',
         'cms_score',
         'cms_details',
+        'expert_score',
     ];
 
     protected $casts = [
@@ -37,6 +38,7 @@ class Phone extends Model
         'overall_score' => 'decimal:1',
         'ueps_score' => 'decimal:1',
         'value_score' => 'decimal:2',
+        'expert_score' => 'decimal:2', // Expert/Overall Score
         'gpx_score' => 'decimal:2',
         'gpx_details' => 'array',
         'cms_score' => 'decimal:1',
@@ -58,7 +60,7 @@ class Phone extends Model
     {
         return $this->hasOne(SpecBody::class);
     }
-
+    
     public function platform()
     {
         return $this->hasOne(SpecPlatform::class);
@@ -91,30 +93,51 @@ class Phone extends Model
     {
         $mah = 0;
         if ($this->battery && $this->battery->battery_type) {
-            if (preg_match('/(\d{3,5})\s*mAh/i', $this->battery->battery_type, $matches)) {
+            if (preg_match('/(\\d{3,5})\\s*mAh/i', $this->battery->battery_type, $matches)) {
                 $mah = intval($matches[1]);
             }
         }
-        
-        $hours = 0;
-        if ($this->benchmarks && $this->benchmarks->battery_endurance_hours) {
-            $hours = floatval($this->benchmarks->battery_endurance_hours);
+
+        // Check for Active Use Score first (Format: "17:31h" or "19.1h")
+        $activeUseHours = 0;
+        if ($this->benchmarks && $this->benchmarks->battery_active_use_score) {
+            $rawScore = $this->benchmarks->battery_active_use_score;
+            // Parse HH:MMh
+            if (preg_match('/(\\d+):(\\d+)h/i', $rawScore, $matches)) {
+                $activeUseHours = intval($matches[1]) + (intval($matches[2]) / 60);
+            }
+            // Parse decimal 19.1h
+            elseif (preg_match('/(\\d+(\\.\\d+)?)\\s*h/i', $rawScore, $matches)) {
+                $activeUseHours = floatval($matches[1]);
+            }
         }
-        
-        if ($mah === 0 && $hours === 0) return 0;
+
+        $enduranceHours = 0;
+        if ($this->benchmarks && $this->benchmarks->battery_endurance_hours) {
+            $enduranceHours = floatval($this->benchmarks->battery_endurance_hours);
+        }
+
+        if ($mah === 0 && $enduranceHours === 0 && $activeUseHours === 0) return 0;
 
         // Base Score from Capacity (e.g. 5000mAh -> 50pts)
         $capacityScore = $mah / 100;
 
         // Adaptive Endurance Score
-        // IF hours > 30, assume Legacy Endurance Rating (e.g. 100h)
-        // ELSE, assume Active Use Score (e.g. 15h)
-        if ($hours > 30) {
-            $enduranceScore = $hours * 0.45; // 120h -> 54pts
-        } else {
-            $enduranceScore = $hours * 3.5; // 16h -> 56pts
+        // Prioritize Active Use Score (New Standard)
+        if ($activeUseHours > 0) {
+            // Active Use Score (e.g. 17h is great). Multiplier needed to match legacy scale.
+            // 15h Active Use ~ 110h Endurance?
+            // Let's say 16h * 3.5 = 56pts.
+            $enduranceScore = $activeUseHours * 3.5;
         }
-        
+        // Fallback to Legacy Endurance Rating
+        elseif ($enduranceHours > 30) {
+             $enduranceScore = $enduranceHours * 0.45; // 120h -> 54pts
+        } else {
+             // Low endurance hours (unlikely legacy, maybe misparsed active?)
+             $enduranceScore = $enduranceHours * 3.5;
+        }
+
         $totalScore = $capacityScore + $enduranceScore;
         return round($totalScore, 1);
     }
@@ -125,22 +148,36 @@ class Phone extends Model
             return 0;
         }
 
-        // 1. Normalize all scores to 0-100
-        $normUeps = ($this->ueps_score ?? 0) / 2.55;
-        $normFpi = $this->overall_score ?? 0;
-        $normGpx = ($this->gpx_score ?? 0) / 3.0;
-        $normCms = ($this->cms_score ?? 0) / 13.3;
-        $normEndurance = ($this->endurance_score ?? 0) / 1.6;
-
-        // 2. Weighted Rating (Total 100%)
-        // UEPS (25%), FPI (25%), CMS (25%), GPX (15%), Endurance (10%)
-        $rating = ($normUeps * 0.25) + ($normFpi * 0.25) + ($normCms * 0.25) + ($normGpx * 0.15) + ($normEndurance * 0.10);
+        // 1. Calculate weighted rating (This logic is shared with expert_score)
+        $rating = $this->calculateExpertRating();
 
         if ($rating == 0) return 0;
 
         // 3. Value Score = (Rating / Price) * 10,000
         $score = ($rating / $this->price) * 10000;
         return round($score, 1);
+    }
+    
+    /**
+     * Calculate the raw weighted rating based on all metrics.
+     * Weights: UEPS (25%), FPI (25%), CMS (25%), GPX (15%), Endurance (10%)
+     */
+    public function calculateExpertRating()
+    {
+        // 1. Normalize all scores to 0-100
+        $normUeps = ($this->ueps_score ?? 0) / 2.55;
+        $normFpi = $this->overall_score ?? 0;
+        $normGpx = ($this->gpx_score ?? 0) / 3.0;
+        $normCms = ($this->cms_score ?? 0) / 13.3;
+        
+        // Ensure endurance score is available
+        $endurance = $this->endurance_score ?? $this->calculateEnduranceScore();
+        $normEndurance = $endurance / 1.6;
+
+        // 2. Weighted Rating (Total 100%)
+        $rating = ($normUeps * 0.25) + ($normFpi * 0.25) + ($normCms * 0.25) + ($normGpx * 0.15) + ($normEndurance * 0.10);
+        
+        return $rating;
     }
 
 
@@ -212,6 +249,12 @@ class Phone extends Model
         $cms = \App\Services\CmsScoringService::calculate($this);
         $this->cms_score = $cms['total_score'];
         $this->cms_details = $cms['breakdown'];
+        
+        // Calculate Endurance Score
+        $this->endurance_score = $this->calculateEnduranceScore();
+
+        // Calculate Expert/Overall Score (Persisted)
+        $this->expert_score = round($this->calculateExpertRating(), 2);
 
         // Calculate Value Score (Persisted)
         if ($this->price > 0) {
@@ -219,9 +262,6 @@ class Phone extends Model
         } else {
             $this->value_score = 0;
         }
-
-        // Calculate Endurance Score
-        $this->endurance_score = $this->calculateEnduranceScore();
 
         $this->saveQuietly();
     }
