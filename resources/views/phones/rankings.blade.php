@@ -207,7 +207,7 @@
                         <thead>
                             @if ($tab == 'overall')
                                 <!-- Expert Score Info Card -->
-                                <th colspan="6" class="p-0 border-b-0">
+                                <th colspan="7" class="p-0 border-b-0">
                                     <div
                                         class="m-5 p-6 bg-zinc-900 dark:bg-white/5 rounded-2xl text-white relative overflow-hidden group hover:scale-[1.01] transition-transform duration-500">
                                         <div
@@ -486,6 +486,9 @@
                                             @endif
                                         </a>
                                     </th>
+                                    <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                        Buy
+                                    </th>
                                 @endif
 
                                 @if ($tab == 'ueps')
@@ -732,6 +735,26 @@
                                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 font-bold text-base border border-indigo-200 dark:border-indigo-800 transition-colors duration-300">
                                                 {{ $phone->expert_score ?? '-' }}
                                             </span>
+                                        </td>
+                                        <td class="px-6 py-5 text-center">
+                                            <div class="flex items-center justify-center gap-2">
+                                                @if ($phone->amazon_url)
+                                                    <a href="{{ $phone->amazon_url }}" target="_blank" rel="nofollow noopener"
+                                                        class="text-slate-400 hover:text-[#FF9900] transition-colors" title="Buy on Amazon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                                            <path d="M15.5 19.5c.5 0 1-.5 1-1s-.5-1-1-1-1 .5-1 1 .5 1 1 1zm-3.5 0c.5 0 1-.5 1-1s-.5-1-1-1-1 .5-1 1 .5 1 1 1zm-3.5 0c.5 0 1-.5 1-1s-.5-1-1-1-1 .5-1 1 .5 1 1 1zm8.7-7c-1.5 2.5-5.2 4-9.2 4-3.2 0-6.1-1-7.7-2.7-.4-.4-.3-1 .2-1.3l.5-.3c.4-.3 1-.1 1.4.3 1.3 1.3 3.6 2 6 2 3.1 0 6-1.1 7.2-2.9.2-.3.7-.4 1-.2l.5.3c.4.3.5.9.1 1.4zm-2.7-2.6c0-2-2.4-1.9-2.4-1.9-.3 0-.6.1-.8.2-.8-1-2.2-1.6-3.8-1.7-2.5-.1-4.7 1.6-4.9 1.7-.2.1-.2.4 0 .6l.6.6c.2.2.5.2.7 0 0 0 1.6-1.2 3.5-1.1 1.1 0 2 .5 2.1 1.6v.1c-2.3.4-5.2 1.3-5.2 4.1 0 1.7 1.3 2.9 3.2 2.9 1.6 0 2.5-.9 3-1.6v1.3c0 .3.2.5.5.5h.9c.3 0 .5-.2.5-.5v-6.8zm-2.5 4.8c-.2.7-.9 1.2-1.7 1.2-1 0-1.7-.7-1.7-1.7 0-1.2 1.4-1.8 3.4-2.1v2.6z"/>
+                                                        </svg>
+                                                    </a>
+                                                @endif
+                                                @if ($phone->flipkart_url)
+                                                    <a href="{{ $phone->flipkart_url }}" target="_blank" rel="nofollow noopener"
+                                                        class="text-slate-400 hover:text-[#2874F0] transition-colors" title="Buy on Flipkart">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                                            <path d="M12.9 14.2l-.7-3.1h2.8l-1.3 3.1h-.8zm-2.5-5.9l.7 3.1h-1.8l-1-3.1h2.1zm-4.4 3.1l-.7-3.1h1.7l1 3.1H6zm11.2-5.4H4.8l2.9 8.6h2L8.9 20h2.4l1.2-4.5h2.1l-1.2 4.5h2.4l1.2-4.5h1.7l3.7-9.5z"/>
+                                                        </svg>
+                                                    </a>
+                                                @endif
+                                            </div>
                                         </td>
                                     @elseif ($tab == 'ueps')
                                         <td class="px-6 py-5 text-right">
