@@ -125,13 +125,21 @@ class Phone extends Model
             return 0;
         }
 
-        // Use stored FPI (overall_score) if available, otherwise calculate
-        $fpi = $this->overall_score ?? ($this->calculateFPI()['total'] ?? 0);
+        // 1. Normalize all scores to 0-100
+        $normUeps = ($this->ueps_score ?? 0) / 2.55;
+        $normFpi = $this->overall_score ?? 0;
+        $normGpx = ($this->gpx_score ?? 0) / 3.0;
+        $normCms = ($this->cms_score ?? 0) / 13.3;
+        $normEndurance = ($this->endurance_score ?? 0) / 1.6;
 
-        if ($fpi == 0) return 0;
+        // 2. Weighted Rating (Total 100%)
+        // UEPS (25%), FPI (25%), CMS (25%), GPX (15%), Endurance (10%)
+        $rating = ($normUeps * 0.25) + ($normFpi * 0.25) + ($normCms * 0.25) + ($normGpx * 0.15) + ($normEndurance * 0.10);
 
-        // Value Score = (FPI / Price) * 10,000
-        $score = ($fpi / $this->price) * 10000;
+        if ($rating == 0) return 0;
+
+        // 3. Value Score = (Rating / Price) * 10,000
+        $score = ($rating / $this->price) * 10000;
         return round($score, 1);
     }
 
@@ -206,8 +214,8 @@ class Phone extends Model
         $this->cms_details = $cms['breakdown'];
 
         // Calculate Value Score (Persisted)
-        if ($this->price > 0 && $this->overall_score > 0) {
-            $this->value_score = round(($this->overall_score / $this->price) * 10000, 2);
+        if ($this->price > 0) {
+            $this->value_score = $this->getValueScoreAttribute();
         } else {
             $this->value_score = 0;
         }

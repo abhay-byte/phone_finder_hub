@@ -458,8 +458,8 @@
                                         </svg>
                                         <div
                                             class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-gray-900 text-white text-xs rounded-xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 z-50 pointer-events-none shadow-xl border border-white/10 text-center">
-                                            Points per ₹10k. Higher is better. Calculated by dividing the UEPS score by the
-                                            current price.
+                                            Points per ₹10k. Higher is better. Based on a weighted rating of UEPS, FPI, CMS,
+                                            GPX, and Endurance scores.
                                             <div
                                                 class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900">
                                             </div>

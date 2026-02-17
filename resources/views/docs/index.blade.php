@@ -193,8 +193,10 @@
                             Our <strong>Value Score</strong> is derived from a proprietary algorithm that balances a phone's
                             capabilities against its current market price.
                         </p>
-                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 font-mono text-xs">
-                            Value Score = (UEPS Score × 0.6 + FPI Score × 0.4) / Price Factor
+                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 font-mono text-[10px] leading-relaxed">
+                            Weighted Rating = (UEPS/2.55 × 0.25) + (FPI × 0.25) + (CMS/13.3 × 0.25) + (GPX/3 × 0.15) +
+                            (Endurance/1.6 × 0.10)<br>
+                            Value Score = (Weighted Rating / Price) × 10,000
                         </div>
                         <p>
                             We normalize prices to specific regions (Global/India) to ensure fair comparison. A higher score
