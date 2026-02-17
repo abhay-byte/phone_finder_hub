@@ -486,7 +486,7 @@
                                             @endif
                                         </a>
                                     </th>
-                                    <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider min-w-[100px]">
                                         Buy
                                     </th>
                                 @endif
@@ -740,16 +740,16 @@
                                             <div class="flex items-center justify-center gap-2">
                                                 @if ($phone->amazon_url)
                                                     <a href="{{ $phone->amazon_url }}" target="_blank" rel="nofollow noopener"
-                                                        class="hover:scale-110 transition-transform block" title="Buy on Amazon">
+                                                        class="hover:scale-110 transition-transform block shrink-0" title="Buy on Amazon">
                                                         <img src="{{ asset('assets/amazon-icon.png') }}" alt="Amazon" 
-                                                             style="width: 36px; height: 36px; background-color: white; padding: 4px; border-radius: 8px; object-fit: contain;">
+                                                             style="width: 36px; height: 36px; min-width: 36px; flex-shrink: 0; background-color: white; padding: 4px; border-radius: 8px; object-fit: contain;">
                                                     </a>
                                                 @endif
                                                 @if ($phone->flipkart_url)
                                                     <a href="{{ $phone->flipkart_url }}" target="_blank" rel="nofollow noopener"
-                                                        class="hover:scale-110 transition-transform block" title="Buy on Flipkart">
+                                                        class="hover:scale-110 transition-transform block shrink-0" title="Buy on Flipkart">
                                                         <img src="{{ asset('assets/flipkart-icon.png') }}" alt="Flipkart" 
-                                                             style="width: 36px; height: 36px; background-color: white; padding: 4px; border-radius: 8px; object-fit: contain;">
+                                                             style="width: 36px; height: 36px; min-width: 36px; flex-shrink: 0; background-color: white; padding: 4px; border-radius: 8px; object-fit: contain;">
                                                     </a>
                                                 @endif
                                             </div>
