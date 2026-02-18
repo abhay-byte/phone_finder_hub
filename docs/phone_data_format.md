@@ -1,82 +1,119 @@
-overall_data - {Oppo Find X9 Pro
-
-Oppo Find X9 Pro MORE PICTURES
-
-    Released 2025, October 22
-    224g, 8.3mm thickness
-    Android 16, up to 5 major upgrades
-    256GB/512GB/1TB storage, no card slot
-    21%
-    1,821,955 hits
-    388
-    Become a fan
-    6.78"
-    1272x2772 pixels
-    200MP
-    2160p
-    12/16GB RAM
-    Dimensity 9500
-    7500mAh
-    80W50W
-
-    Review
-    Prices
-    Pictures
-    Compare
-    Opinions
-
-Network 	Technology 	
-GSM / HSPA / LTE / 5G
-Launch 	Announced 	2025, October 16
-Status 	Available. Released 2025, October 22
-Body 	Dimensions 	161.3 x 76.5 x 8.3 mm (6.35 x 3.01 x 0.33 in)
-Weight 	224 g (7.90 oz)
-Build 	Glass front (Gorilla Glass Victus 2), glass back, aluminum frame
-SIM 	· Nano-SIM + eSIM· Nano-SIM + Nano-SIM
- 	IP68/IP69 dust tight and water resistant (high pressure water jets; immersible up to 1.5m for 30 min)
-Display 	Type 	LTPO AMOLED, 1B colors, 120Hz, 2160Hz PWM, Dolby Vision, HDR10+, HDR Vivid, 800 nits (typ), 1800 nits (HBM), 3600 nits (peak)
-Size 	6.78 inches, 112.4 cm2 (~91.1% screen-to-body ratio)
-Resolution 	1272 x 2772 pixels, 19.5:9 ratio (~450 ppi density)
-Protection 	Corning Gorilla Glass Victus 2, Mohs level 5
- 	Ultra HDR image support
-Platform 	OS 	Android 16, up to 5 major Android upgrades, ColorOS 16
-Chipset 	Mediatek Dimensity 9500 (3 nm)
-CPU 	Octa-core (1x4.21 GHz C1-Ultra & 3x3.5 GHz C1-Premium & 4x2.7 GHz C1-Pro)
-GPU 	Arm G1-Ultra
-Memory 	Card slot 	No
-Internal 	256GB 12GB RAM, 512GB 12GB RAM, 512GB 16GB RAM, 1TB 16GB RAM
- 	UFS 4.1
-Main Camera 	Triple 	50 MP, f/1.5, 23mm (wide), 1/1.28", 1.22µm, multi-directional PDAF, OIS 200 MP, f/2.1, 70mm (periscope telephoto), 1/1.56", 0.5µm, 3x optical zoom, multi-directional PDAF, OIS 50 MP, f/2.0, 15mm, 120˚ (ultrawide), 1/2.76", 0.64µm, multi-directional PDAF
-Features 	Laser AF, color spectrum sensor, Hasselblad Color Calibration, LED flash, HDR, panorama, LUT preview
-Video 	4K@30/60/120fps, 1080p@30/60/240fps; gyro-EIS; HDR, 10‑bit video, Dolby Vision, LOG
-Selfie camera 	Single 	50 MP, f/2.0, 21mm (wide), 1/2.76", 0.64µm, PDAF
-Features 	Panorama
-Video 	4K@30/60fps, 1080p@30/60fps, gyro-EIS
-Sound 	Loudspeaker 	Yes, with stereo speakers
-3.5mm jack 	No
-Comms 	WLAN 	Wi-Fi 802.11 a/b/g/n/ac/6/7, dual-band or tri-band, Wi-Fi Direct
-Bluetooth 	6.0, A2DP, LE, aptX HD, LHDC 5
-Positioning 	GPS (L1+L5), BDS (B1I+B1c+B2a+B2b), GALILEO (E1+E5a+E5b), QZSS (L1+L5), GLONASS, NavIC (L5)
-NFC 	Yes
-Infrared port 	Yes
-Radio 	No
-USB 	USB Type-C 3.2, OTG
-Features 	Sensors 	Fingerprint (under display, ultrasonic), accelerometer, gyro, proximity, compass, barometer
- 	Satellite connectivity support (1TB 16GB RAM model only)
-Battery 	Type 	Si/C Li-Ion 7500 mAh
-Charging 	80W wired, 80W UFCS, 55W PPS, 11.7W PD 50W wireless 10W reverse wireless
-Misc 	Colors 	Silk White, Titanium Charcoal, Velvet Red
-Models 	CPH2791, PLG110
-Price 	₹ 109,999 / £ 889.97 / € 1,199.00
-Our Tests 	Performance 	AnTuTu: 2719560 (v10), 3563384 (v11) GeekBench: 9697 (v6) 3DMark: 6808 (Wild Life Extreme)
-Display 	1175 nits max brightness (measured)
-Loudspeaker 	-26.6 LUFS (Good)
-Battery 	
-Active use score 21:57h
-EU LABEL 	Energy 	Class A
-Battery 	80:06h endurance, 1300 cycles
-Free fall 	Class C (90 falls)
-Repairability 	Class B}
+overall_data - {{
+    "device_name": "OnePlus 15",
+    "image_url": "https://fdn2.gsmarena.com/vv/bigpic/oneplus-15.jpg",
+    "specifications": {
+        "Network": {
+            "Technology": "GSM / HSPA / LTE / 5G",
+            "2G bands": "GSM 850 / 900 / 1800 / 1900",
+            "3G bands": [
+                "HSDPA 800 / 850 / 900 / 1700(AWS) / 1900 / 2100 - International",
+                "HSDPA 850 / 900 / 1700(AWS) / 2100 - China",
+                "HSDPA 850 / 900 / 1900 / 2100 - India"
+            ],
+            "4G bands": [
+                "1, 2, 3, 4, 5, 7, 8, 12, 13, 17, 18, 19, 20, 25, 26, 28, 30, 32, 34, 38, 39, 40, 41, 42, 48, 66, 71 - International",
+                "1, 3, 4, 5, 7, 8, 18, 19, 20, 26, 28, 34, 38, 39, 40, 41, 42, 48, 66 - China",
+                "1, 2, 3, 4, 5, 7, 8, 18, 19, 20, 26, 28, 34, 38, 39, 40, 41, 42, 48, 66 - India"
+            ],
+            "5G bands": [
+                "1, 2, 3, 5, 7, 8, 12, 13, 20, 25, 26, 28, 30, 38, 40, 41, 48, 66, 71, 75, 77, 78 SA/NSA/Sub6 - International",
+                "1, 3, 5, 7, 8, 20, 26, 28, 38, 40, 41, 48, 66, 77, 78, 79, 80, 81, 83, 84, 89 SA/NSA - China",
+                "1, 2, 3, 5, 7, 8, 20, 26, 28, 38, 40, 41, 48, 66, 77, 78 SA/NSA - India"
+            ],
+            "Speed": "HSPA, LTE, 5G"
+        },
+        "Launch": {
+            "Announced": "2025, October 27",
+            "Status": "Available. Released 2025, October 28"
+        },
+        "Body": {
+            "Dimensions": "161.4 x 76.7 x 8.1 mm (6.35 x 3.02 x 0.32 in)",
+            "Weight": "211 g or 215 g (7.44 oz)",
+            "Build": "Glass front (Gorilla Glass Victus 2), aluminum alloy frame, glass back (Gorilla Glass 7i or Crystal Shield Glass) or fiber-reinforced plastic back",
+            "SIM": [
+                "\u00b7 Nano-SIM + Nano-SIM + eSIM (max 2 at a time) \u00b7 Nano-SIM + Nano-SIM",
+                "IP68/IP69K dust tight and water resistant (high pressure water jets; immersible up to 2m for 30 min) Micro-Arc Oxidation frame treatment (Sand Storm color only)"
+            ]
+        },
+        "Display": {
+            "Type": "LTPO AMOLED, 1B colors, 165Hz, PWM, Dolby Vision, HDR10+, HDR Vivid, 800 nits (typ), 1800 nits (HBM)",
+            "Size": "6.78 inches, 112.4 cm 2 (~90.8% screen-to-body ratio)",
+            "Resolution": "1272 x 2772 pixels, 19.5:9 ratio (~450 ppi density)",
+            "Protection": [
+                "Corning Gorilla Glass Victus 2, Mohs level 5",
+                "Ultra HDR image support"
+            ]
+        },
+        "Platform": {
+            "OS": "Android 16, OxygenOS 16 (Global), ColorOS 16 (China)",
+            "Chipset": "Qualcomm SM8850-AC Snapdragon 8 Elite Gen 5 (3 nm)",
+            "CPU": "Octa-core (2x4.6 GHz Oryon V3 Phoenix L + 6x3.62 GHz Oryon V3 Phoenix M)",
+            "GPU": "Adreno 840"
+        },
+        "Memory": {
+            "Card slot": "No",
+            "Internal": [
+                "256GB 12GB RAM, 256GB 16GB RAM, 512GB 12GB RAM, 512GB 16GB RAM, 1TB 16GB RAM",
+                "UFS 4.1"
+            ]
+        },
+        "Main Camera": {
+            "Triple": "50 MP, f/1.8, 24mm (wide), 1/1.56\", 1.0\u00b5m, multi-directional PDAF, OIS 50 MP, f/2.8, 80mm (periscope telephoto), 1/2.76\", 0.64\u00b5m, 3.5x optical zoom, PDAF, OIS 50 MP, f/2.0, 16mm, 116\u02da (ultrawide), 1/2.88\", 0.61\u00b5m, PDAF",
+            "Features": "Laser focus, color spectrum sensor, LED flash, HDR, panorama, LUT preview",
+            "Video": "8K@30fps, 4K@30/60/120fps, 1080p@30/60/240fps, Auto HDR, gyro-EIS, Dolby Vision, LUT"
+        },
+        "Selfie camera": {
+            "Single": "32 MP, f/2.4, 21mm (wide), 1/2.74\", 0.64\u00b5m, AF",
+            "Features": "HDR, panorama",
+            "Video": "4K@30/60fps, 1080p@30/60fps, gyro-EIS, HDR"
+        },
+        "Sound": {
+            "Loudspeaker": "Yes, with stereo speakers",
+            "3.5mm jack": [
+                "No",
+                "24-bit/192kHz Hi-Res audio"
+            ]
+        },
+        "Comms": {
+            "WLAN": "Wi-Fi 802.11 a/b/g/n/ac/6/7, dual or tri-band, Wi-Fi Direct",
+            "Bluetooth": "6.0, A2DP, LE, aptX HD, aptX Adaptive, LHDC 5",
+            "Positioning": "GPS (L1+L5), GLONASS (G1), BDS (B1I+B1c+B2a), GALILEO (E1+E5a), QZSS (L1+L5), NavIC (L5)",
+            "NFC": "Yes",
+            "Infrared port": "Yes",
+            "Radio": "No",
+            "USB": "USB Type-C 3.2, OTG"
+        },
+        "Features": {
+            "Sensors": "Fingerprint (under display, ultrasonic), accelerometer, proximity, gyro (UAV-grade), compass, barometer (exc. China)"
+        },
+        "Battery": {
+            "Type": "Si/C Li-Ion 7300 mAh",
+            "Charging": "120W wired, 120W UFCS, 55W PPS, 36W PD, 36W QC, 50% in 15 min, 100% in 40 min 50W wireless 10W reverse wireless 5W reverse wired Bypass charging"
+        },
+        "Misc": {
+            "Colors": "Infinite Black, Ultra Violet, Sand Storm",
+            "Models": "CPH2747, CPH2745, PLK110, CPH2749",
+            "SAR": "1.17 W/kg (head) \u00a0 \u00a0 1.00 W/kg (body)",
+            "Price": "\u20b9\u200972,998 / $\u2009899.99 / \u00a3\u2009829.00 / \u20ac\u2009959.00"
+        },
+        "Our Tests": {
+            "Performance": {
+                "AnTuTu": "2790237 (v10), 3688274 (v11)",
+                "GeekBench": "11062 (v6)",
+                "3DMark": "7370 (Wild Life Extreme)"
+            },
+            "Display": "1364 nits max brightness (measured)",
+            "Loudspeaker": "-24.8 LUFS (Very good)",
+            "Battery": "Active use score 23:07h"
+        },
+        "EU LABEL": {
+            "Energy": "Class A",
+            "Battery": "74:25h endurance, 1100 cycles",
+            "Free fall": "Class C (90 falls)",
+            "Repairability": "Class B"
+        }
+    }
+}}
 
 antutu_v11 - {3469273}
 

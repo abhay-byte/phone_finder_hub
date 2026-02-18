@@ -55,7 +55,7 @@ except ImportError:
     HAS_IMAGE_LIBS = False
 
 try:
-    from rembg import remove
+    from rembg import remove, new_session
     HAS_REMBG = True
 except ImportError:
     HAS_REMBG = False
@@ -97,8 +97,12 @@ def remove_background(input_path: str, output_path: str) -> bool:
         with open(input_path, 'rb') as input_file:
             input_data = input_file.read()
         
-        # Remove background
-        output_data = remove(input_data)
+        if 'new_session' in globals():
+            # Use isnet-general-use model for better quality on product images
+            session = new_session("isnet-general-use")
+            output_data = remove(input_data, session=session)
+        else:
+            output_data = remove(input_data)
         
         with open(output_path, 'wb') as output_file:
             output_file.write(output_data)
