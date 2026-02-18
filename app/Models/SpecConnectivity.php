@@ -24,6 +24,7 @@ class SpecConnectivity extends Model
         'sar_value',
         'network_bands',
         'positioning_details',
+        'jack_3_5mm',
         'has_3_5mm_jack',
     ];
 

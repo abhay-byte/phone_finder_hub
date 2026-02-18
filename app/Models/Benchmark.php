@@ -24,6 +24,7 @@ class Benchmark extends Model
         'dxomark_score',
         'phonearena_camera_score',
         'other_benchmark_score',
+        'battery_charge_time_100',
     ];
 
     public function phone()
