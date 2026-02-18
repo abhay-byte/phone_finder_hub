@@ -682,7 +682,14 @@ class CmsScoringService
         if ($other !== null && $other > 0) {
             // Scale: (score / 100) * 80, capped at 80
             $otherPoints = min(($other / 100) * 80, 80);
-            $addPoints($benchScore, $benchDetails, 'Other Benchmarks', round($otherPoints, 1), "Score: {$other}");
+            
+            $reason = "Score: {$other}";
+            // Custom detail for Oppo Find X9 Pro as requested
+            if ($phone->name === 'Oppo Find X9 Pro') {
+                $reason = "Avg of GSM (4.6/5) & Mobile91 (9/10)";
+            }
+            
+            $addPoints($benchScore, $benchDetails, 'Other Benchmarks', round($otherPoints, 1), $reason);
         } else {
             $addPoints($benchScore, $benchDetails, 'Other Benchmarks', 0, 'Not Available');
         }

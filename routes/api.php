@@ -13,3 +13,7 @@ Route::apiResource('phones', \App\Http\Controllers\PhoneController::class)
         'index' => 'api.phones.index',
         'show' => 'api.phones.show',
     ]);
+
+Route::get('/keep-alive', function () {
+    return response('', 200);
+});

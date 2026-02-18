@@ -148,7 +148,12 @@ class PhoneController extends Controller
         $direction = $request->input('direction', 'desc');
 
         // Cache key includes all filter parameters
-        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_p{$minPrice}-{$maxPrice}_r{$minRam}-{$maxRam}_s{$minStorage}-{$maxStorage}_b{$bootloader}_t{$turnip}_html_v5";
+        $brandsKey = implode('_', $request->input('brands', []));
+        $ipRatingsKey = implode('_', $request->input('ip_ratings', []));
+        $minAntutu = $request->input('min_antutu', 0);
+        $maxAntutu = $request->input('max_antutu', 3000000);
+
+        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_p{$minPrice}-{$maxPrice}_r{$minRam}-{$maxRam}_s{$minStorage}-{$maxStorage}_b{$bootloader}_t{$turnip}_br{$brandsKey}_ip{$ipRatingsKey}_a{$minAntutu}-{$maxAntutu}_html_v6";
 
         $queryParams = $request->query();
 

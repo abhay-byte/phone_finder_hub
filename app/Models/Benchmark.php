@@ -23,6 +23,7 @@ class Benchmark extends Model
         'dmark_wild_life_stress_stability',
         'dxomark_score',
         'phonearena_camera_score',
+        'other_benchmark_score',
     ];
 
     public function phone()

@@ -15,10 +15,12 @@ erDiagram
         overall_score decimal "Changed to decimal(5,1), Indexed"
         ueps_score decimal "Indexed"
         value_score decimal "Indexed"
+        expert_score decimal "Nullable"
         gpx_score decimal "Indexed"
         gpx_details json
         cms_score decimal "Indexed, nullable, default 0"
         cms_details json "Nullable"
+        endurance_score decimal "Default 0"
         release_date date "Indexed"
         announced_date date
         image_url string
@@ -36,6 +38,7 @@ erDiagram
         dimensions string
         weight string
         build_material string
+        cooling_type string
         sim string
         ip_rating string
         colors string
@@ -70,7 +73,11 @@ erDiagram
         gpu_emulation_tier string
         memory_card_slot string
         internal_storage string
+        storage_min integer
+        storage_max integer
         ram string
+        ram_min integer
+        ram_max integer
         storage_type string
         bootloader_unlockable boolean
         turnip_support boolean
@@ -164,6 +171,7 @@ erDiagram
         energy_label string
         dxomark_score integer "Nullable, for CMS calculation"
         phonearena_camera_score integer "Nullable, for CMS calculation"
+        other_benchmark_score integer "Nullable"
         created_at timestamp
         updated_at timestamp
     }
@@ -314,12 +322,14 @@ erDiagram
 
 ### Notable Schema Features
 
-1. **Scoring System**: Multiple scoring metrics (overall_score, ueps_score, value_score, gpx_score, cms_score) with gpx_details and cms_details stored as JSON
+1. **Scoring System**: Multiple scoring metrics (overall_score, ueps_score, value_score, expert_score, gpx_score, cms_score, endurance_score) with gpx_details and cms_details stored as JSON
 2. **CMS-1330 Camera Scoring**: Dedicated cms_score (0-1330) and cms_details (JSON breakdown) for comprehensive camera evaluation
-3. **Camera Benchmarks**: DxOMark and PhoneArena camera scores stored in benchmarks table for CMS calculation
+3. **Camera Benchmarks**: DxOMark, PhoneArena, and other camera scores stored in benchmarks table for CMS calculation
 4. **E-commerce Integration**: Amazon and Flipkart URLs and prices
 5. **Developer Metrics**: Bootloader unlock, custom ROM support, Turnip support for gaming
 6. **Comprehensive Camera Specs**: Separate fields for main, ultrawide, telephoto, and selfie cameras
 7. **Detailed Display Specs**: Both claimed and measured brightness values
 8. **Multiple Benchmark Types**: AnTuTu, Geekbench, 3DMark with stability testing
 9. **Charging Specs**: Detailed wired, wireless, and reverse charging specifications
+10. **Thermal Management**: Cooling type tracking for performance analysis
+11. **Storage Variants**: RAM and storage min/max fields for tracking multiple configurations
