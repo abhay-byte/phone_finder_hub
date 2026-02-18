@@ -783,7 +783,7 @@
                                                 <div
                                                     class="font-bold text-gray-900 dark:text-white text-base leading-tight">
                                                     {{ $phone->name }}</div>
-                                                <div class="text-xs text-gray-500 font-normal">{{ $phone->model_variant }}
+                                                <div class="text-xs text-gray-500 font-normal max-w-[80px] truncate" title="{{ $phone->model_variant }}">{{ $phone->model_variant }}
                                                 </div>
                                             </div>
                                         </a>
