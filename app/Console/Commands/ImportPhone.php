@@ -230,12 +230,19 @@ class ImportPhone extends Command
         $imageUrl = null;
         if ($image && !empty($image['image_path'])) {
             $imgPath = $image['image_path'];
-            if (str_starts_with($imgPath, 'storage/')) {
-                $imageUrl = '/' . $imgPath;
-            } elseif (str_starts_with($imgPath, '/storage')) {
-                $imageUrl = $imgPath;
+            // Normalize path separator
+            $imgPath = str_replace('\\', '/', $imgPath);
+            
+            if (str_contains($imgPath, 'storage/app/public/')) {
+                // "storage/app/public/foo.png" -> "/storage/foo.png"
+                $imageUrl = '/storage/' . str_replace('storage/app/public/', '', $imgPath);
+            } elseif (str_contains($imgPath, 'storage/public/')) {
+                // "storage/public/foo.png" -> "/storage/foo.png"
+                $imageUrl = '/storage/' . str_replace('storage/public/', '', $imgPath);
+            } elseif (str_starts_with($imgPath, 'storage/')) {
+                 $imageUrl = '/' . $imgPath;
             } else {
-                $imageUrl = '/storage/phones/' . basename($imgPath);
+                 $imageUrl = '/storage/' . basename($imgPath);
             }
         } elseif ($gsmarena && !empty($gsmarena['image_url'])) {
             $imageUrl = $gsmarena['image_url'];
