@@ -9,7 +9,7 @@ RUN npm run build
 # Stage 2: Build PHP Application
 FROM php:8.4-apache
 
-# Install dependencies
+# Install system dependencies (PHP extensions + Python + native libs for rembg/onnxruntime)
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
@@ -20,7 +20,24 @@ RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     libicu-dev \
     libpq-dev \
-    && docker-php-ext-install pdo_sqlite pdo_pgsql mbstring exif pcntl bcmath gd intl
+    # Python & pip
+    python3 \
+    python3-pip \
+    python3-venv \
+    # Native libs required by rembg / onnxruntime / Pillow
+    libgl1 \
+    libglib2.0-0 \
+    libgomp1 \
+    # Playwright system deps (Chromium)
+    libnss3 \
+    libxss1 \
+    libatk-bridge2.0-0 \
+    libdrm2 \
+    libxkbcommon0 \
+    libgbm1 \
+    libasound2 \
+    && docker-php-ext-install pdo_sqlite pdo_pgsql mbstring exif pcntl bcmath gd intl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -49,10 +66,27 @@ COPY . /var/www/html
 # Copy compiled frontend assets from node_builder
 COPY --from=node_builder /app/public/build /var/www/html/public/build
 
-# Install dependencies
+# Install PHP dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
-# Explicitly rebuild autoloader just in case
 RUN composer dump-autoload --optimize
+
+# ── Python dependencies ────────────────────────────────────────────────────────
+# Install into a venv so pip doesn't conflict with Debian system packages
+RUN python3 -m venv /opt/phonefinder-venv \
+    && /opt/phonefinder-venv/bin/pip install --upgrade pip \
+    && /opt/phonefinder-venv/bin/pip install --no-cache-dir -r /var/www/html/python/requirements.txt
+
+# Install Playwright Chromium browser (used by nanoreview & shopping link scrapers)
+RUN /opt/phonefinder-venv/bin/playwright install chromium --with-deps 2>/dev/null || true
+
+# Make the venv python available system-wide via a symlink
+RUN ln -sf /opt/phonefinder-venv/bin/python3 /usr/local/bin/python3 \
+    && ln -sf /opt/phonefinder-venv/bin/python3 /usr/local/bin/python
+
+# Env var so AdminController always knows where the venv python lives
+ENV PYTHON_BIN=/opt/phonefinder-venv/bin/python3
+ENV PYTHON_SCRIPTS_PATH=/var/www/html/python
+# ──────────────────────────────────────────────────────────────────────────────
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache

@@ -289,12 +289,13 @@ def fetch_phone_image(phone_name: str, output_dir: str = DEFAULT_OUTPUT_DIR, rem
     return result
 
 
-def get_gsmarena_data(phone_name: str) -> Dict[str, Any]:
+def get_gsmarena_data(phone_name: str, direct_url: str = None) -> Dict[str, Any]:
     """
     Get phone specifications from GSMArena.
     
     Args:
         phone_name: Name of the phone
+        direct_url: Optional direct GSMArena URL (skips search)
         
     Returns:
         Dictionary with GSMArena data
@@ -311,12 +312,17 @@ def get_gsmarena_data(phone_name: str) -> Dict[str, Any]:
         print("STEP 1: Fetching GSMArena specifications...", file=sys.stderr)
         print(f"{'='*60}", file=sys.stderr)
         
-        # Search for the phone
-        url = search_gsmarena(phone_name)
-        
-        if not url:
-            result['error'] = f'Phone "{phone_name}" not found on GSMArena'
-            return result
+        if direct_url:
+            # Use the provided URL directly (admin specified it)
+            url = direct_url
+            print(f"Using provided GSMArena URL: {url}", file=sys.stderr)
+        else:
+            # Search for the phone
+            url = search_gsmarena(phone_name)
+            
+            if not url:
+                result['error'] = f'Phone "{phone_name}" not found on GSMArena'
+                return result
         
         result['url'] = url
         print(f"Found GSMArena URL: {url}", file=sys.stderr)
@@ -525,7 +531,8 @@ def get_image_data(phone_name: str, output_dir: str, remove_bg: bool = True) -> 
 
 
 def aggregate_phone_data(phone_name: str, output_dir: str = DEFAULT_OUTPUT_DIR, 
-                         remove_bg: bool = True, skip_steps: list = None) -> Dict[str, Any]:
+                         remove_bg: bool = True, skip_steps: list = None,
+                         gsmarena_url: str = None) -> Dict[str, Any]:
     """
     Aggregate all phone data from multiple sources.
     
@@ -534,6 +541,7 @@ def aggregate_phone_data(phone_name: str, output_dir: str = DEFAULT_OUTPUT_DIR,
         output_dir: Directory for images
         remove_bg: Whether to remove image background
         skip_steps: List of steps to skip ('gsmarena', 'nanoreview', 'gpu', 'camera', 'shopping', 'image')
+        gsmarena_url: Optional direct GSMArena URL (skips search)
         
     Returns:
         Complete aggregated phone data
@@ -563,7 +571,7 @@ def aggregate_phone_data(phone_name: str, output_dir: str = DEFAULT_OUTPUT_DIR,
     
     # Step 1: GSMArena specifications
     if 'gsmarena' not in skip_steps:
-        gsmarena_result = get_gsmarena_data(phone_name)
+        gsmarena_result = get_gsmarena_data(phone_name, direct_url=gsmarena_url)
         if gsmarena_result['success']:
             result['gsmarena'] = gsmarena_result['data']
             result['summary']['successful_steps'] += 1
@@ -710,6 +718,12 @@ Data sources:
         help='Maximum shopping results per store (default: 3)'
     )
     
+    parser.add_argument(
+        '--gsmarena-url',
+        help='Direct GSMArena URL to use instead of searching (e.g. https://www.gsmarena.com/oneplus_15-12345.php)',
+        default=None
+    )
+    
     args = parser.parse_args()
     
     # Parse skip steps
@@ -722,7 +736,8 @@ Data sources:
         phone_name=args.phone_name,
         output_dir=args.image_dir,
         remove_bg=not args.no_bg_removal,
-        skip_steps=skip_steps
+        skip_steps=skip_steps,
+        gsmarena_url=args.gsmarena_url,
     )
     
     # Output results

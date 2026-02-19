@@ -14,9 +14,9 @@ class PhoneController extends Controller
     {
         $sort = $request->input('sort', 'expert_score'); // Default to Expert Score
 
-        // Cache entire HTML response for 5 minutes
-        $cacheKey = 'phones_index_html_' . $sort . '_v2';
-        return Cache::remember($cacheKey, 300, function () use ($sort) {
+        // Cache query results for 5 minutes (not the view, to allow dynamic auth/navbar)
+        $cacheKey = 'phones_index_data_' . $sort . '_v2';
+        $phones = Cache::remember($cacheKey, 300, function () use ($sort) {
             $query = \App\Models\Phone::query();
 
             if ($sort == 'expert_score') {
@@ -33,10 +33,10 @@ class PhoneController extends Controller
                 $query->orderBy('expert_score', 'desc');
             }
 
-            $phones = $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
-            
-            return view('phones.index', compact('phones', 'sort'))->render();
+            return $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
         });
+
+        return view('phones.index', compact('phones', 'sort'));
     }
 
     public function grid(Request $request)

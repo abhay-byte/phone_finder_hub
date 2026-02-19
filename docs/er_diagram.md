@@ -191,9 +191,11 @@ erDiagram
     USERS {
         id integer PK
         name string
+        username string UK "Unique, used for login"
         email string UK "Unique constraint"
         email_verified_at timestamp
-        password string
+        password string "bcrypt hashed"
+        role enum "user | super_admin, default user"
         remember_token string
         created_at timestamp
         updated_at timestamp
@@ -294,7 +296,7 @@ erDiagram
 7. **benchmarks** - Performance benchmarks and test results
 
 #### Authentication Tables (4):
-8. **users** - User accounts
+8. **users** - User accounts with `username` (unique login handle), `role` (enum: `user` | `super_admin`)
 9. **password_reset_tokens** - Password reset functionality
 10. **sessions** - User session management
 11. **personal_access_tokens** - API token authentication

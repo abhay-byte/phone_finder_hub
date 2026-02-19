@@ -205,6 +205,73 @@
                     </div>
                 </div>
             </div>
+            {{-- Authentication & RBAC Card --}}
+            <div class="group relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
+                <div>
+                    <span class="rounded-lg inline-flex p-3 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 ring-4 ring-white dark:ring-gray-800">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="mt-4">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Authentication &amp; Access Control</h3>
+                    <div class="mt-2 text-sm text-gray-500 dark:text-gray-400 space-y-3">
+                        <p>PhoneFinderHub uses session-based authentication with two distinct roles:</p>
+
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
+                                    <svg class="w-3 h-3 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                                <div>
+                                    <span class="font-semibold text-gray-700 dark:text-gray-300">super_admin</span>
+                                    <span class="text-gray-500 dark:text-gray-400"> — Single privileged account with full platform access. Protected by role middleware.</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                    <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                </span>
+                                <div>
+                                    <span class="font-semibold text-gray-700 dark:text-gray-300">user</span>
+                                    <span class="text-gray-500 dark:text-gray-400"> — Standard authenticated account. Created via public registration.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 space-y-1 text-xs font-mono">
+                            <p class="font-semibold text-gray-600 dark:text-gray-300 font-sans text-[11px] uppercase tracking-wide mb-1">Security Features</p>
+                            <p>✓ bcrypt password hashing (cost = 12)</p>
+                            <p>✓ Rate limiting — 5 login / 3 registration attempts per minute per IP</p>
+                            <p>✓ Session regeneration on login &amp; logout</p>
+                            <p>✓ CSRF protection on all POST forms</p>
+                            <p>✓ Input sanitization &amp; strict regex validation</p>
+                            <p>✓ Password breach check (HaveIBeenPwned via <code>uncompromised()</code>)</p>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 text-xs font-mono">
+                            <p class="font-semibold text-gray-600 dark:text-gray-300 font-sans text-[11px] uppercase tracking-wide mb-1">Middleware Aliases</p>
+                            <p><span class="text-teal-600 dark:text-teal-400">auth</span> — Redirects guests to /login</p>
+                            <p><span class="text-teal-600 dark:text-teal-400">guest</span> — Redirects authenticated users to home</p>
+                            <p><span class="text-teal-600 dark:text-teal-400">super_admin</span> — Restricts to super_admin role (403 for others)</p>
+                        </div>
+
+                        <div class="flex gap-2 flex-wrap mt-1">
+                            <a href="{{ route('login') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14"/></svg>
+                                Sign in
+                            </a>
+                            <span class="text-gray-300 dark:text-gray-600">|</span>
+                            <a href="{{ route('register') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                                Create account
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 @endsection

@@ -1,0 +1,17 @@
+# Core HTTP / scraping
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+urllib3>=2.0.0
+lxml>=5.0.0
+cloudscraper>=1.2.71
+
+# Playwright (headless browser for JS-heavy pages)
+playwright>=1.44.0
+playwright-stealth>=1.0.6
+
+# Image processing & background removal
+Pillow>=10.0.0
+rembg>=2.0.50
+
+# Crypto (Flipkart link decryption)
+cryptography>=41.0.0
