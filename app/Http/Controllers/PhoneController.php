@@ -154,7 +154,7 @@ class PhoneController extends Controller
         $minAntutu = $request->input('min_antutu', 0);
         $maxAntutu = $request->input('max_antutu', 3000000);
 
-        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_p{$minPrice}-{$maxPrice}_r{$minRam}-{$maxRam}_s{$minStorage}-{$maxStorage}_b{$bootloader}_t{$turnip}_un{$showUnverified}_br{$brandsKey}_ip{$ipRatingsKey}_a{$minAntutu}-{$maxAntutu}_html_v7";
+        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_p{$minPrice}-{$maxPrice}_r{$minRam}-{$maxRam}_s{$minStorage}-{$maxStorage}_b{$bootloader}_t{$turnip}_un{$showUnverified}_br{$brandsKey}_ip{$ipRatingsKey}_a{$minAntutu}-{$maxAntutu}_html_v8";
 
         $queryParams = $request->query();
 
@@ -176,7 +176,8 @@ class PhoneController extends Controller
                     $q->whereHas('benchmarks', function($sq) {
                         $sq->whereNotNull('antutu_score')
                            ->whereNotNull('geekbench_single')
-                           ->whereNotNull('geekbench_multi');
+                           ->whereNotNull('geekbench_multi')
+                           ->whereNotNull('dmark_wild_life_extreme');
                     });
                 })
                 ->whereHas('platform', function($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
@@ -226,7 +227,8 @@ class PhoneController extends Controller
                     $q->whereHas('benchmarks', function($sq) {
                         $sq->whereNotNull('antutu_score')
                            ->whereNotNull('geekbench_single')
-                           ->whereNotNull('geekbench_multi');
+                           ->whereNotNull('geekbench_multi')
+                           ->whereNotNull('dmark_wild_life_extreme');
                     });
                 })
                 ->whereHas('platform', function($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
@@ -323,7 +325,8 @@ class PhoneController extends Controller
                     $q->whereHas('benchmarks', function($sq) {
                         $sq->whereNotNull('antutu_score')
                            ->whereNotNull('geekbench_single')
-                           ->whereNotNull('geekbench_multi');
+                           ->whereNotNull('geekbench_multi')
+                           ->whereNotNull('dmark_wild_life_extreme');
                     });
                 })
                 ->whereHas('platform', function($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
