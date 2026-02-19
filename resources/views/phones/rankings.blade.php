@@ -220,6 +220,17 @@
                                     <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
                                 </div>
                             </label>
+
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-teal-600 transition-colors">Show Unverified</span>
+                                    <span class="text-[10px] text-slate-500 dark:text-slate-500 font-medium">Include phones with missing data</span>
+                                </div>
+                                <div class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="show_unverified" name="show_unverified" value="1" {{ $showUnverified ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
+                                </div>
+                            </label>
                         </div>
 
                         <button id="apply-filters"
@@ -1058,6 +1069,7 @@
                     const curMaxAntutu = document.getElementById('max_antutu');
                     const curBootloader = document.getElementById('bootloader');
                     const curTurnip = document.getElementById('turnip');
+                    const curShowUnverified = document.getElementById('show_unverified');
 
                     if (curMinPrice) url.searchParams.set('min_price', curMinPrice.value);
                     if (curMaxPrice) url.searchParams.set('max_price', curMaxPrice.value);
@@ -1084,6 +1096,11 @@
                         if (curTurnip.checked) url.searchParams.set('turnip', '1');
                         else url.searchParams.delete('turnip');
                     }
+
+                    if (curShowUnverified) {
+                        if (curShowUnverified.checked) url.searchParams.set('show_unverified', '1');
+                        else url.searchParams.delete('show_unverified');
+                    }
  
                     window.location.href = url.toString();
                 });
@@ -1094,7 +1111,7 @@
                     const url = new URL(window.location.href);
                     const params = [
                         'min_price', 'max_price', 'min_ram', 'max_ram', 'min_storage', 'max_storage', 
-                        'min_antutu', 'max_antutu', 'bootloader', 'turnip', 'page', 'brands[]', 'ip_ratings[]'
+                        'min_antutu', 'max_antutu', 'bootloader', 'turnip', 'show_unverified', 'page', 'brands[]', 'ip_ratings[]'
                     ];
                     params.forEach(p => url.searchParams.delete(p));
                     window.location.href = url.toString();

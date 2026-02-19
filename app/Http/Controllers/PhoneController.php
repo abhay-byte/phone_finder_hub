@@ -124,6 +124,7 @@ class PhoneController extends Controller
         $maxStorage = $request->input('max_storage', 1024); // 1TB
         $bootloader = $request->boolean('bootloader');
         $turnip = $request->boolean('turnip');
+        $showUnverified = $request->boolean('show_unverified', false);
 
         // Define ranking metric based on tab
         $rankExpression = match($tab) {
@@ -153,7 +154,7 @@ class PhoneController extends Controller
         $minAntutu = $request->input('min_antutu', 0);
         $maxAntutu = $request->input('max_antutu', 3000000);
 
-        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_p{$minPrice}-{$maxPrice}_r{$minRam}-{$maxRam}_s{$minStorage}-{$maxStorage}_b{$bootloader}_t{$turnip}_br{$brandsKey}_ip{$ipRatingsKey}_a{$minAntutu}-{$maxAntutu}_html_v6";
+        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_p{$minPrice}-{$maxPrice}_r{$minRam}-{$maxRam}_s{$minStorage}-{$maxStorage}_b{$bootloader}_t{$turnip}_un{$showUnverified}_br{$brandsKey}_ip{$ipRatingsKey}_a{$minAntutu}-{$maxAntutu}_html_v7";
 
         $queryParams = $request->query();
 
@@ -166,11 +167,18 @@ class PhoneController extends Controller
             ];
         });
 
-        $html = Cache::remember($cacheKey, 300, function() use ($tab, $sort, $direction, $rankExpression, $page, $queryParams, $minPrice, $maxPrice, $maxDatabasePrice, $minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip, $filterOptions, $request) {
+        $html = Cache::remember($cacheKey, 300, function() use ($tab, $sort, $direction, $rankExpression, $page, $queryParams, $minPrice, $maxPrice, $maxDatabasePrice, $minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip, $showUnverified, $filterOptions, $request) {
             
             // Subquery to calculate Rank for ALL phones based on the Tab's metric
             $rankingSubquery = \App\Models\Phone::query()
                 ->whereBetween('price', [$minPrice, $maxPrice])
+                ->when(!$showUnverified, function($q) {
+                    $q->whereHas('benchmarks', function($sq) {
+                        $sq->whereNotNull('antutu_score')
+                           ->whereNotNull('geekbench_single')
+                           ->whereNotNull('geekbench_multi');
+                    });
+                })
                 ->whereHas('platform', function($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
                     $q->where(function($query) use ($minRam, $maxRam) {
                          $query->where('ram_max', '>=', $minRam)
@@ -214,6 +222,13 @@ class PhoneController extends Controller
 
             $query = \App\Models\Phone::query()
                 ->whereBetween('price', [$minPrice, $maxPrice])
+                ->when(!$showUnverified, function($q) {
+                    $q->whereHas('benchmarks', function($sq) {
+                        $sq->whereNotNull('antutu_score')
+                           ->whereNotNull('geekbench_single')
+                           ->whereNotNull('geekbench_multi');
+                    });
+                })
                 ->whereHas('platform', function($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
                     $q->where(function($query) use ($minRam, $maxRam) {
                          $query->where('ram_max', '>=', $minRam)
@@ -304,6 +319,13 @@ class PhoneController extends Controller
             // Optimization: Manual pagination
             $perPage = 50;
             $total = \App\Models\Phone::whereBetween('price', [$minPrice, $maxPrice])
+                ->when(!$showUnverified, function($q) {
+                    $q->whereHas('benchmarks', function($sq) {
+                        $sq->whereNotNull('antutu_score')
+                           ->whereNotNull('geekbench_single')
+                           ->whereNotNull('geekbench_multi');
+                    });
+                })
                 ->whereHas('platform', function($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
                     $q->where(function($query) use ($minRam, $maxRam) {
                          $query->where('ram_max', '>=', $minRam)
@@ -344,7 +366,7 @@ class PhoneController extends Controller
             return view('phones.rankings', compact(
                 'phones', 'sort', 'direction', 'tab', 'ranks', 
                 'minPrice', 'maxPrice', 'maxDatabasePrice',
-                'minRam', 'maxRam', 'minStorage', 'maxStorage', 'bootloader', 'turnip', 'filterOptions'
+                'minRam', 'maxRam', 'minStorage', 'maxStorage', 'bootloader', 'turnip', 'showUnverified', 'filterOptions'
             ))->render();
         });
 
