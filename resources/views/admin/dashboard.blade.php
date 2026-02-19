@@ -69,6 +69,11 @@
                 @if($phone->expert_score > 0)
                 <span class="px-2 py-1 rounded-lg text-xs font-bold bg-teal-500/15 text-teal-400 border border-teal-500/20">{{ $phone->expert_score }}</span>
                 @endif
+                <a href="{{ route('admin.phones.edit', $phone) }}"
+                   class="p-1.5 rounded-lg text-slate-500 hover:text-teal-400 hover:bg-teal-500/10 transition-all"
+                   title="Edit Phone">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                </a>
                 <a href="{{ route('phones.show', $phone) }}" target="_blank"
                    class="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all"
                    title="View Phone">

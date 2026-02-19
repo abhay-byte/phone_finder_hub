@@ -1010,4 +1010,64 @@ class AdminController extends Controller
         if ($brand === 'samsung') return 2;
         return 3;
     }
+
+    // ─── Edit Phone ─────────────────────────────────────────────────────
+
+    public function editPhone(Phone $phone)
+    {
+        $phone->load(['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks']);
+        return view('admin.edit-phone', compact('phone'));
+    }
+
+    public function updatePhone(Request $request, Phone $phone)
+    {
+        \Illuminate\Support\Facades\Log::info("Updating Phone ID: {$phone->id}", $request->all());
+
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'brand' => 'required|string|max:100',
+            'price' => 'nullable|numeric|min:0',
+        ]);
+
+        // 1. Update Core Phone Data
+        $phone->update($request->only([
+            'name', 'brand', 'model_variant', 'price', 'release_date', 'announced_date',
+            'image_url', 'amazon_url', 'flipkart_url', 'amazon_price', 'flipkart_price'
+        ]));
+
+        // 2. Update Relations (Body, Platform, Camera, etc.)
+        // We iterate through relations and update/create them
+        $relations = [
+            'body'         => \App\Models\SpecBody::class,
+            'platform'     => \App\Models\SpecPlatform::class,
+            'camera'       => \App\Models\SpecCamera::class,
+            'connectivity' => \App\Models\SpecConnectivity::class,
+            'battery'      => \App\Models\SpecBattery::class,
+            'benchmarks'   => \App\Models\Benchmark::class,
+        ];
+
+        foreach ($relations as $relationName => $modelClass) {
+            $data = $request->input($relationName, []);
+            
+            // Filter out purely empty strings to verify if we even have data? 
+            // Actually, admin might want to clear fields, so we accept empty strings (which become null via middleware usually)
+            
+            if ($phone->$relationName) {
+                $phone->$relationName->update($data);
+            } else {
+                // Only create if there is at least one non-null/non-empty value to avoid empty rows?
+                // But if the admin filled it, we should create it.
+                if (!empty(array_filter($data, fn($v) => !is_null($v) && $v !== ''))) {
+                    $phone->$relationName()->create($data);
+                }
+            }
+        }
+
+        // 3. Recalculate Scores
+        $phone->refresh();
+        $phone->updateScores();
+
+        return redirect()->route('admin.phones.edit', $phone)
+            ->with('success', 'Phone updated successfully. Scores recalculated.');
+    }
 }

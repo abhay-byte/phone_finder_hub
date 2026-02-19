@@ -55,6 +55,8 @@ Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->gro
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/phones/add', [AdminController::class, 'addPhone'])->name('phones.add');
     Route::post('/phones/import', [AdminController::class, 'storePhone'])->name('phones.import');
+    Route::get('/phones/{phone}/edit', [AdminController::class, 'editPhone'])->name('phones.edit');
+    Route::put('/phones/{phone}', [AdminController::class, 'updatePhone'])->name('phones.update');
     Route::get('/phones/status/{jobId}', [AdminController::class, 'importStatusPage'])->name('phones.status');
     Route::get('/phones/status/{jobId}/json', [AdminController::class, 'importStatus'])->name('phones.status.json');
 });
