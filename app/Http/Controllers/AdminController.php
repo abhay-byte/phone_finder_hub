@@ -950,22 +950,43 @@ class AdminController extends Controller
         return 3;
     }
 
-    protected function determineCustomRomSupport(string $brand): bool
+    /**
+     * Returns a string label matching the DB schema: 'Major', 'Limited', or 'None'.
+     * (The column is varchar, not boolean.)
+     */
+    protected function determineCustomRomSupport(string $brand): string
     {
-        return in_array($brand, ['oneplus', 'xiaomi', 'poco', 'google', 'motorola', 'nothing', 'realme']);
+        // Brands with active, major custom ROM communities
+        if (in_array($brand, ['google', 'oneplus', 'nothing', 'motorola'])) return 'Major';
+        // Brands with some ROMs but less vibrant community
+        if (in_array($brand, ['xiaomi', 'poco', 'realme', 'asus'])) return 'Limited';
+        // All others (vivo, oppo, samsung, apple, etc.)
+        return 'None';
     }
 
+    /**
+     * Turnip (Mesa Vulkan driver) only works on Qualcomm Adreno GPUs.
+     * MediaTek (Mali/Immortalis) has NO Turnip support.
+     */
     protected function determineTurnipSupport(string $gpu): bool
     {
+        // Explicit MediaTek / ARM Mali exclusion
+        if (stripos($gpu, 'mali') !== false)       return false;
+        if (stripos($gpu, 'immortalis') !== false)  return false;
+        if (stripos($gpu, 'mediatek') !== false)    return false;
+        // Turnip = Adreno only
         return stripos($gpu, 'adreno') !== false;
     }
 
     protected function determineTurnipLevel(string $gpu): ?string
     {
+        // MediaTek GPUs → no Turnip
+        if (stripos($gpu, 'mali') !== false || stripos($gpu, 'immortalis') !== false) return null;
+
         if (preg_match('/adreno\s*(\d+)/i', $gpu, $m)) {
             $gen = (int)$m[1];
-            if ($gen >= 740) return 'Excellent';
-            if ($gen >= 730) return 'Good';
+            if ($gen >= 740) return 'Full';
+            if ($gen >= 700) return 'Full';
             if ($gen >= 600) return 'Moderate';
             return 'Basic';
         }
