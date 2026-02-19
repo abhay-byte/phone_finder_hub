@@ -31,7 +31,28 @@ try:
     from playwright.sync_api import sync_playwright
     HAS_PLAYWRIGHT = True
 except ImportError:
+    HAS_PLAYWRIGHT = True
+except ImportError:
     HAS_PLAYWRIGHT = False
+
+
+def clean_price(price_str: str) -> float:
+    """
+    Clean price string and convert to float.
+    Handles formats like "₹12,345", "Rs. 12,345", "12,345", etc.
+    Returns 0.0 if parsing fails.
+    """
+    if not price_str:
+        return 0.0
+    
+    # Remove non-numeric characters except decimal point
+    clean_str = ''.join(c for c in price_str if c.isdigit() or c == '.')
+    
+    try:
+        return float(clean_str)
+    except ValueError:
+        return 0.0
+
 
 
 def get_session(use_cloudscraper: bool = True) -> requests.Session:
@@ -225,6 +246,13 @@ def search_amazon(query: str, max_results: int = 5, session: Optional[requests.S
                     product['price'] = price_elem.get_text(strip=True)
                 else:
                     product['price'] = 'N/A'
+                
+                # Filter by price (must be > 4000 INR to be a phone)
+                price_val = clean_price(product['price'])
+                if price_val > 0 and price_val < 4000:
+                    # print(f"Skipping Amazon item '{product.get('title')}' due to low price: {product['price']}", file=sys.stderr)
+                    continue
+
                 
                 # Get rating (optional)
                 rating_elem = container.select_one('.a-icon-star-small .a-icon-alt')
@@ -628,6 +656,12 @@ def _parse_flipkart_results(response: requests.Response, mobile: bool = False) -
             
             if not product.get('price'):
                 product['price'] = 'N/A'
+            
+            # Filter by price
+            price_val = clean_price(product['price'])
+            if price_val > 0 and price_val < 4000:
+                continue
+
             
             # Get rating
             rating_elem = container.select_one('div._3LWZlK, span._1lRcQB')

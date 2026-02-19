@@ -422,8 +422,17 @@
                         </div>
                         <!-- Fix: Prevent word wrap as requested -->
                         <h1
-                            class="text-5xl md:text-7xl font-black tracking-tight text-gray-900 dark:text-white leading-tight">
+                            class="text-5xl md:text-7xl font-black tracking-tight text-gray-900 dark:text-white leading-tight flex flex-wrap items-center gap-x-4">
                             {{ $phone->name }}
+                            @if(!$phone->benchmarks || !$phone->benchmarks->antutu_score || !$phone->benchmarks->geekbench_single || !$phone->benchmarks->geekbench_multi)
+                                <span class="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 text-sm font-bold border border-amber-500/20 backdrop-blur-sm animate-pulse tracking-normal">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    <span>Unverified</span>
+                                    <span class="ml-1">Benchmarks</span>
+                                </span>
+                            @endif
                         </h1>
                         <!-- Fix: Stacking on mobile to prevent overlap -->
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">

@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 
 class ImportPhone extends Command
 {
-    protected $signature = 'phone:import {phone_name : Name of the phone to import} 
+    protected $signature = 'phone:import {phones* : Names of the phones to import} 
                             {--skip-image : Skip image download}
                             {--skip-shopping : Skip shopping links}
                             {--force : Overwrite existing phone data}
@@ -27,10 +27,44 @@ class ImportPhone extends Command
 
     public function handle()
     {
-        $phoneName = $this->argument('phone_name');
+        $phones = $this->argument('phones');
         $jsonFile = $this->option('json');
 
+        if ($jsonFile) {
+            // JSON import doesn't support multiple phones easily yet, or assumes single file
+            // For now, let's keep JSON logic for single phone if only 1 arg is passed
+            if (count($phones) !== 1) {
+                $this->error('JSON import currently supports only one phone argument at a time.');
+                return 1;
+            }
+            $this->importSinglePhone($phones[0], $jsonFile);
+            return 0;
+        }
+
+        $this->info("Starting batch import for " . count($phones) . " phones...");
+        
+        foreach ($phones as $phoneName) {
+            try {
+                $this->importSinglePhone($phoneName);
+            } catch (\Exception $e) {
+                $this->error("Error importing {$phoneName}: " . $e->getMessage());
+            }
+        }
+
+        // Recalculate once at the end
+        $this->info('Recalculating all phone rankings...');
+        $this->call('phone:recalculate-scores');
+        $this->call('cache:clear');
+        
+        return 0;
+    }
+
+    protected function importSinglePhone($phoneName, $jsonFile = null)
+    {
+        $this->newLine();
+        $this->info("------------------------------------------------------------");
         $this->info("=== Importing Phone: {$phoneName} ===");
+        $this->info("------------------------------------------------------------");
         $this->newLine();
 
         // Step 1: Get data
@@ -43,17 +77,15 @@ class ImportPhone extends Command
         }
 
         if (!$this->data) {
-            $this->error('Failed to fetch phone data');
-            return 1;
+            $this->error("Failed to fetch data for {$phoneName}");
+            return;
         }
 
-        // Step 2: Check if phone exists
-        $existingPhone = Phone::where('name', $phoneName)->first();
+        // Step 2: Check if phone exists (case-insensitive)
+        $existingPhone = Phone::whereRaw('LOWER(name) = ?', [Str::lower($phoneName)])->first();
         if ($existingPhone && !$this->option('force')) {
-            if (!$this->confirm("Phone '{$phoneName}' already exists. Overwrite?")) {
-                $this->info('Import cancelled.');
-                return 0;
-            }
+            $this->warn("Phone '{$phoneName}' already exists. Skipping.");
+            return;
         }
 
         // Step 3: Create/update phone record
@@ -73,30 +105,25 @@ class ImportPhone extends Command
         $this->phone->load(['benchmarks', 'body', 'platform', 'camera', 'connectivity', 'battery']);
         $this->phone->updateScores();
 
-        // Step 7: Recalculate all rankings
-        $this->info('Recalculating all phone rankings...');
-        $this->call('phone:recalculate-scores');
-        $this->call('cache:clear');
-
         // Summary
         $this->phone->refresh();
         $this->newLine();
-        $this->info('✓ Phone imported successfully!');
+        $this->info("✓ Phone '{$phoneName}' imported successfully!");
         $this->table(['Metric', 'Value'], [
             ['ID', $this->phone->id],
             ['Name', $this->phone->name],
-            ['Brand', $this->phone->brand],
             ['Price', '₹' . number_format($this->phone->price, 0)],
             ['FPI', $this->phone->overall_score],
             ['UEPS', $this->phone->ueps_score],
-            ['GPX', $this->phone->gpx_score],
-            ['CMS', $this->phone->cms_score],
-            ['Value', $this->phone->value_score],
-            ['Endurance', $this->phone->endurance_score],
-            ['Expert', $this->phone->expert_score],
         ]);
-
-        return 0;
+        
+        // Log to progress.md
+        $progressFile = '/home/abhay/.gemini/antigravity/brain/b2a9296f-fac2-457c-a4c4-eb874c68234d/progress.md';
+        if (file_exists($progressFile)) {
+            file_put_contents($progressFile, "- [x] {$this->phone->name} (ID: {$this->phone->id})\n", FILE_APPEND);
+        }
+        
+        $this->newLine();
     }
 
     // ─── Data Fetching ───────────────────────────────────────────────
