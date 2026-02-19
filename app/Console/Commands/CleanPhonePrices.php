@@ -62,6 +62,28 @@ class CleanPhonePrices extends Command
         }
 
         $this->info("Cleaned {$fCount} records associated with Flipkart.");
+
+        // clean placeholder links (#)
+        $this->info("Cleaning marketplace links with '#' placeholders...");
+        
+        $hashAmazon = Phone::where('amazon_url', '#')->get();
+        foreach ($hashAmazon as $phone) {
+            $this->line("Removing '#' Amazon link for {$phone->name}");
+            $phone->amazon_url = null;
+            $phone->amazon_price = null;
+            $phone->save();
+        }
+        $this->info("Cleaned " . $hashAmazon->count() . " '#' Amazon links.");
+
+        $hashFlipkart = Phone::where('flipkart_url', '#')->get();
+        foreach ($hashFlipkart as $phone) {
+            $this->line("Removing '#' Flipkart link for {$phone->name}");
+            $phone->flipkart_url = null;
+            $phone->flipkart_price = null;
+            $phone->save();
+        }
+        $this->info("Cleaned " . $hashFlipkart->count() . " '#' Flipkart links.");
+
         return 0;
     }
 }
