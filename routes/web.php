@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/phones', [AdminController::class, 'index'])->name('phones.index');
     Route::get('/phones/add', [AdminController::class, 'addPhone'])->name('phones.add');
     Route::post('/phones/import', [AdminController::class, 'storePhone'])->name('phones.import');
     Route::get('/phones/{phone}/edit', [AdminController::class, 'editPhone'])->name('phones.edit');

@@ -20,10 +20,26 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-        $totalPhones  = Phone::count();
         $latestPhones = Phone::latest()->take(8)->get();
+        $totalPhones = Phone::count();
+        $expertRated = Phone::where('expert_score', '>', 0)->count();
+        
+        return view('admin.dashboard', compact('latestPhones', 'totalPhones', 'expertRated'));
+    }
 
-        return view('admin.dashboard', compact('totalPhones', 'latestPhones'));
+    public function index(Request $request)
+    {
+        $query = Phone::latest();
+
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('brand', 'like', "%{$search}%");
+            });
+        }
+
+        $phones = $query->paginate(20)->withQueryString();
+        return view('admin.phones', compact('phones'));
     }
 
     // ─── Add Phone Form ─────────────────────────────────────────────────
@@ -1021,8 +1037,6 @@ class AdminController extends Controller
 
     public function updatePhone(Request $request, Phone $phone)
     {
-        \Illuminate\Support\Facades\Log::info("Updating Phone ID: {$phone->id}", $request->all());
-
         $request->validate([
             'name'  => 'required|string|max:255',
             'brand' => 'required|string|max:100',

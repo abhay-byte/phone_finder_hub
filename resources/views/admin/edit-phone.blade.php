@@ -100,8 +100,8 @@ HTML;
                 {!! renderInput('Phone Name', 'name', $phone->name, 'text', true) !!}
                 {!! renderInput('Brand', 'brand', $phone->brand, 'text', true) !!}
                 {!! renderInput('Model Variant', 'model_variant', $phone->model_variant) !!}
-                {!! renderInput('Release Date', 'release_date', $phone->release_date, 'date') !!}
-                {!! renderInput('Announced Date', 'announced_date', $phone->announced_date, 'date') !!}
+                {!! renderInput('Release Date', 'release_date', $phone->release_date?->format('Y-m-d'), 'date') !!}
+                {!! renderInput('Announced Date', 'announced_date', $phone->announced_date?->format('Y-m-d'), 'date') !!}
             </div>
         </div>
 
