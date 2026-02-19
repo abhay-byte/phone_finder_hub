@@ -41,14 +41,16 @@ class PhoneController extends Controller
 
     public function grid(Request $request)
     {
-        $sort = $request->input('sort', 'value_score');
+        $sort = $request->input('sort', 'expert_score');
 
-        $cacheKey = 'phones_grid_html_' . $sort;
+        $cacheKey = 'phones_grid_html_' . $sort . '_v3';
         $html = Cache::remember($cacheKey, 300, function () use ($sort) {
             // Only load minimal relations for grid view
             $query = \App\Models\Phone::query()->with(['platform', 'benchmarks']);
 
-            if ($sort == 'value_score') {
+            if ($sort == 'expert_score') {
+                 $query->orderBy('expert_score', 'desc');
+            } elseif ($sort == 'value_score') {
                  $query->orderBy('value_score', 'desc');
             } elseif ($sort == 'price_asc') {
                 $query->orderBy('price', 'asc');
@@ -57,7 +59,7 @@ class PhoneController extends Controller
             } elseif ($sort == 'ueps_score') {
                 $query->orderBy('ueps_score', 'desc');
             } else {
-                 $query->orderBy('ueps_score', 'desc');
+                 $query->orderBy('expert_score', 'desc');
             }
 
             $phones = $query->take(50)->get();

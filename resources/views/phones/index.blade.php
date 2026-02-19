@@ -196,26 +196,8 @@
 
             fetchGrid(newSort, pushState = true) {
                 // cache key includes sort and version to force refresh
-                const cacheKey = `phone_grid_${newSort}_v11`;
+                const cacheKey = `phone_grid_${newSort}_v12`;
                 const cacheTTL = 5 * 60 * 1000; // 5 minutes
-
-                // Try to get from cache
-                const cached = localStorage.getItem(cacheKey);
-                if (cached) {
-                    const data = JSON.parse(cached);
-                    const now = new Date().getTime();
-                    if (now - data.timestamp < cacheTTL) {
-                        // valid cache
-                        if (pushState) {
-                            const url = new URL(window.location);
-                            url.searchParams.set('sort', newSort);
-                            window.history.pushState({sort: newSort}, '', url);
-                        }
-                        this.$refs.gridContainer.innerHTML = data.html;
-                        this.isLoading = false;
-                        return;
-                    }
-                }
 
                 this.isLoading = true;
 
@@ -224,6 +206,21 @@
                     const url = new URL(window.location);
                     url.searchParams.set('sort', newSort);
                     window.history.pushState({sort: newSort}, '', url);
+                }
+
+                // Try to get from cache
+                const cached = localStorage.getItem(cacheKey);
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    const now = new Date().getTime();
+                    if (now - data.timestamp < cacheTTL) {
+                        // valid cache
+                        setTimeout(() => {
+                             this.$refs.gridContainer.innerHTML = data.html;
+                             this.isLoading = false;
+                        }, 300); // Small delay to let animation play
+                        return;
+                    }
                 }
                 
                 // Fetch new results from dedicated grid route
@@ -236,17 +233,20 @@
                 .then(html => {
                      // Check if response is valid (not a full page)
                      if (!html.includes('<!DOCTYPE html>')) {
-                        this.$refs.gridContainer.innerHTML = html;
-                        // Save to cache
-                        localStorage.setItem(cacheKey, JSON.stringify({
-                            timestamp: new Date().getTime(),
-                            html: html
-                        }));
+                        // Artificial delay for smoothness if fetch is too fast
+                        setTimeout(() => {
+                             this.$refs.gridContainer.innerHTML = html;
+                             this.isLoading = false;
+                             // Save to cache
+                             localStorage.setItem(cacheKey, JSON.stringify({
+                                 timestamp: new Date().getTime(),
+                                 html: html
+                             }));
+                        }, 300);
                      } else {
                          // Fallback to full reload if we somehow got a full page
                          window.location.reload();
                      }
-                    this.isLoading = false;
                 })
                 .catch(error => {
                     console.error('Error:', error);
