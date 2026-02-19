@@ -262,6 +262,7 @@
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" @click.away="open = false" class="flex items-center gap-2 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-300 dark:hover:border-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-teal-500/20 shadow-sm min-w-[160px] justify-between group">
                         <span>
+                            <span x-show="currentSort === 'expert_score'">Expert Score</span>
                             <span x-show="currentSort === 'value_score'">Value Score</span>
                             <span x-show="currentSort === 'price_asc'">Price: Low to High</span>
                             <span x-show="currentSort === 'overall_score'">Performance</span>
@@ -283,6 +284,7 @@
                          style="display: none;">
                         
                         @foreach([
+                            'expert_score' => 'Expert Score',
                             'value_score' => 'Value Score',
                             'price_asc' => 'Price: Low to High',
                             'overall_score' => 'Performance',

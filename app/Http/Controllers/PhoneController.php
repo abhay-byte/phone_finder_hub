@@ -12,14 +12,16 @@ class PhoneController extends Controller
      */
     public function index(Request $request)
     {
-        $sort = $request->input('sort', 'value_score'); // Default to Value Score
+        $sort = $request->input('sort', 'expert_score'); // Default to Expert Score
 
         // Cache entire HTML response for 5 minutes
-        $cacheKey = 'phones_index_html_' . $sort;
+        $cacheKey = 'phones_index_html_' . $sort . '_v2';
         return Cache::remember($cacheKey, 300, function () use ($sort) {
             $query = \App\Models\Phone::query();
 
-            if ($sort == 'value_score') {
+            if ($sort == 'expert_score') {
+                 $query->orderBy('expert_score', 'desc');
+            } elseif ($sort == 'value_score') {
                  $query->orderBy('value_score', 'desc');
             } elseif ($sort == 'price_asc') {
                 $query->orderBy('price', 'asc');
@@ -28,7 +30,7 @@ class PhoneController extends Controller
             } elseif ($sort == 'ueps_score') {
                 $query->orderBy('ueps_score', 'desc');
             } else {
-                $query->orderBy('ueps_score', 'desc');
+                $query->orderBy('expert_score', 'desc');
             }
 
             $phones = $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
