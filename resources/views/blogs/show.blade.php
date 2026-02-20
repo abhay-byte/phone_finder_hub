@@ -3,6 +3,22 @@
 @section('title', $blog->title . ' - Phone Finder Hub')
 @section('description', $blog->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($blog->content), 150))
 
+@section('meta')
+    <!-- Open Graph (WhatsApp, Telegram, Facebook, etc) -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $blog->title }} - Phone Finder Hub">
+    <meta property="og:description" content="{{ $blog->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($blog->content), 150) }}">
+    <meta property="og:image" content="{{ $blog->featured_image ? url($blog->featured_image) : asset('assets/logo.png') }}">
+    <meta property="article:published_time" content="{{ $blog->published_at->toIso8601String() }}">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="{{ $blog->featured_image ? 'summary_large_image' : 'summary' }}">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="{{ $blog->title }} - Phone Finder Hub">
+    <meta name="twitter:description" content="{{ $blog->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($blog->content), 150) }}">
+    <meta name="twitter:image" content="{{ $blog->featured_image ? url($blog->featured_image) : asset('assets/logo.png') }}">
+@endsection
 
 
 @section('content')
@@ -165,6 +181,11 @@
     <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-12">
         <!-- Main Content (Reader) -->
         <article class="lg:col-span-8">
+            <!-- Mobile Share Bar -->
+            <div class="block lg:hidden mb-10">
+                @include('partials.share-widget')
+            </div>
+
             <div class="bg-white dark:bg-[#121212] p-8 md:p-12 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm 
                 blog-content font-serif text-lg">
                 <!-- Dropcap or intro text could go here, for now just render HTML securely -->
@@ -174,20 +195,9 @@
         
         <!-- Sidebar -->
         <aside class="lg:col-span-4 space-y-8">
-            <!-- Share Widget -->
-            <div class="bg-white dark:bg-[#121212] p-8 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm text-center relative overflow-hidden group">
-                <!-- abstract background blur -->
-                <div class="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700"></div>
-                
-                <h3 class="text-xs font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-6 relative z-10">Share this article</h3>
-                <div class="flex justify-center gap-4 relative z-10">
-                    <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($blog->title) }}" target="_blank" class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-400 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all transform hover:-translate-y-1">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
-                    </a>
-                    <button onclick="navigator.clipboard.writeText('{{ request()->url() }}'); alert('Link copied!');" class="w-12 h-12 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-indigo-500 hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all transform hover:-translate-y-1">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                    </button>
-                </div>
+            <!-- Desktop Share Widget -->
+            <div class="hidden lg:block">
+                @include('partials.share-widget')
             </div>
 
             <!-- More Latest Articles -->
