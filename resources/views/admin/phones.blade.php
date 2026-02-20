@@ -1,18 +1,18 @@
 @extends('admin.layout')
 
 @section('admin-content')
-<div class="mb-6 flex items-center justify-between">
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
         <h1 class="text-2xl font-bold text-white">All Phones</h1>
         <p class="text-slate-400 text-sm mt-1">Manage complete device database</p>
     </div>
-    <div class="flex items-center gap-4">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
         <form action="{{ route('admin.phones.index') }}" method="GET" class="relative">
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search phones..." 
-                   class="bg-slate-900 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-500/40 w-64 placeholder-slate-500 transition-all">
+                   class="bg-slate-900 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-500/40 w-full sm:w-64 placeholder-slate-500 transition-all">
             <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </form>
-        <a href="{{ route('admin.phones.add') }}" class="bg-teal-500 hover:bg-teal-400 text-white font-bold px-4 py-2 rounded-xl shadow-lg shadow-teal-500/20 hover:shadow-teal-500/40 transition-all flex items-center gap-2">
+        <a href="{{ route('admin.phones.add') }}" class="bg-teal-500 hover:bg-teal-400 text-white font-bold px-4 py-2 rounded-xl shadow-lg shadow-teal-500/20 hover:shadow-teal-500/40 transition-all flex items-center justify-center gap-2">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             Add Phone
         </a>
