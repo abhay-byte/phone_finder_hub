@@ -45,7 +45,8 @@ class CommentController extends Controller
 
         if ($request->wantsJson()) {
             return response()->json([
-                'html' => view('partials.comments-list-ajax', compact('comments', 'phone'))->render()
+                'html' => view('partials.comments-list-ajax', compact('comments', 'phone'))->render(),
+                'total_count' => $phone->comments()->count()
             ]);
         }
 

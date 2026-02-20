@@ -6,14 +6,14 @@
     <!-- Header & Sorting -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-4">
         <h3 class="font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            Comments <span class="text-xs bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-full text-gray-600 dark:text-gray-400" x-text="totalComments"></span>
+            Comments <span class="text-xs bg-gray-100 dark:bg-white/10 px-2.5 py-0.5 rounded-full text-gray-600 dark:text-gray-400 font-medium" x-text="totalComments">{{ $phone->comments()->count() }}</span>
         </h3>
         
         <div class="flex items-center gap-2">
             <label class="text-sm text-gray-500 dark:text-gray-400 font-medium">Sort by:</label>
             <select x-model="sortBy" 
                     @change="loadComments"
-                    class="bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-gray-100 text-sm rounded-xl focus:ring-teal-500 focus:border-teal-500 block p-2 cursor-pointer font-medium hover:border-teal-500/50 transition-colors">
+                    class="bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-gray-100 text-sm rounded-xl focus:ring-teal-500 focus:border-teal-500 block py-2.5 pl-3 pr-8 cursor-pointer font-medium hover:border-teal-500/50 transition-colors">
                 <option value="top">Top Comments</option>
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -66,7 +66,7 @@
             isSubmitting: false,
             newCommentContent: '',
             errorMessage: '',
-            totalComments: {{ $comments->count() }},
+            totalComments: {{ $phone->comments()->count() }},
 
             init() {
                 // Initialize with server-rendered content, don't fetch immediately unless sorting
@@ -89,6 +89,9 @@
                 .then(res => res.json())
                 .then(data => {
                     this.commentsHtml = data.html;
+                    if (data.total_count !== undefined) {
+                        this.totalComments = data.total_count;
+                    }
                 })
                 .catch(err => {
                     console.error('Failed to load comments:', err);
