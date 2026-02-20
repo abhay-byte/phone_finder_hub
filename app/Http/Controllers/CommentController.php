@@ -58,7 +58,17 @@ class CommentController extends Controller
     public function store(Request $request, Phone $phone)
     {
         $validated = $request->validate([
-            'content' => 'required|string|max:2000',
+            'content' => [
+                'required',
+                'string',
+                'max:2000',
+                function ($attribute, $value, $fail) {
+                    // Block http/https URLs, www. subdomains, and common TLDs to prevent spam links
+                    if (preg_match('/(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9\-]+\.(com|org|net|co|io|me|info|biz)\b)/i', $value)) {
+                        $fail('Links are not allowed in comments.');
+                    }
+                }
+            ],
             'parent_id' => 'nullable|exists:comments,id',
         ]);
 
@@ -100,7 +110,16 @@ class CommentController extends Controller
         }
 
         $validated = $request->validate([
-            'content' => 'required|string|max:2000',
+            'content' => [
+                'required',
+                'string',
+                'max:2000',
+                function ($attribute, $value, $fail) {
+                    if (preg_match('/(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9\-]+\.(com|org|net|co|io|me|info|biz)\b)/i', $value)) {
+                        $fail('Links are not allowed in comments.');
+                    }
+                }
+            ],
         ]);
 
         $comment->update([
