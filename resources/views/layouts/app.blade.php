@@ -412,6 +412,81 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js" integrity="sha512-UOJe4paV6hYWBnS0c9GnIRH8PLm2nFK22uhfAvsTIqd3uwnWsVri1OPn5fJYdLtGY3wB11LGHJ4yPU1WFJeBYQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('commentsManager', (fetchUrl, storeUrl, initialCount) => ({
+                sortBy: 'newest',
+                commentsHtml: '',
+                isLoading: false,
+                isSubmitting: false,
+                newCommentContent: '',
+                errorMessage: '',
+                totalComments: initialCount,
+
+                init() {
+                    this.commentsHtml = this.$refs.commentsContainer.innerHTML;
+                },
+
+                loadComments() {
+                    this.isLoading = true;
+                    
+                    const url = new URL(fetchUrl, window.location.origin);
+                    url.searchParams.set('sort', this.sortBy);
+
+                    fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        this.commentsHtml = data.html;
+                    })
+                    .catch(err => {
+                        console.error('Failed to load comments:', err);
+                    })
+                    .finally(() => {
+                        this.isLoading = false;
+                    });
+                },
+
+                submitRootComment() {
+                    if(!this.newCommentContent.trim()) return;
+                    
+                    this.isSubmitting = true;
+                    this.errorMessage = '';
+
+                    fetch(storeUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            content: this.newCommentContent
+                        })
+                    })
+                    .then(async (res) => {
+                        const data = await res.json();
+                        if (!res.ok) throw data;
+                        
+                        this.newCommentContent = '';
+                        this.loadComments();
+                    })
+                    .catch(err => {
+                        this.errorMessage = err.message || err.error || 'Failed to post comment. Please try again.';
+                        if(err.errors && err.errors.content) {
+                            this.errorMessage = err.errors.content[0];
+                        }
+                    })
+                    .finally(() => {
+                        this.isSubmitting = false;
+                    });
+                }
+            }));
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             const topLoader = document.getElementById('top-loader');
             const topLoaderBar = document.getElementById('top-loader-bar');
