@@ -80,6 +80,11 @@
                 </div>
                 
                 <hr class="border-gray-200 dark:border-white/10">
+                
+                <button type="button" onclick="window.blogEditorInstance.togglePreview()" class="w-full bg-slate-900 border border-transparent dark:bg-white dark:text-black dark:border-gray-300 hover:bg-slate-800 dark:hover:bg-gray-100 text-white px-5 py-3 rounded-xl font-bold transition-colors flex justify-center items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    Toggle Live Preview
+                </button>
 
                 <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white px-5 py-3 rounded-xl font-bold shadow-lg shadow-teal-500/20 transition-all flex justify-center items-center gap-2">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
@@ -138,6 +143,95 @@
         background-color: #121212;
         color: white;
     }
+    
+    /* Frontend Typography matching show.blade.php for accurate preview */
+    .editor-preview h2, .editor-preview h3, .editor-preview h4 {
+        color: #111827;
+        font-weight: 800;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.3;
+        letter-spacing: -0.025em;
+    }
+    .dark .editor-preview h2, .dark .editor-preview h3, .dark .editor-preview h4 {
+        color: #ffffff;
+    }
+    .editor-preview h2 { font-size: 1.875rem; }
+    .editor-preview h3 { font-size: 1.5rem; }
+    .editor-preview h4 { font-size: 1.25rem; }
+    
+    .editor-preview p {
+        margin-bottom: 1.25rem;
+        line-height: 1.8;
+        color: #4b5563;
+    }
+    .dark .editor-preview p { color: #d1d5db; }
+    
+    .editor-preview img {
+        border-radius: 1rem;
+        margin: 2.5rem auto;
+        max-width: 100%;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .editor-preview ul, .editor-preview ol {
+        margin-bottom: 1.5rem;
+        padding-left: 1.5rem;
+        color: #4b5563;
+    }
+    .dark .editor-preview ul, .dark .editor-preview ol { color: #d1d5db; }
+    .editor-preview li { margin-bottom: 0.5rem; }
+    .editor-preview ul { list-style-type: disc; }
+    .editor-preview ol { list-style-type: decimal; }
+    
+    .editor-preview a {
+        color: #0d9488;
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        transition: color 0.2s ease;
+    }
+    .dark .editor-preview a { color: #2dd4bf; }
+    .editor-preview blockquote {
+        border-left: 4px solid #14b8a6;
+        padding-left: 1.5rem;
+        font-style: italic;
+        color: #6b7280;
+        margin: 2rem 0;
+        background: #f0fdfa;
+        padding: 1.5rem;
+        border-radius: 0 1rem 1rem 0;
+    }
+    .dark .editor-preview blockquote {
+        border-left-color: #0d9488;
+        color: #9ca3af;
+        background: rgba(13, 148, 136, 0.1);
+    }
+    .editor-preview pre, .editor-preview code {
+        background-color: #f3f4f6;
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.375rem;
+        font-size: 0.875em;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        color: #ef4444;
+    }
+    .dark .editor-preview pre, .dark .editor-preview code {
+        background-color: rgba(255,255,255,0.1);
+        color: #f87171;
+    }
+    .editor-preview pre {
+        padding: 1.5rem;
+        border-radius: 1rem;
+        overflow-x: auto;
+        color: #e5e7eb;
+        background-color: #1f2937;
+        margin-bottom: 1.5rem;
+    }
+    .dark .editor-preview pre {
+        background-color: #111827;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+    .editor-preview pre code { background-color: transparent; color: inherit; padding: 0; }
 </style>
 <script>
     function previewImage(input) {
@@ -207,6 +301,9 @@
             ],
             placeholder: "Compose an epic in Markdown...",
         });
+        
+        // Expose instance to window for external button
+        window.blogEditorInstance = easyMDE;
     })();
 </script>
 @endsection
