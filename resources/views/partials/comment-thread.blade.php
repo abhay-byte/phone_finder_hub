@@ -4,7 +4,7 @@
         isSubmittingReply: false,
         isSubmittingEdit: false,
         replyContent: '',
-        editContent: '{{ str_replace("'", "\'", $comment->content) }}',
+        editContent: @json($comment->content),
         errorMessage: '',
         upvoted: {{ Auth::check() && $comment->upvotes()->where('user_id', Auth::id())->exists() ? 'true' : 'false' }},
         upvotesCount: {{ $comment->upvotes_count }},
