@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentUpvoteController;
+use App\Http\Controllers\AdminCommentController;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public routes – accessible to everyone (no auth required)
@@ -64,6 +65,8 @@ Route::post('/phones/{phone}/comments', [CommentController::class, 'store'])->na
 
 Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+    
+    // Phones Management
     Route::get('/phones', [AdminController::class, 'index'])->name('phones.index');
     Route::get('/phones/add', [AdminController::class, 'addPhone'])->name('phones.add');
     Route::post('/phones/import', [AdminController::class, 'storePhone'])->name('phones.import');
@@ -71,4 +74,9 @@ Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->gro
     Route::put('/phones/{phone}', [AdminController::class, 'updatePhone'])->name('phones.update');
     Route::get('/phones/status/{jobId}', [AdminController::class, 'importStatusPage'])->name('phones.status');
     Route::get('/phones/status/{jobId}/json', [AdminController::class, 'importStatus'])->name('phones.status.json');
+
+    // Comments Management
+    Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
+    Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/comments/{comment}/reply', [AdminCommentController::class, 'reply'])->name('comments.reply');
 });
