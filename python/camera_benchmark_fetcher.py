@@ -28,20 +28,20 @@ import logging
 from typing import Optional
 from urllib.parse import quote_plus
 
-# Suppress icrawler/ddgs logging
+# Suppress icrawler/duckduckgo_search logging
 logging.getLogger('icrawler').setLevel(logging.CRITICAL)
-logging.getLogger('ddgs').setLevel(logging.CRITICAL)
+logging.getLogger('duckduckgo_search').setLevel(logging.CRITICAL)
 
 try:
     import requests
     from bs4 import BeautifulSoup
-    from ddgs import DDGS
+    from duckduckgo_search import DDGS
     from PIL import Image
     from icrawler.builtin import GoogleImageCrawler, BingImageCrawler
 except ImportError as e:
     print(f"Missing dependency: {e}", file=sys.stderr)
     print("Please install required packages:", file=sys.stderr)
-    print("pip install requests beautifulsoup4 ddgs icrawler pillow", file=sys.stderr)
+    print("pip install requests beautifulsoup4 duckduckgo-search icrawler pillow", file=sys.stderr)
     sys.exit(1)
 
 # Headers for web requests
