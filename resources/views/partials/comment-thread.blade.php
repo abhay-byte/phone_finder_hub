@@ -4,7 +4,7 @@
         isSubmittingReply: false,
         isSubmittingEdit: false,
         replyContent: '',
-        editContent: {{ Illuminate\Support\Js::from($comment->content) }},
+        editContent: {{ json_encode($comment->content) }},
         errorMessage: '',
         upvoted: {{ Auth::check() && $comment->upvotes()->where('user_id', Auth::id())->exists() ? 'true' : 'false' }},
         upvotesCount: {{ $comment->upvotes_count }},
@@ -13,7 +13,7 @@
                 fetch('{{ route('comments.upvote.toggle', $comment) }}', {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
                         'Accept': 'application/json',
                     }
                 })
@@ -35,7 +35,7 @@
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({ content: this.editContent })
@@ -58,7 +58,7 @@
             fetch('{{ route('comments.destroy', $comment) }}', {
                 method: 'DELETE',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
                     'Accept': 'application/json'
                 }
             })
@@ -76,7 +76,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').getAttribute('content'),
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({ 
