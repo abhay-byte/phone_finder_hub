@@ -11,13 +11,20 @@
         
         <div class="flex items-center gap-2">
             <label class="text-sm text-gray-500 dark:text-gray-400 font-medium">Sort by:</label>
-            <select x-model="sortBy" 
-                    @change="loadComments"
-                    class="bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-gray-100 text-sm rounded-xl focus:ring-teal-500 focus:border-teal-500 block py-2.5 pl-3 pr-8 cursor-pointer font-medium hover:border-teal-500/50 transition-colors">
-                <option value="top">Top Comments</option>
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-            </select>
+            <div class="relative">
+                <select x-model="sortBy" 
+                        @change="loadComments"
+                        class="appearance-none bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-gray-100 text-sm rounded-xl focus:ring-teal-500 focus:border-teal-500 block py-2.5 pl-3 pr-10 cursor-pointer font-medium hover:border-teal-500/50 transition-colors w-full">
+                    <option value="top">Top Comments</option>
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 dark:text-gray-400">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+            </div>
         </div>
     </div>
 
