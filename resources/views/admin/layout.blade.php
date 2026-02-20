@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div x-data="{ sidebarOpen: false }" class="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
+<div x-data="{ sidebarOpen: false }" @open-admin-sidebar.window="sidebarOpen = true" class="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
     
     <!-- Mobile overlay -->
     <div x-show="sidebarOpen" 
@@ -17,7 +17,7 @@
 
     <!-- Sidebar -->
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" 
-           class="fixed inset-y-0 left-0 z-50 w-64 bg-white/95 dark:bg-slate-900/95 border-r border-slate-200 dark:border-white/5 flex flex-col py-8 px-4 space-y-2 transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-screen md:sticky md:top-0">
+           class="fixed inset-y-0 left-0 z-50 w-64 bg-white/95 dark:bg-slate-900/95 border-r border-slate-200 dark:border-white/5 flex flex-col py-8 px-4 space-y-2 transition-transform duration-300 ease-in-out md:translate-x-0 md:h-[calc(100vh-4rem)] md:sticky md:top-16">
         
         <!-- Mobile Close Button -->
         <button @click="sidebarOpen = false" class="absolute top-4 right-4 md:hidden text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">

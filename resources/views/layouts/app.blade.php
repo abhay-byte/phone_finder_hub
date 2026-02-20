@@ -121,7 +121,6 @@
                                     <img src="{{ asset('assets/logo.png') }}" alt="PhoneFinderHub Logo" class="w-8 h-8 object-contain relative z-10">
                                 </div>
                                 <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 group-hover:to-indigo-500 transition-all duration-300 hidden sm:block">
-                                <span class="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">
                                     PhoneFinderHub
                                 </span>
                             </a>
@@ -145,10 +144,6 @@
                                    class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
                                     Docs
                                 </a>
-                            @else
-                                <div class="inline-flex items-center px-1 pt-1 text-sm font-bold tracking-widest text-teal-600 dark:text-teal-400 uppercase">
-                                    Admin Panel
-                                </div>
                             @endif
                         </div>
                     </div>
