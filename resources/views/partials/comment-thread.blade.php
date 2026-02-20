@@ -4,7 +4,7 @@
         isSubmittingReply: false,
         isSubmittingEdit: false,
         replyContent: '',
-        editContent: {{ json_encode($comment->content) }},
+        editContent: {{ Illuminate\Support\Js::from($comment->content) }},
         errorMessage: '',
         upvoted: {{ Auth::check() && $comment->upvotes()->where('user_id', Auth::id())->exists() ? 'true' : 'false' }},
         upvotesCount: {{ $comment->upvotes_count }},
