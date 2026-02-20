@@ -343,6 +343,59 @@
 
             @include('phones.partials.grid')
         </div>
+
+        @if(isset($latestBlogs) && $latestBlogs->count() > 0)
+        <!-- Latest Tech News & Reviews Section -->
+        <div class="mt-24 mb-12">
+            <div class="flex items-center justify-between mb-8">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-2">Editorials & Tech News</h2>
+                    <p class="text-slate-500 dark:text-slate-400">Deep dives, news, and guides from our expert authors.</p>
+                </div>
+                <a href="{{ route('blogs.index') }}" class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 font-bold hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors">
+                    View All Articles
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+            </div>
+
+            <!-- Vertical scroll / Standard list -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($latestBlogs as $blog)
+                <a href="{{ route('blogs.show', $blog->slug) }}" class="group flex flex-col bg-white dark:bg-[#1A1A1A] rounded-3xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm hover:shadow-xl hover:border-teal-200 dark:hover:border-teal-500/30 transition-all duration-300 transform hover:-translate-y-1">
+                    @if($blog->featured_image)
+                    <div class="aspect-video w-full relative overflow-hidden bg-gray-100 dark:bg-white/5">
+                        <img src="{{ $blog->featured_image }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="{{ $blog->title }}">
+                    </div>
+                    @endif
+                    <div class="p-6 flex flex-col flex-1">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ $blog->author->name ?? 'Guest Author' }}</span>
+                            <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                            <span class="text-xs text-gray-400">{{ $blog->published_at->format('M j') }}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2 leading-snug">
+                            {{ $blog->title }}
+                        </h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">{{ $blog->excerpt }}</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-gray-100 dark:border-white/5">
+                            <span class="text-xs font-bold text-teal-600 dark:text-teal-500 uppercase tracking-widest flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                Read More
+                                <svg class="w-3 h-3 translate-y-[0.5px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+            <div class="mt-6 text-center sm:hidden">
+                <a href="{{ route('blogs.index') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 font-bold hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors">
+                    View All Articles
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 @endsection

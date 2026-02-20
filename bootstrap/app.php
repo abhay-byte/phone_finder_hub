@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\EnsureAuthenticated;
 use App\Http\Middleware\EnsureSuperAdmin;
+use App\Http\Middleware\EnsureAuthorOrSuperAdmin;
 use App\Http\Middleware\RedirectIfAuthenticated;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -28,6 +29,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth'        => EnsureAuthenticated::class,
             'guest'       => RedirectIfAuthenticated::class,
             'super_admin' => EnsureSuperAdmin::class,
+            'author_admin' => EnsureAuthorOrSuperAdmin::class,
+            'role'        => \App\Http\Middleware\EnsureRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

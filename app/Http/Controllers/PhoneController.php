@@ -36,7 +36,15 @@ class PhoneController extends Controller
             return $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
         });
 
-        return view('phones.index', compact('phones', 'sort'));
+        $latestBlogs = Cache::remember('latest_blogs_home', 300, function () {
+            return \App\Models\Blog::with('author')
+                ->where('is_published', true)
+                ->latest('published_at')
+                ->take(5)
+                ->get();
+        });
+
+        return view('phones.index', compact('phones', 'sort', 'latestBlogs'));
     }
 
     public function grid(Request $request)

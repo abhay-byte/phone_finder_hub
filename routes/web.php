@@ -13,6 +13,11 @@ use App\Http\Controllers\AdminCommentController;
 // Public routes – accessible to everyone (no auth required)
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Public Forum Routes
+Route::get('/forum', [\App\Http\Controllers\ForumController::class, 'index'])->name('forum.index');
+Route::get('/forum/c/{category:slug}', [\App\Http\Controllers\ForumController::class, 'category'])->name('forum.category');
+Route::get('/forum/p/{post:slug}', [\App\Http\Controllers\ForumController::class, 'show'])->name('forum.post.show');
+
 Route::get('/', [PhoneController::class, 'index'])->name('home');
 Route::get('/phones/search', [PhoneController::class, 'search'])->name('phones.search');
 Route::get('/phones/grid', [PhoneController::class, 'grid'])->name('phones.grid');
@@ -53,6 +58,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments/{comment}/upvote', [CommentUpvoteController::class, 'toggle'])->name('comments.upvote.toggle');
+
+    // Forum endpoint for creating posts and replying
+    Route::get('/forum/c/{category:slug}/create', [\App\Http\Controllers\ForumController::class, 'create'])->name('forum.post.create');
+    Route::post('/forum/c/{category:slug}/create', [\App\Http\Controllers\ForumController::class, 'store'])->name('forum.post.store');
+    Route::post('/forum/p/{post:slug}/reply', [\App\Http\Controllers\ForumController::class, 'reply'])->name('forum.post.reply');
 });
 
 // Comments (Public)
@@ -60,23 +70,54 @@ Route::get('/phones/{phone}/comments', [CommentController::class, 'index'])->nam
 Route::post('/phones/{phone}/comments', [CommentController::class, 'store'])->name('comments.store');
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Admin-only routes (auth + super_admin role required)
+// Admin-only routes (auth + admin_panel access required)
 // ─────────────────────────────────────────────────────────────────────────────
 
-Route::middleware(['auth', 'super_admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:maintainer,moderator'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     
+    // User & Role Management
+    Route::middleware('super_admin')->group(function () {
+        Route::get('/users', [\App\Http\Controllers\AdminUserController::class, 'index'])->name('users.index');
+        Route::put('/users/{user}/role', [\App\Http\Controllers\AdminUserController::class, 'updateRole'])->name('users.role.update');
+    });
+    
     // Phones Management
-    Route::get('/phones', [AdminController::class, 'index'])->name('phones.index');
-    Route::get('/phones/add', [AdminController::class, 'addPhone'])->name('phones.add');
-    Route::post('/phones/import', [AdminController::class, 'storePhone'])->name('phones.import');
-    Route::get('/phones/{phone}/edit', [AdminController::class, 'editPhone'])->name('phones.edit');
-    Route::put('/phones/{phone}', [AdminController::class, 'updatePhone'])->name('phones.update');
-    Route::get('/phones/status/{jobId}', [AdminController::class, 'importStatusPage'])->name('phones.status');
-    Route::get('/phones/status/{jobId}/json', [AdminController::class, 'importStatus'])->name('phones.status.json');
+    Route::middleware('role:maintainer')->group(function () {
+        Route::get('/phones', [AdminController::class, 'index'])->name('phones.index');
+        Route::get('/phones/add', [AdminController::class, 'addPhone'])->name('phones.add');
+        Route::post('/phones/import', [AdminController::class, 'storePhone'])->name('phones.import');
+        Route::get('/phones/{phone}/edit', [AdminController::class, 'editPhone'])->name('phones.edit');
+        Route::put('/phones/{phone}', [AdminController::class, 'updatePhone'])->name('phones.update');
+        Route::get('/phones/status/{jobId}', [AdminController::class, 'importStatusPage'])->name('phones.status');
+        Route::get('/phones/status/{jobId}/json', [AdminController::class, 'importStatus'])->name('phones.status.json');
+    });
 
-    // Comments Management
-    Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
-    Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
-    Route::post('/comments/{comment}/reply', [AdminCommentController::class, 'reply'])->name('comments.reply');
+    // Moderation (Comments & Forums)
+    Route::middleware('role:moderator')->group(function () {
+        // Comments Management
+        Route::get('/comments', [AdminCommentController::class, 'index'])->name('comments.index');
+        Route::delete('/comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
+        Route::post('/comments/{comment}/reply', [AdminCommentController::class, 'reply'])->name('comments.reply');
+
+        // Forum Management
+        Route::resource('forums/categories', \App\Http\Controllers\Admin\AdminForumCategoryController::class)->names('forum.categories');
+        Route::resource('forums/posts', \App\Http\Controllers\Admin\AdminForumPostController::class)->only(['index', 'show', 'destroy'])->names('forum.posts');
+        Route::delete('forums/comments/{comment}', [\App\Http\Controllers\Admin\AdminForumPostController::class, 'destroyComment'])->name('forum.comments.destroy');
+    });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Admin/Author routes (auth + author_admin role required)
+// ─────────────────────────────────────────────────────────────────────────────
+
+Route::middleware(['auth', 'author_admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('blogs', \App\Http\Controllers\AdminBlogController::class);
+    Route::post('blogs/upload-image', [\App\Http\Controllers\AdminBlogController::class, 'uploadImage'])->name('blogs.upload-image');
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Public Blog Routes
+// ─────────────────────────────────────────────────────────────────────────────
+Route::get('/blogs', [\App\Http\Controllers\BlogController::class, 'index'])->name('blogs.index');
+Route::get('/blogs/{blog:slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blogs.show');
