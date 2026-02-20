@@ -29,7 +29,7 @@
     </div>
 
     <!-- Root Comment Form -->
-    <form @submit.prevent="submitRootComment" class="mb-8">
+    <form @submit.prevent="submitRootComment" hx-boost="false" class="mb-8">
         <div class="relative">
             <textarea x-model="newCommentContent" rows="3" class="w-full bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 dark:focus:ring-teal-400/50 dark:focus:border-teal-400 transition-all text-sm placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100" placeholder="What do you think about the {{ $phone->name }}?" required></textarea>
             <div class="absolute bottom-3 right-3 flex items-center gap-2">
@@ -118,7 +118,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({

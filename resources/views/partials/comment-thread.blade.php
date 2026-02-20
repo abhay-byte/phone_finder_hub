@@ -13,7 +13,7 @@
                 fetch('{{ route('comments.upvote.toggle', $comment) }}', {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                         'Accept': 'application/json',
                     }
                 })
@@ -35,7 +35,7 @@
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({ content: this.editContent })
@@ -58,7 +58,7 @@
             fetch('{{ route('comments.destroy', $comment) }}', {
                 method: 'DELETE',
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     'Accept': 'application/json'
                 }
             })
@@ -76,7 +76,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({ 
@@ -132,7 +132,7 @@
             <!-- Edit Mode -->
             @if(Auth::check() && Auth::id() === $comment->user_id && $comment->user_id !== null)
                 <div x-show="editing" x-cloak class="mt-2">
-                    <form @submit.prevent="submitEdit">
+                    <form @submit.prevent="submitEdit" hx-boost="false">
                         <textarea x-model="editContent" rows="2" class="w-full bg-white dark:bg-black/50 border border-teal-200 dark:border-teal-500/30 rounded-xl p-3 focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 transition-all text-sm text-gray-900 dark:text-gray-100 mb-2" required></textarea>
                         <p x-show="errorMessage" x-text="errorMessage" class="text-xs text-red-500 mb-2"></p>
                         <div class="flex gap-2 justify-end items-center">
@@ -153,7 +153,7 @@
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                             </button>
                         @endif
-                        <form @submit.prevent="submitDelete" class="inline">
+                        <form @submit.prevent="submitDelete" hx-boost="false" class="inline">
                             <button type="submit" class="p-1 text-gray-400 hover:text-red-500 transition-colors" title="Delete">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                             </button>
@@ -185,7 +185,7 @@
 
         <!-- Reply Form Box -->
         <div x-show="replying" x-collapse x-cloak class="mt-3">
-            <form @submit.prevent="submitReply" class="ml-4 border-l-2 border-gray-100 dark:border-white/5 pl-4">
+            <form @submit.prevent="submitReply" hx-boost="false" class="ml-4 border-l-2 border-gray-100 dark:border-white/5 pl-4">
                 <div class="relative">
                     <textarea x-model="replyContent" rows="2" class="w-full bg-white dark:bg-[#121212] border border-gray-200 dark:border-white/10 rounded-xl p-3 focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 transition-all text-sm placeholder-gray-400 text-gray-900 dark:text-gray-100" placeholder="Replying to {{ rtrim($comment->author_name, 's') }}'s comment..." required></textarea>
                 </div>
