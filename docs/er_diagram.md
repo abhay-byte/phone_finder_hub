@@ -230,6 +230,30 @@ erDiagram
     }
 
     USERS ||--o{ SESSIONS : "has sessions"
+    USERS ||--o{ COMMENTS : "writes comments"
+    USERS ||--o{ COMMENT_UPVOTES : "upvotes comments"
+
+    COMMENTS {
+        id integer PK
+        phone_id integer FK "Indexed"
+        user_id integer FK "Indexed"
+        parent_id integer FK "Nullable, self-referential for replies"
+        content text
+        upvotes_count integer "Default 0"
+        created_at timestamp
+        updated_at timestamp
+    }
+
+    COMMENT_UPVOTES {
+        id integer PK
+        comment_id integer FK "Indexed"
+        user_id integer FK "Indexed"
+        created_at timestamp
+        updated_at timestamp
+    }
+
+    COMMENTS ||--o{ COMMENTS : "has replies (parent_id)"
+    COMMENTS ||--o{ COMMENT_UPVOTES : "receives upvotes"
 ```
 
 ## System Tables (Cache & Jobs)

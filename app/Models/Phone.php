@@ -86,6 +86,11 @@ class Phone extends Model
         return $this->hasOne(Benchmark::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     /**
      * Calculate Endurance Score (Adaptive)
      */

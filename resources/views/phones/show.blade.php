@@ -298,116 +298,249 @@
                         </div>
                     @endif
 
-                    <!-- Detailed Breakdown Accordion -->
-                    <div
-                        class="bg-white dark:bg-[#121212] rounded-3xl shadow-sm ring-1 ring-gray-900/5 dark:ring-white/10 overflow-hidden mt-6">
-                        <div class="p-4 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5">
-                            <h3 class="font-bold text-gray-900 dark:text-white">Detailed Breakdown</h3>
-                        </div>
-                        <div>
-                            @foreach ($phone->ueps_details['breakdown'] as $category => $data)
-                                <div x-data="{ open: false }"
-                                    class="group border-b border-gray-100 dark:border-white/5 last:border-0">
-                                    <button @click="open = !open"
-                                        class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-xs font-bold">
-                                                {{ $data['score'] }}</div>
-                                            <span class="text-sm font-semibold">{{ $category }}</span>
-                                        </div>
-                                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-300"
-                                            :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </button>
-                                    <div class="grid transition-all duration-300 ease-in-out"
-                                        :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
-                                        <div class="overflow-hidden">
-                                            <div class="px-4 pb-4 pt-0">
-                                                <div class="pl-[2.75rem] space-y-2">
-                                                    @foreach ($data['details'] as $detail)
-                                                        <div class="flex justify-between items-start text-xs">
-                                                            <span
-                                                                class="text-gray-500 w-2/3">{{ $detail['criterion'] }}</span>
-                                                            <div class="text-right">
-                                                                <span
-                                                                    class="font-bold block {{ $detail['points'] > 0 ? 'text-green-600 dark:text-green-400' : 'text-gray-400' }}">{{ $detail['points'] > 0 ? '+' . $detail['points'] : '0' }}</span>
-                                                                <span
-                                                                    class="text-[10px] text-gray-400">{{ $detail['reason'] }}</span>
+                    <!-- UEPS Detailed Breakdown -->
+                    <div x-data="{ open: false }" class="bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
+                        <button @click="open = !open" class="w-full p-4 border-b border-gray-100 dark:border-white/5 bg-green-50/50 dark:bg-green-900/10 flex items-center justify-between cursor-pointer hover:bg-green-100/50 dark:hover:bg-green-900/20 transition-colors text-left">
+                            <h3 class="font-bold text-green-900 dark:text-green-100 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                                UEPS Breakdown
+                            </h3>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold bg-green-100 dark:bg-green-900/40 px-2 py-1 rounded-full text-green-800 dark:text-green-200">{{ $phone->ueps_score }}</span>
+                                <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="grid transition-all duration-300 ease-in-out" :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+                            <div class="overflow-hidden">
+                                @foreach ($phone->ueps_details['breakdown'] as $category => $data)
+                                    <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
+                                        <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-xs font-bold">{{ $data['score'] }}</div>
+                                                <span class="text-sm font-semibold">{{ $category }}</span>
+                                            </div>
+                                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+                                        <div class="grid transition-all duration-300 ease-in-out" :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+                                            <div class="overflow-hidden">
+                                                <div class="px-4 pb-4 pt-0">
+                                                    <div class="pl-[2.75rem] space-y-2">
+                                                        @foreach ($data['details'] as $detail)
+                                                            <div class="flex justify-between items-start text-xs">
+                                                                <span class="text-gray-500 w-2/3">{{ $detail['criterion'] }}</span>
+                                                                <div class="text-right">
+                                                                    <span class="font-bold block {{ $detail['points'] > 0 ? 'text-green-600 dark:text-green-400' : 'text-gray-400' }}">{{ $detail['points'] > 0 ? '+' . $detail['points'] : '0' }}</span>
+                                                                    <span class="text-[10px] text-gray-400">{{ $detail['reason'] }}</span>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CMS Detailed Breakdown -->
+                    @if ($phone->cms_details)
+                    <div x-data="{ open: false }" class="bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
+                        <button @click="open = !open" class="w-full p-4 border-b border-gray-100 dark:border-white/5 bg-yellow-50/50 dark:bg-yellow-900/10 flex items-center justify-between cursor-pointer hover:bg-yellow-100/50 dark:hover:bg-yellow-900/20 transition-colors text-left">
+                            <h3 class="font-bold text-yellow-900 dark:text-yellow-100 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                                Camera Mastery (CMS)
+                            </h3>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded-full">{{ $phone->cms_score }}</span>
+                                <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="grid transition-all duration-300 ease-in-out" :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+                            <div class="overflow-hidden">
+                                @foreach ($phone->cms_details as $category => $data)
+                                    <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
+                                        <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 flex items-center justify-center text-xs font-bold">{{ $data['score'] }}</div>
+                                                <span class="text-sm font-semibold">{{ ucwords(str_replace('_', ' ', $category)) }}</span>
+                                            </div>
+                                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+                                        <div class="grid transition-all duration-300 ease-in-out" :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+                                            <div class="overflow-hidden">
+                                                <div class="px-4 pb-4 pt-0 pl-[2.75rem] space-y-2">
+                                                    @foreach ($data['details'] as $detail)
+                                                        @if ($detail['points'] > 0)
+                                                            <div class="flex justify-between items-start text-xs">
+                                                                <span class="text-gray-500 w-2/3">{{ $detail['criterion'] }} <span class="text-[10px] text-gray-400">{{ $detail['reason'] }}</span></span>
+                                                                <span class="font-bold text-green-600 dark:text-green-400">+{{ $detail['points'] }}</span>
+                                                            </div>
+                                                        @endif
                                                     @endforeach
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    @endif
 
-                            <!-- CMS Breakdown Accordion Item -->
-                            <div x-data="{ open: false }"
-                                class="group border-b border-gray-100 dark:border-white/5 last:border-0 border-t border-amber-100 dark:border-amber-900/30">
-                                <button @click="open = !open"
-                                    class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-amber-50/50 dark:hover:bg-amber-900/10 transition-colors text-left">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 flex items-center justify-center text-xs font-bold">
-                                            {{ $phone->cms_score }}</div>
-                                        <span class="text-sm font-bold text-amber-900 dark:text-amber-100">Camera Mastery
-                                            (CMS)</span>
-                                    </div>
-                                    <svg class="w-4 h-4 text-amber-400 transition-transform duration-300"
-                                        :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                <div class="grid transition-all duration-300 ease-in-out"
-                                    :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
-                                    <div class="overflow-hidden">
-                                        <div class="px-4 pb-4 pt-0">
-                                            <div class="pl-[2.75rem] space-y-4">
-                                                @if ($phone->cms_details && isset($phone->cms_details['breakdown']))
-                                                    @foreach ($phone->cms_details['breakdown'] as $key => $data)
-                                                        <div>
-                                                            <div class="flex justify-between items-center mb-1">
-                                                                <span
-                                                                    class="text-xs font-bold text-gray-500 uppercase">{{ ucwords(str_replace('_', ' ', $key)) }}</span>
-                                                                <span
-                                                                    class="text-xs font-bold text-gray-900 dark:text-white">{{ $data['score'] }}<span
-                                                                        class="text-gray-400">/{{ $data['max'] }}</span></span>
+                    <!-- GPX Detailed Breakdown -->
+                    @if ($phone->gpx_details)
+                    <div x-data="{ open: false }" class="bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
+                        <button @click="open = !open" class="w-full p-4 border-b border-gray-100 dark:border-white/5 bg-red-50/50 dark:bg-red-900/10 flex items-center justify-between cursor-pointer hover:bg-red-100/50 dark:hover:bg-red-900/20 transition-colors text-left">
+                            <h3 class="font-bold text-red-900 dark:text-red-100 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                                Gaming Performance (GPX)
+                            </h3>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200 px-2 py-1 rounded-full">{{ $phone->gpx_score }}</span>
+                                <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="grid transition-all duration-300 ease-in-out" :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+                            <div class="overflow-hidden">
+                                @foreach ($phone->gpx_details as $category => $data)
+                                    <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
+                                        <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-8 h-8 rounded-full bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 flex items-center justify-center text-xs font-bold">{{ collect($data['details'])->sum('points') }}</div>
+                                                <span class="text-sm font-semibold">{{ $category }}</span>
+                                            </div>
+                                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+                                        <div class="grid transition-all duration-300 ease-in-out" :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+                                            <div class="overflow-hidden">
+                                                <div class="px-4 pb-4 pt-0 pl-[2.75rem] space-y-2">
+                                                    @foreach ($data['details'] as $detail)
+                                                        @if ($detail['points'] > 0)
+                                                            <div class="flex justify-between items-start text-xs">
+                                                                <span class="text-gray-500 w-2/3">{{ $detail['criterion'] }} <span class="text-[10px] text-gray-400">{{ $detail['reason'] }}</span></span>
+                                                                <span class="font-bold text-green-600 dark:text-green-400">+{{ $detail['points'] }}</span>
                                                             </div>
-                                                            @foreach ($data['details'] as $detail)
-                                                                @if ($detail['points'] > 0)
-                                                                    <div
-                                                                        class="flex justify-between items-start text-xs mb-1">
-                                                                        <span
-                                                                            class="text-gray-500 w-2/3 pl-2 border-l border-gray-200 dark:border-white/10">{{ $detail['criterion'] }}</span>
-                                                                        <div class="text-right">
-                                                                            <span
-                                                                                class="font-bold block text-green-600 dark:text-green-400">+{{ $detail['points'] }}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                @endif
-                                                            @endforeach
-                                                        </div>
+                                                        @endif
                                                     @endforeach
-                                                @else
-                                                    <p class="text-xs text-gray-400 italic">No CMS breakdown data available
-                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    <!-- Endurance Detailed Breakdown -->
+                    @php $enduranceScore = $phone->calculateEnduranceScore(); @endphp
+                    @if($enduranceScore > 0)
+                    <div x-data="{ open: false }" class="bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
+                        <button @click="open = !open" class="w-full p-4 border-b border-gray-100 dark:border-white/5 bg-purple-50/50 dark:bg-purple-900/10 flex items-center justify-between cursor-pointer hover:bg-purple-100/50 dark:hover:bg-purple-900/20 transition-colors text-left">
+                            <h3 class="font-bold text-purple-900 dark:text-purple-100 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                                Endurance Score
+                            </h3>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-200 px-2 py-1 rounded-full">{{ $enduranceScore }}</span>
+                                <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="grid transition-all duration-300 ease-in-out" :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+                            <div class="overflow-hidden">
+                                @php
+                                    $mah = 0;
+                                    if ($phone->battery && $phone->battery->battery_type && preg_match('/(\d{3,5})\s*mAh/i', $phone->battery->battery_type, $matches)) {
+                                        $mah = intval($matches[1]);
+                                    }
+                                    $activeH = 0; $enduranceH = 0;
+                                    if ($phone->benchmarks) {
+                                        $enduranceH = floatval($phone->benchmarks->battery_endurance_hours);
+                                        $raw = $phone->benchmarks->battery_active_use_score;
+                                        if (preg_match('/(\d+):(\d+)h/i', $raw, $m)) $activeH = intval($m[1]) + (intval($m[2]) / 60);
+                                        elseif (preg_match('/(\d+(\.\d+)?)\s*h/i', $raw, $m)) $activeH = floatval($m[1]);
+                                    }
+                                    
+                                    $capacityScore = round($mah / 100);
+                                    $efficiencyScore = max(0, $enduranceScore - $capacityScore);
+                                @endphp
+
+                                <!-- Capacity Accordion -->
+                                <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
+                                    <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 flex items-center justify-center text-xs font-bold">{{ $capacityScore }}</div>
+                                            <span class="text-sm font-semibold">Capacity</span>
+                                        </div>
+                                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div class="grid transition-all duration-300 ease-in-out" :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+                                        <div class="overflow-hidden">
+                                            <div class="px-4 pb-4 pt-0 pl-[2.75rem] space-y-2">
+                                                <div class="flex justify-between items-start text-xs">
+                                                    <span class="text-gray-500 w-2/3">Battery Size</span>
+                                                    <span class="font-bold text-gray-700 dark:text-gray-300">{{ $mah > 0 ? $mah . ' mAh' : 'N/A' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Efficiency Accordion -->
+                                <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
+                                    <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 flex items-center justify-center text-xs font-bold">{{ $efficiencyScore }}</div>
+                                            <span class="text-sm font-semibold">Efficiency</span>
+                                        </div>
+                                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+                                    <div class="grid transition-all duration-300 ease-in-out" :class="open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'">
+                                        <div class="overflow-hidden">
+                                            <div class="px-4 pb-4 pt-0 pl-[2.75rem] space-y-2">
+                                                @if($activeH > 0)
+                                                <div class="flex justify-between items-start text-xs">
+                                                    <span class="text-gray-500 w-2/3">Active Use Time</span>
+                                                    <span class="font-bold text-gray-700 dark:text-gray-300">{{ round($activeH, 2) }}h</span>
+                                                </div>
+                                                @endif
+                                                @if($enduranceH > 0)
+                                                <div class="flex justify-between items-start text-xs">
+                                                    <span class="text-gray-500 w-2/3">Legacy Endurance Rating</span>
+                                                    <span class="font-bold text-gray-700 dark:text-gray-300">{{ $enduranceH }}h</span>
+                                                </div>
+                                                @endif
+                                                @if($activeH == 0 && $enduranceH == 0)
+                                                <div class="text-xs text-gray-500 italic">No efficiency data available</div>
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
+                    @endif
 
                 </div>
 
@@ -1283,6 +1416,11 @@
                             @endif
                         </div>
                     </section>
+
+                    <!-- Comments Section -->
+                    <div class="mt-12">
+                        @include('partials.comments', ['phone' => $phone])
+                    </div>
 
                 </div>
             </div>

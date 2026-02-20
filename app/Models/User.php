@@ -65,4 +65,14 @@ class User extends Authenticatable
     {
         return $this->role === 'user';
     }
+
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function upvotes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CommentUpvote::class);
+    }
 }

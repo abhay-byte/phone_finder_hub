@@ -5,6 +5,8 @@ use App\Http\Controllers\PhoneController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CommentUpvoteController;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public routes – accessible to everyone (no auth required)
@@ -45,7 +47,16 @@ Route::middleware('auth')->group(function () {
     // User Profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Comments & Upvotes
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/comments/{comment}/upvote', [CommentUpvoteController::class, 'toggle'])->name('comments.upvote.toggle');
 });
+
+// Comments (Public)
+Route::get('/phones/{phone}/comments', [CommentController::class, 'index'])->name('phones.comments.index');
+Route::post('/phones/{phone}/comments', [CommentController::class, 'store'])->name('comments.store');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Admin-only routes (auth + super_admin role required)
