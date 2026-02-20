@@ -22,17 +22,17 @@ import logging
 from typing import Optional
 from urllib.parse import quote_plus
 
-# Suppress ddgs logging
-logging.getLogger('ddgs').setLevel(logging.CRITICAL)
+# Suppress duckduckgo_search logging
+logging.getLogger('duckduckgo_search').setLevel(logging.CRITICAL)
 
 try:
     import requests
     from bs4 import BeautifulSoup
-    from ddgs import DDGS
+    from duckduckgo_search import DDGS
 except ImportError as e:
     print(f"Missing dependency: {e}", file=sys.stderr)
     print("Please install required packages:", file=sys.stderr)
-    print("pip install requests beautifulsoup4 ddgs", file=sys.stderr)
+    print("pip install requests beautifulsoup4 duckduckgo-search", file=sys.stderr)
     sys.exit(1)
 
 # Headers for web requests

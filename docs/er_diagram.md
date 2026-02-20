@@ -195,7 +195,7 @@ erDiagram
         email string UK "Unique constraint"
         email_verified_at timestamp
         password string "bcrypt hashed"
-        role enum "user | super_admin, default user"
+        role string "user | super_admin | author | maintainer | moderator"
         remember_token string
         created_at timestamp
         updated_at timestamp
@@ -230,6 +230,85 @@ erDiagram
     }
 
     USERS ||--o{ SESSIONS : "has sessions"
+    USERS ||--o{ COMMENTS : "writes comments"
+    USERS ||--o{ COMMENT_UPVOTES : "upvotes comments"
+
+    COMMENTS {
+        id integer PK
+        phone_id integer FK "Indexed"
+        user_id integer FK "Indexed, Nullable"
+        parent_id integer FK "Nullable, self-referential for replies"
+        content text
+        upvotes_count integer "Default 0"
+        created_at timestamp
+        updated_at timestamp
+    }
+
+    COMMENT_UPVOTES {
+        id integer PK
+        comment_id integer FK "Indexed"
+        user_id integer FK "Indexed"
+        created_at timestamp
+        updated_at timestamp
+    }
+
+    COMMENTS ||--o{ COMMENTS : "has replies (parent_id)"
+    COMMENTS ||--o{ COMMENT_UPVOTES : "receives upvotes"
+```
+
+## Community & Content Tables (Blogs & Forums)
+
+```mermaid
+erDiagram
+    BLOGS {
+        id integer PK
+        title string
+        slug string UK "Unique"
+        content longtext
+        excerpt text "Nullable"
+        featured_image string "Nullable"
+        user_id integer FK
+        is_published boolean "Default false"
+        published_at timestamp "Nullable"
+        created_at timestamp
+        updated_at timestamp
+    }
+
+    FORUM_CATEGORIES {
+        id integer PK
+        name string
+        slug string UK "Unique"
+        description text "Nullable"
+        created_at timestamp
+        updated_at timestamp
+    }
+
+    FORUM_POSTS {
+        id integer PK
+        forum_category_id integer FK "Cascade down"
+        user_id integer FK "Cascade down"
+        title string
+        slug string UK "Unique"
+        content longtext
+        views integer "Default 0"
+        created_at timestamp
+        updated_at timestamp
+    }
+
+    FORUM_COMMENTS {
+        id integer PK
+        forum_post_id integer FK "Cascade down"
+        user_id integer FK "Cascade down"
+        content longtext
+        created_at timestamp
+        updated_at timestamp
+    }
+
+    USERS ||--o{ BLOGS : "authors"
+    FORUM_CATEGORIES ||--o{ FORUM_POSTS : "contains"
+    USERS ||--o{ FORUM_POSTS : "creates"
+    FORUM_POSTS ||--o{ FORUM_COMMENTS : "has comments"
+    USERS ||--o{ FORUM_COMMENTS : "writes"
 ```
 
 ## System Tables (Cache & Jobs)
@@ -284,7 +363,7 @@ erDiagram
 
 ## Schema Summary
 
-### Total Tables: 13
+### Total Tables: 17
 
 #### Core Application Tables (7):
 1. **phones** - Main phone records with pricing, scores, and metadata
@@ -295,15 +374,23 @@ erDiagram
 6. **spec_batteries** - Battery capacity and charging specifications
 7. **benchmarks** - Performance benchmarks and test results
 
-#### Authentication Tables (4):
-8. **users** - User accounts with `username` (unique login handle), `role` (enum: `user` | `super_admin`)
+#### Authentication & Engagement Tables (4):
+8. **users** - User accounts with `username` (unique login handle), `role` (user | super_admin | author | maintainer | moderator)
 9. **password_reset_tokens** - Password reset functionality
 10. **sessions** - User session management
 11. **personal_access_tokens** - API token authentication
+12. **comments** - User comments on phones
+13. **comment_upvotes** - Upvotes on comments
+
+#### Community & Content Tables (4):
+14. **blogs** - Articles written by authors/admins
+15. **forum_categories** - High level categories for forum discussions
+16. **forum_posts** - User-created discussion threads
+17. **forum_comments** - Replies to forum posts
 
 #### System Tables (2):
-12. **cache** & **cache_locks** - Application caching
-13. **jobs**, **job_batches**, **failed_jobs** - Queue management
+18. **cache** & **cache_locks** - Application caching
+19. **jobs**, **job_batches**, **failed_jobs** - Queue management
 
 ### Key Relationships
 

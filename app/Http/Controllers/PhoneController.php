@@ -36,7 +36,15 @@ class PhoneController extends Controller
             return $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
         });
 
-        return view('phones.index', compact('phones', 'sort'));
+        $latestBlogs = Cache::remember('latest_blogs_home', 300, function () {
+            return \App\Models\Blog::with('author')
+                ->where('is_published', true)
+                ->latest('published_at')
+                ->take(5)
+                ->get();
+        });
+
+        return view('phones.index', compact('phones', 'sort', 'latestBlogs'));
     }
 
     public function grid(Request $request)
@@ -393,13 +401,21 @@ class PhoneController extends Controller
      */
     public function show($id)
     {
-        // Check cache first to avoid DB query (Model Binding bypass)
-        return Cache::remember('phone_show_' . $id, 3600, function () use ($id) {
-            $phone = \App\Models\Phone::with(['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks'])
-                ->findOrFail($id);
-                
-            return view('phones.show', compact('phone'))->render();
+        // Cache the eloquent model and relations instead of the full HTML view
+        // to prevent session/auth-dependent UI (like comments) from being cached statefully.
+        $phone = Cache::remember('phone_data_' . $id, 3600, function () use ($id) {
+            return \App\Models\Phone::with([
+                'body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks'
+            ])->findOrFail($id);
         });
+            
+        $comments = \App\Models\Comment::with(['user', 'replies.user', 'replies.upvotes', 'upvotes'])
+            ->where('phone_id', $phone->id)
+            ->whereNull('parent_id')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('phones.show', compact('phone', 'comments'));
     }
 
     /**

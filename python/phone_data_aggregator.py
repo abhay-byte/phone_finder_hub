@@ -15,7 +15,7 @@ Usage:
     python phone_data_aggregator.py "iPhone 15 Pro" --output phone_data.json
 
 Requirements:
-    pip install requests beautifulsoup4 pillow icrawler ddgs playwright cloudscraper rembg
+    pip install requests beautifulsoup4 pillow icrawler duckduckgo-search playwright cloudscraper rembg
     playwright install chromium
 """
 
@@ -33,7 +33,7 @@ from datetime import datetime
 
 # Suppress verbose logging
 logging.getLogger('icrawler').setLevel(logging.CRITICAL)
-logging.getLogger('ddgs').setLevel(logging.CRITICAL)
+logging.getLogger('duckduckgo_search').setLevel(logging.CRITICAL)
 logging.getLogger('urllib3').setLevel(logging.WARNING)
 
 # Import functions from existing scripts

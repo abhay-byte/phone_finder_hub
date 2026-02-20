@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
-@push('title')
+@section('title')
 Edit Phone: {{ $phone->name }}
-@endpush
+@endsection
 
 @section('admin-content')
 
