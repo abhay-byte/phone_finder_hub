@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@push('title')
+@section('title')
     PhoneFinderHub – Create Account
-@endpush
+@endsection
 
 @section('content')
 <style>

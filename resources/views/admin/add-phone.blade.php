@@ -1,8 +1,8 @@
 @extends('admin.layout')
 
-@push('title')
+@section('title')
 PhoneFinderHub – Add Phone
-@endpush
+@endsection
 
 @section('admin-content')
 

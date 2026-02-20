@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@push('title')
+@section('title')
     {{ $user->name }} – Profile
-@endpush
+@endsection
 
 @section('content')
 <div class="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
