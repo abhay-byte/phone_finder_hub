@@ -14,9 +14,9 @@ class PhoneController extends Controller
     {
         $sort = $request->input('sort', 'expert_score'); // Default to Expert Score
 
-        // Cache query results for 5 minutes (not the view, to allow dynamic auth/navbar)
-        $cacheKey = 'phones_index_data_' . $sort . '_v2';
-        $phones = Cache::remember($cacheKey, 300, function () use ($sort) {
+        // Cache fully rendered HTML for 5 minutes (skips heavy Blade loop rendering on home page)
+        $cacheKey = 'phones_index_grid_html_' . $sort . '_v6';
+        $gridHtml = Cache::remember($cacheKey, 300, function () use ($sort) {
             $query = \App\Models\Phone::query();
 
             if ($sort == 'expert_score') {
@@ -33,18 +33,15 @@ class PhoneController extends Controller
                 $query->orderBy('expert_score', 'desc');
             }
 
-            return $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
+            $phones = $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
+            return view('phones.partials.grid', compact('phones'))->render();
         });
 
-        $latestBlogs = Cache::remember('latest_blogs_home', 300, function () {
-            return \App\Models\Blog::with('author')
-                ->where('is_published', true)
-                ->latest('published_at')
-                ->take(5)
-                ->get();
+        $latestBlogs = Cache::remember('home_latest_blogs_v2', 300, function () {
+            return \App\Models\Blog::with('author')->where('is_published', true)->latest('published_at')->take(3)->get();
         });
 
-        return view('phones.index', compact('phones', 'sort', 'latestBlogs'));
+        return view('phones.index', compact('gridHtml', 'sort', 'latestBlogs'));
     }
 
     public function grid(Request $request)
@@ -121,9 +118,10 @@ class PhoneController extends Controller
         $page = $request->input('page', 1);
         
         // Dynamic Price Range
-        $maxDatabasePrice = \App\Models\Phone::max('price');
-        // Round up to nearest 1000 for cleaner UI
-        $maxDatabasePrice = ceil($maxDatabasePrice / 1000) * 1000;
+        $maxDatabasePrice = Cache::remember('max_database_price', 3600, function() {
+            $max = \App\Models\Phone::max('price') ?? 200000;
+            return ceil($max / 1000) * 1000;
+        });
 
         // Filter Params
         $minPrice = $request->input('min_price', 0);
@@ -179,7 +177,7 @@ class PhoneController extends Controller
             ];
         });
 
-        $html = Cache::remember($cacheKey, 300, function() use ($tab, $sort, $direction, $rankExpression, $page, $queryParams, $minPrice, $maxPrice, $maxDatabasePrice, $minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip, $showUnverified, $filterOptions, $request) {
+        $tableHtml = Cache::remember($cacheKey, 300, function() use ($tab, $sort, $direction, $rankExpression, $page, $queryParams, $minPrice, $maxPrice, $maxDatabasePrice, $minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip, $showUnverified, $filterOptions, $request) {
             
             // Subquery to calculate Rank for ALL phones based on the Tab's metric
             $rankingSubquery = \App\Models\Phone::query()
@@ -378,14 +376,16 @@ class PhoneController extends Controller
             // The view likely expects $ranks[$id] = rank
             $ranks = $phones->pluck('computed_rank', 'id')->toArray();
 
-            return view('phones.rankings', compact(
-                'phones', 'sort', 'direction', 'tab', 'ranks', 
-                'minPrice', 'maxPrice', 'maxDatabasePrice',
-                'minRam', 'maxRam', 'minStorage', 'maxStorage', 'bootloader', 'turnip', 'showUnverified', 'filterOptions'
+            return view('phones.partials.rankings_table', compact(
+                'phones', 'sort', 'direction', 'tab', 'ranks'
             ))->render();
         });
 
-        return response($html);
+        return view('phones.rankings', compact(
+            'tableHtml', 'sort', 'direction', 'tab',
+            'minPrice', 'maxPrice', 'maxDatabasePrice',
+            'minRam', 'maxRam', 'minStorage', 'maxStorage', 'bootloader', 'turnip', 'showUnverified', 'filterOptions'
+        ));
     }
 
     /**
@@ -403,19 +403,30 @@ class PhoneController extends Controller
     {
         // Cache the eloquent model and relations instead of the full HTML view
         // to prevent session/auth-dependent UI (like comments) from being cached statefully.
-        $phone = Cache::remember('phone_data_' . $id, 3600, function () use ($id) {
+        $phone = Cache::remember('phone_data_v2_' . $id, 3600, function () use ($id) {
             return \App\Models\Phone::with([
                 'body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks'
             ])->findOrFail($id);
         });
-            
-        $comments = \App\Models\Comment::with(['user', 'replies.user', 'replies.upvotes', 'upvotes'])
-            ->where('phone_id', $phone->id)
-            ->whereNull('parent_id')
-            ->orderBy('created_at', 'desc')
-            ->get();
 
-        return view('phones.show', compact('phone', 'comments'));
+        // Cache the fully rendered heavy blade specs template to avoid compiling 1400+ lines.
+        $phoneDetailsHtml = Cache::remember('phone_details_html_v2_' . $id, 3600, function () use ($phone) {
+            return view('phones.partials.phone_details', compact('phone'))->render();
+        });
+            
+        $comments = Cache::remember('phone_comments_v3_' . $phone->id, 60, function() use ($phone) {
+            return \App\Models\Comment::with(['user', 'replies.user', 'replies.upvotes', 'upvotes'])
+                ->where('phone_id', $phone->id)
+                ->whereNull('parent_id')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        });
+
+        $totalComments = Cache::remember('phone_comments_count_v2_' . $phone->id, 60, function() use ($phone) {
+            return $phone->comments()->count();
+        });
+
+        return view('phones.show', compact('phone', 'comments', 'phoneDetailsHtml', 'totalComments'));
     }
 
     /**

@@ -7,60 +7,84 @@ use App\Models\ForumCategory;
 use App\Models\ForumPost;
 use App\Models\ForumComment;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class ForumController extends Controller
 {
     public function index()
     {
-        $categories = ForumCategory::withCount('posts')->orderBy('order', 'asc')->get();
-        return view('forum.index', compact('categories'));
+        $categoriesHtml = Cache::remember('forum_index_categories_html_v2', 300, function() {
+            $categories = ForumCategory::withCount('posts')->orderBy('order', 'asc')->get();
+            return view('forum.partials.index_categories', compact('categories'))->render();
+        });
+        
+        return view('forum.index', compact('categoriesHtml'));
     }
 
     public function category(Request $request, $slug)
     {
-        $category = ForumCategory::where('slug', $slug)->firstOrFail();
+        $category = Cache::remember('forum_category_' . $slug, 3600, function() use ($slug) {
+            return ForumCategory::where('slug', $slug)->firstOrFail();
+        });
         
         $sort = $request->input('sort', 'latest');
+        $page = $request->input('page', 1);
         
-        $query = ForumPost::where('forum_category_id', $category->id)
-            ->with(['user'])
-            ->withCount('comments');
+        $latestUpdate = Cache::remember('forum_category_update_' . $category->id, 60, function() use ($category) {
+            return ForumPost::where('forum_category_id', $category->id)->max('updated_at');
+        });
 
-        switch ($sort) {
-            case 'upvotes':
-                $query->orderBy('upvotes', 'desc');
-                break;
-            case 'views':
-                $query->orderBy('views', 'desc');
-                break;
-            case 'comments':
-                $query->orderBy('comments_count', 'desc');
-                break;
-            case 'updated':
-                $query->orderBy('updated_at', 'desc');
-                break;
-            case 'oldest':
-                $query->orderBy('created_at', 'asc');
-                break;
-            case 'latest':
-            default:
-                $query->orderBy('created_at', 'desc');
-                break;
-        }
-
-        $posts = $query->paginate(15)->appends(['sort' => $sort]);
+        $queryCacheKey = 'forum_category_posts_v4_' . $category->id . '_' . $sort . '_page_' . $page . '_' . strtotime($latestUpdate);
         
-        return view('forum.category', compact('category', 'posts', 'sort'));
+        $posts = Cache::remember($queryCacheKey, 300, function() use ($category, $sort) {
+            $query = ForumPost::where('forum_category_id', $category->id)
+                ->with(['user'])
+                ->withCount('comments');
+
+            switch ($sort) {
+                case 'upvotes':
+                    $query->orderBy('upvotes', 'desc');
+                    break;
+                case 'views':
+                    $query->orderBy('views', 'desc');
+                    break;
+                case 'comments':
+                    $query->orderBy('comments_count', 'desc');
+                    break;
+                case 'updated':
+                    $query->orderBy('updated_at', 'desc');
+                    break;
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                case 'latest':
+                default:
+                    $query->orderBy('created_at', 'desc');
+                    break;
+            }
+
+            return $query->paginate(15)->appends(['sort' => $sort]);
+        });
+        
+        $cacheKeyHtml = 'forum_category_posts_html_' . $category->id . '_' . $sort . '_page_' . $page . '_' . strtotime($latestUpdate) . '_v3';
+        
+        $postsHtml = Cache::remember($cacheKeyHtml, 300, function() use ($posts) {
+            return view('forum.partials.category_posts', compact('posts'))->render();
+        });
+        
+        return view('forum.category', compact('category', 'posts', 'sort', 'postsHtml'));
     }
 
     public function show($slug)
     {
-        $post = ForumPost::where('slug', $slug)
-            ->with(['user', 'category', 'comments.user'])
-            ->firstOrFail();
+        $post = Cache::remember('forum_post_v3_' . $slug, 60, function() use ($slug) {
+            return ForumPost::where('slug', $slug)
+                ->with(['user', 'category', 'comments.user'])
+                ->firstOrFail();
+        });
             
-        // Increment views
-        $post->increment('views');
+        // Synchronous DB writes take 4s on external Postgres. Avoiding to save 4s page load.
+        // $post->increment('views');
         
         return view('forum.show', compact('post'));
     }

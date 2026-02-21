@@ -164,8 +164,9 @@ class FindController extends Controller
                                  "[BTN|Heavy Gaming Performance]\n" .
                                  "[BTN|All-day Battery Life]\n\n" .
                                  "The user uses this website to look for phones. Answer queries based ONLY on general real-world knowledge AND the DATABASE CONTEXT provided. Note: Context now includes FULL detailed specs. If giving details about the value table, explain: UEPS = User Experience Performance Score, CMS = Camera Matrix Score, GPX = Gaming Performance Index, Endurance = Battery Life Rating. Note: 'Turnip' refers to custom open-source GPU drivers for Snapdragon chips that massively improve gaming/emulation performance. 'Bootloader unlock' means the phone allows flashing custom ROMs and rooting.\n\n" .
-                                 "CRITICAL INSTRUCTION - PRODUCT CARDS:\n" .
-                                 "When recommending a phone, you MUST output the EXACT \"card_string\" provided for that phone in the context, followed by a short summary of why it fits their needs, key specs, and performance scores. \n" .
+                                 "CRITICAL INSTRUCTION - PRODUCT CARDS & COMPARISONS:\n" .
+                                 "When recommending or comparing multiple phones, you MUST explicitly mention and compare their exact CMS, UEPS, Endurance, and GPX scores as provided in the context.\n" .
+                                 "You MUST output the EXACT \"card_string\" provided for that phone in the context, followed by a short summary of why it fits their needs, key specs, and performance scores. \n" .
                                  "Do NOT put the card_string in a code block or markdown formatting like ` or **. Output it exactly as raw plain text so the system can parse it. \n" .
                                  "For example:\n" .
                                  "[CARD|Oppo Find X9 Pro|₹50,000|/image/path.jpg|/phones/5|Snapdragon 8 Gen 3|5000 mAh|https://amazon.in/..|https://flipkart.com/..]\n" .
@@ -235,14 +236,14 @@ class FindController extends Controller
                 flush();
 
                 $client = new \GuzzleHttp\Client();
-                try {
-                    $response = $client->request('POST', 'https://api.groq.com/openai/v1/chat/completions', [
+                $makeRequest = function($model) use ($client, $apiKey, $messages) {
+                    return $client->request('POST', 'https://api.groq.com/openai/v1/chat/completions', [
                         'headers' => [
                             'Authorization' => 'Bearer ' . $apiKey,
                             'Content-Type' => 'application/json',
                         ],
                         'json' => [
-                            'model' => 'llama-3.3-70b-versatile',
+                            'model' => $model,
                             'messages' => $messages,
                             'temperature' => 0.7,
                             'max_completion_tokens' => 4096,
@@ -250,6 +251,20 @@ class FindController extends Controller
                         ],
                         'stream' => true,
                     ]);
+                };
+
+                try {
+                    try {
+                        // Attempt Primary Model (70B)
+                        $response = $makeRequest('llama-3.3-70b-versatile');
+                    } catch (\GuzzleHttp\Exception\ClientException $e) {
+                         if ($e->getResponse()->getStatusCode() === 429) {
+                              \Log::warning("FindController: 70B hit 429 Limit. Falling back to 8B Instant.");
+                              $response = $makeRequest('llama-3.1-8b-instant');
+                         } else {
+                              throw $e;
+                         }
+                    }
 
                     $body = $response->getBody();
                     $assistantMessage = '';
@@ -272,7 +287,7 @@ class FindController extends Controller
                         }
                     }
 
-                    if (auth()->check() && $chatId) {
+                    if (auth()->check() && $chatId && !empty(trim($assistantMessage))) {
                         ChatMessage::create([
                             'chat_id' => $chatId,
                             'role' => 'assistant',
@@ -285,7 +300,7 @@ class FindController extends Controller
                     flush();
                 } catch (\Exception $e) {
                     \Log::error('Stream Error: ' . $e->getMessage());
-                    echo "data: " . json_encode(['type' => 'error', 'message' => 'AI service is currently unavailable. Please try again later.']) . "\n\n";
+                    echo "data: " . json_encode(['type' => 'error', 'message' => 'AI service is currently unavailable or hitting usage limits. Please try again later.']) . "\n\n";
                     if (ob_get_level() > 0) ob_flush();
                     flush();
                 }

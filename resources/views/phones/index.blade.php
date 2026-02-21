@@ -167,235 +167,238 @@
         </div>
     </div>
 
-    <!-- Phone Grid Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
-         x-data="{
-            searchOpen: false, 
-            sortOpen: false,
-            currentSort: '{{ $sort }}',
-            isLoading: false,
+    <!-- Main Content Layout (1:6 Grid) -->
+    <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-6 gap-8 xl:gap-12 pl-0">
             
-            init() {
-                // Handle browser back/forward buttons
-                window.addEventListener('popstate', (e) => {
-                    const params = new URLSearchParams(window.location.search);
-                    const sort = params.get('sort') || 'value_score';
-                    // Only update if sort changed
-                    if (this.currentSort !== sort) {
-                        this.currentSort = sort;
-                        this.fetchGrid(sort, false);
-                    }
-                });
-            },
+            <!-- LEFT COLUMN (1/6): Editorials & Tech News -->
+            <div class="lg:col-span-1 flex flex-col relative z-20">
+                @if(isset($latestBlogs) && $latestBlogs->count() > 0)
+                <div class="sticky top-24">
+                    <div class="mb-6 flex flex-col pr-2">
+                        <h2 class="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
+                            <span class="w-2 h-6 md:h-8 rounded-full bg-teal-500 block"></span>
+                            Editorials
+                        </h2>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-widest font-bold ml-4">Latest guides & news</p>
+                    </div>
 
-            updateSort(value) {
-                this.currentSort = value;
-                this.sortOpen = false;
-                this.fetchGrid(value, true);
-            },
-
-            fetchGrid(newSort, pushState = true) {
-                // cache key includes sort and version to force refresh
-                const cacheKey = `phone_grid_${newSort}_v12`;
-                const cacheTTL = 5 * 60 * 1000; // 5 minutes
-
-                this.isLoading = true;
-
-                // Update URL without refresh if requested
-                if (pushState) {
-                    const url = new URL(window.location);
-                    url.searchParams.set('sort', newSort);
-                    window.history.pushState({sort: newSort}, '', url);
-                }
-
-                // Try to get from cache
-                const cached = localStorage.getItem(cacheKey);
-                if (cached) {
-                    const data = JSON.parse(cached);
-                    const now = new Date().getTime();
-                    if (now - data.timestamp < cacheTTL) {
-                        // valid cache
-                        setTimeout(() => {
-                             this.$refs.gridContainer.innerHTML = data.html;
-                             this.isLoading = false;
-                        }, 300); // Small delay to let animation play
-                        return;
-                    }
-                }
-                
-                // Fetch new results from dedicated grid route
-                fetch(`{{ route('phones.grid') }}?sort=${newSort}`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.text())
-                .then(html => {
-                     // Check if response is valid (not a full page)
-                     if (!html.includes('<!DOCTYPE html>')) {
-                        // Artificial delay for smoothness if fetch is too fast
-                        setTimeout(() => {
-                             this.$refs.gridContainer.innerHTML = html;
-                             this.isLoading = false;
-                             // Save to cache
-                             localStorage.setItem(cacheKey, JSON.stringify({
-                                 timestamp: new Date().getTime(),
-                                 html: html
-                             }));
-                        }, 300);
-                     } else {
-                         // Fallback to full reload if we somehow got a full page
-                         window.location.reload();
-                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    window.location.reload(); // Fallback
-                });
-            }
-         }"
-    >
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Latest Rankings</h2>
-            <div class="flex items-center gap-3">
-                <span class="text-sm font-medium text-slate-500 dark:text-slate-400">Sort by:</span>
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" @click.away="open = false" class="flex items-center gap-2 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-300 dark:hover:border-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-teal-500/20 shadow-sm min-w-[160px] justify-between group">
-                        <span>
-                            <span x-show="currentSort === 'expert_score'">Expert Score</span>
-                            <span x-show="currentSort === 'value_score'">Value Score</span>
-                            <span x-show="currentSort === 'price_asc'">Price: Low to High</span>
-                            <span x-show="currentSort === 'overall_score'">Performance</span>
-                            <span x-show="currentSort === 'ueps_score'">UEPS Score</span>
-                        </span>
-                        <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    
-                    <div x-show="open" 
-                         x-transition:enter="transition ease-out duration-200"
-                         x-transition:enter-start="transform opacity-0 scale-95 translate-y-[-10px]"
-                         x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-150"
-                         x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
-                         x-transition:leave-end="transform opacity-0 scale-95 translate-y-[-10px]"
-                         class="absolute right-0 mt-2 w-56 bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-xl border border-gray-100 dark:border-white/10 py-2 z-50 origin-top-right focus:outline-none ring-1 ring-black/5 dark:ring-white/5" 
-                         style="display: none;">
-                        
-                        @foreach([
-                            'expert_score' => 'Expert Score',
-                            'value_score' => 'Value Score',
-                            'price_asc' => 'Price: Low to High',
-                            'overall_score' => 'Performance',
-                            'ueps_score' => 'UEPS Score'
-                        ] as $key => $label)
-                        <button @click="updateSort('{{ $key }}'); open = false" class="w-full flex items-center justify-between px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-teal-600 dark:hover:text-teal-400 transition-colors group" :class="{ 'bg-teal-50/50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 font-semibold': currentSort === '{{ $key }}' }">
-                            <span>{{ $label }}</span>
-                            <template x-if="currentSort === '{{ $key }}'">
-                                <svg class="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                            </template>
-                        </button>
+                    <div class="flex flex-col gap-4 pr-3 overflow-y-auto max-h-[calc(100vh-14rem)] scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10 pb-6 rounded-xl">
+                        @foreach($latestBlogs as $blog)
+                        <a href="{{ route('blogs.show', $blog->slug) }}" class="group block bg-white dark:bg-[#161616] rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm hover:shadow-2xl hover:border-teal-300 dark:hover:border-teal-500/40 transition-all duration-300 transform hover:-translate-y-1 relative ring-1 ring-black/5 dark:ring-white/5">
+                            @if($blog->featured_image)
+                            <div class="h-32 w-full relative overflow-hidden bg-gray-100 dark:bg-white/5">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-10 transition-opacity duration-300"></div>
+                                <img src="{{ $blog->featured_image }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" alt="{{ $blog->title }}">
+                                
+                                <div class="absolute bottom-3 left-3 right-3 z-20 flex flex-col justify-end">
+                                    <div class="flex items-center gap-2 mb-1.5 text-[9px] text-gray-300 drop-shadow">
+                                        <span class="font-bold uppercase tracking-wider text-teal-400 font-mono">{{ $blog->author->name ?? 'News' }}</span>
+                                        <span class="w-1 h-1 rounded-full bg-gray-400"></span>
+                                        <span class="font-medium opacity-90">{{ $blog->published_at->format('M j') }}</span>
+                                    </div>
+                                    <h3 class="text-xs font-bold text-white group-hover:text-teal-300 transition-colors line-clamp-3 leading-snug drop-shadow-lg">
+                                        {{ $blog->title }}
+                                    </h3>
+                                </div>
+                            </div>
+                            @else
+                            <div class="p-5">
+                                <div class="flex items-center gap-2 mb-2 text-[10px] text-gray-500 dark:text-gray-400 font-mono">
+                                    <span class="font-bold uppercase tracking-wider text-teal-600 dark:text-teal-500">{{ $blog->author->name ?? 'News' }}</span>
+                                    <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                                    <span>{{ $blog->published_at->format('M j') }}</span>
+                                </div>
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-3 leading-snug">
+                                    {{ $blog->title }}
+                                </h3>
+                            </div>
+                            @endif
+                        </a>
                         @endforeach
                     </div>
+                    
+                    <a href="{{ route('blogs.index') }}" class="mt-4 flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-teal-500/10 to-emerald-500/10 dark:from-teal-500/5 dark:to-emerald-500/5 text-xs text-teal-700 dark:text-teal-400 font-bold hover:from-teal-500/20 hover:to-emerald-500/20 transition-all border border-teal-100 dark:border-teal-500/20 shadow-sm group">
+                        View All Articles
+                        <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform border-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
                 </div>
+                @endif
             </div>
-        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 relative" x-ref="gridContainer">
-            <!-- Skeleton Loading Grid -->
-            <div x-show="isLoading" 
-                 class="absolute inset-0 bg-gray-50 dark:bg-black z-40 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-                 style="display: none;">
-                
-                @for ($i = 0; $i < 8; $i++)
-                <div class="bg-white dark:bg-[#1A1A1A] rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-white/5 h-full flex flex-col">
-                    <!-- Image Skeleton -->
-                    <div class="relative mb-6">
-                        <div class="h-64 w-full bg-gray-100 dark:bg-white/5 rounded-2xl skeleton skeleton-shimmer"></div>
-                        <div class="absolute -bottom-3 right-4 h-6 w-20 rounded-full bg-gray-200 dark:bg-white/10 skeleton skeleton-shimmer"></div>
-                    </div>
+            <!-- RIGHT COLUMN (5/6): Phone Grid Section -->
+            <div class="lg:col-span-5 relative z-10"
+                 x-data="{
+                    searchOpen: false, 
+                    sortOpen: false,
+                    currentSort: '{{ $sort }}',
+                    isLoading: false,
+                    
+                    init() {
+                        window.addEventListener('popstate', (e) => {
+                            const params = new URLSearchParams(window.location.search);
+                            const sort = params.get('sort') || 'value_score';
+                            if (this.currentSort !== sort) {
+                                this.currentSort = sort;
+                                this.fetchGrid(sort, false);
+                            }
+                        });
+                    },
 
-                    <!-- Content Skeleton -->
-                    <div class="flex-1 flex flex-col">
-                        <div class="mb-4 space-y-2">
-                            <div class="h-4 w-20 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer"></div>
-                            <div class="h-7 w-3/4 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer"></div>
-                        </div>
+                    updateSort(value) {
+                        this.currentSort = value;
+                        this.sortOpen = false;
+                        this.fetchGrid(value, true);
+                    },
 
-                        <div class="space-y-3 mb-6 flex-1">
-                            <div class="grid grid-cols-2 gap-2">
-                                <div class="h-10 bg-gray-100 dark:bg-white/5 rounded-lg skeleton skeleton-shimmer"></div>
-                                <div class="h-10 bg-gray-100 dark:bg-white/5 rounded-lg skeleton skeleton-shimmer"></div>
+                    fetchGrid(newSort, pushState = true) {
+                        const cacheKey = `phone_grid_${newSort}_v12`;
+                        const cacheTTL = 5 * 60 * 1000;
+
+                        this.isLoading = true;
+
+                        if (pushState) {
+                            const url = new URL(window.location);
+                            url.searchParams.set('sort', newSort);
+                            window.history.pushState({sort: newSort}, '', url);
+                        }
+
+                        const cached = localStorage.getItem(cacheKey);
+                        if (cached) {
+                            const data = JSON.parse(cached);
+                            const now = new Date().getTime();
+                            if (now - data.timestamp < cacheTTL) {
+                                setTimeout(() => {
+                                     this.$refs.gridContainer.innerHTML = data.html;
+                                     this.isLoading = false;
+                                }, 300);
+                                return;
+                            }
+                        }
+                        
+                        fetch(`{{ route('phones.grid') }}?sort=${newSort}`, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                             if (!html.includes('<!DOCTYPE html>')) {
+                                setTimeout(() => {
+                                     this.$refs.gridContainer.innerHTML = html;
+                                     this.isLoading = false;
+                                     localStorage.setItem(cacheKey, JSON.stringify({
+                                         timestamp: new Date().getTime(),
+                                         html: html
+                                     }));
+                                }, 300);
+                             } else {
+                                 window.location.reload();
+                             }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            window.location.reload();
+                        });
+                    }
+                 }"
+            >
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4 px-2 xl:px-0 mt-4 lg:mt-0">
+                    <h2 class="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+                        Latest Rankings
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200">
+                            Updated Live
+                        </span>
+                    </h2>
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400 hidden sm:block uppercase tracking-wider">Sort by:</span>
+                        <div class="relative w-full sm:w-auto shadow-sm" x-data="{ open: false }">
+                            <button @click="open = !open" @click.away="open = false" class="w-full flex items-center gap-2 bg-white dark:bg-[#161616] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-white/5 hover:border-teal-300 dark:hover:border-teal-500/50 transition-all focus:outline-none focus:ring-4 focus:ring-teal-500/20 sm:min-w-[210px] justify-between group relative overflow-hidden">
+                                <span class="relative z-10 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                    </svg>
+                                    <span x-show="currentSort === 'expert_score'">Expert Score</span>
+                                    <span x-show="currentSort === 'value_score'">Value Score</span>
+                                    <span x-show="currentSort === 'price_asc'">Price: Low to High</span>
+                                    <span x-show="currentSort === 'overall_score'">Performance</span>
+                                    <span x-show="currentSort === 'ueps_score'">UEPS Score</span>
+                                </span>
+                                <svg class="w-4 h-4 text-slate-400 group-hover:text-teal-500 transition-transform duration-300 relative z-10" :class="{'rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            
+                            <div x-show="open" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="transform opacity-0 scale-95 translate-y-[-10px]"
+                                 x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave-end="transform opacity-0 scale-95 translate-y-[-10px]"
+                                 class="absolute right-0 sm:right-0 left-0 sm:left-auto mt-2 w-full sm:w-64 bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 py-2 z-[100] origin-top flex flex-col focus:outline-none ring-1 ring-black/5 dark:ring-white/5" 
+                                 style="display: none;">
+                                
+                                <div class="px-4 py-2 border-b border-gray-100 dark:border-white/5 mb-1">
+                                    <span class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Select Metric</span>
+                                </div>
+                                @foreach([
+                                    'expert_score' => 'Expert Score (Recommended)',
+                                    'value_score' => 'Value Score (Best Bang)',
+                                    'price_asc' => 'Price: Low to High',
+                                    'overall_score' => 'Raw Performance (Benchmarks)',
+                                    'ueps_score' => 'UEPS Score (Endurance)'
+                                ] as $key => $label)
+                                <button @click="updateSort('{{ $key }}'); open = false" class="w-full flex items-center justify-between px-4 py-3 text-sm text-left text-slate-600 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-teal-900/10 hover:text-teal-700 dark:hover:text-teal-400 transition-colors group" :class="{ 'bg-teal-50/50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 font-semibold': currentSort === '{{ $key }}' }">
+                                    <span class="truncate pr-4">{{ $label }}</span>
+                                    <template x-if="currentSort === '{{ $key }}'">
+                                        <svg class="w-4 h-4 text-teal-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </template>
+                                </button>
+                                @endforeach
                             </div>
                         </div>
-
-                        <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
-                            <div class="h-6 w-24 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer"></div>
-                            <div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-white/10 skeleton skeleton-shimmer"></div>
-                        </div>
                     </div>
                 </div>
-                @endfor
-            </div>
 
-            @include('phones.partials.grid')
-        </div>
-
-        @if(isset($latestBlogs) && $latestBlogs->count() > 0)
-        <!-- Latest Tech News & Reviews Section -->
-        <div class="mt-24 mb-12">
-            <div class="flex items-center justify-between mb-8">
-                <div>
-                    <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-2">Editorials & Tech News</h2>
-                    <p class="text-slate-500 dark:text-slate-400">Deep dives, news, and guides from our expert authors.</p>
-                </div>
-                <a href="{{ route('blogs.index') }}" class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 font-bold hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors">
-                    View All Articles
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </a>
-            </div>
-
-            <!-- Vertical scroll / Standard list -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach($latestBlogs as $blog)
-                <a href="{{ route('blogs.show', $blog->slug) }}" class="group flex flex-col bg-white dark:bg-[#1A1A1A] rounded-3xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm hover:shadow-xl hover:border-teal-200 dark:hover:border-teal-500/30 transition-all duration-300 transform hover:-translate-y-1">
-                    @if($blog->featured_image)
-                    <div class="aspect-video w-full relative overflow-hidden bg-gray-100 dark:bg-white/5">
-                        <img src="{{ $blog->featured_image }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="{{ $blog->title }}">
-                    </div>
-                    @endif
-                    <div class="p-6 flex flex-col flex-1">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ $blog->author->name ?? 'Guest Author' }}</span>
-                            <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                            <span class="text-xs text-gray-400">{{ $blog->published_at->format('M j') }}</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2 leading-snug">
-                            {{ $blog->title }}
-                        </h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">{{ $blog->excerpt }}</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5 lg:gap-6 relative z-10" x-ref="gridContainer">
+                    <!-- Skeleton Loading Grid -->
+                    <div x-show="isLoading" 
+                         class="absolute inset-0 bg-gray-50/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md z-40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5 lg:gap-6"
+                         style="display: none;">
                         
-                        <div class="mt-auto pt-4 border-t border-gray-100 dark:border-white/5">
-                            <span class="text-xs font-bold text-teal-600 dark:text-teal-500 uppercase tracking-widest flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                                Read More
-                                <svg class="w-3 h-3 translate-y-[0.5px]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                            </span>
+                        @for ($i = 0; $i < 10; $i++)
+                        <div class="bg-white dark:bg-[#161616] rounded-[2rem] p-5 shadow-sm border border-gray-100 dark:border-white/5 h-full flex flex-col">
+                            <div class="relative mb-6">
+                                <div class="h-56 w-full bg-gray-100 dark:bg-white/5 rounded-2xl skeleton skeleton-shimmer"></div>
+                                <div class="absolute -bottom-3 right-4 h-6 w-20 rounded-full bg-gray-200 dark:bg-white/10 skeleton skeleton-shimmer"></div>
+                            </div>
+                            <div class="flex-1 flex flex-col">
+                                <div class="mb-4 space-y-2">
+                                    <div class="h-4 w-16 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer"></div>
+                                    <div class="h-6 w-3/4 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer"></div>
+                                </div>
+                                <div class="space-y-3 mb-6 flex-1">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="h-9 bg-gray-100 dark:bg-white/5 rounded-lg skeleton skeleton-shimmer"></div>
+                                        <div class="h-9 bg-gray-100 dark:bg-white/5 rounded-lg skeleton skeleton-shimmer"></div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
+                                    <div class="h-5 w-24 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer"></div>
+                                    <div class="h-8 w-8 rounded-full bg-gray-200 dark:bg-white/10 skeleton skeleton-shimmer"></div>
+                                </div>
+                            </div>
                         </div>
+                        @endfor
                     </div>
-                </a>
-                @endforeach
-            </div>
-            <div class="mt-6 text-center sm:hidden">
-                <a href="{{ route('blogs.index') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 font-bold hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors">
-                    View All Articles
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </a>
+
+                    {!! $gridHtml !!}
+                </div>
             </div>
         </div>
-        @endif
     </div>
 </div>
 @endsection

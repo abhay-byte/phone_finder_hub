@@ -6,7 +6,7 @@
     <!-- Header & Sorting -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 dark:border-white/5 pb-4">
         <h3 class="font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            Comments <span class="text-xs bg-gray-100 dark:bg-white/10 px-2.5 py-0.5 rounded-full text-gray-600 dark:text-gray-400 font-medium" x-text="totalComments">{{ $phone->comments()->count() }}</span>
+            Comments <span class="text-xs bg-gray-100 dark:bg-white/10 px-2.5 py-0.5 rounded-full text-gray-600 dark:text-gray-400 font-medium" x-text="totalComments">{{ $totalComments }}</span>
         </h3>
         
         <div class="flex items-center gap-2">
@@ -73,7 +73,7 @@
             isSubmitting: false,
             newCommentContent: '',
             errorMessage: '',
-            totalComments: {{ $phone->comments()->count() }},
+            totalComments: {{ $totalComments }},
 
             init() {
                 // Initialize with server-rendered content, don't fetch immediately unless sorting
