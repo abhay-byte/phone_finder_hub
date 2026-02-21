@@ -19,11 +19,10 @@
 
         {{-- Logo & Heading --}}
         <div class="text-center mb-8">
-            <a href="{{ route('home') }}" class="inline-flex items-center gap-3 mb-6 transition-transform hover:scale-105 duration-300">
+            <a href="{{ route('home') }}" class="inline-flex items-center mb-6 transition-transform hover:scale-105 duration-300">
                 <div class="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-900 rounded-xl shadow border border-gray-100 dark:border-gray-700">
                     <img src="{{ asset('assets/logo.png') }}" alt="Logo" class="w-8 h-8 object-contain">
                 </div>
-                <span class="text-xl font-bold text-gray-900 dark:text-white">PhoneFinderHub</span>
             </a>
             <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Create account</h1>
         </div>
