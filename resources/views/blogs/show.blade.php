@@ -4,19 +4,22 @@
 @section('description', $blog->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($blog->content), 150))
 
 @section('meta')
+    <meta name="description" content="{{ \Illuminate\Support\Str::limit(strip_tags($blog->excerpt ?? $blog->content), 155) }}">
+
     <!-- Open Graph (WhatsApp, Telegram, Facebook, etc) -->
     <meta property="og:type" content="article">
-    <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="{{ $blog->title }} - Phone Finder Hub">
-    <meta property="og:description" content="{{ $blog->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($blog->content), 150) }}">
+    <meta property="og:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($blog->excerpt ?? $blog->content), 155) }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:site_name" content="Phone Finder Hub">
     <meta property="og:image" content="{{ $blog->featured_image ? url($blog->featured_image) : asset('assets/logo.png') }}">
     <meta property="article:published_time" content="{{ $blog->published_at->toIso8601String() }}">
 
     <!-- Twitter -->
-    <meta name="twitter:card" content="{{ $blog->featured_image ? 'summary_large_image' : 'summary' }}">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="{{ url()->current() }}">
     <meta name="twitter:title" content="{{ $blog->title }} - Phone Finder Hub">
-    <meta name="twitter:description" content="{{ $blog->excerpt ?? \Illuminate\Support\Str::limit(strip_tags($blog->content), 150) }}">
+    <meta name="twitter:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($blog->excerpt ?? $blog->content), 155) }}">
     <meta name="twitter:image" content="{{ $blog->featured_image ? url($blog->featured_image) : asset('assets/logo.png') }}">
 @endsection
 

@@ -19,6 +19,7 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-gray-50/50 dark:bg-white/5 border-b border-gray-100 dark:border-white/10">
+                    <th class="py-4 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Order</th>
                     <th class="py-4 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Category</th>
                     <th class="py-4 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Posts</th>
                     <th class="py-4 px-6 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Created</th>
@@ -28,6 +29,9 @@
             <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
                 @forelse($categories as $category)
                 <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
+                    <td class="py-4 px-6 text-sm font-medium text-gray-600 dark:text-gray-400">
+                        {{ $category->order }}
+                    </td>
                     <td class="py-4 px-6">
                         <div class="font-medium text-gray-900 dark:text-white">{{ $category->name }}</div>
                         <div class="text-xs text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 rounded px-1.5 py-0.5 inline-block mt-1 bg-gray-50 dark:bg-gray-800">

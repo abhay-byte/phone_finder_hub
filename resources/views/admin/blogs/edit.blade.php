@@ -68,21 +68,53 @@
                 </div>
 
                 <!-- Featured Image -->
-                <div class="bg-gray-50 dark:bg-white/5 rounded-2xl p-5 border border-gray-100 dark:border-white/10">
-                    <h3 class="text-sm font-bold text-gray-900 dark:text-white mb-4 uppercase tracking-wider">Featured Cover</h3>
-                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-white/20 border-dashed rounded-xl relative group overflow-hidden bg-white/50 dark:bg-black/20" id="imageArea">
-                        <img id="imagePreview" src="{{ $blog->featured_image ?? '' }}" class="absolute inset-0 w-full h-full object-cover {{ $blog->featured_image ? '' : 'hidden' }}" alt="Preview">
-                        <div class="space-y-1 text-center relative z-10 p-2 {{ $blog->featured_image ? 'bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity' : '' }}" id="imagePrompt">
+                @php
+                    $isUrlImage = $blog->featured_image && !str_starts_with($blog->featured_image, '/storage/');
+                @endphp
+                <div class="bg-gray-50 dark:bg-white/5 rounded-2xl p-5 border border-gray-100 dark:border-white/10" x-data="{ imageType: '{{ $isUrlImage ? 'url' : 'upload' }}' }">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Featured Cover</h3>
+                    </div>
+
+                    <!-- Image Type Toggle -->
+                    <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                        <label class="flex items-center cursor-pointer">
+                            <input type="radio" name="image_type" value="upload" x-model="imageType" class="text-teal-600 focus:ring-teal-500 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Upload Image</span>
+                        </label>
+                        <label class="flex items-center cursor-pointer">
+                            <input type="radio" name="image_type" value="url" x-model="imageType" class="text-teal-600 focus:ring-teal-500 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Image URL</span>
+                        </label>
+                    </div>
+
+                    <!-- Upload Image Area -->
+                    <div x-show="imageType === 'upload'" class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-white/20 border-dashed rounded-xl relative group overflow-hidden bg-white/50 dark:bg-black/20" id="imageArea">
+                        <img id="imagePreviewUpload" src="{{ !$isUrlImage ? $blog->featured_image : '' }}" class="absolute inset-0 w-full h-full object-cover {{ !$isUrlImage && $blog->featured_image ? '' : 'hidden' }}" alt="Preview">
+                        <div class="space-y-1 text-center relative z-10 p-2 {{ !$isUrlImage && $blog->featured_image ? 'bg-white/80 dark:bg-black/50 backdrop-blur-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity' : '' }}" id="imagePromptUpload">
                             <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                             <div class="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
                                 <label for="featured_image" class="relative cursor-pointer bg-transparent rounded-md font-medium text-teal-600 dark:text-teal-400 hover:text-teal-500 focus-within:outline-none">
-                                    <span>{{ $blog->featured_image ? 'Change image' : 'Upload a file' }}</span>
-                                    <input id="featured_image" name="featured_image" type="file" class="sr-only" accept="image/*" onchange="previewImage(this)">
+                                    <span>{{ !$isUrlImage && $blog->featured_image ? 'Change image' : 'Upload a file' }}</span>
+                                    <input id="featured_image" name="featured_image" type="file" class="sr-only" accept="image/*" onchange="previewImageUpload(this)">
                                 </label>
                             </div>
                         </div>
                     </div>
                     @error('featured_image') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+
+                    <!-- Image URL Area -->
+                    <div x-show="imageType === 'url'" class="space-y-4" style="display: none;">
+                        <input type="url" name="featured_image_url" id="featured_image_url" value="{{ old('featured_image_url', $isUrlImage ? $blog->featured_image : '') }}"
+                               class="w-full bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl focus:ring-teal-500 focus:border-teal-500 block p-3 text-sm"
+                               placeholder="https://example.com/image.jpg" oninput="previewImageUrl(this.value)">
+                        
+                        <div class="mt-4 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-white/20 border-dashed rounded-xl relative overflow-hidden bg-white/50 dark:bg-black/20" id="imageUrlArea" style="min-height: 150px;">
+                            <img id="imagePreviewUrl" src="{{ $isUrlImage ? $blog->featured_image : '' }}" class="absolute inset-0 w-full h-full object-cover {{ $isUrlImage && $blog->featured_image ? '' : 'hidden' }}" alt="Link Preview">
+                            <span id="imageUrlPlaceholder" class="text-gray-400 text-sm relative z-10 my-auto {{ $isUrlImage && $blog->featured_image ? 'hidden' : '' }}">Image preview will appear here</span>
+                        </div>
+                        @error('featured_image_url') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
                 </div>
 
                 <!-- Excerpt -->
@@ -142,7 +174,7 @@
         border-bottom-right-radius: 0.75rem;
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         font-size: 0.875rem;
-        min-height: 400px;
+        min-height: 70vh;
         color: #1f2937;
     }
     .dark .CodeMirror {
@@ -247,20 +279,42 @@
     }
     .editor-preview pre code { background-color: transparent; color: inherit; padding: 0; }
 </style>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script>
-    function previewImage(input) {
+    function previewImageUpload(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function(e) {
-                document.getElementById('imagePreview').src = e.target.result;
-                document.getElementById('imagePreview').classList.remove('hidden');
+                document.getElementById('imagePreviewUpload').src = e.target.result;
+                document.getElementById('imagePreviewUpload').classList.remove('hidden');
                 
-                const prompt = document.getElementById('imagePrompt');
+                const prompt = document.getElementById('imagePromptUpload');
                 prompt.classList.add('bg-white/80', 'dark:bg-black/50', 'backdrop-blur-sm', 'opacity-0', 'group-hover:opacity-100', 'transition-opacity');
             }
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    function previewImageUrl(url) {
+        const preview = document.getElementById('imagePreviewUrl');
+        const placeholder = document.getElementById('imageUrlPlaceholder');
+        if (url && url.match(/^https?:\/\/.+$/i)) { // Relaxed regex slightly as images don't always end in extensions online
+            preview.src = url;
+            preview.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+        } else {
+            preview.classList.add('hidden');
+            if (placeholder) placeholder.classList.remove('hidden');
+        }
+    }
+
+    // Initialize preview if URL is already present on load
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlInput = document.getElementById('featured_image_url');
+        if (urlInput && urlInput.value) {
+            previewImageUrl(urlInput.value);
+        }
+    });
 
     // Wrap initialization in a function so it can be called repeatedly via HTMX or directly
     (function initEasyMDE() {

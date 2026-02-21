@@ -14,7 +14,7 @@ class AdminForumCategoryController extends Controller
      */
     public function index()
     {
-        $categories = ForumCategory::withCount('posts')->orderBy('created_at', 'desc')->paginate(15);
+        $categories = ForumCategory::withCount('posts')->orderBy('order', 'asc')->paginate(15);
         return view('admin.forums.categories.index', compact('categories'));
     }
 
@@ -34,6 +34,8 @@ class AdminForumCategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'order' => 'nullable|integer',
+            'rules_banner' => 'nullable|string',
         ]);
 
         $slug = Str::slug($request->name);
@@ -50,6 +52,8 @@ class AdminForumCategoryController extends Controller
             'name' => $request->name,
             'slug' => $slug,
             'description' => $request->description,
+            'order' => $request->order ?? 0,
+            'rules_banner' => $request->rules_banner,
         ]);
 
         return redirect()->route('admin.forum.categories.index')->with('success', 'Forum Category created successfully.');
@@ -71,6 +75,8 @@ class AdminForumCategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'order' => 'nullable|integer',
+            'rules_banner' => 'nullable|string',
         ]);
 
         $slug = Str::slug($request->name);
@@ -89,6 +95,8 @@ class AdminForumCategoryController extends Controller
             'name' => $request->name,
             'slug' => $slug,
             'description' => $request->description,
+            'order' => $request->order ?? 0,
+            'rules_banner' => $request->rules_banner,
         ]);
 
         return redirect()->route('admin.forum.categories.index')->with('success', 'Forum Category updated successfully.');

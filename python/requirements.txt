@@ -13,7 +13,7 @@ playwright-stealth>=1.0.6
 
 # Image processing & background removal
 Pillow>=10.0.0
-rembg>=2.0.50
+rembg[cpu]>=2.0.50
 
 # Crypto (Flipkart link decryption)
 cryptography>=41.0.0

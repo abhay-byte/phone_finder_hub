@@ -21,6 +21,8 @@ Route::get('/forum/p/{post:slug}', [\App\Http\Controllers\ForumController::class
 Route::get('/', [PhoneController::class, 'index'])->name('home');
 Route::get('/phones/search', [PhoneController::class, 'search'])->name('phones.search');
 Route::get('/phones/grid', [PhoneController::class, 'grid'])->name('phones.grid');
+Route::get('/find', [\App\Http\Controllers\FindController::class, 'index'])->name('find.index');
+Route::post('/find/chat', [\App\Http\Controllers\FindController::class, 'chat'])->name('find.chat');
 Route::get('/rankings', [PhoneController::class, 'rankings'])->name('phones.rankings');
 Route::get('/methodology/ueps', [PhoneController::class, 'uepsMethodology'])->name('methodology.ueps');
 Route::get('/methodology/cms', [PhoneController::class, 'cmsMethodology'])->name('methodology.cms');
@@ -63,6 +65,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/forum/c/{category:slug}/create', [\App\Http\Controllers\ForumController::class, 'create'])->name('forum.post.create');
     Route::post('/forum/c/{category:slug}/create', [\App\Http\Controllers\ForumController::class, 'store'])->name('forum.post.store');
     Route::post('/forum/p/{post:slug}/reply', [\App\Http\Controllers\ForumController::class, 'reply'])->name('forum.post.reply');
+
+    // Chat History Management
+    Route::get('/find/chat/{chat}', [\App\Http\Controllers\FindController::class, 'show'])->name('find.chat.show');
+    Route::delete('/find/chat/{chat}', [\App\Http\Controllers\FindController::class, 'destroy'])->name('find.chat.destroy');
 });
 
 // Comments (Public)
