@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use App\Services\SEO\SeoManager;
+use App\Services\SEO\SEOData;
 
 class PhoneController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, SeoManager $seo)
     {
         $sort = $request->input('sort', 'expert_score'); // Default to Expert Score
 
@@ -40,6 +42,12 @@ class PhoneController extends Controller
         $latestBlogs = Cache::remember('home_latest_blogs_v2', 300, function () {
             return \App\Models\Blog::with('author')->where('is_published', true)->latest('published_at')->take(3)->get();
         });
+
+        $seo->set(new SEOData(
+            title: 'PhoneFinderHub - Smartphone Data & Benchmarks',
+            description: 'Compare the latest smartphones, view detailed specifications, benchmarks, and performance metrics.',
+            url: route('home'),
+        ));
 
         return view('phones.index', compact('gridHtml', 'sort', 'latestBlogs'));
     }
@@ -112,7 +120,7 @@ class PhoneController extends Controller
         return response()->json($results);
     }
 
-    public function rankings(Request $request)
+    public function rankings(Request $request, SeoManager $seo)
     {
         $tab = $request->input('tab', 'overall'); // Default tab to Overall
         $page = $request->input('page', 1);
@@ -381,6 +389,21 @@ class PhoneController extends Controller
             ))->render();
         });
 
+        $seoTitle = match($tab) {
+            'performance' => 'Top Performance Phones | PhoneFinderHub Rankings',
+            'value' => 'Best Value Phones | PhoneFinderHub Rankings',
+            'gaming' => 'Best Gaming Phones | PhoneFinderHub Rankings',
+            'cms' => 'Best Camera Phones | PhoneFinderHub Rankings',
+            'endurance' => 'Best Battery Life Phones | PhoneFinderHub Rankings',
+            default => 'Smartphone Rankings | PhoneFinderHub',
+        };
+
+        $seo->set(new SEOData(
+            title: $seoTitle,
+            description: 'Browse our comprehensive smartphone rankings based on precise benchmarks and expert scores.',
+            url: url()->current() . ($request->getQueryString() ? '?' . $request->getQueryString() : ''),
+        ));
+
         return view('phones.rankings', compact(
             'tableHtml', 'sort', 'direction', 'tab',
             'minPrice', 'maxPrice', 'maxDatabasePrice',
@@ -399,7 +422,7 @@ class PhoneController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show($id, SeoManager $seo)
     {
         // Cache the eloquent model and relations instead of the full HTML view
         // to prevent session/auth-dependent UI (like comments) from being cached statefully.
@@ -425,6 +448,8 @@ class PhoneController extends Controller
         $totalComments = Cache::remember('phone_comments_count_v2_' . $phone->id, 60, function() use ($phone) {
             return $phone->comments()->count();
         });
+
+        $seo->set($phone->getSEOData());
 
         return view('phones.show', compact('phone', 'comments', 'phoneDetailsHtml', 'totalComments'));
     }

@@ -54,19 +54,7 @@
     @hasSection('meta')
         @yield('meta')
     @else
-        <!-- Open Graph / Facebook -->
-        <meta property="og:type" content="website">
-        <meta property="og:url" content="{{ url()->current() }}">
-        <meta property="og:title" content="@yield('title', config('app.name', 'PhoneFinderHub'))">
-        <meta property="og:description" content="@yield('description', 'Compare latest smartphones with detailed specifications, benchmarks, and features.')">
-        <meta property="og:image" content="{{ asset('assets/logo.png') }}">
-
-        <!-- Twitter -->
-        <meta property="twitter:card" content="summary_large_image">
-        <meta property="twitter:url" content="{{ url()->current() }}">
-        <meta property="twitter:title" content="@yield('title', config('app.name', 'PhoneFinderHub'))">
-        <meta property="twitter:description" content="@yield('description', 'Compare latest smartphones with detailed specifications, benchmarks, and features.')">
-        <meta property="twitter:image" content="{{ asset('assets/logo.png') }}">
+        <x-seo-tags />
     @endif
 
     <!-- Fonts -->

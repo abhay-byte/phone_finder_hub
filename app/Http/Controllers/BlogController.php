@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Blog;
 use Illuminate\Support\Facades\Cache;
+use App\Services\SEO\SeoManager;
+use App\Services\SEO\SEOData;
 
 class BlogController extends Controller
 {
     /**
      * Display a listing of all published blogs.
      */
-    public function index()
+    public function index(SeoManager $seo)
     {
         $page = request('page', 1);
         $latestUpdate = Cache::remember('blogs_latest_update', 60, function() {
@@ -31,13 +33,19 @@ class BlogController extends Controller
             return view('blogs.partials.index_blogs', compact('blogs'))->render();
         });
 
+        $seo->set(new SEOData(
+            title: 'Guides & Reviews | PhoneFinderHub Blog',
+            description: 'Read the latest guides, in-depth reviews, and industry news on smartphones.',
+            url: route('blogs.index'),
+        ));
+
         return view('blogs.index', compact('blogs', 'blogsHtml'));
     }
 
     /**
      * Display the specified blog post.
      */
-    public function show($slug)
+    public function show($slug, SeoManager $seo)
     {
         $blog = Cache::remember('blog_model_' . $slug, 3600, function() use ($slug) {
             return Blog::with('author')
@@ -53,6 +61,8 @@ class BlogController extends Controller
                 ->take(5)
                 ->get();
         });
+
+        $seo->set($blog->getSEOData());
 
         return view('blogs.show', compact('blog', 'latestBlogs'));
     }

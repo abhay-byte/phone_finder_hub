@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Traits\HasSEO;
+use App\Services\SEO\SEOData;
 
 use App\Services\FlagshipScoringService;
 
 class Phone extends Model
 {
+    use HasSEO;
+
     protected $fillable = [
         'name',
         'brand',
@@ -759,5 +763,31 @@ class Phone extends Model
             'details' => $breakdown,
             'gpm' => round($gpm, 1)
         ];
+    }
+    public function getSEOData(): SEOData
+    {
+        // Ensure image URL is absolute for SEO metadata
+        $imageUrl = $this->image_url ? 
+            (str_starts_with($this->image_url, 'http') ? $this->image_url : url($this->image_url)) 
+            : asset('assets/logo.png');
+
+        return new SEOData(
+            title: "{$this->name} Specs, Price & Reviews | PhoneFinderHub",
+            description: "Detailed specifications, features, and user reviews for the {$this->brand} {$this->name}. Compare prices and find out if it's the right phone for you.",
+            image: $imageUrl,
+            url: route('phones.show', $this->slug ?? $this->id),
+            type: 'product',
+            schema: [
+                '@context' => 'https://schema.org',
+                '@type' => 'Product',
+                'name' => $this->name,
+                'image' => $imageUrl,
+                'description' => "Specifications and features for {$this->name}.",
+                'brand' => [
+                    '@type' => 'Brand',
+                    'name' => $this->brand ?? 'Unknown'
+                ]
+            ]
+        );
     }
 }

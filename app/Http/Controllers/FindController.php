@@ -7,15 +7,24 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use App\Models\Chat;
 use App\Models\ChatMessage;
+use App\Services\SEO\SeoManager;
+use App\Services\SEO\SEOData;
 
 class FindController extends Controller
 {
-    public function index()
+    public function index(SeoManager $seo)
     {
         $chats = [];
         if (auth()->check()) {
             $chats = Chat::where('user_id', auth()->id())->orderBy('updated_at', 'desc')->get();
         }
+
+        $seo->set(new SEOData(
+            title: 'AI Phone Finder | PhoneFinderHub',
+            description: 'Find your perfect smartphone using our AI assistant. Get personalized recommendations based on our expert database.',
+            url: route('find.index'),
+        ));
+
         return view('find.index', compact('chats'));
     }
 

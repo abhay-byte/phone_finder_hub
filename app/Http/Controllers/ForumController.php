@@ -8,20 +8,28 @@ use App\Models\ForumPost;
 use App\Models\ForumComment;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
+use App\Services\SEO\SeoManager;
+use App\Services\SEO\SEOData;
 
 class ForumController extends Controller
 {
-    public function index()
+    public function index(SeoManager $seo)
     {
         $categoriesHtml = Cache::remember('forum_index_categories_html_v2', 300, function() {
             $categories = ForumCategory::withCount('posts')->orderBy('order', 'asc')->get();
             return view('forum.partials.index_categories', compact('categories'))->render();
         });
         
+        $seo->set(new SEOData(
+            title: 'Phone Finder Forums | Community & Discussions',
+            description: 'Join the community discussions about the latest smartphones, tech news, reviews, and troubleshooting.',
+            url: route('forum.index'),
+        ));
+
         return view('forum.index', compact('categoriesHtml'));
     }
 
-    public function category(Request $request, $slug)
+    public function category(Request $request, $slug, SeoManager $seo)
     {
         $category = Cache::remember('forum_category_' . $slug, 3600, function() use ($slug) {
             return ForumCategory::where('slug', $slug)->firstOrFail();
@@ -72,10 +80,16 @@ class ForumController extends Controller
             return view('forum.partials.category_posts', compact('posts'))->render();
         });
         
+        $seo->set(new SEOData(
+            title: "{$category->name} Forum | PhoneFinderHub",
+            description: $category->description ?? "Discussions related to {$category->name}.",
+            url: route('forum.category', $category->slug),
+        ));
+
         return view('forum.category', compact('category', 'posts', 'sort', 'postsHtml'));
     }
 
-    public function show($slug)
+    public function show($slug, SeoManager $seo)
     {
         $post = Cache::remember('forum_post_v3_' . $slug, 60, function() use ($slug) {
             return ForumPost::where('slug', $slug)
@@ -86,6 +100,13 @@ class ForumController extends Controller
         // Synchronous DB writes take 4s on external Postgres. Avoiding to save 4s page load.
         // $post->increment('views');
         
+        $seo->set(new SEOData(
+            title: "{$post->title} | PhoneFinderHub Forums",
+            description: Str::limit(strip_tags($post->content), 150),
+            url: route('forum.post.show', $post->slug),
+            type: 'article',
+        ));
+
         return view('forum.show', compact('post'));
     }
 
