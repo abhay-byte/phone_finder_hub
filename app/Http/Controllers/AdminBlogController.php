@@ -51,6 +51,7 @@ class AdminBlogController extends Controller
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048', // max 2MB
+            'featured_image_url' => 'nullable|url|max:1024',
             'is_published' => 'nullable|boolean',
         ]);
 
@@ -77,6 +78,8 @@ class AdminBlogController extends Controller
         if ($request->hasFile('featured_image')) {
             $path = $request->file('featured_image')->store('blogs', 'public');
             $blog->featured_image = '/storage/' . $path;
+        } elseif (!empty($validated['featured_image_url'])) {
+            $blog->featured_image = $validated['featured_image_url'];
         }
 
         $blog->save();
@@ -113,6 +116,7 @@ class AdminBlogController extends Controller
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048',
+            'featured_image_url' => 'nullable|url|max:1024',
             'is_published' => 'nullable|boolean',
         ]);
 
@@ -143,14 +147,20 @@ class AdminBlogController extends Controller
         }
 
         if ($request->hasFile('featured_image')) {
-            // Delete old image
-            if ($blog->featured_image) {
-                // ... assuming local storage ...
+            // Delete old image if it's a local file
+            if ($blog->featured_image && str_starts_with($blog->featured_image, '/storage/')) {
                 $relativePath = str_replace('/storage/', '', $blog->featured_image);
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($relativePath);
             }
             $path = $request->file('featured_image')->store('blogs', 'public');
             $blog->featured_image = '/storage/' . $path; // Changed to match store method's output format
+        } elseif (!empty($validated['featured_image_url'])) {
+            // Delete old image if it's a local file
+            if ($blog->featured_image && str_starts_with($blog->featured_image, '/storage/')) {
+                $relativePath = str_replace('/storage/', '', $blog->featured_image);
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($relativePath);
+            }
+            $blog->featured_image = $validated['featured_image_url'];
         }
 
         $blog->save();

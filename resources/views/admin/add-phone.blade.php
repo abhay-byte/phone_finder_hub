@@ -118,32 +118,49 @@ PhoneFinderHub – Add Phone
         <p class="text-xs text-slate-500 mt-1 mb-5">Leave blank to use auto-fetched scores. Filled values <strong class="text-amber-600 dark:text-amber-400 font-semibold">override</strong> scraped benchmarks.</p>
 
         @php
-        $benchFields = [
-            ['antutu_score',      'AnTuTu v11',        'e.g. 2200000', 10000, null],
-            ['dmark_score',       '3DMark WLE',        'e.g. 4500',    100,   'Wildlife Extreme'],
-            ['dmark_stability',   '3DMark Stability',  'e.g. 87',      1,     '0–100 %'],
-            ['geekbench_single',  'GB6 Single',        'e.g. 3200',    50,    'Geekbench 6'],
-            ['geekbench_multi',   'GB6 Multi',         'e.g. 9800',    100,   'Geekbench 6'],
-            ['dxomark_score',     'DXOMark',           'e.g. 157',     1,     null],
-            ['phonearena_score',  'PhoneArena Cam',    'e.g. 122',     1,     null],
+        $benchmarkCategories = [
+            'CPU & General Performance' => [
+                ['antutu_score',      'AnTuTu v11',        'e.g. 2200000', 10000, null],
+                ['geekbench_single',  'GB6 Single',        'e.g. 3200',    50,    'Geekbench 6'],
+                ['geekbench_multi',   'GB6 Multi',         'e.g. 9800',    100,   'Geekbench 6'],
+            ],
+            'GPU & Gaming' => [
+                ['dmark_score',       '3DMark WLE',        'e.g. 4500',    100,   'Wildlife Extreme'],
+                ['dmark_stability',   '3DMark Stability',  'e.g. 87',      1,     '0–100 %'],
+            ],
+            'Camera' => [
+                ['dxomark_score',     'DXOMark',           'e.g. 157',     1,     null],
+                ['phonearena_score',  'PhoneArena Cam',    'e.g. 122',     1,     null],
+            ]
         ];
         @endphp
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            @foreach($benchFields as [$id, $lbl, $ph, $btnStep, $hint])
+
+        <div class="space-y-6 md:space-y-8">
+            @foreach($benchmarkCategories as $categoryName => $benchFields)
             <div>
-                <label for="{{ $id }}" class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">{{ $lbl }}</label>
-                <div class="flex items-center bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-amber-500/40 focus-within:border-amber-500/40 transition-all">
-                    <input type="number" name="{{ $id }}" id="{{ $id }}" value="{{ old($id) }}" min="0" step="1"
-                           placeholder="{{ $ph }}"
-                           class="flex-1 bg-transparent px-3 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-0">
-                    <div class="flex flex-col border-l border-slate-200 dark:border-white/10 flex-shrink-0">
-                        <button type="button" onclick="stepInput('{{ $id }}', {{ $btnStep }})" class="px-2 py-1 text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-white hover:bg-amber-100 dark:hover:bg-amber-500/10 transition-colors text-[10px] leading-none border-b border-slate-200 dark:border-white/10">▲</button>
-                        <button type="button" onclick="stepInput('{{ $id }}', -{{ $btnStep }})" class="px-2 py-1 text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-white hover:bg-amber-100 dark:hover:bg-amber-500/10 transition-colors text-[10px] leading-none">▼</button>
+                <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-widest mb-4 pb-2 border-b border-slate-200 dark:border-white/10 flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500/80"></span>
+                    {{ $categoryName }}
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    @foreach($benchFields as [$id, $lbl, $ph, $btnStep, $hint])
+                    <div>
+                        <label for="{{ $id }}" class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">{{ $lbl }}</label>
+                        <div class="flex items-center bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-amber-500/40 focus-within:border-amber-500/40 transition-all">
+                            <input type="number" name="{{ $id }}" id="{{ $id }}" value="{{ old($id) }}" min="0" step="1"
+                                   placeholder="{{ $ph }}"
+                                   class="flex-1 bg-transparent px-3 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none w-0">
+                            <div class="flex flex-col border-l border-slate-200 dark:border-white/10 flex-shrink-0">
+                                <button type="button" onclick="stepInput('{{ $id }}', {{ $btnStep }})" class="px-2 py-1 text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-white hover:bg-amber-100 dark:hover:bg-amber-500/10 transition-colors text-[10px] leading-none border-b border-slate-200 dark:border-white/10">▲</button>
+                                <button type="button" onclick="stepInput('{{ $id }}', -{{ $btnStep }})" class="px-2 py-1 text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-white hover:bg-amber-100 dark:hover:bg-amber-500/10 transition-colors text-[10px] leading-none">▼</button>
+                            </div>
+                        </div>
+                        @if($hint)
+                        <p class="text-[11px] text-slate-500 dark:text-slate-500 mt-1.5">{{ $hint }}</p>
+                        @endif
                     </div>
+                    @endforeach
                 </div>
-                @if($hint)
-                <p class="text-xs text-slate-500 dark:text-slate-600 mt-1">{{ $hint }}</p>
-                @endif
             </div>
             @endforeach
         </div>

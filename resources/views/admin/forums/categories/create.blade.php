@@ -38,6 +38,28 @@
                 @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Order -->
+                <div>
+                    <label for="order" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Display Order</label>
+                    <input type="number" name="order" id="order" value="{{ old('order', 0) }}"
+                           class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl focus:ring-teal-500 focus:border-teal-500 block p-3 shadow-sm"
+                           placeholder="0">
+                    <p class="text-xs text-gray-500 mt-2">Lower numbers appear first. Default is 0.</p>
+                    @error('order') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+            </div>
+
+            <!-- Rules Banner -->
+            <div>
+                <label for="rules_banner" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rules Banner (Optional)</label>
+                <textarea name="rules_banner" id="rules_banner" rows="4" 
+                          class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl focus:ring-teal-500 focus:border-teal-500 block p-3 shadow-sm"
+                          placeholder="Content here will be displayed as a banner at the top of the category...">{{ old('rules_banner') }}</textarea>
+                <p class="text-xs text-gray-500 mt-2">Useful for category-specific rules or announcements. HTML is supported.</p>
+                @error('rules_banner') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
             <hr class="border-gray-200 dark:border-white/10">
 
             <div class="flex justify-end gap-3">

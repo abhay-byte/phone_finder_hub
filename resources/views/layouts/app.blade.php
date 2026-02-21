@@ -132,6 +132,10 @@
 
                         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex" id="desktop-menu">
                             @if(!request()->is('admin*'))
+                                <a href="{{ route('find.index') }}" 
+                                   class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-bold leading-5 transition duration-150 ease-in-out {{ request()->routeIs('find.*') ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-indigo-500 hover:text-indigo-700 hover:border-indigo-300 dark:text-indigo-400 dark:hover:text-indigo-300' }}">
+                                    Find
+                                </a>
                                 <a href="{{ route('home') }}" 
                                    class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('home') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
                                     Home
@@ -144,10 +148,7 @@
                                    class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('phones.compare') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
                                     Compare
                                 </a>
-                                <a href="{{ route('docs.index') }}" 
-                                   class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
-                                    Docs
-                                </a>
+
                                 <a href="{{ route('forum.index') }}" 
                                    class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('forum.*') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
                                     Forums
@@ -155,6 +156,10 @@
                                 <a href="{{ route('blogs.index') }}" 
                                    class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('blogs.*') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
                                     Blogs
+                                </a>
+                                <a href="{{ route('docs.index') }}" 
+                                   class="nav-link inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'border-teal-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300' }}">
+                                    Docs
                                 </a>
                             @endif
                         </div>
@@ -275,6 +280,9 @@
             <!-- Mobile Menu -->
             <div x-show="mobileMenuOpen" class="sm:hidden bg-white/95 dark:bg-black/95 backdrop-blur-xl border-t border-gray-100 dark:border-white/5" x-transition.origin.top x-cloak style="display: none;">
                 <div class="px-2 pt-2 pb-3 space-y-1" id="mobile-menu">
+                    <a href="{{ route('find.index') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-bold transition duration-150 ease-in-out {{ request()->routeIs('find.*') ? 'bg-indigo-50 text-indigo-700 dark:bg-gray-800 dark:text-indigo-400' : 'text-indigo-600 hover:text-indigo-900 hover:bg-gray-50 dark:text-indigo-400 dark:hover:text-indigo-300 dark:hover:bg-gray-800' }}">
+                        Find
+                    </a>
                     <a href="{{ route('home') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('home') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
                         Home
                     </a>
@@ -284,14 +292,15 @@
                     <a href="{{ route('phones.compare') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('phones.compare') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
                         Compare
                     </a>
-                    <a href="{{ route('docs.index') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
-                        Docs
-                    </a>
+
                     <a href="{{ route('forum.index') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('forum.*') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
                         Forums
                     </a>
                     <a href="{{ route('blogs.index') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('blogs.*') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
                         Blogs
+                    </a>
+                    <a href="{{ route('docs.index') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                        Docs
                     </a>
                 </div>
             </div>
@@ -313,6 +322,7 @@
             </main>
 
             <!-- Footer -->
+            @if(!View::hasSection('hide_footer'))
             <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <p class="text-center text-sm text-gray-500 dark:text-gray-400">
@@ -320,6 +330,7 @@
                     </p>
                 </div>
             </footer>
+            @endif
         </div>
     </div>
 
