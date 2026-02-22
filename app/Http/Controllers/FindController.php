@@ -12,23 +12,74 @@ use App\Services\SEO\SEOData;
 
 class FindController extends Controller
 {
+    // ─── Helpers ──────────────────────────────────────────────────────────────
+
+    /** Extract INR budget from current user message (e.g. "under 45k" → 45000) */
+    protected function extractBudget(string $message): ?int
+    {
+        $text = strtolower(str_replace(',', '', $message));
+
+        $patterns = [
+            '/(?:under|below|within|max|upto|up to|less than)\s*[₹rs.]?\s*(\d+)\s*k\b/u',
+            '/(?:under|below|within|max|upto|up to|less than)\s*[₹rs.]?\s*(\d{4,6})/u',
+            '/[₹rs.]?\s*(\d+)\s*k\s*(?:budget|range|price)/u',
+            '/budget\s*(?:of\s*)?[₹rs.]?\s*(\d+)\s*k\b/u',
+            '/budget\s*(?:of\s*)?[₹rs.]?\s*(\d{4,6})/u',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $text, $m)) {
+                $val = (int) $m[1];
+                return $val < 1000 ? $val * 1000 : $val;
+            }
+        }
+        return null;
+    }
+
+    /** Detect what dimension the user cares about most */
+    protected function detectPriority(string $message): string
+    {
+        $msg = strtolower($message);
+        if (preg_match('/\b(camera|photo|photography|selfie|portrait|zoom|dxo)\b/', $msg)) return 'camera';
+        if (preg_match('/\b(gaming|game|gpu|fps|graphic|3dmark|geekbench)\b/', $msg))     return 'gaming';
+        if (preg_match('/\b(battery|endurance|backup|life|mah)\b/', $msg))                return 'battery';
+        if (preg_match('/\b(cheap|value|bang|affordable)\b/', $msg))                      return 'value';
+        if (preg_match('/\b(experience|smooth|ui|daily)\b/', $msg))                       return 'experience';
+        return 'overall';
+    }
+
+    /** Sort-column map for each priority */
+    protected function priorityColumn(string $priority): string
+    {
+        return match ($priority) {
+            'camera'     => 'cms_score',
+            'gaming'     => 'gpx_score',
+            'battery'    => 'endurance_score',
+            'value'      => 'value_score',
+            'experience' => 'ueps_score',
+            default      => 'overall_score',
+        };
+    }
+
+    // ─── Pages ────────────────────────────────────────────────────────────────
+
     public function index(SeoManager $seo)
     {
-        $chats = [];
-        if (auth()->check()) {
-            $chats = Chat::where('user_id', auth()->id())->orderBy('updated_at', 'desc')->get();
-        }
+        $chats = auth()->check()
+            ? Chat::where('user_id', auth()->id())->orderBy('updated_at', 'desc')->get()
+            : [];
 
         $seo->set(new SEOData(
             title: 'AI Phone Finder | PhoneFinderHub',
-            description: 'Find your perfect smartphone using our AI assistant. Get personalized recommendations based on our expert database.',
+            description: 'Find your perfect smartphone using our AI assistant.',
             url: route('find.index'),
         ));
 
         $allPhoneNames = \App\Models\Phone::pluck('name')->values()->toArray();
-
         return view('find.index', compact('chats', 'allPhoneNames'));
     }
+
+    // ─── Chat ─────────────────────────────────────────────────────────────────
 
     public function chat(Request $request)
     {
@@ -39,219 +90,136 @@ class FindController extends Controller
         ]);
 
         $userMessage = $request->message;
-        $chatId = $request->chat_id;
-        $history = $request->history ?? [];
+        $chatId      = $request->chat_id;
+        $history     = $request->history ?? [];
 
-        $apiKey = config('services.groq.api_key');
+        $apiKey = config('services.nvidia.api_key');
         if (!$apiKey) {
-            return response()->json(['error' => 'Groq API Key is missing. Please configure GROQ_API_KEY in .env'], 500);
+            return response()->json(['error' => 'NVIDIA API key not configured.'], 500);
         }
 
         try {
-            // STEP 1: Extract search filters from the FULL conversation context
-            // Build a conversation summary for the extractor so it understands ongoing context
-            $conversationSummary = "";
-            $recentHistory = array_slice($history, -10); // last 5 exchanges
-            foreach ($recentHistory as $msg) {
-                if (isset($msg['role']) && isset($msg['content'])) {
-                    $role = $msg['role'] === 'user' ? 'User' : 'AI';
-                    $conversationSummary .= "{$role}: " . substr($msg['content'], 0, 300) . "\n";
-                }
-            }
-            $conversationSummary .= "User: {$userMessage}\n";
+            // 1. Detect intent from CURRENT message only
+            $budget   = $this->extractBudget($userMessage);
+            $priority = $this->detectPriority($userMessage);
+            $sortCol  = $this->priorityColumn($priority);
 
-            $extractorInstruction = "Given this phone-finding conversation, extract search filters. Output ONLY a JSON object with: " .
-                "'brand' (string|null - ONLY if user explicitly mentions a brand name like Samsung, OnePlus, etc.), " .
-                "'min_price' (int|null), 'max_price' (int|null), " .
-                "'priority' (string: 'gaming'|'camera'|'battery'|'value'|'overall', default 'overall'), " .
-                "'phone_name' (string|null - exact phone name if user is asking about a specific phone already discussed). " .
-                "IMPORTANT: Do NOT set brand unless user explicitly says a brand name. Look at the ENTIRE conversation to determine budget and preferences.";
+            // 2. Query top 15 phones sorted by priority, filtered by budget
+            $query = \App\Models\Phone::with(['platform', 'battery', 'benchmarks', 'body', 'connectivity'])
+                ->orderBy($sortCol, 'desc');
 
-            $extractionResponse = Http::timeout(15)->withHeaders([
-                'Authorization' => 'Bearer ' . $apiKey,
-                'Content-Type' => 'application/json',
-            ])->post("https://api.groq.com/openai/v1/chat/completions", [
-                'model' => 'llama-3.1-8b-instant',
-                'messages' => [
-                    ['role' => 'system', 'content' => $extractorInstruction],
-                    ['role' => 'user', 'content' => $conversationSummary]
-                ],
-                'temperature' => 0.05,
-                'max_completion_tokens' => 150,
-                'response_format' => ['type' => 'json_object']
-            ]);
-
-            $searchParams = ['brand' => null, 'min_price' => null, 'max_price' => null, 'priority' => 'overall', 'phone_name' => null];
-            if ($extractionResponse->successful() && isset($extractionResponse->json()['choices'][0]['message']['content'])) {
-                $parsed = json_decode($extractionResponse->json()['choices'][0]['message']['content'], true);
-                if (is_array($parsed)) {
-                    $searchParams = array_merge($searchParams, $parsed);
-                }
-            } else {
-                \Log::warning("FindController: Extraction failed (status " . $extractionResponse->status() . "), using defaults");
-            }
-            \Log::info("FindController: Extracted params", $searchParams);
-
-            // STEP 2: Query filtered phones from DB
-            $query = \App\Models\Phone::with(['platform', 'battery', 'benchmarks'])
-                ->orderBy('overall_score', 'desc');
-
-            if (!empty($searchParams['brand'])) {
-                $query->where('brand', 'like', '%' . $searchParams['brand'] . '%');
-            }
-            if (!empty($searchParams['min_price'])) {
-                $query->where('price', '>=', $searchParams['min_price']);
-            }
-            if (!empty($searchParams['max_price'])) {
-                $query->where('price', '<=', $searchParams['max_price']);
+            if ($budget) {
+                $query->where('price', '<=', $budget * 1.05); // 5% overshoot tolerance
             }
 
-            // Order by priority
-            $priority = $searchParams['priority'] ?? 'overall';
-            if ($priority === 'gaming') {
-                $query->reorder('gpx_score', 'desc');
-            } elseif ($priority === 'camera') {
-                $query->reorder('cms_score', 'desc');
-            } elseif ($priority === 'battery') {
-                // Join with spec_batteries and order by capacity extracted from battery_type
-                $query->join('spec_batteries', 'phones.id', '=', 'spec_batteries.phone_id')
-                      ->select('phones.*')
-                      ->orderByRaw("CAST(SUBSTRING(spec_batteries.battery_type FROM '([0-9]+)') AS INTEGER) DESC NULLS LAST");
-            } elseif ($priority === 'value') {
-                $query->reorder('value_score', 'desc');
-            }
+            $phones = $query->limit(15)->get();
 
-            // Get top 8 filtered matches for better variety
-            $filteredPhones = $query->limit(8)->get();
-
-            // If user is asking about a specific phone by name, make sure it's included
-            if (!empty($searchParams['phone_name'])) {
-                $specificPhone = \App\Models\Phone::with(['platform', 'battery', 'benchmarks'])
-                    ->where('name', 'like', '%' . $searchParams['phone_name'] . '%')
-                    ->first();
-                if ($specificPhone && !$filteredPhones->contains('id', $specificPhone->id)) {
-                    $filteredPhones->prepend($specificPhone);
-                }
-            }
-
-            // STEP 3: Build compact context from filtered phones
+            // 3. Build phone lines and card strings
             $phoneLines = [];
-            $cardLines = [];
-            foreach ($filteredPhones as $rank => $phone) {
+            $cardLines  = [];
+
+            foreach ($phones as $i => $phone) {
                 $imageUrl = trim($phone->image_url ?? '');
                 if ($imageUrl && !str_starts_with($imageUrl, 'http') && !str_starts_with($imageUrl, '/')) {
                     $imageUrl = '/storage/' . ltrim($imageUrl, '/');
                 }
 
-                $chipset = trim($phone->platform->chipset ?? '?');
-                $batteryType = trim($phone->battery->battery_type ?? '?');
-                $endurance = $phone->calculateEnduranceScore();
+                $chipset  = trim($phone->platform->chipset ?? '?');
+                $battery  = trim($phone->battery->battery_type ?? '?');
+                $charging = trim($phone->battery->charging_wired ?? '');
+                $ram      = trim($phone->platform->ram ?? '');
+                $display  = trim($phone->body->display_size ?? '');
+                $nfc      = trim($phone->connectivity->nfc ?? '');
+                $jack     = trim($phone->connectivity->jack_3_5mm ?? '');
 
-                $phoneLines[] = ($rank + 1) . ". {$phone->name} | ₹" . number_format($phone->price ?? 0) .
-                    " | OS:{$phone->overall_score} ES:{$phone->expert_score} VS:{$phone->value_score}" .
-                    " | UEPS:{$phone->ueps_score} CMS:{$phone->cms_score} GPX:{$phone->gpx_score} END:{$endurance}" .
-                    " | {$chipset} | {$batteryType}";
+                // Compact spec summary
+                $specs = $chipset;
+                if ($ram)      $specs .= " | {$ram} RAM";
+                if ($display)  $specs .= " | {$display}";
+                $specs .= " | {$battery}";
+                if ($charging) $specs .= " {$charging}";
+                if ($nfc && stripos($nfc, 'yes') !== false) $specs .= " | NFC";
+                if ($jack && stripos($jack, 'no') === false) $specs .= " | 3.5mm";
 
-                $cardLines[] = "[CARD|" . trim($phone->name) . "|₹" . number_format($phone->price ?? 0, 0, '.', ',') .
-                    "|" . $imageUrl . "|/phones/" . $phone->id .
-                    "|" . $chipset . "|" . $batteryType .
-                    "|" . trim($phone->amazon_url ?? '') . "|" . trim($phone->flipkart_url ?? '') . "]";
+                $endurance = $phone->endurance_score ?? 0;
+
+                $phoneLines[] = ($i + 1) . ". {$phone->name} | ₹" . number_format($phone->price ?? 0)
+                    . " | Overall:{$phone->overall_score} Expert:{$phone->expert_score} Value:{$phone->value_score}"
+                    . " | UEPS:{$phone->ueps_score} CMS:{$phone->cms_score} GPX:{$phone->gpx_score} END:{$endurance}"
+                    . "\n   SPECS: {$specs}";
+
+                $cardLines[] = "[CARD|{$phone->name}|₹" . number_format($phone->price ?? 0, 0, '.', ',')
+                    . "|{$imageUrl}|/phones/{$phone->id}"
+                    . "|{$chipset}|{$battery}"
+                    . "|" . trim($phone->amazon_url  ?? '')
+                    . "|" . trim($phone->flipkart_url ?? '') . "]";
             }
 
-            $phoneDatabase = implode("\n", $phoneLines);
-            $cardLookup = implode("\n", $cardLines);
+            // 4. Build top-5 ranklists (budget-aware)
+            $bc = $budget ? "WHERE price <= " . intval($budget * 1.05) : "";
+            $fmt = fn($rows) => implode(', ', array_column($rows, 'name'));
+            $ranklist =
+                "Best Camera (CMS): "   . $fmt(DB::select("SELECT name FROM phones {$bc} ORDER BY cms_score       DESC LIMIT 5")) . "\n" .
+                "Best Gaming (GPX): "   . $fmt(DB::select("SELECT name FROM phones {$bc} ORDER BY gpx_score       DESC LIMIT 5")) . "\n" .
+                "Best Experience(UEPS):" . $fmt(DB::select("SELECT name FROM phones {$bc} ORDER BY ueps_score     DESC LIMIT 5")) . "\n" .
+                "Best Endurance: "      . $fmt(DB::select("SELECT name FROM phones {$bc} ORDER BY endurance_score DESC LIMIT 5"));
 
+            // 5. Fill prompt from resource file
+            $promptTemplate = file_get_contents(resource_path('ai/find_prompt.txt'));
 
-            // STEP 4: Build system prompt
-            $systemPrompt = <<<PROMPT
-You are PhoneFinder AI, a concise phone consultant for PhoneFinderHub.
+            $budgetLabel = $budget ? "(within ₹" . number_format($budget) . ")" : "(no budget filter)";
+            $budgetRule  = $budget
+                ? "HARD BUDGET: ALL phones below are already filtered to ≤₹" . number_format(intval($budget * 1.05)) . ". Do NOT recommend any phone above this price."
+                : "No budget constraint. Recommend by priority score.";
 
-⚠️ ABSOLUTE RULES:
-- ONLY recommend phones from the list below. NEVER invent a phone.
-- ONLY use data provided below. Do NOT make up specs like RAM, camera MP, display size, or any detail not listed.
-- ONLY use the exact [CARD|...] strings below. NEVER fabricate card strings.
+            $systemPrompt = str_replace(
+                ['{PHONES}', '{CARDS}', '{PRIORITY}', '{BUDGET_LABEL}', '{BUDGET_RULE}', '{RANKLIST}'],
+                [implode("\n", $phoneLines), implode("\n", $cardLines), strtoupper($priority), $budgetLabel, $budgetRule, $ranklist],
+                $promptTemplate
+            );
 
-PHONES:
-{$phoneDatabase}
+            // 6. Build messages — strip [CARD|...] blobs from history
+            $messages   = [['role' => 'system', 'content' => $systemPrompt]];
+            $historySlice = array_slice($history, -12);
 
-CARDS (COPY-PASTE exactly — never modify or create new ones):
-{$cardLookup}
-
-SCORES (use full names when talking to user):
-Overall Score (max ~60), Expert Score (max ~80), Value Score (bang-for-buck), UEPS/User Experience (max 255), Camera Mastery Score (max ~1330), Gaming Performance Index (max ~300), Endurance (max ~160).
-
-KNOWLEDGE (mention ONLY if user asks):
-- Turnip: Open-source GPU drivers for game emulation. ONLY works on Snapdragon phones with Adreno GPUs. Mediatek/Exynos phones do NOT support Turnip.
-- Bootloader unlock: Allows custom ROMs. Availability varies by brand — OnePlus/Realme usually allow it, Samsung makes it harder, some brands block it entirely.
-
-RULES:
-1. ONLY state facts from the data above. If info isn't in the data, say "I don't have that detail."
-2. Output the [CARD|...] string when recommending. Never list phones as plain text.
-3. For multiple phones, put each [CARD|...] on its own line, then a brief comparison.
-4. Be CONCISE — 2-3 sentences max after the card. No walls of text or spec dump lists.
-5. Use full score names (e.g. "Camera Mastery Score: 853").
-6. Ask ONE question if you need budget/priority. Use [BTN|Choice Text] for options.
-7. Stay on topic. Don't switch phones unless asked.
-8. If user asks about Turnip/bootloader, check the chipset — if it's Mediatek/Exynos, tell them Turnip is not supported.
-PROMPT;
-
-            // Build messages array
-            $messages = [];
-            $messages[] = ['role' => 'system', 'content' => $systemPrompt];
-
-            // Include conversation history (last 10 exchanges max)
-            $historySlice = array_slice($history, -20);
             foreach ($historySlice as $msg) {
-                if (isset($msg['role']) && isset($msg['content']) && !empty(trim($msg['content']))) {
-                    $messages[] = [
-                        'role' => $msg['role'],
-                        'content' => $msg['content'],
-                    ];
+                if (empty($msg['role']) || empty(trim($msg['content'] ?? ''))) continue;
+                $content = $msg['role'] === 'assistant'
+                    ? preg_replace('/\[CARD\|[^\]]+\]/s', '[phone card shown]', $msg['content'])
+                    : $msg['content'];
+                if (!empty(trim($content))) {
+                    $messages[] = ['role' => $msg['role'], 'content' => $content];
                 }
             }
 
             $messages[] = ['role' => 'user', 'content' => $userMessage];
 
-            \Log::info("FindController: Sending " . count($messages) . " messages (" . $filteredPhones->count() . " phones in context)");
+            \Log::info("FindAI: priority={$priority} budget=" . ($budget ?? 'none') . " phones={$phones->count()} history=" . count($historySlice));
 
+            // 7. Stream response
             return response()->stream(function () use ($apiKey, $messages, $userMessage, $chatId) {
                 $title = null;
 
-                // Process Chat Title & DB Before Streaming starts
                 if (auth()->check()) {
                     if (!$chatId) {
-                        $titleGenerationResponse = Http::timeout(30)->withHeaders([
+                        $tr = Http::timeout(30)->withHeaders([
                             'Authorization' => 'Bearer ' . $apiKey,
-                            'Content-Type' => 'application/json',
-                        ])->post("https://api.groq.com/openai/v1/chat/completions", [
-                            'model' => 'llama-3.1-8b-instant',
-                            'messages' => [
-                                ['role' => 'user', 'content' => "Generate a short 3-5 word title for a chat that starts with this message. Return ONLY the title string, no quotes. Message: \"{$userMessage}\""]
-                            ],
+                            'Content-Type'  => 'application/json',
+                        ])->post("https://integrate.api.nvidia.com/v1/chat/completions", [
+                            'model'       => 'meta/llama-3.1-8b-instruct',
+                            'messages'    => [['role' => 'user', 'content' => "3-5 word title for: \"{$userMessage}\". Return ONLY the title, no quotes."]],
                             'temperature' => 0.3,
-                            'max_completion_tokens' => 20
+                            'max_tokens'  => 20,
                         ]);
-                        $title = 'New Chat';
-                        if ($titleGenerationResponse->successful() && isset($titleGenerationResponse->json()['choices'][0]['message']['content'])) {
-                            $title = trim($titleGenerationResponse->json()['choices'][0]['message']['content'], " \t\n\r\0\x0B\"");
-                        }
-
-                        $chat = Chat::create([
-                            'user_id' => auth()->id(),
-                            'title' => $title,
-                        ]);
+                        $title  = trim($tr->json()['choices'][0]['message']['content'] ?? 'New Chat', " \t\n\r\"");
+                        $chat   = Chat::create(['user_id' => auth()->id(), 'title' => $title]);
                         $chatId = $chat->id;
                     } else {
-                        $chat = Chat::findOrFail($chatId);
+                        $chat  = Chat::findOrFail($chatId);
                         $chat->touch();
                         $title = $chat->title;
                     }
-
-                    ChatMessage::create([
-                        'chat_id' => $chatId,
-                        'role' => 'user',
-                        'content' => $userMessage,
-                    ]);
+                    ChatMessage::create(['chat_id' => $chatId, 'role' => 'user', 'content' => $userMessage]);
                 }
 
                 echo "data: " . json_encode(['type' => 'meta', 'chat_id' => $chatId, 'title' => $title]) . "\n\n";
@@ -259,113 +227,80 @@ PROMPT;
                 flush();
 
                 $client = new \GuzzleHttp\Client();
-                $makeRequest = function($model) use ($client, $apiKey, $messages) {
-                    return $client->request('POST', 'https://api.groq.com/openai/v1/chat/completions', [
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . $apiKey,
-                            'Content-Type' => 'application/json',
-                        ],
-                        'json' => [
-                            'model' => $model,
-                            'messages' => $messages,
-                            'temperature' => 0.6,
-                            'max_completion_tokens' => 2048,
-                            'stream' => true,
-                        ],
-                        'stream' => true,
-                    ]);
-                };
+                $call   = fn($model) => $client->request('POST', 'https://integrate.api.nvidia.com/v1/chat/completions', [
+                    'headers' => ['Authorization' => 'Bearer ' . $apiKey, 'Content-Type' => 'application/json'],
+                    'json'    => ['model' => $model, 'messages' => $messages, 'temperature' => 0.3, 'top_p' => 0.9, 'max_tokens' => 2048, 'stream' => true],
+                    'stream'  => true,
+                ]);
 
                 try {
                     try {
-                        $response = $makeRequest('llama-3.3-70b-versatile');
-                    } catch (\GuzzleHttp\Exception\ClientException $e) {
-                         if ($e->getResponse()->getStatusCode() === 429) {
-                              \Log::warning("FindController: 70B hit 429 Limit. Falling back to 8B Instant.");
-                              $response = $makeRequest('llama-3.1-8b-instant');
-                         } else {
-                              throw $e;
-                         }
+                        $response = $call('meta/llama-3.1-70b-instruct');
+                    } catch (\Exception $e) {
+                        \Log::warning('Primary model error, using fallback: ' . $e->getMessage());
+                        $response = $call('meta/llama-3.1-8b-instruct');
                     }
 
-                    $body = $response->getBody();
-                    $assistantMessage = '';
+                    $body      = $response->getBody();
+                    $assistant = '';
 
                     while (!$body->eof()) {
                         $line = \GuzzleHttp\Psr7\Utils::readLine($body);
-                        if (str_starts_with($line, 'data: ')) {
-                            $data = substr($line, 6);
-                            if (trim($data) === '[DONE]') {
-                                break;
-                            }
-                            $json = json_decode($data, true);
-                            if (isset($json['choices'][0]['delta']['content'])) {
-                                $token = $json['choices'][0]['delta']['content'];
-                                $assistantMessage .= $token;
-                                echo "data: " . json_encode(['type' => 'chunk', 'content' => $token]) . "\n\n";
-                                if (ob_get_level() > 0) ob_flush();
-                                flush();
-                            }
+                        if (!str_starts_with($line, 'data: ')) continue;
+                        $data = substr($line, 6);
+                        if (trim($data) === '[DONE]') break;
+                        $json = json_decode($data, true);
+                        if (isset($json['choices'][0]['delta']['content'])) {
+                            $token = $json['choices'][0]['delta']['content'];
+                            $assistant .= $token;
+                            echo "data: " . json_encode(['type' => 'chunk', 'content' => $token]) . "\n\n";
+                            if (ob_get_level() > 0) ob_flush();
+                            flush();
                         }
                     }
 
-                    if (auth()->check() && $chatId && !empty(trim($assistantMessage))) {
-                        ChatMessage::create([
-                            'chat_id' => $chatId,
-                            'role' => 'assistant',
-                            'content' => $assistantMessage,
-                        ]);
+                    if (auth()->check() && $chatId && !empty(trim($assistant))) {
+                        ChatMessage::create(['chat_id' => $chatId, 'role' => 'assistant', 'content' => $assistant]);
                     }
 
                     echo "data: " . json_encode(['type' => 'done']) . "\n\n";
                     if (ob_get_level() > 0) ob_flush();
                     flush();
+
                 } catch (\Exception $e) {
-                    \Log::error('Stream Error: ' . $e->getMessage());
-                    echo "data: " . json_encode(['type' => 'error', 'message' => 'AI service is currently unavailable or hitting usage limits. Please try again later.']) . "\n\n";
+                    \Log::error('Stream error: ' . $e->getMessage());
+                    echo "data: " . json_encode(['type' => 'error', 'message' => 'AI service unavailable. Please try again.']) . "\n\n";
                     if (ob_get_level() > 0) ob_flush();
                     flush();
                 }
             }, 200, [
-                'Cache-Control' => 'no-cache',
-                'Content-Type' => 'text/event-stream',
+                'Cache-Control'     => 'no-cache',
+                'Content-Type'      => 'text/event-stream',
                 'X-Accel-Buffering' => 'no',
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Chat Exception: ' . $e->getMessage());
-            return response()->json(['error' => 'An error occurred while processing your request.'], 500);
+            \Log::error('Chat exception: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred. Please try again.'], 500);
         }
     }
 
+    // ─── Chat history ──────────────────────────────────────────────────────────
+
     public function show(Chat $chat)
     {
-        if (auth()->id() !== $chat->user_id) {
-            abort(403, 'Unauthorized access to chat.');
-        }
-
-        $messages = $chat->messages()->orderBy('created_at', 'asc')->get()->map(function($msg) {
-            return [
-                'role' => $msg->role,
-                'content' => $msg->content,
-            ];
-        });
-
+        abort_unless(auth()->id() === $chat->user_id, 403);
         return response()->json([
-            'chat_id' => $chat->id,
-            'title' => $chat->title,
-            'messages' => $messages,
+            'chat_id'  => $chat->id,
+            'title'    => $chat->title,
+            'messages' => $chat->messages()->orderBy('created_at')->get()->map(fn($m) => ['role' => $m->role, 'content' => $m->content]),
         ]);
     }
 
     public function destroy(Chat $chat)
     {
-        if (auth()->id() !== $chat->user_id) {
-            abort(403, 'Unauthorized access to chat.');
-        }
-        
+        abort_unless(auth()->id() === $chat->user_id, 403);
         $chat->delete();
-        
         return response()->json(['success' => true]);
     }
 }
