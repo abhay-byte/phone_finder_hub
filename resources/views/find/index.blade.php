@@ -209,7 +209,7 @@
                                         <template x-if="userName">
                                             <span class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 mr-1" x-text="userName"></span>
                                         </template>
-                                        <div class="rounded-[20px] rounded-br-[6px] bg-indigo-600 dark:bg-indigo-700 px-5 py-3 text-white text-[15px] leading-relaxed">
+                                        <div class="rounded-[20px] rounded-br-[6px] bg-gray-100 dark:bg-[#1e1f20] px-5 py-3 text-black dark:text-[#e3e3e3] text-[15px] leading-relaxed">
                                             <span x-html="renderMarkdown(msg.content)"></span>
                                         </div>
                                     </div>

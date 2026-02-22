@@ -105,26 +105,26 @@
     <div class="min-h-[100dvh] flex flex-col">
         <!-- Navigation -->
         <nav x-data="{ mobileMenuOpen: false }"
-            class="bg-white/90 dark:bg-black/90 backdrop-blur-xl sticky top-0 z-50 border-b-0 shadow-md transition-all duration-300"
+            class="bg-white/70 dark:bg-black/70 backdrop-blur-2xl sticky top-0 z-50 border-b border-white/10 dark:border-white/5 shadow-lg transition-all duration-500"
             hx-boost="true" hx-target="#spa-content-wrapper" hx-select="#spa-content-wrapper"
             hx-swap="outerHTML show:window:top" hx-indicator="#global-loader">
             <!-- Animated Gradient Border -->
             <div
-                class="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-teal-400 via-indigo-500 to-purple-600 bg-[length:200%_auto] animate-gradient-x">
+                class="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 bg-[length:200%_auto] animate-gradient-x opacity-60">
             </div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex">
                         <div class="shrink-0 flex items-center">
-                            <a href="{{ route('home') }}" class="flex items-center gap-3 group" hx-boost="false">
+                            <a href="{{ route('home') }}" class="flex items-center gap-3 group px-2" hx-boost="false">
                                 {{-- Logo usually goes to home, safe to keep standard or boost if handled --}}
                                 <div
-                                    class="relative w-10 h-10 flex items-center justify-center bg-white dark:bg-black rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:shadow-md">
+                                    class="relative w-10 h-10 flex items-center justify-center bg-white/50 dark:bg-white/5 rounded-xl border border-white/20 dark:border-white/10 overflow-hidden transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 group-hover:shadow-[0_0_20px_rgba(20,184,166,0.3)]">
                                     <img src="{{ asset('assets/logo.png') }}" alt="PhoneFinderHub Logo"
-                                        class="w-8 h-8 object-contain relative z-10">
+                                        class="w-7 h-7 object-contain relative z-10 transition-transform duration-500 group-hover:scale-110">
                                 </div>
                                 <span
-                                    class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 group-hover:to-indigo-500 transition-all duration-300 hidden sm:block">
+                                    class="text-xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-teal-800 to-slate-900 dark:from-white dark:via-teal-400 dark:to-white bg-[length:200%_auto] animate-gradient-x hidden sm:block">
                                     PhoneFinderHub
                                 </span>
                             </a>
@@ -132,45 +132,43 @@
 
                         <div class="hidden space-x-1 sm:ml-6 sm:flex items-center py-2" id="desktop-menu">
                             @if (!request()->is('admin*'))
-                                <div class="flex items-center self-center mr-3">
+                                <div class="flex items-center self-center mr-4">
                                     <a href="{{ route('find.index') }}"
-                                        class="relative inline-flex items-center justify-center px-5 py-2 text-sm font-extrabold text-white transition-all duration-300 rounded-full shadow-lg shadow-indigo-500/30 bg-gradient-to-r from-teal-500 via-indigo-500 to-purple-600 hover:scale-[1.05] hover:shadow-indigo-500/50 hover:from-teal-400 hover:via-indigo-400 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-black group overflow-hidden">
-                                        <span
-                                            class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer-skew -skew-x-12 z-10 block"></span>
+                                        class="relative inline-flex items-center justify-center px-6 py-2.5 text-xs font-black text-white transition-all duration-500 rounded-full shadow-[0_0_15px_rgba(20,184,166,0.4)] bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 hover:scale-105 hover:shadow-[0_0_25px_rgba(20,184,166,0.6)] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-black group overflow-hidden">
                                         <div
-                                            class="absolute inset-0 pointer-events-none rounded-full ring-1 ring-inset ring-white/20">
+                                            class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000">
                                         </div>
-                                        <svg class="w-4 h-4 mr-2 relative z-20 group-hover:animate-bounce"
+                                        <svg class="w-4 h-4 mr-2 relative z-20 group-hover:rotate-12 transition-transform duration-300"
                                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                         </svg>
-                                        <span class="relative z-20 tracking-wider">FIND PHONE</span>
+                                        <span class="relative z-20 tracking-tighter uppercase">Find Phone</span>
                                     </a>
                                 </div>
                                 <a href="{{ route('home') }}"
-                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('home') ? 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 {{ request()->routeIs('home') ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'text-slate-600 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-300 hover:bg-teal-50/50 dark:hover:bg-teal-900/10' }}">
                                     Home
                                 </a>
                                 <a href="{{ route('phones.rankings') }}"
-                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('phones.rankings') ? 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 {{ request()->routeIs('phones.rankings') ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'text-slate-600 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-300 hover:bg-teal-50/50 dark:hover:bg-teal-900/10' }}">
                                     Rankings
                                 </a>
                                 <a href="{{ route('phones.compare') }}"
-                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('phones.compare') ? 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 {{ request()->routeIs('phones.compare') ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'text-slate-600 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-300 hover:bg-teal-50/50 dark:hover:bg-teal-900/10' }}">
                                     Compare
                                 </a>
 
                                 <a href="{{ route('forum.index') }}"
-                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('forum.*') ? 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 {{ request()->routeIs('forum.*') ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'text-slate-600 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-300 hover:bg-teal-50/50 dark:hover:bg-teal-900/10' }}">
                                     Forums
                                 </a>
                                 <a href="{{ route('blogs.index') }}"
-                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('blogs.*') ? 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 {{ request()->routeIs('blogs.*') ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'text-slate-600 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-300 hover:bg-teal-50/50 dark:hover:bg-teal-900/10' }}">
                                     Blogs
                                 </a>
                                 <a href="{{ route('docs.index') }}"
-                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800' }}">
+                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 {{ request()->routeIs('docs.index') ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'text-slate-600 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-300 hover:bg-teal-50/50 dark:hover:bg-teal-900/10' }}">
                                     Docs
                                 </a>
                             @endif

@@ -3,20 +3,27 @@
 @section('content')
     <div class="bg-gray-50 dark:bg-black min-h-screen animate-fadeInUp">
 
-        <!-- Hero Section -->
-        <div class="relative bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-white/5">
-            <div class="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-900/[0.04] bg-[bottom_1px_center] dark:bg-[bottom_1px_center]"
-                style="mask-image: linear-gradient(to bottom, transparent, black);"></div>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 relative z-30 text-center">
+        <!-- Modern Hero Section -->
+        <div class="relative overflow-hidden bg-white dark:bg-[#050505] pt-24 pb-20 md:pt-32 md:pb-32">
+            <!-- Animated Background Elements -->
+            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                <div class="absolute -top-24 -left-24 w-96 h-96 bg-teal-500/10 rounded-full blur-[120px] animate-pulse"></div>
+                <div class="absolute top-1/2 -right-24 w-80 h-80 bg-emerald-500/5 rounded-full blur-[100px] animate-pulse delay-1000"></div>
+                <div class="absolute bottom-0 left-1/3 w-64 h-64 bg-teal-400/5 rounded-full blur-[80px] animate-pulse delay-700"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
                 <h1
-                    class="text-5xl md:text-7xl font-black tracking-tight text-slate-900 dark:text-white mb-6 flex flex-wrap justify-center gap-2 md:gap-4">
+                    class="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 dark:text-white mb-8 leading-[0.9] md:leading-[0.85]">
                     <span class="inline-block animate-title-reveal">Find Value,</span>
-                    <span class="inline-block text-teal-600 dark:text-teal-500 animate-title-reveal delay-100">Not
-                        Hype.</span>
+                    <br class="hidden md:block">
+                    <span class="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 bg-[length:200%_auto] animate-gradient-x animate-title-reveal delay-200">
+                        Not Hype.
+                    </span>
                 </h1>
                 <p
-                    class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed animate-title-reveal delay-200">
-                    The only data-driven smartphone ranking based on real-world performance per rupee. No bias, just math.
+                    class="text-lg md:text-xl text-slate-500 dark:text-slate-400 max-w-xl mx-auto mb-12 font-medium leading-relaxed animate-fadeInUp delay-500">
+                    The only <span class="text-teal-600 dark:text-teal-400 font-bold italic">data-driven</span> smartphone ranking based on real-world performance per rupee. No bias, just math.
                 </p>
 
                 <!-- Search & Filter Bar -->
@@ -80,16 +87,22 @@
                 }">
                     <!-- Glow Effect -->
                     <div
-                        class="absolute -inset-1 bg-gradient-to-r from-teal-500 to-emerald-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200">
+                        class="absolute -inset-1 bg-gradient-to-r from-teal-500 to-emerald-400 rounded-3xl blur-2xl opacity-20 group-hover:opacity-40 transition duration-700 animate-pulse">
                     </div>
 
                     <!-- Input Container -->
                     <div
-                        class="relative flex items-center bg-white dark:bg-[#1A1A1A] rounded-xl shadow-2xl ring-1 ring-gray-900/5 dark:ring-white/10 p-2">
+                        class="relative flex items-center bg-white/80 dark:bg-black/40 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/20 dark:border-white/5 p-1.5 transition-all duration-500 group-hover:border-teal-500/30">
+                        <div class="pl-6 text-teal-500/50">
+                            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                        </div>
                         <input type="text" x-model="query" :placeholder="placeholder"
-                            class="w-full bg-transparent border-0 focus:ring-0 text-lg text-slate-900 dark:text-white placeholder-slate-400/70 h-12 pl-6 pr-14">
-                        <div class="absolute right-4 flex items-center gap-2 pointer-events-none">
-                            <div x-show="isLoading">
+                            class="w-full bg-transparent border-0 focus:ring-0 text-xl font-medium text-slate-900 dark:text-white placeholder-slate-400/50 h-14 px-4 pr-16">
+                        
+                        <div class="absolute right-4 flex items-center gap-3">
+                            <div x-show="isLoading" class="p-2">
                                 <svg class="animate-spin h-5 w-5 text-teal-500" xmlns="http://www.w3.org/2000/svg"
                                     fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
@@ -99,11 +112,8 @@
                                     </path>
                                 </svg>
                             </div>
-                            <div class="text-gray-400">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-teal-500/10 text-teal-500 border border-teal-500/20 group-hover:scale-110 transition-transform duration-300">
+                                <span class="text-xs font-black">⌘K</span>
                             </div>
                         </div>
                     </div>
@@ -159,41 +169,52 @@
                     </div>
                 </div>
 
-                <!-- Quick Filters (Chips) -->
-                <div class="flex flex-wrap justify-center gap-3 mt-8">
+                <!-- Quick Filters (Revamped Chips) -->
+                <div class="flex flex-wrap justify-center gap-4 mt-12 animate-fadeInUp delay-1000">
                     <button
-                        class="px-5 py-2 rounded-full bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 text-sm font-semibold hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors border border-teal-200 dark:border-teal-800 flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                        </svg>
-                        Top Value
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105">
+                        <div class="absolute inset-0 bg-teal-500/10 dark:bg-teal-500/20 group-hover:bg-teal-500/20 transition-colors"></div>
+                        <div class="absolute inset-x-0 bottom-0 h-0.5 bg-teal-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                        <span class="relative flex items-center gap-2 text-teal-700 dark:text-teal-400 text-sm font-black uppercase tracking-tighter">
+                            <svg class="w-4 h-4 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                            Top Value
+                        </span>
                     </button>
+                    
                     <button
-                        class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                        </svg>
-                        Gaming
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105">
+                        <div class="absolute inset-0 bg-slate-100/50 dark:bg-white/5 group-hover:bg-teal-500/10 transition-colors shadow-sm"></div>
+                        <span class="relative flex items-center gap-2 text-slate-600 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                            </svg>
+                            Gaming
+                        </span>
                     </button>
+
                     <button
-                        class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        Camera
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105">
+                        <div class="absolute inset-0 bg-slate-100/50 dark:bg-white/5 group-hover:bg-teal-500/10 transition-colors shadow-sm"></div>
+                        <span class="relative flex items-center gap-2 text-slate-600 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                            </svg>
+                            Camera
+                        </span>
                     </button>
+
                     <button
-                        class="px-5 py-2 rounded-full bg-white dark:bg-[#1A1A1A] text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border border-slate-200 dark:border-white/10 shadow-sm flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        Battery
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105">
+                        <div class="absolute inset-0 bg-slate-100/50 dark:bg-white/5 group-hover:bg-teal-500/10 transition-colors shadow-sm"></div>
+                        <span class="relative flex items-center gap-2 text-slate-600 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                            Battery
+                        </span>
                     </button>
                 </div>
             </div>
