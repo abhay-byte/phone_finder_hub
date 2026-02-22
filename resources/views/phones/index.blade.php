@@ -1,21 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="bg-gray-50 dark:bg-black min-h-screen animate-fadeInUp">
+    <div class="min-h-screen animate-fadeInUp">
 
         <!-- Modern Hero Section -->
-        <div class="relative overflow-hidden bg-white dark:bg-[#050505] pt-24 pb-20 md:pt-32 md:pb-32 border-b border-transparent">
+        <div class="relative bg-gradient-to-b from-teal-50/80 via-white to-gray-100 dark:from-teal-950/40 dark:via-[#050505] dark:to-[#050505] pt-24 pb-20 md:pt-32 md:pb-32 border-b border-teal-100 dark:border-teal-900/30 z-10" 
+             :class="{ 'z-[100]': isSearchFocused }" 
+             x-data="{ isSearchFocused: false }"
+             @search-focused.window="isSearchFocused = $event.detail">
             <!-- Search Focus Overlay -->
-            <div x-data="{ isSearchFocused: false }" 
-                 @search-focused.window="isSearchFocused = $event.detail"
-                 x-show="isSearchFocused"
+            <div x-show="isSearchFocused"
                  x-transition:enter="transition opacity-0 duration-500"
                  x-transition:enter-start="opacity-0"
                  x-transition:enter-end="opacity-100"
                  x-transition:leave="transition opacity-100 duration-500"
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
-                 class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90]"
+                 class="fixed inset-0 bg-black/30 backdrop-blur-xl z-[90]"
                  style="display: none;">
             </div>
 
@@ -26,7 +27,7 @@
                 <div class="absolute bottom-0 left-1/3 w-64 h-64 bg-teal-400/5 rounded-full blur-[80px] animate-pulse delay-700"></div>
             </div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative text-center" style="z-index: 95;">
                 <h1
                     class="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 dark:text-white mb-8 leading-[0.9] md:leading-[0.85]">
                     <span class="inline-block animate-title-reveal">Find Value,</span>
@@ -157,7 +158,7 @@
                         x-transition:leave="transition ease-in duration-150"
                         x-transition:leave-start="opacity-100 translate-y-0"
                         x-transition:leave-end="opacity-0 translate-y-2" @click.away="results = []"
-                        class="absolute top-full left-0 right-0 mt-4 bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-xl ring-1 ring-black/5 dark:ring-white/10 overflow-hidden z-50 max-h-96 overflow-y-auto"
+                        class="absolute top-full left-0 right-0 mt-4 bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-2xl ring-1 ring-black/5 dark:ring-white/10 overflow-hidden z-[100] max-h-96 overflow-y-auto"
                         style="display: none;">
                         <template x-for="phone in results" :key="phone.id">
                             <a :href="`/phones/${phone.id}`"
@@ -202,10 +203,9 @@
 
                 <!-- Quick Filters (Revamped Chips) -->
                 <div class="flex flex-wrap justify-center gap-4 mt-12 animate-fadeInUp delay-1000">
+                    <!-- Top Value (active style) -->
                     <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105">
-                        <div class="absolute inset-0 bg-teal-500/10 dark:bg-teal-500/20 group-hover:bg-teal-500/20 transition-colors"></div>
-                        <div class="absolute inset-x-0 bottom-0 h-0.5 bg-teal-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border-2 border-teal-500 bg-teal-50 dark:bg-teal-900/30 shadow-md">
                         <span class="relative flex items-center gap-2 text-teal-700 dark:text-teal-400 text-sm font-black uppercase tracking-tighter">
                             <svg class="w-4 h-4 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
@@ -214,10 +214,10 @@
                         </span>
                     </button>
                     
+                    <!-- Gaming -->
                     <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105">
-                        <div class="absolute inset-0 bg-slate-100/50 dark:bg-white/5 group-hover:bg-teal-500/10 transition-colors shadow-sm"></div>
-                        <span class="relative flex items-center gap-2 text-slate-600 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 shadow-sm">
+                        <span class="relative flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
                             </svg>
@@ -225,10 +225,10 @@
                         </span>
                     </button>
 
+                    <!-- Camera -->
                     <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105">
-                        <div class="absolute inset-0 bg-slate-100/50 dark:bg-white/5 group-hover:bg-teal-500/10 transition-colors shadow-sm"></div>
-                        <span class="relative flex items-center gap-2 text-slate-600 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 shadow-sm">
+                        <span class="relative flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
@@ -237,6 +237,15 @@
                         </span>
                     </button>
 
+                    <!-- Battery -->
+                    <button
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 shadow-sm">
+                        <span class="relative flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                            Battery
+                        </span>
                     </button>
                 </div>
                 <!-- Section Transition Gradient -->
@@ -248,7 +257,8 @@
         @include('phones.partials.ai_finder_banner')
 
         <!-- Phone Grid Section -->
-        <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12 lg:pb-16 pt-4 lg:pt-8 w-full">
+        <div class="bg-slate-100 dark:bg-[#0a0a0a] border-t border-slate-200 dark:border-white/5">
+        <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12 lg:pb-16 pt-6 lg:pt-10 w-full">
             <div class="relative z-10 w-full" x-data="{
                 searchOpen: false,
                 sortOpen: false,
@@ -453,5 +463,6 @@
                 </div>
             </div>
         </div>
+        </div>{{-- end bg-slate wrapper --}}
     </div>
 @endsection
