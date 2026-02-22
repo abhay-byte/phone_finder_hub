@@ -9,21 +9,14 @@
      x-data="chatAgent({{ json_encode($chats ?? []) }})"
      @send-msg.window="inputMessage = $event.detail; sendMessage();">
 
-    <!-- Mobile Sidebar Toggle -->
-    <div class="absolute top-4 left-4 z-50 lg:hidden" x-show="messages.length > 0 && !sidebarOpen">
-        <button @click="sidebarOpen = !sidebarOpen" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition shadow-md">
-            <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-            </svg>
-        </button>
-    </div>
+
 
     <!-- Sidebar (History) -->
     <div class="bg-gray-50 dark:bg-[#1e1f20] w-[260px] xl:w-[calc(100%/6)] h-full flex flex-col shrink-0 border-r border-gray-200 dark:border-gray-800 absolute lg:relative z-40 transform transition-transform duration-300"
          :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
         
         <!-- Mobile Close Button -->
-        <button @click="sidebarOpen = false" class="absolute top-2 right-2 p-2 bg-gray-200 dark:bg-[#333538] text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-full z-[60] lg:hidden transition shadow-sm">
+        <button @click="sidebarOpen = false" class="absolute top-4 right-3 p-2 bg-gray-200 dark:bg-[#333538] text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-full z-[60] lg:hidden transition shadow-sm">
              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
 
@@ -71,7 +64,7 @@
 
     <!-- Main Chat Area -->
     <div class="flex-1 flex flex-col h-full relative">
-        <div class="absolute top-4 left-4 z-50 lg:hidden" x-show="messages.length === 0 && !sidebarOpen">
+        <div class="absolute top-2 left-2 z-20 lg:hidden" x-show="!sidebarOpen">
             <button @click="sidebarOpen = !sidebarOpen" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition shadow-md">
                 <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
@@ -80,10 +73,10 @@
         </div>
         
         <!-- Messages Container -->
-        <div id="messages-container" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:px-24 xl:px-48 pb-[150px] sm:pb-[200px] scroll-smooth w-full">
+        <div id="messages-container" class="flex-1 overflow-y-auto p-4 pt-12 sm:pt-4 sm:p-6 lg:px-24 xl:px-48 pb-[140px] sm:pb-[180px] scroll-smooth w-full">
             
             <!-- Welcome State -->
-            <div x-show="messages.length === 0 && !isLoading" class="h-full flex flex-col items-center pt-[15vh] lg:pt-[20vh] text-center w-full">
+            <div x-show="messages.length === 0 && !isLoading" class="h-full flex flex-col items-center pt-[10vh] sm:pt-[15vh] lg:pt-[20vh] text-center w-full">
                 <h2 class="text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 p-2">
                     Hello, {{ auth()->check() ? explode(' ', auth()->user()->name)[0] : 'User' }}
                 </h2>
@@ -149,33 +142,29 @@
                         <!-- Assistant Message -->
                         <template x-if="msg.role === 'assistant'">
                             <div class="self-start max-w-full group w-full flex items-start gap-4">
-                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 mt-3 hidden sm:flex">
-                                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 mt-1 hidden sm:flex">
+                                    <svg class="w-5 h-5 text-white" :class="{'animate-pulse': isLoading && index === messages.length - 1}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                     </svg>
                                 </div>
-                                <div class="prose prose-base dark:prose-invert prose-p:text-gray-800 dark:prose-p:text-[#e3e3e3] prose-headings:text-black dark:prose-headings:text-white prose-strong:text-black dark:prose-strong:text-white max-w-none w-full bg-transparent dark:bg-transparent rounded-2xl px-2 py-2 mt-1 whitespace-pre-line break-words" x-html="renderMarkdown(msg.content)">
+                                <div class="flex flex-col w-full max-w-none">
+                                    <span class="text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1 ml-2 sm:ml-1">PhoneFinder AI</span>
+                                    
+                                    <template x-if="msg.content === '' && isLoading && index === messages.length - 1">
+                                        <div class="flex items-center h-4 gap-2 px-2 sm:px-1 mt-2 mb-1">
+                                            <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
+                                            <span class="w-2 h-2 bg-purple-500 rounded-full animate-pulse animation-delay-200"></span>
+                                            <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse animation-delay-400"></span>
+                                        </div>
+                                    </template>
+
+                                    <div x-show="msg.content !== ''" class="prose prose-base dark:prose-invert prose-p:text-gray-800 dark:prose-p:text-[#e3e3e3] prose-headings:text-black dark:prose-headings:text-white prose-strong:text-black dark:prose-strong:text-white max-w-none w-full bg-transparent dark:bg-transparent rounded-2xl px-2 sm:px-1 py-1 mt-0 whitespace-pre-line break-words" x-html="renderMarkdown(msg.content)">
+                                    </div>
                                 </div>
                             </div>
                         </template>
                     </div>
                 </template>
-
-                <!-- Loading Indicator -->
-                <div x-show="isLoading" class="flex justify-start max-w-4xl mx-auto w-full mb-12">
-                    <div class="flex items-start gap-4 w-full">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 hidden sm:flex">
-                             <svg class="w-5 h-5 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                        </div>
-                        <div class="flex items-center h-8 gap-2">
-                            <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
-                            <span class="w-2 h-2 bg-purple-500 rounded-full animate-pulse animation-delay-200"></span>
-                            <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse animation-delay-400"></span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -218,6 +207,11 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <!-- DOMPurify for security -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+
+<script>
+    // Phone name whitelist for card validation (prevents hallucinated cards from rendering)
+    window.__validPhoneNames = @json($allPhoneNames ?? []);
+</script>
 
 <script>
     document.addEventListener('alpine:init', () => {
@@ -263,6 +257,16 @@
                     const stripHtml = (str) => str ? str.replace(/<[^>]*>?/gm, '').trim() : '';
 
                     let safeName = stripHtml(name).replace(/"/g, '&quot;') || 'Phone';
+
+                    // WHITELIST CHECK: reject hallucinated phones
+                    const validNames = window.__validPhoneNames || [];
+                    const isValid = validNames.some(vn => 
+                        vn.toLowerCase().trim() === safeName.toLowerCase().trim()
+                    );
+                    if (!isValid) {
+                        console.warn('PhoneFinder: Rejected hallucinated card for "' + safeName + '"');
+                        return ''; // Strip the fake card entirely
+                    }
                     let safePrice = stripHtml(price);
                     let safeImage = extractUrl(image);
                     let safeLink = extractUrl(link) || '#';
@@ -291,7 +295,7 @@
                         buttonsHtml = `<div class="flex items-center gap-2 pt-3 mt-2 border-t border-gray-100 dark:border-gray-800/80 w-full">${amzBtn}${flpBtn}</div>`;
                     }
                     
-                    return `<div class="not-prose my-3 flex flex-col p-3 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-[#1e1f20] shadow-sm hover:shadow-md transition-all group w-full max-w-[220px] shrink-0 inline-block align-top mr-1">
+                    return `<!--PHONECARD_START--><div class="not-prose phone-card-item flex flex-col p-3 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-[#1e1f20] shadow-sm hover:shadow-md transition-all group w-full max-w-[220px] shrink-0">
                         <div class="cursor-pointer flex flex-col items-center" onclick="window.open('${safeLink}', '_blank')">
                             <div class="h-28 w-full bg-gray-50 dark:bg-[#282a2c] rounded-xl flex items-center justify-center p-2 mb-3 overflow-hidden border border-gray-100 dark:border-gray-800 transition-colors group-hover:bg-gray-100 dark:group-hover:bg-[#333538]">
                                 <img src="${imgSrc}" alt="${safeName}" class="max-h-full max-w-full object-contain mix-blend-multiply dark:mix-blend-normal hover:scale-105 transition-transform duration-300">
@@ -309,8 +313,19 @@
                             </div>
                         </div>
                         ${buttonsHtml}
-                    </div>`;
+                    </div><!--PHONECARD_END-->`;
                 });
+
+                // Wrap consecutive phone cards in a horizontal flex container
+                finalHtml = finalHtml.replace(/(<!--PHONECARD_START-->[\s\S]*?<!--PHONECARD_END-->)(\s*(?:<br\s*\/?>|\s|<p>\s*<\/p>)*\s*<!--PHONECARD_START-->[\s\S]*?<!--PHONECARD_END-->)+/g, (match) => {
+                    return `<div class="not-prose flex flex-wrap gap-3 my-4">${match}</div>`;
+                });
+                // Also wrap single cards that aren't already wrapped
+                finalHtml = finalHtml.replace(/(?<!<div class="not-prose flex flex-wrap gap-3 my-4">)(<!--PHONECARD_START--><div class="not-prose phone-card-item[\s\S]*?<!--PHONECARD_END-->)(?![\s\S]*?<!--PHONECARD_START-->)/g, (match) => {
+                    return `<div class="not-prose flex flex-wrap gap-3 my-4">${match}</div>`;
+                });
+                // Clean up markers
+                finalHtml = finalHtml.replace(/<!--PHONECARD_START-->|<!--PHONECARD_END-->/g, '');
 
                 return finalHtml.replace(/\[BTN\|(.*?)\]/g, (match, text) => {
                     const safeText = text.replace(/'/g, "\\'").replace(/"/g, '&quot;');

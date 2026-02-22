@@ -167,68 +167,13 @@
         </div>
     </div>
 
-    <!-- Main Content Layout (1:6 Grid) -->
-    <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div class="grid grid-cols-1 lg:grid-cols-6 gap-8 xl:gap-12 pl-0">
-            
-            <!-- LEFT COLUMN (1/6): Editorials & Tech News -->
-            <div class="lg:col-span-1 flex flex-col relative z-20">
-                @if(isset($latestBlogs) && $latestBlogs->count() > 0)
-                <div class="sticky top-24">
-                    <div class="mb-6 flex flex-col pr-2">
-                        <h2 class="text-xl font-black text-slate-900 dark:text-white flex items-center gap-2 tracking-tight">
-                            <span class="w-2 h-6 md:h-8 rounded-full bg-teal-500 block"></span>
-                            Editorials
-                        </h2>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-widest font-bold ml-4">Latest guides & news</p>
-                    </div>
+    <!-- AI Finder Advertisement Banner -->
+    @include('phones.partials.ai_finder_banner')
 
-                    <div class="flex flex-col gap-4 pr-3 overflow-y-auto max-h-[calc(100vh-14rem)] scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10 pb-6 rounded-xl">
-                        @foreach($latestBlogs as $blog)
-                        <a href="{{ route('blogs.show', $blog->slug) }}" class="group block bg-white dark:bg-[#161616] rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-sm hover:shadow-2xl hover:border-teal-300 dark:hover:border-teal-500/40 transition-all duration-300 transform hover:-translate-y-1 relative ring-1 ring-black/5 dark:ring-white/5">
-                            @if($blog->featured_image)
-                            <div class="h-32 w-full relative overflow-hidden bg-gray-100 dark:bg-white/5">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent z-10 transition-opacity duration-300"></div>
-                                <img src="{{ $blog->featured_image }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" alt="{{ $blog->title }}">
-                                
-                                <div class="absolute bottom-3 left-3 right-3 z-20 flex flex-col justify-end">
-                                    <div class="flex items-center gap-2 mb-1.5 text-[9px] text-gray-300 drop-shadow">
-                                        <span class="font-bold uppercase tracking-wider text-teal-400 font-mono">{{ $blog->author->name ?? 'News' }}</span>
-                                        <span class="w-1 h-1 rounded-full bg-gray-400"></span>
-                                        <span class="font-medium opacity-90">{{ $blog->published_at->format('M j') }}</span>
-                                    </div>
-                                    <h3 class="text-xs font-bold text-white group-hover:text-teal-300 transition-colors line-clamp-3 leading-snug drop-shadow-lg">
-                                        {{ $blog->title }}
-                                    </h3>
-                                </div>
-                            </div>
-                            @else
-                            <div class="p-5">
-                                <div class="flex items-center gap-2 mb-2 text-[10px] text-gray-500 dark:text-gray-400 font-mono">
-                                    <span class="font-bold uppercase tracking-wider text-teal-600 dark:text-teal-500">{{ $blog->author->name ?? 'News' }}</span>
-                                    <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                                    <span>{{ $blog->published_at->format('M j') }}</span>
-                                </div>
-                                <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-3 leading-snug">
-                                    {{ $blog->title }}
-                                </h3>
-                            </div>
-                            @endif
-                        </a>
-                        @endforeach
-                    </div>
-                    
-                    <a href="{{ route('blogs.index') }}" class="mt-4 flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gradient-to-r from-teal-500/10 to-emerald-500/10 dark:from-teal-500/5 dark:to-emerald-500/5 text-xs text-teal-700 dark:text-teal-400 font-bold hover:from-teal-500/20 hover:to-emerald-500/20 transition-all border border-teal-100 dark:border-teal-500/20 shadow-sm group">
-                        View All Articles
-                        <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform border-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                    </a>
-                </div>
-                @endif
-            </div>
-
-            <!-- RIGHT COLUMN (5/6): Phone Grid Section -->
-            <div class="lg:col-span-5 relative z-10"
-                 x-data="{
+    <!-- Phone Grid Section -->
+    <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12 lg:pb-16 pt-4 lg:pt-8 w-full">
+        <div class="relative z-10 w-full"
+             x-data="{
                     searchOpen: false, 
                     sortOpen: false,
                     currentSort: '{{ $sort }}',
@@ -398,7 +343,6 @@
                     {!! $gridHtml !!}
                 </div>
             </div>
-        </div>
     </div>
 </div>
 @endsection

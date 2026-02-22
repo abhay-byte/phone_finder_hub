@@ -25,7 +25,9 @@ class FindController extends Controller
             url: route('find.index'),
         ));
 
-        return view('find.index', compact('chats'));
+        $allPhoneNames = \App\Models\Phone::pluck('name')->values()->toArray();
+
+        return view('find.index', compact('chats', 'allPhoneNames'));
     }
 
     public function chat(Request $request)
@@ -46,51 +48,53 @@ class FindController extends Controller
         }
 
         try {
-            // STEP 1: RAG Query Extraction
-            // We use the cheaper/faster Flash model to extract search parameters
-            $extractorContext = "";
-            if (!empty($history)) {
-                $lastMsg = end($history);
-                if (isset($lastMsg['content'])) {
-                    $extractorContext = " (Preceding conversation context: " . substr($lastMsg['content'], 0, 400) . ")";
+            // STEP 1: Extract search filters from the FULL conversation context
+            // Build a conversation summary for the extractor so it understands ongoing context
+            $conversationSummary = "";
+            $recentHistory = array_slice($history, -10); // last 5 exchanges
+            foreach ($recentHistory as $msg) {
+                if (isset($msg['role']) && isset($msg['content'])) {
+                    $role = $msg['role'] === 'user' ? 'User' : 'AI';
+                    $conversationSummary .= "{$role}: " . substr($msg['content'], 0, 300) . "\n";
                 }
             }
-            $extractorInstruction = "Extract search parameters from the user's message. Output ONLY a valid JSON object with these exact keys, using null if not specified: 'brand' (string), 'min_price' (integer), 'max_price' (integer), 'priority' (string enum: 'gaming', 'camera', 'battery', 'value', 'overall' - default is 'overall'). If the user refers to a previously mentioned phone, extract its brand." . $extractorContext;
-            
-            $extractionResponse = Http::timeout(60)->withHeaders([
+            $conversationSummary .= "User: {$userMessage}\n";
+
+            $extractorInstruction = "Given this phone-finding conversation, extract search filters. Output ONLY a JSON object with: " .
+                "'brand' (string|null - ONLY if user explicitly mentions a brand name like Samsung, OnePlus, etc.), " .
+                "'min_price' (int|null), 'max_price' (int|null), " .
+                "'priority' (string: 'gaming'|'camera'|'battery'|'value'|'overall', default 'overall'), " .
+                "'phone_name' (string|null - exact phone name if user is asking about a specific phone already discussed). " .
+                "IMPORTANT: Do NOT set brand unless user explicitly says a brand name. Look at the ENTIRE conversation to determine budget and preferences.";
+
+            $extractionResponse = Http::timeout(15)->withHeaders([
                 'Authorization' => 'Bearer ' . $apiKey,
                 'Content-Type' => 'application/json',
             ])->post("https://api.groq.com/openai/v1/chat/completions", [
                 'model' => 'llama-3.1-8b-instant',
                 'messages' => [
                     ['role' => 'system', 'content' => $extractorInstruction],
-                    ['role' => 'user', 'content' => $userMessage]
+                    ['role' => 'user', 'content' => $conversationSummary]
                 ],
-                'temperature' => 0.1,
+                'temperature' => 0.05,
+                'max_completion_tokens' => 150,
                 'response_format' => ['type' => 'json_object']
             ]);
 
-            \Log::info("FindController: Response Status (Extraction): " . $extractionResponse->status());
-            if ($extractionResponse->status() === 429) {
-                return response()->json(['error' => 'AI usage limit reached for the day/minute. Please try again later.'], 429);
-            }
-            if (!$extractionResponse->successful()) {
-                return response()->json(['error' => 'AI service is currently unavailable. Please try again later.'], 500);
-            }
-
-            $searchParams = ['brand' => null, 'min_price' => null, 'max_price' => null, 'priority' => 'overall'];
+            $searchParams = ['brand' => null, 'min_price' => null, 'max_price' => null, 'priority' => 'overall', 'phone_name' => null];
             if ($extractionResponse->successful() && isset($extractionResponse->json()['choices'][0]['message']['content'])) {
-                $rawJson = $extractionResponse->json()['choices'][0]['message']['content'];
-                $parsed = json_decode($rawJson, true);
+                $parsed = json_decode($extractionResponse->json()['choices'][0]['message']['content'], true);
                 if (is_array($parsed)) {
                     $searchParams = array_merge($searchParams, $parsed);
                 }
+            } else {
+                \Log::warning("FindController: Extraction failed (status " . $extractionResponse->status() . "), using defaults");
             }
+            \Log::info("FindController: Extracted params", $searchParams);
 
-            // STEP 2: Database Retrieval
-            $query = \App\Models\Phone::with([
-                'platform', 'camera', 'benchmarks', 'battery', 'connectivity', 'body'
-            ]);
+            // STEP 2: Query filtered phones from DB
+            $query = \App\Models\Phone::with(['platform', 'battery', 'benchmarks'])
+                ->orderBy('overall_score', 'desc');
 
             if (!empty($searchParams['brand'])) {
                 $query->where('brand', 'like', '%' . $searchParams['brand'] . '%');
@@ -101,108 +105,118 @@ class FindController extends Controller
             if (!empty($searchParams['max_price'])) {
                 $query->where('price', '<=', $searchParams['max_price']);
             }
-            
-            // Order by relevance based on explicit priority or overall score
+
+            // Order by priority
             $priority = $searchParams['priority'] ?? 'overall';
             if ($priority === 'gaming') {
-                $query->orderBy('gpx_score', 'desc');
+                $query->reorder('gpx_score', 'desc');
             } elseif ($priority === 'camera') {
-                $query->orderBy('cms_score', 'desc');
+                $query->reorder('cms_score', 'desc');
             } elseif ($priority === 'battery') {
+                // Join with spec_batteries and order by capacity extracted from battery_type
                 $query->join('spec_batteries', 'phones.id', '=', 'spec_batteries.phone_id')
-                      ->orderBy('spec_batteries.capacity_mah', 'desc')
-                      ->select('phones.*');
+                      ->select('phones.*')
+                      ->orderByRaw("CAST(SUBSTRING(spec_batteries.battery_type FROM '([0-9]+)') AS INTEGER) DESC NULLS LAST");
             } elseif ($priority === 'value') {
-                $query->orderBy('value_score', 'desc');
-            } else {
-                $query->orderBy('overall_score', 'desc');
+                $query->reorder('value_score', 'desc');
             }
 
-            // Fetch top 2 matches to pass as context (reduces heavy token load)
-            $relevantPhones = $query->select('phones.*')->limit(2)->get();
-            $simplifiedPhones = $relevantPhones->map(function (\App\Models\Phone $phone) {
-                // Ensure image URLs output as valid absolute/storage paths for UI cards
+            // Get top 8 filtered matches for better variety
+            $filteredPhones = $query->limit(8)->get();
+
+            // If user is asking about a specific phone by name, make sure it's included
+            if (!empty($searchParams['phone_name'])) {
+                $specificPhone = \App\Models\Phone::with(['platform', 'battery', 'benchmarks'])
+                    ->where('name', 'like', '%' . $searchParams['phone_name'] . '%')
+                    ->first();
+                if ($specificPhone && !$filteredPhones->contains('id', $specificPhone->id)) {
+                    $filteredPhones->prepend($specificPhone);
+                }
+            }
+
+            // STEP 3: Build compact context from filtered phones
+            $phoneLines = [];
+            $cardLines = [];
+            foreach ($filteredPhones as $rank => $phone) {
                 $imageUrl = trim($phone->image_url ?? '');
                 if ($imageUrl && !str_starts_with($imageUrl, 'http') && !str_starts_with($imageUrl, '/')) {
                     $imageUrl = '/storage/' . ltrim($imageUrl, '/');
                 }
 
-                // Helper to strip massive nulls and metadata from payload objects to save TPM context size
-                $cleanSpecs = function($relation) {
-                    if (!$relation) return null;
-                    $arr = $relation->toArray();
-                    return array_filter($arr, function($val, $key) {
-                        return $val !== null && $val !== '' && !in_array($key, ['id', 'phone_id', 'created_at', 'updated_at']);
-                    }, ARRAY_FILTER_USE_BOTH);
-                };
+                $chipset = trim($phone->platform->chipset ?? '?');
+                $batteryType = trim($phone->battery->battery_type ?? '?');
+                $endurance = $phone->calculateEnduranceScore();
 
-                return [
-                    'name' => $phone->name,
-                    'price' => $phone->price,
-                    'overall_score' => $phone->overall_score,
-                    'expert_score' => $phone->expert_score,
-                    'value_score' => $phone->value_score,
-                    'ueps' => $phone->ueps_score,
-                    'cms' => $phone->cms_score,
-                    'gpx' => $phone->gpx_score,
-                    'endurance' => $phone->calculateEnduranceScore(),
-                    'specs' => array_filter([
-                        'platform' => $cleanSpecs($phone->platform),
-                        'camera' => $cleanSpecs($phone->camera),
-                        'battery' => $cleanSpecs($phone->battery),
-                        'connectivity' => $cleanSpecs($phone->connectivity),
-                        'body' => $cleanSpecs($phone->body),
-                        'benchmarks' => $cleanSpecs($phone->benchmarks),
-                    ]),
-                    'card_string' => "[CARD|" . trim($phone->name) . "|₹" . number_format($phone->price ?? 0, 0, '.', ',') . "|" . $imageUrl . "|/phones/" . $phone->id . "|" . trim($phone->platform->chipset ?? 'Unknown SoC') . "|" . trim($phone->battery->battery_type ?? '') . "|" . trim($phone->amazon_url ?? '') . "|" . trim($phone->flipkart_url ?? '') . "]",
-                ];
-            });
-            
-            $contextString = "DATABASE CONTEXT:\n";
-            $contextString .= json_encode($simplifiedPhones->toArray());
+                $phoneLines[] = ($rank + 1) . ". {$phone->name} | ₹" . number_format($phone->price ?? 0) .
+                    " | OS:{$phone->overall_score} ES:{$phone->expert_score} VS:{$phone->value_score}" .
+                    " | UEPS:{$phone->ueps_score} CMS:{$phone->cms_score} GPX:{$phone->gpx_score} END:{$endurance}" .
+                    " | {$chipset} | {$batteryType}";
 
-            // STEP 3: Final Generation
-            $systemInstruction = "You are an expert AI Phone Consultant for Phone Finder Hub. Act like a helpful agent. Instead of dropping lists of specs, ALWAYS ask clarifying questions first if the user hasn't provided enough details. ALWAYS ask for their exact budget/price range and priorities (gaming, camera, endurance).\n\n" .
-                                 "CRITICAL INSTRUCTION - ONE QUESTION AT A TIME:\n" .
-                                 "You must ONLY ASK ONE QUESTION AT A TIME. DO NOT present multiple lists of different questions or button groups in a single response. Wait for the user to answer the first question before moving on. For example, either ask about their budget OR ask about their priorities, but NEVER both at the same time.\n\n" .
-                                 "CRITICAL INSTRUCTION - FORMATTING OPTIONS:\n" .
-                                 "When you ask the user for their preferences, DO NOT use standard markdown bullet points. You MUST format choices using the special exact tag `[BTN|Choice Text]`.\n" .
-                                 "Example single-question output:\n" .
-                                 "To narrow it down, could you let me know what matters most to you?\n" .
-                                 "[BTN|Camera Quality (Photos & Video)]\n" .
-                                 "[BTN|Heavy Gaming Performance]\n" .
-                                 "[BTN|All-day Battery Life]\n\n" .
-                                 "The user uses this website to look for phones. Answer queries based ONLY on general real-world knowledge AND the DATABASE CONTEXT provided. Note: Context now includes FULL detailed specs. If giving details about the value table, explain: UEPS = User Experience Performance Score, CMS = Camera Matrix Score, GPX = Gaming Performance Index, Endurance = Battery Life Rating. Note: 'Turnip' refers to custom open-source GPU drivers for Snapdragon chips that massively improve gaming/emulation performance. 'Bootloader unlock' means the phone allows flashing custom ROMs and rooting.\n\n" .
-                                 "CRITICAL INSTRUCTION - PRODUCT CARDS & COMPARISONS:\n" .
-                                 "When recommending or comparing multiple phones, you MUST explicitly mention and compare their exact CMS, UEPS, Endurance, and GPX scores as provided in the context.\n" .
-                                 "You MUST output the EXACT \"card_string\" provided for that phone in the context, followed by a short summary of why it fits their needs, key specs, and performance scores. \n" .
-                                 "Do NOT put the card_string in a code block or markdown formatting like ` or **. Output it exactly as raw plain text so the system can parse it. \n" .
-                                 "For example:\n" .
-                                 "[CARD|Oppo Find X9 Pro|₹50,000|/image/path.jpg|/phones/5|Snapdragon 8 Gen 3|5000 mAh|https://amazon.in/..|https://flipkart.com/..]\n" .
-                                 "This phone features an excellent GPX score of 250 and great endurance, making it perfect for your needs.";
-
-            // Format history
-            $messages = [];
-            $messages[] = ['role' => 'system', 'content' => $systemInstruction];
-            foreach ($history as $msg) {
-                $messages[] = [
-                    'role' => $msg['role'],
-                    'content' => $msg['content'],
-                ];
+                $cardLines[] = "[CARD|" . trim($phone->name) . "|₹" . number_format($phone->price ?? 0, 0, '.', ',') .
+                    "|" . $imageUrl . "|/phones/" . $phone->id .
+                    "|" . $chipset . "|" . $batteryType .
+                    "|" . trim($phone->amazon_url ?? '') . "|" . trim($phone->flipkart_url ?? '') . "]";
             }
 
-            // Add the current user message + RAG Context
-            $finalUserMessage = "User Query: " . $userMessage . "\n\n" . $contextString;
-            $messages[] = [
-                'role' => 'user',
-                'content' => $finalUserMessage,
-            ];
+            $phoneDatabase = implode("\n", $phoneLines);
+            $cardLookup = implode("\n", $cardLines);
 
-            \Log::info("FindController: Starting Final API request to Groq via Stream");
-            
+
+            // STEP 4: Build system prompt
+            $systemPrompt = <<<PROMPT
+You are PhoneFinder AI, a concise phone consultant for PhoneFinderHub.
+
+⚠️ ABSOLUTE RULES:
+- ONLY recommend phones from the list below. NEVER invent a phone.
+- ONLY use data provided below. Do NOT make up specs like RAM, camera MP, display size, or any detail not listed.
+- ONLY use the exact [CARD|...] strings below. NEVER fabricate card strings.
+
+PHONES:
+{$phoneDatabase}
+
+CARDS (COPY-PASTE exactly — never modify or create new ones):
+{$cardLookup}
+
+SCORES (use full names when talking to user):
+Overall Score (max ~60), Expert Score (max ~80), Value Score (bang-for-buck), UEPS/User Experience (max 255), Camera Mastery Score (max ~1330), Gaming Performance Index (max ~300), Endurance (max ~160).
+
+KNOWLEDGE (mention ONLY if user asks):
+- Turnip: Open-source GPU drivers for game emulation. ONLY works on Snapdragon phones with Adreno GPUs. Mediatek/Exynos phones do NOT support Turnip.
+- Bootloader unlock: Allows custom ROMs. Availability varies by brand — OnePlus/Realme usually allow it, Samsung makes it harder, some brands block it entirely.
+
+RULES:
+1. ONLY state facts from the data above. If info isn't in the data, say "I don't have that detail."
+2. Output the [CARD|...] string when recommending. Never list phones as plain text.
+3. For multiple phones, put each [CARD|...] on its own line, then a brief comparison.
+4. Be CONCISE — 2-3 sentences max after the card. No walls of text or spec dump lists.
+5. Use full score names (e.g. "Camera Mastery Score: 853").
+6. Ask ONE question if you need budget/priority. Use [BTN|Choice Text] for options.
+7. Stay on topic. Don't switch phones unless asked.
+8. If user asks about Turnip/bootloader, check the chipset — if it's Mediatek/Exynos, tell them Turnip is not supported.
+PROMPT;
+
+            // Build messages array
+            $messages = [];
+            $messages[] = ['role' => 'system', 'content' => $systemPrompt];
+
+            // Include conversation history (last 10 exchanges max)
+            $historySlice = array_slice($history, -20);
+            foreach ($historySlice as $msg) {
+                if (isset($msg['role']) && isset($msg['content']) && !empty(trim($msg['content']))) {
+                    $messages[] = [
+                        'role' => $msg['role'],
+                        'content' => $msg['content'],
+                    ];
+                }
+            }
+
+            $messages[] = ['role' => 'user', 'content' => $userMessage];
+
+            \Log::info("FindController: Sending " . count($messages) . " messages (" . $filteredPhones->count() . " phones in context)");
+
             return response()->stream(function () use ($apiKey, $messages, $userMessage, $chatId) {
                 $title = null;
-                
+
                 // Process Chat Title & DB Before Streaming starts
                 if (auth()->check()) {
                     if (!$chatId) {
@@ -254,8 +268,8 @@ class FindController extends Controller
                         'json' => [
                             'model' => $model,
                             'messages' => $messages,
-                            'temperature' => 0.7,
-                            'max_completion_tokens' => 4096,
+                            'temperature' => 0.6,
+                            'max_completion_tokens' => 2048,
                             'stream' => true,
                         ],
                         'stream' => true,
@@ -264,7 +278,6 @@ class FindController extends Controller
 
                 try {
                     try {
-                        // Attempt Primary Model (70B)
                         $response = $makeRequest('llama-3.3-70b-versatile');
                     } catch (\GuzzleHttp\Exception\ClientException $e) {
                          if ($e->getResponse()->getStatusCode() === 429) {
@@ -277,7 +290,7 @@ class FindController extends Controller
 
                     $body = $response->getBody();
                     $assistantMessage = '';
-                    
+
                     while (!$body->eof()) {
                         $line = \GuzzleHttp\Psr7\Utils::readLine($body);
                         if (str_starts_with($line, 'data: ')) {
@@ -303,7 +316,7 @@ class FindController extends Controller
                             'content' => $assistantMessage,
                         ]);
                     }
-                    
+
                     echo "data: " . json_encode(['type' => 'done']) . "\n\n";
                     if (ob_get_level() > 0) ob_flush();
                     flush();
@@ -318,8 +331,6 @@ class FindController extends Controller
                 'Content-Type' => 'text/event-stream',
                 'X-Accel-Buffering' => 'no',
             ]);
-
-
 
         } catch (\Exception $e) {
             \Log::error('Chat Exception: ' . $e->getMessage());

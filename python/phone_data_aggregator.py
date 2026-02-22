@@ -57,7 +57,7 @@ except ImportError:
 try:
     from rembg import remove, new_session
     HAS_REMBG = True
-except ImportError:
+except Exception:
     HAS_REMBG = False
 
 
