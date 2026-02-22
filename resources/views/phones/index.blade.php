@@ -4,21 +4,7 @@
     <div class="min-h-screen animate-fadeInUp">
 
         <!-- Modern Hero Section -->
-        <div class="relative bg-gradient-to-b from-teal-50/80 via-white to-gray-100 dark:from-teal-950/40 dark:via-[#050505] dark:to-[#050505] pt-24 pb-20 md:pt-32 md:pb-32 border-b border-teal-100 dark:border-teal-900/30 z-10" 
-             :class="{ 'z-[100]': isSearchFocused }" 
-             x-data="{ isSearchFocused: false }"
-             @search-focused.window="isSearchFocused = $event.detail">
-            <!-- Search Focus Overlay -->
-            <div x-show="isSearchFocused"
-                 x-transition:enter="transition opacity-0 duration-500"
-                 x-transition:enter-start="opacity-0"
-                 x-transition:enter-end="opacity-100"
-                 x-transition:leave="transition opacity-100 duration-500"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0"
-                 class="fixed inset-0 bg-black/30 backdrop-blur-xl z-[90]"
-                 style="display: none;">
-            </div>
+        <div class="relative bg-gradient-to-b from-teal-50/80 via-white to-gray-100 dark:from-teal-950/40 dark:via-[#050505] dark:to-[#050505] pt-24 pb-28 md:pt-32 md:pb-40 border-b border-teal-100 dark:border-teal-900/30 z-10">
 
             <!-- Animated Background Elements -->
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
@@ -27,7 +13,7 @@
                 <div class="absolute bottom-0 left-1/3 w-64 h-64 bg-teal-400/5 rounded-full blur-[80px] animate-pulse delay-700"></div>
             </div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative text-center" style="z-index: 95;">
+            <div class="w-full px-4 sm:px-6 lg:px-8 relative text-center" style="z-index: 95;">
                 <h1
                     class="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 dark:text-white mb-8 leading-[0.9] md:leading-[0.85]">
                     <span class="inline-block animate-title-reveal">Find Value,</span>
@@ -54,7 +40,6 @@
                     charIndex: 0,
                     isDeleting: false,
                     typeSpeed: 100,
-                    isSearchFocused: false,
                     init() {
                         this.typeLoop();
                         
@@ -66,9 +51,6 @@
                             }
                         });
 
-                        this.$watch('isSearchFocused', (val) => {
-                            window.dispatchEvent(new CustomEvent('search-focused', { detail: val }));
-                        });
 
                         this.$watch('query', (value) => {
                             if (value.length < 2) {
@@ -130,7 +112,7 @@
                             </svg>
                         </div>
                         <input type="text" x-model="query" :placeholder="placeholder" x-ref="searchInput"
-                            @focus="isSearchFocused = true" @blur="setTimeout(() => isSearchFocused = false, 200)"
+
                             class="w-full bg-transparent border-0 focus:ring-0 text-xl font-medium text-slate-900 dark:text-white placeholder-slate-400/50 h-14 px-4 pr-16">
                         
                         <div class="absolute right-4 flex items-center gap-3">
@@ -216,7 +198,7 @@
                     
                     <!-- Gaming -->
                     <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 shadow-sm">
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/30 bg-white dark:bg-white/10 shadow-sm">
                         <span class="relative flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
@@ -227,7 +209,7 @@
 
                     <!-- Camera -->
                     <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 shadow-sm">
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/30 bg-white dark:bg-white/10 shadow-sm">
                         <span class="relative flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
@@ -239,7 +221,7 @@
 
                     <!-- Battery -->
                     <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 shadow-sm">
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/30 bg-white dark:bg-white/10 shadow-sm">
                         <span class="relative flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
@@ -248,8 +230,7 @@
                         </span>
                     </button>
                 </div>
-                <!-- Section Transition Gradient -->
-                <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 dark:from-black to-transparent z-0 pointer-events-none"></div>
+
             </div>
         </div>
 
