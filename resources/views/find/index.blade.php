@@ -204,13 +204,14 @@
                         <div class="flex flex-col gap-2 relative">
                             <!-- User Message -->
                             <template x-if="msg.role === 'user'">
-                                <div class="self-end flex flex-col items-end gap-1">
-                                    <template x-if="userName">
-                                        <span class="text-[11px] font-semibold text-gray-500 dark:text-gray-400 mr-2" x-text="userName"></span>
-                                    </template>
-                                    <div
-                                        class="max-w-[85%] sm:max-w-[75%] rounded-[24px] rounded-br-[8px] bg-gray-100 dark:bg-[#1e1f20] px-5 py-3.5 text-black dark:text-[#e3e3e3] text-[15px] leading-relaxed relative group">
-                                        <span x-html="renderMarkdown(msg.content)"></span>
+                                <div class="w-full flex justify-end">
+                                    <div class="flex flex-col items-end gap-1 max-w-[85%] sm:max-w-[75%]">
+                                        <template x-if="userName">
+                                            <span class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 mr-1" x-text="userName"></span>
+                                        </template>
+                                        <div class="rounded-[20px] rounded-br-[6px] bg-indigo-600 dark:bg-indigo-700 px-5 py-3 text-white text-[15px] leading-relaxed">
+                                            <span x-html="renderMarkdown(msg.content)"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </template>
