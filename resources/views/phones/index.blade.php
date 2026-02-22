@@ -17,8 +17,10 @@
                     class="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 dark:text-white mb-8 leading-[0.9] md:leading-[0.85]">
                     <span class="inline-block animate-title-reveal">Find Value,</span>
                     <br class="hidden md:block">
-                    <span class="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 bg-[length:200%_auto] animate-gradient-x animate-title-reveal delay-200">
-                        Not Hype.
+                    <span class="inline-block animate-title-reveal delay-200">
+                        <span class="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 bg-[length:200%_auto] animate-gradient-x">
+                            Not Hype.
+                        </span>
                     </span>
                 </h1>
                 <p
