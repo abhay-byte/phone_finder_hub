@@ -9,21 +9,14 @@
      x-data="chatAgent({{ json_encode($chats ?? []) }})"
      @send-msg.window="inputMessage = $event.detail; sendMessage();">
 
-    <!-- Mobile Sidebar Toggle -->
-    <div class="absolute top-4 left-4 z-50 lg:hidden" x-show="messages.length > 0 && !sidebarOpen">
-        <button @click="sidebarOpen = !sidebarOpen" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition shadow-md">
-            <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-            </svg>
-        </button>
-    </div>
+
 
     <!-- Sidebar (History) -->
     <div class="bg-gray-50 dark:bg-[#1e1f20] w-[260px] xl:w-[calc(100%/6)] h-full flex flex-col shrink-0 border-r border-gray-200 dark:border-gray-800 absolute lg:relative z-40 transform transition-transform duration-300"
          :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
         
         <!-- Mobile Close Button -->
-        <button @click="sidebarOpen = false" class="absolute top-2 right-2 p-2 bg-gray-200 dark:bg-[#333538] text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-full z-[60] lg:hidden transition shadow-sm">
+        <button @click="sidebarOpen = false" class="absolute top-4 right-3 p-2 bg-gray-200 dark:bg-[#333538] text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white rounded-full z-[60] lg:hidden transition shadow-sm">
              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
 
@@ -71,7 +64,7 @@
 
     <!-- Main Chat Area -->
     <div class="flex-1 flex flex-col h-full relative">
-        <div class="absolute top-4 left-4 z-50 lg:hidden" x-show="messages.length === 0 && !sidebarOpen">
+        <div class="absolute top-2 left-2 z-20 lg:hidden" x-show="!sidebarOpen">
             <button @click="sidebarOpen = !sidebarOpen" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition shadow-md">
                 <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
@@ -80,10 +73,10 @@
         </div>
         
         <!-- Messages Container -->
-        <div id="messages-container" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:px-24 xl:px-48 pb-[150px] sm:pb-[200px] scroll-smooth w-full">
+        <div id="messages-container" class="flex-1 overflow-y-auto p-4 pt-12 sm:pt-4 sm:p-6 lg:px-24 xl:px-48 pb-[140px] sm:pb-[180px] scroll-smooth w-full">
             
             <!-- Welcome State -->
-            <div x-show="messages.length === 0 && !isLoading" class="h-full flex flex-col items-center pt-[15vh] lg:pt-[20vh] text-center w-full">
+            <div x-show="messages.length === 0 && !isLoading" class="h-full flex flex-col items-center pt-[10vh] sm:pt-[15vh] lg:pt-[20vh] text-center w-full">
                 <h2 class="text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 p-2">
                     Hello, {{ auth()->check() ? explode(' ', auth()->user()->name)[0] : 'User' }}
                 </h2>

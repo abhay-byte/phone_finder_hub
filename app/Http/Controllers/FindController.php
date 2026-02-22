@@ -59,10 +59,11 @@ class FindController extends Controller
             $conversationSummary .= "User: {$userMessage}\n";
 
             $extractorInstruction = "Given this phone-finding conversation, extract search filters. Output ONLY a JSON object with: " .
-                "'brand' (string|null), 'min_price' (int|null), 'max_price' (int|null), " .
+                "'brand' (string|null - ONLY if user explicitly mentions a brand name like Samsung, OnePlus, etc.), " .
+                "'min_price' (int|null), 'max_price' (int|null), " .
                 "'priority' (string: 'gaming'|'camera'|'battery'|'value'|'overall', default 'overall'), " .
                 "'phone_name' (string|null - exact phone name if user is asking about a specific phone already discussed). " .
-                "Look at the ENTIRE conversation to determine the user's budget and preferences, not just the latest message.";
+                "IMPORTANT: Do NOT set brand unless user explicitly says a brand name. Look at the ENTIRE conversation to determine budget and preferences.";
 
             $extractionResponse = Http::timeout(15)->withHeaders([
                 'Authorization' => 'Bearer ' . $apiKey,
@@ -118,8 +119,8 @@ class FindController extends Controller
                 $query->reorder('value_score', 'desc');
             }
 
-            // Get top 5 filtered matches
-            $filteredPhones = $query->limit(5)->get();
+            // Get top 8 filtered matches for better variety
+            $filteredPhones = $query->limit(8)->get();
 
             // If user is asking about a specific phone by name, make sure it's included
             if (!empty($searchParams['phone_name'])) {
@@ -165,27 +166,27 @@ You are PhoneFinder AI, a friendly expert phone consultant for PhoneFinderHub.
 MATCHING PHONES FROM DATABASE:
 {$phoneDatabase}
 
-CARD STRINGS (output the one matching the phone name EXACTLY as raw text - no code blocks, no backticks, no "PhoneName =>" prefix):
+CARD STRINGS (you MUST copy-paste one of these EXACTLY when recommending a phone — no tables, no plain text lists):
 {$cardLookup}
 
 SCORE GUIDE (ALWAYS use the FULL NAME when talking to the user, never abbreviations):
-- Overall Score (OS) — Our composite ranking combining all metrics. Max ~60.
-- Expert Score (ES) — Professional reviewer consensus score. Max ~80.
-- Value Score (VS) — Bang-for-buck rating: (weighted performance / price) × 10,000. Higher = better deal.
-- UEPS (User Experience Performance Score) — 45-point system across 40 criteria in 7 categories (display, build, software, connectivity, etc). Max 255.
-- CMS (Camera Mastery Score) — 1330-point comprehensive camera scoring covering hardware specs, imaging capabilities, and professional benchmarks. Max ~1330.
-- GPX (Gaming Performance Index) — 300-point gaming benchmark covering thermals, emulation, Turnip driver support, and input latency. Max ~300.
-- Endurance — Battery life rating combining raw capacity (mAh) with active screen-on efficiency (hours). Max ~160.
+- Overall Score — Our composite ranking combining all metrics. Max ~60.
+- Expert Score — Professional reviewer consensus score. Max ~80.
+- Value Score — Bang-for-buck rating. Higher = better deal.
+- UEPS (User Experience Performance Score) — 40 criteria across 7 categories. Max 255.
+- Camera Mastery Score (CMS) — 1330-point camera scoring covering hardware + imaging + benchmarks.
+- Gaming Performance Index (GPX) — 300-point gaming benchmark. Thermals, emulation, Turnip support.
+- Endurance — Battery life rating. Raw capacity (mAh) + active screen-on efficiency. Max ~160.
 
-RULES:
+CRITICAL RULES:
 1. STAY ON TOPIC. If discussing a phone, keep talking about THAT phone unless user asks otherwise.
-2. When recommending, output the EXACT [CARD|...] string for that phone, then summarize why with scores using FULL NAMES (e.g. "Gaming Performance Index: 242" not "GPX: 242").
-3. When recommending MULTIPLE phones, output each [CARD|...] string on its own line, followed by a brief comparison paragraph.
-4. Compare scores side-by-side when comparing phones.
+2. You MUST output the [CARD|...] string when recommending ANY phone. NEVER list phones as plain text — always use the card. This is non-negotiable.
+3. When recommending MULTIPLE phones, output each [CARD|...] string on its own line. Then write a brief comparison.
+4. Use FULL score names (e.g. "Camera Mastery Score: 853" not "CMS: 853").
 5. Ask ONE question at a time if you need budget or priority. Format choices as [BTN|Choice Text].
-6. Be concise. Don't repeat info. Close the sale by mentioning where to buy.
-7. For follow-up questions about an already-discussed phone, DON'T show a different phone's card.
-8. 'Turnip' = open-source GPU drivers for Snapdragon that boost gaming/emulation. 'Bootloader unlock' = custom ROM support.
+6. Be concise. Close the sale — the card has buy links.
+7. For follow-up questions about a phone already discussed, just answer without showing a different card.
+8. Recommend the BEST phones from the list — pick the ones with the highest relevant score for the user's priority.
 PROMPT;
 
             // Build messages array
