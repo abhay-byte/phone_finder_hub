@@ -8,7 +8,7 @@
 
 @section('content')
     <div class="h-[calc(100vh-64px)] min-h-[calc(100dvh-64px)] w-full flex bg-white dark:bg-[#131314] overflow-hidden relative"
-        x-data="chatAgent({{ json_encode($chats ?? []) }})" x-init="sidebarOpen = window.innerWidth >= 1024" @send-msg.window="inputMessage = $event.detail; sendMessage();">
+        x-data="chatAgent({{ json_encode($chats ?? []) }}, {{ json_encode(auth()->user()?->name ?? null) }})" x-init="sidebarOpen = window.innerWidth >= 1024" @send-msg.window="inputMessage = $event.detail; sendMessage();">
 
 
 
@@ -204,9 +204,14 @@
                         <div class="flex flex-col gap-2 relative">
                             <!-- User Message -->
                             <template x-if="msg.role === 'user'">
-                                <div
-                                    class="self-end max-w-[85%] sm:max-w-[75%] rounded-[24px] rounded-br-[8px] bg-gray-100 dark:bg-[#1e1f20] px-5 py-3.5 text-black dark:text-[#e3e3e3] text-[15px] leading-relaxed relative group">
-                                    <span x-html="renderMarkdown(msg.content)"></span>
+                                <div class="self-end flex flex-col items-end gap-1">
+                                    <template x-if="userName">
+                                        <span class="text-[11px] font-semibold text-gray-500 dark:text-gray-400 mr-2" x-text="userName"></span>
+                                    </template>
+                                    <div
+                                        class="max-w-[85%] sm:max-w-[75%] rounded-[24px] rounded-br-[8px] bg-gray-100 dark:bg-[#1e1f20] px-5 py-3.5 text-black dark:text-[#e3e3e3] text-[15px] leading-relaxed relative group">
+                                        <span x-html="renderMarkdown(msg.content)"></span>
+                                    </div>
                                 </div>
                             </template>
 
@@ -298,8 +303,9 @@
 
     <script>
         document.addEventListener('alpine:init', () => {
-            Alpine.data('chatAgent', (initialChats) => ({
+            Alpine.data('chatAgent', (initialChats, userName) => ({
                 chatHistoryList: initialChats,
+                userName: userName,
                 currentChatId: null,
                 messages: [],
                 inputMessage: '',

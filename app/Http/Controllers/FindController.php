@@ -30,17 +30,71 @@ class FindController extends Controller
         return view('find.index', compact('chats', 'allPhoneNames'));
     }
 
+    /**
+     * Extract budget from the full conversation context (current message + recent history).
+     * Returns INR amount or null if no budget mentioned.
+     */
+    protected function extractBudget(string $currentMessage, array $history): ?int
+    {
+        // Combine recent history + current message text for budget detection
+        $recent = collect($history)->filter(fn($m) => ($m['role'] ?? '') === 'user')
+            ->values()->last()['content'] ?? '';
+        $text = strtolower($recent . ' ' . $currentMessage);
+
+        // Remove commas for easier parsing
+        $text = str_replace(',', '', $text);
+
+        // Match patterns like: under 45000, under ₹45k, below 45000, budget 45k, ≤45000
+        $patterns = [
+            '/(?:under|below|within|max|upto|up to|≤|less than)\s*[₹rs.]?\s*(\d+)\s*k\b/u',
+            '/(?:under|below|within|max|upto|up to|≤|less than)\s*[₹rs.]?\s*(\d{4,6})/u',
+            '/[₹rs.]?\s*(\d+)\s*k\s*(?:budget|range|price|phone)/u',
+            '/budget\s*(?:of\s*)?[₹rs.]?\s*(\d+)\s*k\b/u',
+            '/budget\s*(?:of\s*)?[₹rs.]?\s*(\d{4,6})/u',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $text, $m)) {
+                $val = (int) $m[1];
+                // If the number looks like it's in "k" suffix form (e.g. 45 → 45000)
+                if ($val < 1000) {
+                    $val *= 1000;
+                }
+                return $val;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Detect user priority from the current message.
+     * Returns one of: camera, gaming, battery, value, experience, overall
+     */
+    protected function detectPriority(string $message): string
+    {
+        $msg = strtolower($message);
+
+        if (preg_match('/\b(camera|photo|photography|selfie|portrait|zoom|video)\b/', $msg)) return 'camera';
+        if (preg_match('/\b(gaming|game|gpu|fps|gfx|graphic|3dmark|geekbench)\b/', $msg)) return 'gaming';
+        if (preg_match('/\b(battery|endurance|backup|life|charging|mah)\b/', $msg)) return 'battery';
+        if (preg_match('/\b(cheap|value|budget|bang|affordable|price)\b/', $msg)) return 'value';
+        if (preg_match('/\b(experience|smooth|ui|performance|daily)\b/', $msg)) return 'experience';
+
+        return 'overall';
+    }
+
     public function chat(Request $request)
     {
         $request->validate([
-            'message' => 'required|string',
-            'chat_id' => 'nullable|exists:chats,id',
-            'history' => 'nullable|array',
+            'message'  => 'required|string',
+            'chat_id'  => 'nullable|exists:chats,id',
+            'history'  => 'nullable|array',
         ]);
 
         $userMessage = $request->message;
-        $chatId = $request->chat_id;
-        $history = $request->history ?? [];
+        $chatId      = $request->chat_id;
+        $history     = $request->history ?? [];
 
         $apiKey = config('services.nvidia.api_key');
         if (!$apiKey) {
@@ -48,29 +102,70 @@ class FindController extends Controller
         }
 
         try {
-            // Fetch ALL phones directly to feed the entire database into Nemotron's large context window.
-            // This relies on the AI organic reasoning to filter by budget/priority, bypassing fragile pre-extraction.
-            $filteredPhones = \App\Models\Phone::with(['platform', 'battery', 'benchmarks'])
-                ->orderBy('overall_score', 'desc')
-                ->get();
+            // ── Step 1: Detect budget from CURRENT message (not full history) ───
+            $budget = $this->extractBudget($userMessage, $history);
 
-            // STEP 3: Build compact context from ALL phones
+            // ── Step 2: Detect priority from current message ─────────────────────
+            $priority = $this->detectPriority($userMessage);
+
+            // ── Step 3: Build query – apply server-side budget filter ────────────
+            $query = \App\Models\Phone::with(['platform', 'battery', 'benchmarks', 'body', 'connectivity']);
+
+            if ($budget) {
+                // Allow a small overshoot (5%) so ₹42,450 phones show for ₹45k
+                $query->where('price', '<=', $budget * 1.05);
+            }
+
+            // Sort by the detected priority score
+            $orderMap = [
+                'camera'     => 'cms_score',
+                'gaming'     => 'gpx_score',
+                'battery'    => 'endurance_score',
+                'value'      => 'value_score',
+                'experience' => 'ueps_score',
+                'overall'    => 'overall_score',
+            ];
+            $query->orderBy($orderMap[$priority] ?? 'overall_score', 'desc');
+
+            // Limit context to top 15 by priority to keep prompt focused
+            $filteredPhones = $query->limit(15)->get();
+
+            // ── Step 4: Build compact context ────────────────────────────────────
             $phoneLines = [];
-            $cardLines = [];
+            $cardLines  = [];
+
             foreach ($filteredPhones as $rank => $phone) {
                 $imageUrl = trim($phone->image_url ?? '');
                 if ($imageUrl && !str_starts_with($imageUrl, 'http') && !str_starts_with($imageUrl, '/')) {
                     $imageUrl = '/storage/' . ltrim($imageUrl, '/');
                 }
 
-                $chipset = trim($phone->platform->chipset ?? '?');
-                $batteryType = trim($phone->battery->battery_type ?? '?');
-                $endurance = $phone->calculateEnduranceScore();
+                $chipset      = trim($phone->platform->chipset ?? '?');
+                $batteryType  = trim($phone->battery->battery_type ?? '?');
+                $ram          = trim($phone->platform->ram ?? '');
+                $storage      = trim($phone->platform->internal_storage ?? '');
+                $displaySize  = trim($phone->body->display_size ?? '');
+                $displayType  = trim($phone->body->display_type ?? '');
+                $wiredCharging = trim($phone->battery->charging_wired ?? '');
+                $nfc          = trim($phone->connectivity->nfc ?? '');
+                $jack         = trim($phone->connectivity->jack_3_5mm ?? '');
+                $endurance    = $phone->endurance_score ?? 0;
+
+                // Compact spec line: all relevant facts in one line
+                $specLine = "{$chipset}";
+                if ($ram)          $specLine .= " | RAM:{$ram}";
+                if ($storage)      $specLine .= " | Storage:{$storage}";
+                if ($displaySize)  $specLine .= " | Display:{$displaySize}";
+                if ($displayType && strlen($displayType) < 60) $specLine .= " ({$displayType})";
+                $specLine .= " | {$batteryType}";
+                if ($wiredCharging) $specLine .= " {$wiredCharging}";
+                if ($nfc && stripos($nfc, 'yes') !== false) $specLine .= " | NFC";
+                if ($jack && stripos($jack, 'no') === false)  $specLine .= " | 3.5mm";
 
                 $phoneLines[] = ($rank + 1) . ". {$phone->name} | ₹" . number_format($phone->price ?? 0) .
-                    " | OS:{$phone->overall_score} ES:{$phone->expert_score} VS:{$phone->value_score}" .
+                    " | Overall:{$phone->overall_score} Expert:{$phone->expert_score} Value:{$phone->value_score}" .
                     " | UEPS:{$phone->ueps_score} CMS:{$phone->cms_score} GPX:{$phone->gpx_score} END:{$endurance}" .
-                    " | {$chipset} | {$batteryType}";
+                    "\n   SPECS: {$specLine}";
 
                 $cardLines[] = "[CARD|" . trim($phone->name) . "|₹" . number_format($phone->price ?? 0, 0, '.', ',') .
                     "|" . $imageUrl . "|/phones/" . $phone->id .
@@ -79,115 +174,133 @@ class FindController extends Controller
             }
 
             $phoneDatabase = implode("\n", $phoneLines);
-            $cardLookup = implode("\n", $cardLines);
+            $cardLookup    = implode("\n", $cardLines);
 
+            // ── Step 5: Build top ranklists ──────────────────────────────────────
+            $budgetClause = $budget ? "where price <= " . intval($budget * 1.05) : "";
+            $topCms  = DB::select("SELECT name FROM phones {$budgetClause} ORDER BY cms_score  DESC LIMIT 5");
+            $topGpx  = DB::select("SELECT name FROM phones {$budgetClause} ORDER BY gpx_score  DESC LIMIT 5");
+            $topUeps = DB::select("SELECT name FROM phones {$budgetClause} ORDER BY ueps_score DESC LIMIT 5");
+            $topEnd  = DB::select("SELECT name FROM phones {$budgetClause} ORDER BY endurance_score DESC LIMIT 5");
 
-            // STEP 4: Build concise ranklists for context
-            $topExpert = DB::table('phones')->orderBy('expert_score', 'desc')->limit(5)->pluck('name')->toArray();
-            $topCms = DB::table('phones')->orderBy('cms_score', 'desc')->limit(5)->pluck('name')->toArray();
-            $topGpx = DB::table('phones')->orderBy('gpx_score', 'desc')->limit(5)->pluck('name')->toArray();
-            $topUeps = DB::table('phones')->orderBy('ueps_score', 'desc')->limit(5)->pluck('name')->toArray();
-            $topEndurance = DB::table('phones')->orderBy('endurance_score', 'desc')->limit(5)->pluck('name')->toArray();
+            $fmt = fn($rows) => implode(', ', array_column($rows, 'name'));
 
-            $ranklistContext = "TOP RANKINGS:\n" .
-                "- Expert Score: " . implode(', ', $topExpert) . "\n" .
-                "- Camera (CMS): " . implode(', ', $topCms) . "\n" .
-                "- Gaming (GPX): " . implode(', ', $topGpx) . "\n" .
-                "- Experience (UEPS): " . implode(', ', $topUeps) . "\n" .
-                "- Endurance: " . implode(', ', $topEndurance);
+            $budgetLabel = $budget ? " (within ₹" . number_format($budget) . " budget)" : " (no budget filter)";
+            $ranklistContext = "TOP RANKINGS{$budgetLabel}:\n" .
+                "- Best Camera (CMS): "   . $fmt($topCms)  . "\n" .
+                "- Best Gaming (GPX): "   . $fmt($topGpx)  . "\n" .
+                "- Best Experience(UEPS):" . $fmt($topUeps) . "\n" .
+                "- Best Endurance: "       . $fmt($topEnd);
 
-            // STEP 5: Build system prompt
+            // ── Step 6: Build system prompt ───────────────────────────────────────
+            $priorityInstruction = match($priority) {
+                'camera'     => "The user is asking about CAMERA. Rank primarily by Camera Mastery Score (CMS). The list below is already sorted by CMS descending.",
+                'gaming'     => "The user is asking about GAMING. Rank primarily by Gaming Performance Index (GPX). The list below is already sorted by GPX descending.",
+                'battery'    => "The user is asking about BATTERY/ENDURANCE. Rank primarily by Endurance score. The list below is already sorted by Endurance descending.",
+                'value'      => "The user is asking about VALUE/BUDGET. Rank primarily by Value Score. The list below is already sorted by Value descending.",
+                'experience' => "The user is asking about USER EXPERIENCE. Rank primarily by UEPS. The list below is already sorted by UEPS descending.",
+                default      => "The user is asking a general question. Use Overall Score as primary ranking.",
+            };
+
+            $budgetInstruction = $budget
+                ? "⚠️ STRICT BUDGET: The user specified a budget of ₹" . number_format($budget) . ". ALL phones below are already filtered within this budget. Do NOT recommend any phone with a higher price."
+                : "No budget constraint detected. Recommend based on priority.";
+
             $systemPrompt = <<<PROMPT
 You are PhoneFinder AI, a concise phone consultant for PhoneFinderHub.
 
 ⚠️ ABSOLUTE RULES:
-- ONLY recommend phones from the list below. NEVER invent a phone.
-- ONLY use data provided below. Do NOT make up specs like RAM, camera MP, display size, or any detail not listed.
-- ONLY use the exact [CARD|...] strings below. NEVER fabricate card strings.
+- ONLY recommend phones from the PHONES list below. NEVER invent a phone.
+- ONLY use spec data listed below for each phone. Do NOT invent specs like RAM, camera MP, display details, or any detail NOT listed.
+- ONLY use the exact [CARD|...] strings from CARDS below. NEVER fabricate card strings.
+- ALWAYS base your answer on the CURRENT user message and the sorted list below — do NOT let previous recommendations influence your current answer.
 
-PHONES:
+{$budgetInstruction}
+{$priorityInstruction}
+
+PHONES (sorted by {$priority} priority):
 {$phoneDatabase}
 
-CARDS (COPY-PASTE exactly — never modify or create new ones):
+CARDS (copy-paste exactly — never modify):
 {$cardLookup}
 
-SCORES (use full names when talking to user):
-Overall Score (max ~60), Expert Score (max ~80), Value Score (bang-for-buck), UEPS/User Experience (max 255), Camera Mastery Score (max ~1330), Gaming Performance Index (max ~300), Endurance (max ~160).
+SCORES GUIDE (use full names when speaking to user):
+Overall Score (max ~60), Expert Score (max ~80), Value Score (bang-for-buck),
+UEPS = User Experience Score (max 255), CMS = Camera Mastery Score (max ~1330),
+GPX = Gaming Performance Index (max ~300), END = Endurance Score (max ~160).
 
 {$ranklistContext}
 
 KNOWLEDGE (mention ONLY if user asks):
-- Turnip: Open-source GPU drivers for game emulation. ONLY works on Snapdragon phones with Adreno GPUs. Mediatek/Exynos phones do NOT support Turnip.
-- Bootloader unlock: Allows custom ROMs. Availability varies by brand — OnePlus/Realme usually allow it, Samsung makes it harder, some brands block it entirely.
+- Turnip: Open-source GPU drivers for game emulation. ONLY works on Snapdragon/Adreno GPUs. Mediatek/Exynos = NO Turnip.
+- Bootloader: OnePlus/Realme/Xiaomi/Motorola usually allow, Samsung/Apple block it.
 
-RULES:
-1. ONLY state facts from the data above. If info isn't in the data, say "I don't have that detail."
-2. Output the [CARD|...] string when recommending. Never list phones as plain text.
-3. For multiple phones, put each [CARD|...] on its own line, then a brief comparison.
-4. ABSOLUTELY NEVER copy-paste the raw score data strings (e.g. NEVER write "OS 17.8 ES 45.55 VS 11.7...").
-5. INSTEAD, write 1-2 natural, concise sentences highlighting ONLY the most impressive or relevant specs/scores for the user's request. (e.g. "It has a massive 6500mAh battery and an excellent Camera Mastery Score of 853.")
-6. Use full score names (e.g. "Camera Mastery Score" not "CMS") when talking about them.
-7. Stay on topic. Don't switch phones unless asked.
-8. If user asks about Turnip/bootloader, check the chipset — if it's Mediatek/Exynos, tell them Turnip is not supported.
+RESPONSE RULES:
+1. Output the [CARD|...] for each recommended phone. Never list phones as plain text.
+2. Put each [CARD|...] on its own line with a blank line between them.
+3. After all cards, write 2-4 natural sentences comparing the phones by the relevant priority.
+4. NEVER dump raw score strings (e.g. never write "OS:17.8 ES:45.55..."). Instead say "It has a Camera Mastery Score of 853."
+5. Use full score names (Camera Mastery Score, Gaming Performance Index, etc.), never abbreviations.
+6. If user asks to compare specific phones, show their CARDs then compare specs/scores.
+7. When asked about specs, quote ONLY the SPECS listed in PHONES above for that phone.
+8. If info isn't listed, say "I don't have that detail in our database."
 PROMPT;
 
-            // Build messages array
+            // ── Step 7: Build messages — strip [CARD|...] blobs from history ──────
             $messages = [];
             $messages[] = ['role' => 'system', 'content' => $systemPrompt];
 
-            // Include conversation history (last 10 exchanges max)
-            $historySlice = array_slice($history, -20);
+            // Only send last 12 history messages (6 exchanges); strip card strings from assistant messages
+            $historySlice = array_slice($history, -12);
             foreach ($historySlice as $msg) {
-                if (isset($msg['role']) && isset($msg['content']) && !empty(trim($msg['content']))) {
-                    $messages[] = [
-                        'role' => $msg['role'],
-                        'content' => $msg['content'],
-                    ];
+                if (!isset($msg['role'], $msg['content']) || empty(trim($msg['content']))) continue;
+
+                $content = $msg['content'];
+                // Strip [CARD|...] blobs from assistant messages so they don't pollute the context
+                if ($msg['role'] === 'assistant') {
+                    $content = preg_replace('/\[CARD\|[^\]]+\]/s', '[phone card shown to user]', $content);
+                    $content = trim($content);
+                    if (empty($content)) continue;
                 }
+
+                $messages[] = ['role' => $msg['role'], 'content' => $content];
             }
 
             $messages[] = ['role' => 'user', 'content' => $userMessage];
 
-            \Log::info("FindController: Sending " . count($messages) . " messages (" . $filteredPhones->count() . " phones in context)");
+            \Log::info("FindController: priority={$priority} budget=" . ($budget ?? 'none') . " phones=" . $filteredPhones->count() . " history=" . count($historySlice));
 
             return response()->stream(function () use ($apiKey, $messages, $userMessage, $chatId) {
                 $title = null;
 
-                // Process Chat Title & DB Before Streaming starts
+                // Process Chat Title & DB Before Streaming
                 if (auth()->check()) {
                     if (!$chatId) {
-                        $titleGenerationResponse = Http::timeout(30)->withHeaders([
+                        $titleResp = Http::timeout(30)->withHeaders([
                             'Authorization' => 'Bearer ' . $apiKey,
-                            'Content-Type' => 'application/json',
+                            'Content-Type'  => 'application/json',
                         ])->post("https://integrate.api.nvidia.com/v1/chat/completions", [
-                            'model' => 'meta/llama-3.1-8b-instruct',
-                            'messages' => [
+                            'model'       => 'meta/llama-3.1-8b-instruct',
+                            'messages'    => [
                                 ['role' => 'user', 'content' => "Generate a short 3-5 word title for a chat that starts with this message. Return ONLY the title string, no quotes. Message: \"{$userMessage}\""]
                             ],
                             'temperature' => 0.3,
-                            'max_tokens' => 20
+                            'max_tokens'  => 20,
                         ]);
                         $title = 'New Chat';
-                        if ($titleGenerationResponse->successful() && isset($titleGenerationResponse->json()['choices'][0]['message']['content'])) {
-                            $title = trim($titleGenerationResponse->json()['choices'][0]['message']['content'], " \t\n\r\0\x0B\"");
+                        if ($titleResp->successful() && isset($titleResp->json()['choices'][0]['message']['content'])) {
+                            $title = trim($titleResp->json()['choices'][0]['message']['content'], " \t\n\r\0\x0B\"");
                         }
 
-                        $chat = Chat::create([
-                            'user_id' => auth()->id(),
-                            'title' => $title,
-                        ]);
+                        $chat   = Chat::create(['user_id' => auth()->id(), 'title' => $title]);
                         $chatId = $chat->id;
                     } else {
-                        $chat = Chat::findOrFail($chatId);
+                        $chat  = Chat::findOrFail($chatId);
                         $chat->touch();
                         $title = $chat->title;
                     }
 
-                    ChatMessage::create([
-                        'chat_id' => $chatId,
-                        'role' => 'user',
-                        'content' => $userMessage,
-                    ]);
+                    ChatMessage::create(['chat_id' => $chatId, 'role' => 'user', 'content' => $userMessage]);
                 }
 
                 echo "data: " . json_encode(['type' => 'meta', 'chat_id' => $chatId, 'title' => $title]) . "\n\n";
@@ -195,19 +308,20 @@ PROMPT;
                 flush();
 
                 $client = new \GuzzleHttp\Client();
-                $makeRequest = function($model) use ($client, $apiKey, $messages) {
+
+                $makeRequest = function (string $model) use ($client, $apiKey, $messages) {
                     return $client->request('POST', 'https://integrate.api.nvidia.com/v1/chat/completions', [
                         'headers' => [
                             'Authorization' => 'Bearer ' . $apiKey,
-                            'Content-Type' => 'application/json',
+                            'Content-Type'  => 'application/json',
                         ],
                         'json' => [
-                            'model' => $model,
-                            'messages' => $messages,
-                            'temperature' => 0.5,
-                            'top_p' => 0.9,
-                            'max_tokens' => 2048,
-                            'stream' => true,
+                            'model'       => $model,
+                            'messages'    => $messages,
+                            'temperature' => 0.4,
+                            'top_p'       => 0.9,
+                            'max_tokens'  => 2048,
+                            'stream'      => true,
                         ],
                         'stream' => true,
                     ]);
@@ -215,7 +329,7 @@ PROMPT;
 
                 try {
                     // Primary: llama-3.1-70b — best quality, confirmed working on this NVIDIA account
-                    // Fallback: llama-3.1-8b — ultra-fast, also confirmed working
+                    // Fallback: llama-3.1-8b  — ultra-fast, also confirmed working
                     try {
                         $response = $makeRequest('meta/llama-3.1-70b-instruct');
                     } catch (\Exception $primaryEx) {
@@ -223,59 +337,44 @@ PROMPT;
                         $response = $makeRequest('meta/llama-3.1-8b-instruct');
                     }
 
-                    $body = $response->getBody();
+                    $body             = $response->getBody();
                     $assistantMessage = '';
 
                     while (!$body->eof()) {
                         $line = \GuzzleHttp\Psr7\Utils::readLine($body);
-                        if (str_starts_with($line, 'data: ')) {
-                            $data = substr($line, 6);
-                            if (trim($data) === '[DONE]') {
-                                break;
-                            }
-                            $json = json_decode($data, true);
-                            if (isset($json['choices'][0]['delta'])) {
-                                $delta = $json['choices'][0]['delta'];
-                                
-                                // Process reasoning (thinking) chunk if available
-                                if (isset($delta['reasoning_content'])) {
-                                    $reasoning = $delta['reasoning_content'];
-                                    // Optionally stream reasoning to UI if needed
-                                    // echo "data: " . json_encode(['type' => 'reasoning', 'content' => $reasoning]) . "\n\n";
-                                }
-                                
-                                // Process actual content chunk
-                                if (isset($delta['content'])) {
-                                    $token = $delta['content'];
-                                    $assistantMessage .= $token;
-                                    echo "data: " . json_encode(['type' => 'chunk', 'content' => $token]) . "\n\n";
-                                    if (ob_get_level() > 0) ob_flush();
-                                    flush();
-                                }
-                            }
+                        if (!str_starts_with($line, 'data: ')) continue;
+
+                        $data = substr($line, 6);
+                        if (trim($data) === '[DONE]') break;
+
+                        $json = json_decode($data, true);
+                        if (isset($json['choices'][0]['delta']['content'])) {
+                            $token = $json['choices'][0]['delta']['content'];
+                            $assistantMessage .= $token;
+                            echo "data: " . json_encode(['type' => 'chunk', 'content' => $token]) . "\n\n";
+                            if (ob_get_level() > 0) ob_flush();
+                            flush();
                         }
                     }
 
                     if (auth()->check() && $chatId && !empty(trim($assistantMessage))) {
-                        ChatMessage::create([
-                            'chat_id' => $chatId,
-                            'role' => 'assistant',
-                            'content' => $assistantMessage,
-                        ]);
+                        ChatMessage::create(['chat_id' => $chatId, 'role' => 'assistant', 'content' => $assistantMessage]);
                     }
 
                     echo "data: " . json_encode(['type' => 'done']) . "\n\n";
                     if (ob_get_level() > 0) ob_flush();
                     flush();
+
                 } catch (\Exception $e) {
                     \Log::error('Stream Error: ' . $e->getMessage());
-                    echo "data: " . json_encode(['type' => 'error', 'message' => 'AI service is currently unavailable or hitting usage limits. Please try again later.']) . "\n\n";
+                    echo "data: " . json_encode(['type' => 'error', 'message' => 'AI service unavailable. Please try again.']) . "\n\n";
                     if (ob_get_level() > 0) ob_flush();
                     flush();
                 }
+
             }, 200, [
-                'Cache-Control' => 'no-cache',
-                'Content-Type' => 'text/event-stream',
+                'Cache-Control'    => 'no-cache',
+                'Content-Type'     => 'text/event-stream',
                 'X-Accel-Buffering' => 'no',
             ]);
 
@@ -291,16 +390,13 @@ PROMPT;
             abort(403, 'Unauthorized access to chat.');
         }
 
-        $messages = $chat->messages()->orderBy('created_at', 'asc')->get()->map(function($msg) {
-            return [
-                'role' => $msg->role,
-                'content' => $msg->content,
-            ];
+        $messages = $chat->messages()->orderBy('created_at', 'asc')->get()->map(function ($msg) {
+            return ['role' => $msg->role, 'content' => $msg->content];
         });
 
         return response()->json([
-            'chat_id' => $chat->id,
-            'title' => $chat->title,
+            'chat_id'  => $chat->id,
+            'title'    => $chat->title,
             'messages' => $messages,
         ]);
     }
@@ -310,9 +406,8 @@ PROMPT;
         if (auth()->id() !== $chat->user_id) {
             abort(403, 'Unauthorized access to chat.');
         }
-        
+
         $chat->delete();
-        
         return response()->json(['success' => true]);
     }
 }
