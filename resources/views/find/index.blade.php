@@ -287,7 +287,7 @@
                         buttonsHtml = `<div class="flex items-center gap-2 pt-3 mt-2 border-t border-gray-100 dark:border-gray-800/80 w-full">${amzBtn}${flpBtn}</div>`;
                     }
                     
-                    return `<div class="not-prose my-3 flex flex-col p-3 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-[#1e1f20] shadow-sm hover:shadow-md transition-all group w-full max-w-[220px] shrink-0 inline-block align-top mr-1">
+                    return `<!--PHONECARD_START--><div class="not-prose phone-card-item flex flex-col p-3 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-[#1e1f20] shadow-sm hover:shadow-md transition-all group w-full max-w-[220px] shrink-0">
                         <div class="cursor-pointer flex flex-col items-center" onclick="window.open('${safeLink}', '_blank')">
                             <div class="h-28 w-full bg-gray-50 dark:bg-[#282a2c] rounded-xl flex items-center justify-center p-2 mb-3 overflow-hidden border border-gray-100 dark:border-gray-800 transition-colors group-hover:bg-gray-100 dark:group-hover:bg-[#333538]">
                                 <img src="${imgSrc}" alt="${safeName}" class="max-h-full max-w-full object-contain mix-blend-multiply dark:mix-blend-normal hover:scale-105 transition-transform duration-300">
@@ -305,8 +305,19 @@
                             </div>
                         </div>
                         ${buttonsHtml}
-                    </div>`;
+                    </div><!--PHONECARD_END-->`;
                 });
+
+                // Wrap consecutive phone cards in a horizontal flex container
+                finalHtml = finalHtml.replace(/(<!--PHONECARD_START-->[\s\S]*?<!--PHONECARD_END-->)(\s*(?:<br\s*\/?>|\s|<p>\s*<\/p>)*\s*<!--PHONECARD_START-->[\s\S]*?<!--PHONECARD_END-->)+/g, (match) => {
+                    return `<div class="not-prose flex flex-wrap gap-3 my-4">${match}</div>`;
+                });
+                // Also wrap single cards that aren't already wrapped
+                finalHtml = finalHtml.replace(/(?<!<div class="not-prose flex flex-wrap gap-3 my-4">)(<!--PHONECARD_START--><div class="not-prose phone-card-item[\s\S]*?<!--PHONECARD_END-->)(?![\s\S]*?<!--PHONECARD_START-->)/g, (match) => {
+                    return `<div class="not-prose flex flex-wrap gap-3 my-4">${match}</div>`;
+                });
+                // Clean up markers
+                finalHtml = finalHtml.replace(/<!--PHONECARD_START-->|<!--PHONECARD_END-->/g, '');
 
                 return finalHtml.replace(/\[BTN\|(.*?)\]/g, (match, text) => {
                     const safeText = text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
