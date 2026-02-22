@@ -167,8 +167,11 @@
         </div>
     </div>
 
+    <!-- AI Finder Advertisement Banner -->
+    @include('phones.partials.ai_finder_banner')
+
     <!-- Main Content Layout (1:6 Grid) -->
-    <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+    <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div class="grid grid-cols-1 lg:grid-cols-6 gap-8 xl:gap-12 pl-0">
             
             <!-- LEFT COLUMN (1/6): Editorials & Tech News -->
