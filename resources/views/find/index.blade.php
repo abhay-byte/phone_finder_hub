@@ -150,38 +150,28 @@
                         <template x-if="msg.role === 'assistant'">
                             <div class="self-start max-w-full group w-full flex items-start gap-4">
                                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 mt-1 hidden sm:flex">
-                                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg class="w-5 h-5 text-white" :class="{'animate-pulse': isLoading && index === messages.length - 1}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                     </svg>
                                 </div>
                                 <div class="flex flex-col w-full max-w-none">
                                     <span class="text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1 ml-2 sm:ml-1">PhoneFinder AI</span>
-                                    <div class="prose prose-base dark:prose-invert prose-p:text-gray-800 dark:prose-p:text-[#e3e3e3] prose-headings:text-black dark:prose-headings:text-white prose-strong:text-black dark:prose-strong:text-white max-w-none w-full bg-transparent dark:bg-transparent rounded-2xl px-2 sm:px-1 py-1 mt-0 whitespace-pre-line break-words" x-html="renderMarkdown(msg.content)">
+                                    
+                                    <template x-if="msg.content === '' && isLoading && index === messages.length - 1">
+                                        <div class="flex items-center h-4 gap-2 px-2 sm:px-1 mt-2 mb-1">
+                                            <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
+                                            <span class="w-2 h-2 bg-purple-500 rounded-full animate-pulse animation-delay-200"></span>
+                                            <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse animation-delay-400"></span>
+                                        </div>
+                                    </template>
+
+                                    <div x-show="msg.content !== ''" class="prose prose-base dark:prose-invert prose-p:text-gray-800 dark:prose-p:text-[#e3e3e3] prose-headings:text-black dark:prose-headings:text-white prose-strong:text-black dark:prose-strong:text-white max-w-none w-full bg-transparent dark:bg-transparent rounded-2xl px-2 sm:px-1 py-1 mt-0 whitespace-pre-line break-words" x-html="renderMarkdown(msg.content)">
                                     </div>
                                 </div>
                             </div>
                         </template>
                     </div>
                 </template>
-
-                <!-- Loading Indicator -->
-                <div x-show="isLoading" class="flex justify-start max-w-4xl mx-auto w-full mb-12">
-                    <div class="flex items-start gap-4 w-full">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 mt-1 hidden sm:flex">
-                             <svg class="w-5 h-5 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                        </div>
-                        <div class="flex flex-col w-full">
-                            <span class="text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2 ml-2 sm:ml-1">PhoneFinder AI</span>
-                            <div class="flex items-center h-6 gap-2 px-2 sm:px-1">
-                                <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
-                                <span class="w-2 h-2 bg-purple-500 rounded-full animate-pulse animation-delay-200"></span>
-                                <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse animation-delay-400"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
