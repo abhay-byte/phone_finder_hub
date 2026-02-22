@@ -214,7 +214,14 @@ PROMPT;
                 };
 
                 try {
-                    $response = $makeRequest('deepseek-ai/deepseek-v3.2');
+                    // llama-4-scout: fast MoE, widely available on NVIDIA free tier
+                    // Fallback: mistral-small-2506 if primary is overloaded
+                    try {
+                        $response = $makeRequest('meta/llama-4-scout-17b-16e-instruct');
+                    } catch (\Exception $primaryEx) {
+                        \Log::warning('Primary model failed, trying fallback: ' . $primaryEx->getMessage());
+                        $response = $makeRequest('mistral/mistral-small-2506');
+                    }
 
                     $body = $response->getBody();
                     $assistantMessage = '';
