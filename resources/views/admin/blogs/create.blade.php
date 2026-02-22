@@ -174,7 +174,7 @@
     }
     
     /* Frontend Typography matching show.blade.php for accurate preview */
-    .editor-preview h2, .editor-preview h3, .editor-preview h4 {
+    .editor-preview h1, .editor-preview h2, .editor-preview h3, .editor-preview h4 {
         color: #111827;
         font-weight: 800;
         margin-top: 2.5rem;
@@ -182,12 +182,86 @@
         line-height: 1.3;
         letter-spacing: -0.025em;
     }
-    .dark .editor-preview h2, .dark .editor-preview h3, .dark .editor-preview h4 {
+    .dark .editor-preview h1, .dark .editor-preview h2, .dark .editor-preview h3, .dark .editor-preview h4 {
         color: #ffffff;
     }
+    .editor-preview h1 { font-size: 2.25rem; margin-top: 1rem; }
     .editor-preview h2 { font-size: 1.875rem; }
     .editor-preview h3 { font-size: 1.5rem; }
     .editor-preview h4 { font-size: 1.25rem; }
+
+    /* Horizontal Rule */
+    .editor-preview hr {
+        border: none;
+        border-top: 1.5px solid #e5e7eb;
+        margin: 2.5rem 0;
+        opacity: 0.6;
+    }
+    .dark .editor-preview hr {
+        border-top-color: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Tables */
+    .editor-preview table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 2rem 0;
+        font-size: 0.95rem;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+    .dark .editor-preview table {
+        border-color: rgba(255,255,255,0.1);
+        box-shadow: none;
+    }
+    .editor-preview thead {
+        background: linear-gradient(135deg, #f0fdfa, #e6fffa);
+    }
+    .dark .editor-preview thead {
+        background: rgba(20, 184, 166, 0.15);
+    }
+    .editor-preview th {
+        padding: 0.75rem 1rem;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #0f766e;
+        text-align: left;
+        border-bottom: 2px solid #99f6e4;
+    }
+    .dark .editor-preview th {
+        color: #2dd4bf;
+        border-bottom-color: rgba(20, 184, 166, 0.3);
+    }
+    .editor-preview td {
+        padding: 0.65rem 1rem;
+        color: #374151;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+    }
+    .dark .editor-preview td {
+        color: #d1d5db;
+        border-bottom-color: rgba(255,255,255,0.05);
+    }
+    .editor-preview tbody tr:nth-child(even) {
+        background-color: #f9fffe;
+    }
+    .dark .editor-preview tbody tr:nth-child(even) {
+        background-color: rgba(20, 184, 166, 0.04);
+    }
+    .editor-preview tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .editor-preview tbody tr:hover {
+        background-color: #f0fdfa;
+    }
+    .dark .editor-preview tbody tr:hover {
+        background-color: rgba(20, 184, 166, 0.08);
+    }
     
     .editor-preview p {
         margin-bottom: 1.25rem;
