@@ -4,7 +4,21 @@
     <div class="bg-gray-50 dark:bg-black min-h-screen animate-fadeInUp">
 
         <!-- Modern Hero Section -->
-        <div class="relative overflow-hidden bg-white dark:bg-[#050505] pt-24 pb-20 md:pt-32 md:pb-32">
+        <div class="relative overflow-hidden bg-white dark:bg-[#050505] pt-24 pb-20 md:pt-32 md:pb-32 border-b border-transparent">
+            <!-- Search Focus Overlay -->
+            <div x-data="{ isSearchFocused: false }" 
+                 @search-focused.window="isSearchFocused = $event.detail"
+                 x-show="isSearchFocused"
+                 x-transition:enter="transition opacity-0 duration-500"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition opacity-100 duration-500"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90]"
+                 style="display: none;">
+            </div>
+
             <!-- Animated Background Elements -->
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
                 <div class="absolute -top-24 -left-24 w-96 h-96 bg-teal-500/10 rounded-full blur-[120px] animate-pulse"></div>
@@ -39,8 +53,22 @@
                     charIndex: 0,
                     isDeleting: false,
                     typeSpeed: 100,
+                    isSearchFocused: false,
                     init() {
                         this.typeLoop();
+                        
+                        // Keyboard shortcut listener
+                        window.addEventListener('keydown', (e) => {
+                            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                                e.preventDefault();
+                                this.$refs.searchInput.focus();
+                            }
+                        });
+
+                        this.$watch('isSearchFocused', (val) => {
+                            window.dispatchEvent(new CustomEvent('search-focused', { detail: val }));
+                        });
+
                         this.$watch('query', (value) => {
                             if (value.length < 2) {
                                 this.results = [];
@@ -100,7 +128,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                             </svg>
                         </div>
-                        <input type="text" x-model="query" :placeholder="placeholder"
+                        <input type="text" x-model="query" :placeholder="placeholder" x-ref="searchInput"
+                            @focus="isSearchFocused = true" @blur="setTimeout(() => isSearchFocused = false, 200)"
                             class="w-full bg-transparent border-0 focus:ring-0 text-xl font-medium text-slate-900 dark:text-white placeholder-slate-400/50 h-14 px-4 pr-16">
                         
                         <div class="absolute right-4 flex items-center gap-3">
@@ -208,17 +237,10 @@
                         </span>
                     </button>
 
-                    <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105">
-                        <div class="absolute inset-0 bg-slate-100/50 dark:bg-white/5 group-hover:bg-teal-500/10 transition-colors shadow-sm"></div>
-                        <span class="relative flex items-center gap-2 text-slate-600 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                            </svg>
-                            Battery
-                        </span>
                     </button>
                 </div>
+                <!-- Section Transition Gradient -->
+                <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 dark:from-black to-transparent z-0 pointer-events-none"></div>
             </div>
         </div>
 

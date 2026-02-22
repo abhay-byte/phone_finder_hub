@@ -110,7 +110,7 @@
             hx-swap="outerHTML show:window:top" hx-indicator="#global-loader">
             <!-- Animated Gradient Border -->
             <div
-                class="absolute bottom-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 bg-[length:200%_auto] animate-gradient-x opacity-60">
+                class="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 bg-[length:200%_auto] animate-gradient-x opacity-100 z-10">
             </div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
@@ -451,10 +451,6 @@
         <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
     </div>
 
-    <div id="top-loader"
-        class="fixed top-0 left-0 right-0 h-1 bg-transparent z-[100] pointer-events-none transition-opacity duration-300 opacity-0">
-        <div class="h-full bg-teal-500 transition-all duration-300 w-0" id="top-loader-bar"></div>
-    </div>
 
     <!-- Global Skeleton Styles -->
     <style>
