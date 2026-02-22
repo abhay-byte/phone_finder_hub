@@ -214,13 +214,13 @@ PROMPT;
                 };
 
                 try {
-                    // llama-4-scout: fast MoE, widely available on NVIDIA free tier
-                    // Fallback: mistral-small-2506 if primary is overloaded
+                    // Primary: llama-3.1-70b — best quality, confirmed working on this NVIDIA account
+                    // Fallback: llama-3.1-8b — ultra-fast, also confirmed working
                     try {
-                        $response = $makeRequest('meta/llama-4-scout-17b-16e-instruct');
+                        $response = $makeRequest('meta/llama-3.1-70b-instruct');
                     } catch (\Exception $primaryEx) {
                         \Log::warning('Primary model failed, trying fallback: ' . $primaryEx->getMessage());
-                        $response = $makeRequest('mistral/mistral-small-2506');
+                        $response = $makeRequest('meta/llama-3.1-8b-instruct');
                     }
 
                     $body = $response->getBody();
