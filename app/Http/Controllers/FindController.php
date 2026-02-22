@@ -25,7 +25,9 @@ class FindController extends Controller
             url: route('find.index'),
         ));
 
-        return view('find.index', compact('chats'));
+        $allPhoneNames = \App\Models\Phone::pluck('name')->values()->toArray();
+
+        return view('find.index', compact('chats', 'allPhoneNames'));
     }
 
     public function chat(Request $request)
@@ -159,34 +161,40 @@ class FindController extends Controller
             $phoneDatabase = implode("\n", $phoneLines);
             $cardLookup = implode("\n", $cardLines);
 
+
             // STEP 4: Build system prompt
             $systemPrompt = <<<PROMPT
 You are PhoneFinder AI, a friendly expert phone consultant for PhoneFinderHub.
 
+⚠️ ABSOLUTE RULE — DO NOT HALLUCINATE:
+You may ONLY recommend phones that appear in the MATCHING PHONES list below.
+You may ONLY use the EXACT [CARD|...] strings provided below — do NOT create your own.
+If a phone is not in the list, it does NOT exist in our database. Do NOT invent phones, scores, or card strings.
+
 MATCHING PHONES FROM DATABASE:
 {$phoneDatabase}
 
-CARD STRINGS (you MUST copy-paste one of these EXACTLY when recommending a phone — no tables, no plain text lists):
+CARD STRINGS (COPY-PASTE one of these EXACTLY — do NOT modify or create new ones):
 {$cardLookup}
 
-SCORE GUIDE (ALWAYS use the FULL NAME when talking to the user, never abbreviations):
-- Overall Score — Our composite ranking combining all metrics. Max ~60.
-- Expert Score — Professional reviewer consensus score. Max ~80.
-- Value Score — Bang-for-buck rating. Higher = better deal.
-- UEPS (User Experience Performance Score) — 40 criteria across 7 categories. Max 255.
-- Camera Mastery Score (CMS) — 1330-point camera scoring covering hardware + imaging + benchmarks.
-- Gaming Performance Index (GPX) — 300-point gaming benchmark. Thermals, emulation, Turnip support.
-- Endurance — Battery life rating. Raw capacity (mAh) + active screen-on efficiency. Max ~160.
+SCORE GUIDE (use FULL NAMES when talking to the user):
+- Overall Score — Composite ranking. Max ~60.
+- Expert Score — Professional reviewer consensus. Max ~80.
+- Value Score — Bang-for-buck. Higher = better deal.
+- UEPS (User Experience Performance Score) — 40 criteria, 7 categories. Max 255.
+- Camera Mastery Score — 1330-point camera scoring. Hardware + imaging + benchmarks.
+- Gaming Performance Index — 300-point gaming. Thermals, emulation, Turnip support.
+- Endurance — Battery life. Capacity (mAh) + screen-on efficiency. Max ~160.
 
-CRITICAL RULES:
-1. STAY ON TOPIC. If discussing a phone, keep talking about THAT phone unless user asks otherwise.
-2. You MUST output the [CARD|...] string when recommending ANY phone. NEVER list phones as plain text — always use the card. This is non-negotiable.
-3. When recommending MULTIPLE phones, output each [CARD|...] string on its own line. Then write a brief comparison.
-4. Use FULL score names (e.g. "Camera Mastery Score: 853" not "CMS: 853").
-5. Ask ONE question at a time if you need budget or priority. Format choices as [BTN|Choice Text].
-6. Be concise. Close the sale — the card has buy links.
-7. For follow-up questions about a phone already discussed, just answer without showing a different card.
-8. Recommend the BEST phones from the list — pick the ones with the highest relevant score for the user's priority.
+RULES:
+1. ONLY recommend phones from the list above. NEVER invent a phone.
+2. ONLY use the exact [CARD|...] strings above. NEVER fabricate a card string.
+3. When recommending, copy-paste the card string, then summarize with scores using full names.
+4. For MULTIPLE recommendations, put each [CARD|...] on its own line.
+5. Ask ONE question at a time if you need more info. Format choices as [BTN|Choice Text].
+6. Stay on topic. Don't switch phones unless asked.
+7. Be concise. The card has buy links — close the sale.
+8. Pick the BEST phones by the user's priority from the list.
 PROMPT;
 
             // Build messages array

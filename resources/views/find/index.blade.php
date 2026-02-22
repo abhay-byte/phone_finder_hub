@@ -209,6 +209,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 
 <script>
+    // Phone name whitelist for card validation (prevents hallucinated cards from rendering)
+    window.__validPhoneNames = @json($allPhoneNames ?? []);
+</script>
+
+<script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('chatAgent', (initialChats) => ({
             chatHistoryList: initialChats,
@@ -252,6 +257,16 @@
                     const stripHtml = (str) => str ? str.replace(/<[^>]*>?/gm, '').trim() : '';
 
                     let safeName = stripHtml(name).replace(/"/g, '&quot;') || 'Phone';
+
+                    // WHITELIST CHECK: reject hallucinated phones
+                    const validNames = window.__validPhoneNames || [];
+                    const isValid = validNames.some(vn => 
+                        vn.toLowerCase().trim() === safeName.toLowerCase().trim()
+                    );
+                    if (!isValid) {
+                        console.warn('PhoneFinder: Rejected hallucinated card for "' + safeName + '"');
+                        return ''; // Strip the fake card entirely
+                    }
                     let safePrice = stripHtml(price);
                     let safeImage = extractUrl(image);
                     let safeLink = extractUrl(link) || '#';
