@@ -42,99 +42,19 @@ class FindController extends Controller
         $chatId = $request->chat_id;
         $history = $request->history ?? [];
 
-        $apiKey = config('services.groq.api_key');
+        $apiKey = config('services.nvidia.api_key');
         if (!$apiKey) {
-            return response()->json(['error' => 'Groq API Key is missing. Please configure GROQ_API_KEY in .env'], 500);
+            return response()->json(['error' => 'NVIDIA API Key is missing. Please configure NVIDIA_API_KEY in .env'], 500);
         }
 
         try {
-            // STEP 1: Extract search filters from the FULL conversation context
-            // Build a conversation summary for the extractor so it understands ongoing context
-            $conversationSummary = "";
-            $recentHistory = array_slice($history, -10); // last 5 exchanges
-            foreach ($recentHistory as $msg) {
-                if (isset($msg['role']) && isset($msg['content'])) {
-                    $role = $msg['role'] === 'user' ? 'User' : 'AI';
-                    $conversationSummary .= "{$role}: " . substr($msg['content'], 0, 300) . "\n";
-                }
-            }
-            $conversationSummary .= "User: {$userMessage}\n";
+            // Fetch ALL phones directly to feed the entire database into Nemotron's large context window.
+            // This relies on the AI organic reasoning to filter by budget/priority, bypassing fragile pre-extraction.
+            $filteredPhones = \App\Models\Phone::with(['platform', 'battery', 'benchmarks'])
+                ->orderBy('overall_score', 'desc')
+                ->get();
 
-            $extractorInstruction = "Given this phone-finding conversation, extract search filters. Output ONLY a JSON object with: " .
-                "'brand' (string|null - ONLY if user explicitly mentions a brand name like Samsung, OnePlus, etc.), " .
-                "'min_price' (int|null), 'max_price' (int|null), " .
-                "'priority' (string: 'gaming'|'camera'|'battery'|'value'|'overall', default 'overall'), " .
-                "'phone_name' (string|null - exact phone name if user is asking about a specific phone already discussed). " .
-                "IMPORTANT: Do NOT set brand unless user explicitly says a brand name. Look at the ENTIRE conversation to determine budget and preferences.";
-
-            $extractionResponse = Http::timeout(15)->withHeaders([
-                'Authorization' => 'Bearer ' . $apiKey,
-                'Content-Type' => 'application/json',
-            ])->post("https://api.groq.com/openai/v1/chat/completions", [
-                'model' => 'llama-3.1-8b-instant',
-                'messages' => [
-                    ['role' => 'system', 'content' => $extractorInstruction],
-                    ['role' => 'user', 'content' => $conversationSummary]
-                ],
-                'temperature' => 0.05,
-                'max_completion_tokens' => 150,
-                'response_format' => ['type' => 'json_object']
-            ]);
-
-            $searchParams = ['brand' => null, 'min_price' => null, 'max_price' => null, 'priority' => 'overall', 'phone_name' => null];
-            if ($extractionResponse->successful() && isset($extractionResponse->json()['choices'][0]['message']['content'])) {
-                $parsed = json_decode($extractionResponse->json()['choices'][0]['message']['content'], true);
-                if (is_array($parsed)) {
-                    $searchParams = array_merge($searchParams, $parsed);
-                }
-            } else {
-                \Log::warning("FindController: Extraction failed (status " . $extractionResponse->status() . "), using defaults");
-            }
-            \Log::info("FindController: Extracted params", $searchParams);
-
-            // STEP 2: Query filtered phones from DB
-            $query = \App\Models\Phone::with(['platform', 'battery', 'benchmarks'])
-                ->orderBy('overall_score', 'desc');
-
-            if (!empty($searchParams['brand'])) {
-                $query->where('brand', 'like', '%' . $searchParams['brand'] . '%');
-            }
-            if (!empty($searchParams['min_price'])) {
-                $query->where('price', '>=', $searchParams['min_price']);
-            }
-            if (!empty($searchParams['max_price'])) {
-                $query->where('price', '<=', $searchParams['max_price']);
-            }
-
-            // Order by priority
-            $priority = $searchParams['priority'] ?? 'overall';
-            if ($priority === 'gaming') {
-                $query->reorder('gpx_score', 'desc');
-            } elseif ($priority === 'camera') {
-                $query->reorder('cms_score', 'desc');
-            } elseif ($priority === 'battery') {
-                // Join with spec_batteries and order by capacity extracted from battery_type
-                $query->join('spec_batteries', 'phones.id', '=', 'spec_batteries.phone_id')
-                      ->select('phones.*')
-                      ->orderByRaw("CAST(SUBSTRING(spec_batteries.battery_type FROM '([0-9]+)') AS INTEGER) DESC NULLS LAST");
-            } elseif ($priority === 'value') {
-                $query->reorder('value_score', 'desc');
-            }
-
-            // Get top 8 filtered matches for better variety
-            $filteredPhones = $query->limit(8)->get();
-
-            // If user is asking about a specific phone by name, make sure it's included
-            if (!empty($searchParams['phone_name'])) {
-                $specificPhone = \App\Models\Phone::with(['platform', 'battery', 'benchmarks'])
-                    ->where('name', 'like', '%' . $searchParams['phone_name'] . '%')
-                    ->first();
-                if ($specificPhone && !$filteredPhones->contains('id', $specificPhone->id)) {
-                    $filteredPhones->prepend($specificPhone);
-                }
-            }
-
-            // STEP 3: Build compact context from filtered phones
+            // STEP 3: Build compact context from ALL phones
             $phoneLines = [];
             $cardLines = [];
             foreach ($filteredPhones as $rank => $phone) {
@@ -162,7 +82,21 @@ class FindController extends Controller
             $cardLookup = implode("\n", $cardLines);
 
 
-            // STEP 4: Build system prompt
+            // STEP 4: Build concise ranklists for context
+            $topExpert = DB::table('phones')->orderBy('expert_score', 'desc')->limit(5)->pluck('name')->toArray();
+            $topCms = DB::table('phones')->orderBy('cms_score', 'desc')->limit(5)->pluck('name')->toArray();
+            $topGpx = DB::table('phones')->orderBy('gpx_score', 'desc')->limit(5)->pluck('name')->toArray();
+            $topUeps = DB::table('phones')->orderBy('ueps_score', 'desc')->limit(5)->pluck('name')->toArray();
+            $topEndurance = DB::table('phones')->orderBy('endurance_score', 'desc')->limit(5)->pluck('name')->toArray();
+
+            $ranklistContext = "TOP RANKINGS:\n" .
+                "- Expert Score: " . implode(', ', $topExpert) . "\n" .
+                "- Camera (CMS): " . implode(', ', $topCms) . "\n" .
+                "- Gaming (GPX): " . implode(', ', $topGpx) . "\n" .
+                "- Experience (UEPS): " . implode(', ', $topUeps) . "\n" .
+                "- Endurance: " . implode(', ', $topEndurance);
+
+            // STEP 5: Build system prompt
             $systemPrompt = <<<PROMPT
 You are PhoneFinder AI, a concise phone consultant for PhoneFinderHub.
 
@@ -180,6 +114,8 @@ CARDS (COPY-PASTE exactly — never modify or create new ones):
 SCORES (use full names when talking to user):
 Overall Score (max ~60), Expert Score (max ~80), Value Score (bang-for-buck), UEPS/User Experience (max 255), Camera Mastery Score (max ~1330), Gaming Performance Index (max ~300), Endurance (max ~160).
 
+{$ranklistContext}
+
 KNOWLEDGE (mention ONLY if user asks):
 - Turnip: Open-source GPU drivers for game emulation. ONLY works on Snapdragon phones with Adreno GPUs. Mediatek/Exynos phones do NOT support Turnip.
 - Bootloader unlock: Allows custom ROMs. Availability varies by brand — OnePlus/Realme usually allow it, Samsung makes it harder, some brands block it entirely.
@@ -188,9 +124,9 @@ RULES:
 1. ONLY state facts from the data above. If info isn't in the data, say "I don't have that detail."
 2. Output the [CARD|...] string when recommending. Never list phones as plain text.
 3. For multiple phones, put each [CARD|...] on its own line, then a brief comparison.
-4. Be CONCISE — 2-3 sentences max after the card. No walls of text or spec dump lists.
-5. Use full score names (e.g. "Camera Mastery Score: 853").
-6. Ask ONE question if you need budget/priority. Use [BTN|Choice Text] for options.
+4. ABSOLUTELY NEVER copy-paste the raw score data strings (e.g. NEVER write "OS 17.8 ES 45.55 VS 11.7...").
+5. INSTEAD, write 1-2 natural, concise sentences highlighting ONLY the most impressive or relevant specs/scores for the user's request. (e.g. "It has a massive 6500mAh battery and an excellent Camera Mastery Score of 853.")
+6. Use full score names (e.g. "Camera Mastery Score" not "CMS") when talking about them.
 7. Stay on topic. Don't switch phones unless asked.
 8. If user asks about Turnip/bootloader, check the chipset — if it's Mediatek/Exynos, tell them Turnip is not supported.
 PROMPT;
@@ -223,13 +159,13 @@ PROMPT;
                         $titleGenerationResponse = Http::timeout(30)->withHeaders([
                             'Authorization' => 'Bearer ' . $apiKey,
                             'Content-Type' => 'application/json',
-                        ])->post("https://api.groq.com/openai/v1/chat/completions", [
-                            'model' => 'llama-3.1-8b-instant',
+                        ])->post("https://integrate.api.nvidia.com/v1/chat/completions", [
+                            'model' => 'meta/llama-3.1-8b-instruct',
                             'messages' => [
                                 ['role' => 'user', 'content' => "Generate a short 3-5 word title for a chat that starts with this message. Return ONLY the title string, no quotes. Message: \"{$userMessage}\""]
                             ],
                             'temperature' => 0.3,
-                            'max_completion_tokens' => 20
+                            'max_tokens' => 20
                         ]);
                         $title = 'New Chat';
                         if ($titleGenerationResponse->successful() && isset($titleGenerationResponse->json()['choices'][0]['message']['content'])) {
@@ -260,7 +196,7 @@ PROMPT;
 
                 $client = new \GuzzleHttp\Client();
                 $makeRequest = function($model) use ($client, $apiKey, $messages) {
-                    return $client->request('POST', 'https://api.groq.com/openai/v1/chat/completions', [
+                    return $client->request('POST', 'https://integrate.api.nvidia.com/v1/chat/completions', [
                         'headers' => [
                             'Authorization' => 'Bearer ' . $apiKey,
                             'Content-Type' => 'application/json',
@@ -268,8 +204,9 @@ PROMPT;
                         'json' => [
                             'model' => $model,
                             'messages' => $messages,
-                            'temperature' => 0.6,
-                            'max_completion_tokens' => 2048,
+                            'temperature' => 0.5,
+                            'top_p' => 0.9,
+                            'max_tokens' => 2048,
                             'stream' => true,
                         ],
                         'stream' => true,
@@ -277,16 +214,7 @@ PROMPT;
                 };
 
                 try {
-                    try {
-                        $response = $makeRequest('llama-3.3-70b-versatile');
-                    } catch (\GuzzleHttp\Exception\ClientException $e) {
-                         if ($e->getResponse()->getStatusCode() === 429) {
-                              \Log::warning("FindController: 70B hit 429 Limit. Falling back to 8B Instant.");
-                              $response = $makeRequest('llama-3.1-8b-instant');
-                         } else {
-                              throw $e;
-                         }
-                    }
+                    $response = $makeRequest('deepseek-ai/deepseek-v3.2');
 
                     $body = $response->getBody();
                     $assistantMessage = '';
@@ -299,12 +227,24 @@ PROMPT;
                                 break;
                             }
                             $json = json_decode($data, true);
-                            if (isset($json['choices'][0]['delta']['content'])) {
-                                $token = $json['choices'][0]['delta']['content'];
-                                $assistantMessage .= $token;
-                                echo "data: " . json_encode(['type' => 'chunk', 'content' => $token]) . "\n\n";
-                                if (ob_get_level() > 0) ob_flush();
-                                flush();
+                            if (isset($json['choices'][0]['delta'])) {
+                                $delta = $json['choices'][0]['delta'];
+                                
+                                // Process reasoning (thinking) chunk if available
+                                if (isset($delta['reasoning_content'])) {
+                                    $reasoning = $delta['reasoning_content'];
+                                    // Optionally stream reasoning to UI if needed
+                                    // echo "data: " . json_encode(['type' => 'reasoning', 'content' => $reasoning]) . "\n\n";
+                                }
+                                
+                                // Process actual content chunk
+                                if (isset($delta['content'])) {
+                                    $token = $delta['content'];
+                                    $assistantMessage .= $token;
+                                    echo "data: " . json_encode(['type' => 'chunk', 'content' => $token]) . "\n\n";
+                                    if (ob_get_level() > 0) ob_flush();
+                                    flush();
+                                }
                             }
                         }
                     }

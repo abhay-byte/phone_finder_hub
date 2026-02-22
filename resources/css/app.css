@@ -129,3 +129,20 @@
 .delay-300 {
     animation-delay: 300ms;
 }
+
+/* Custom Text Reveal Animations */
+@keyframes titleReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-title-reveal {
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0; /* Starts hidden until animation triggers */
+}
