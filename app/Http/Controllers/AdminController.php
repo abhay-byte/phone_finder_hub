@@ -194,6 +194,15 @@ class AdminController extends Controller
             $skipSteps = [];
             if ($options['skip_image'] || isset($overrides['image_url'])) $skipSteps[] = 'image';
             if ($options['skip_shopping'] || (isset($overrides['amazon_url']) && isset($overrides['flipkart_url']))) $skipSteps[] = 'shopping';
+
+            // In production, skip heavy steps that require dependencies not available on Render
+            // (rembg/onnxruntime for images, playwright for benchmarks, icrawler for images)
+            // Admin provides all this data via the form overrides anyway
+            if (app()->environment('production')) {
+                $productionSkips = ['nanoreview', 'gpu', 'camera', 'image', 'shopping'];
+                $skipSteps = array_unique(array_merge($skipSteps, $productionSkips));
+            }
+
             $skipArg = !empty($skipSteps) ? '--skip=' . implode(',', $skipSteps) : '';
 
             $gsmarenaArg = '';
