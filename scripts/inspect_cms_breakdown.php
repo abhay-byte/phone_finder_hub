@@ -2,9 +2,9 @@
 
 use App\Models\Phone;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -18,7 +18,7 @@ foreach ($names as $name) {
         echo "============================================\n";
         $details = $phone->cms_details;
         foreach ($details as $category => $data) {
-            echo strtoupper($category) . " (Score: {$data['score']} / {$data['max']})\n";
+            echo strtoupper($category)." (Score: {$data['score']} / {$data['max']})\n";
             foreach ($data['details'] as $item) {
                 echo "  - {$item['criterion']}: {$item['points']} ({$item['reason']})\n";
             }

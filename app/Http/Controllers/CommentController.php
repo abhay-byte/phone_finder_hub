@@ -46,13 +46,14 @@ class CommentController extends Controller
         if ($request->wantsJson()) {
             return response()->json([
                 'html' => view('partials.comments-list-ajax', compact('comments', 'phone'))->render(),
-                'total_count' => $phone->comments()->count()
+                'total_count' => $phone->comments()->count(),
             ]);
         }
 
         // Fallback for direct load
         return view('partials.comments', compact('comments', 'phone'));
     }
+
     /**
      * Store a newly created comment or reply.
      */
@@ -68,23 +69,24 @@ class CommentController extends Controller
                     if (preg_match('/(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9\-]+\.(com|org|net|co|io|me|info|biz)\b)/i', $value)) {
                         $fail('Links are not allowed in comments.');
                     }
-                }
+                },
             ],
             'parent_id' => 'nullable|exists:comments,id',
         ]);
 
-        $comment = new Comment();
+        $comment = new Comment;
         $comment->content = $this->profanityFilter->censor($validated['content']);
         $comment->phone_id = $phone->id;
         $comment->user_id = Auth::id(); // Will be null for anonymous users
-        
-        if (!empty($validated['parent_id'])) {
+
+        if (! empty($validated['parent_id'])) {
             // Verify the parent actually belongs to the same phone
             $parent = Comment::findOrFail($validated['parent_id']);
             if ($parent->phone_id !== $phone->id) {
                 if ($request->wantsJson()) {
                     return response()->json(['error' => 'Invalid reply target.'], 403);
                 }
+
                 return back()->with('error', 'Invalid reply target.');
             }
             $comment->parent_id = $parent->id;
@@ -119,12 +121,12 @@ class CommentController extends Controller
                     if (preg_match('/(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9\-]+\.(com|org|net|co|io|me|info|biz)\b)/i', $value)) {
                         $fail('Links are not allowed in comments.');
                     }
-                }
+                },
             ],
         ]);
 
         $comment->update([
-            'content' => $this->profanityFilter->censor($validated['content'])
+            'content' => $this->profanityFilter->censor($validated['content']),
         ]);
 
         if ($request->wantsJson()) {
@@ -140,7 +142,7 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         // Must be the owner OR a super admin to delete
-        if ($comment->user_id !== Auth::id() && !Auth::user()->isSuperAdmin()) {
+        if ($comment->user_id !== Auth::id() && ! Auth::user()->isSuperAdmin()) {
             if (request()->wantsJson()) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }

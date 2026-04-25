@@ -3,8 +3,8 @@
 use App\Models\Phone;
 use App\Services\UepsScoringService;
 
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 $phone = Phone::updateOrCreate(
@@ -111,8 +111,8 @@ $fresh->ueps_score = (int) round($ueps['total_score']);
 $fresh->overall_score = is_array($fpi) ? (int) round($fpi['total']) : 0;
 $fresh->saveQuietly();
 
-echo 'Added/updated: ' . $fresh->name . ' (ID ' . $fresh->id . ') | UEPS ' . $fresh->ueps_score . ' | FPI ' . $fresh->overall_score . PHP_EOL;
-echo 'Camera sensors: ' . ($fresh->camera->main_camera_sensors ?? 'NULL') . PHP_EOL;
-echo 'Apertures: ' . ($fresh->camera->main_camera_apertures ?? 'NULL') . PHP_EOL;
-echo 'Focal lengths: ' . ($fresh->camera->main_camera_focal_lengths ?? 'NULL') . PHP_EOL;
-echo 'AnTuTu v11: ' . ($fresh->benchmarks->antutu_score ?? 'NULL') . ' | Geekbench single: ' . ($fresh->benchmarks->geekbench_single ?? 'NULL') . ' | 3DMark WLE: ' . ($fresh->benchmarks->dmark_wild_life_extreme ?? 'NULL') . PHP_EOL;
+echo 'Added/updated: '.$fresh->name.' (ID '.$fresh->id.') | UEPS '.$fresh->ueps_score.' | FPI '.$fresh->overall_score.PHP_EOL;
+echo 'Camera sensors: '.($fresh->camera->main_camera_sensors ?? 'NULL').PHP_EOL;
+echo 'Apertures: '.($fresh->camera->main_camera_apertures ?? 'NULL').PHP_EOL;
+echo 'Focal lengths: '.($fresh->camera->main_camera_focal_lengths ?? 'NULL').PHP_EOL;
+echo 'AnTuTu v11: '.($fresh->benchmarks->antutu_score ?? 'NULL').' | Geekbench single: '.($fresh->benchmarks->geekbench_single ?? 'NULL').' | 3DMark WLE: '.($fresh->benchmarks->dmark_wild_life_extreme ?? 'NULL').PHP_EOL;

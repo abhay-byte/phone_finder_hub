@@ -20,7 +20,7 @@ class EnsureRole
         }
 
         $user = Auth::user();
-        
+
         if ($user->isSuperAdmin()) {
             return $next($request);
         }

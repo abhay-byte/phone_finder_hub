@@ -1,19 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="bg-gray-50 dark:bg-black min-h-screen py-12 pt-24 font-sans selection:bg-teal-500 selection:text-white">
+    <div class="bg-gray-50 dark:bg-slate-950 min-h-screen py-12 pt-24 font-sans selection:bg-teal-500 selection:text-white transition-colors duration-300">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <!-- Header -->
             <div class="text-center mb-16">
                 <div
-                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300 text-sm font-bold mb-4 border border-teal-200 dark:border-teal-800">
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-400 text-sm font-bold mb-4 border border-teal-200 dark:border-teal-800/50 transition-colors duration-300">
                     UEPS 45
                 </div>
-                <h1 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-6">
+                <h1 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white mb-6 transition-colors duration-300">
                     Ultra-Extensive Phone Scoring System (UEPS-45)
                 </h1>
-                <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed transition-colors duration-300">
                     A comprehensive 255-point system designed to evaluate smartphones based on real-world usage, covering
                     every aspect from build quality to connectivity and developer freedom.
                 </p>
@@ -22,67 +22,67 @@
             <!-- Score Breakdown Visual -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
                 <div
-                    class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-teal-500 transition-colors">
                         30</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Build & Durability</div>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-teal-500 transition-colors">
                         30</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Display Tech</div>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-teal-500 transition-colors">
                         40</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Processing</div>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-teal-500 transition-colors">
                         30</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Power & Battery</div>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-teal-500 transition-colors">
                         30</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Camera System</div>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-teal-500 transition-colors">
                         25</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Connectivity</div>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-teal-500 transition-colors">
                         15</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Audio & Extras</div>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#121212] p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
+                    class="bg-white dark:bg-slate-900 p-8 rounded-3xl shadow-lg shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 text-center hover:border-teal-500/30 transition-colors group">
                     <div
                         class="text-4xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-teal-500 transition-colors">
                         55</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Points</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 mb-1">Points</div>
                     <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Developer Freedom</div>
                 </div>
             </div>
@@ -92,7 +92,7 @@
 
                 <!-- Section A -->
                 <section
-                    class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
+                    class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden transition-colors duration-300">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
                         <h2 class="text-2xl font-bold text-slate-900 dark:text-white">A. Build & Durability (30 Points)</h2>
                     </div>
@@ -102,22 +102,22 @@
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Frame Material</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                     <li class="flex justify-between"><span>Titanium / Stainless Steel</span> <span
-                                            class="font-mono text-teal-600 font-bold">+5</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+5</span></li>
                                     <li class="flex justify-between"><span>Aluminum / Metal</span> <span
-                                            class="font-mono text-teal-600 font-bold">+3</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+3</span></li>
                                     <li class="flex justify-between"><span>Plastic / Other</span> <span
-                                            class="font-mono text-slate-400">0</span></li>
+                                            class="font-mono text-slate-400 dark:text-slate-600">0</span></li>
                                 </ul>
                             </div>
                             <div>
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Back Material</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                     <li class="flex justify-between"><span>Glass / Ceramic</span> <span
-                                            class="font-mono text-teal-600 font-bold">+5</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+5</span></li>
                                     <li class="flex justify-between"><span>Eco Leather / High-grade Fiber</span> <span
-                                            class="font-mono text-teal-600 font-bold">+3</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+3</span></li>
                                     <li class="flex justify-between"><span>Plastic / Other</span> <span
-                                            class="font-mono text-teal-600 font-bold">+1</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+1</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -126,7 +126,7 @@
 
                 <!-- Section B -->
                 <section
-                    class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
+                    class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden transition-colors duration-300">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
                         <h2 class="text-2xl font-bold text-slate-900 dark:text-white">B. Display Tech (30 Points)</h2>
                     </div>
@@ -136,22 +136,22 @@
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Panel Technology</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                     <li class="flex justify-between"><span>LTPO OLED/AMOLED</span> <span
-                                            class="font-mono text-teal-600 font-bold">+5</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+5</span></li>
                                     <li class="flex justify-between"><span>Standard OLED/AMOLED</span> <span
-                                            class="font-mono text-teal-600 font-bold">+3</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+3</span></li>
                                     <li class="flex justify-between"><span>LCD</span> <span
-                                            class="font-mono text-teal-600 font-bold">+1</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+1</span></li>
                                 </ul>
                             </div>
                             <div>
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Peak Brightness</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                     <li class="flex justify-between"><span>>4000 nits</span> <span
-                                            class="font-mono text-teal-600 font-bold">+10</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+10</span></li>
                                     <li class="flex justify-between"><span>2000-3999 nits</span> <span
-                                            class="font-mono text-teal-600 font-bold">+5</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+5</span></li>
                                     <li class="flex justify-between"><span>
-                                            <2000 nits</span> <span class="font-mono text-slate-400">0</span></li>
+                                            <2000 nits</span> <span class="font-mono text-slate-400 dark:text-slate-600">0</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -160,7 +160,7 @@
 
                 <!-- Section C -->
                 <section
-                    class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
+                    class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden transition-colors duration-300">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
                         <h2 class="text-2xl font-bold text-slate-900 dark:text-white">C. Processing & Memory (40 Points)
                         </h2>
@@ -171,31 +171,31 @@
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Processor Tier</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                     <li class="flex justify-between"><span>8 Elite Gen 5 / Dimensity 9500 tier</span> <span
-                                            class="font-mono text-teal-600 font-bold">+25</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+25</span></li>
                                     <li class="flex justify-between"><span>8 Elite / Dimensity 9400(+) tier</span> <span
-                                            class="font-mono text-teal-600 font-bold">+20</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+20</span></li>
                                     <li class="flex justify-between"><span>8 Gen 4/3 / Dimensity 9300(+) tier</span> <span
-                                            class="font-mono text-teal-600 font-bold">+20</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+20</span></li>
                                     <li class="flex justify-between"><span>8 Gen 2 / 8s Gen 3 tier</span> <span
-                                            class="font-mono text-teal-600 font-bold">+17</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+17</span></li>
                                 </ul>
                             </div>
                             <div>
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Storage, RAM & Expansion</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                     <li class="flex justify-between"><span>UFS 4.0</span> <span
-                                            class="font-mono text-teal-600 font-bold">+5</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+5</span></li>
                                     <li class="flex justify-between"><span>16GB/24GB RAM Option</span> <span
-                                            class="font-mono text-teal-600 font-bold">+5</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+5</span></li>
                                     <li class="flex justify-between"><span>SD Card Slot</span> <span
-                                            class="font-mono text-teal-600 font-bold">+5</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+5</span></li>
                                 </ul>
                             </div>
                         </div>
                         <div
-                            class="rounded-2xl border border-slate-200 dark:border-white/10 p-5 bg-slate-50 dark:bg-white/5">
+                            class="rounded-2xl border border-slate-200 dark:border-white/5 p-5 bg-slate-50 dark:bg-slate-800/50 transition-colors duration-300">
                             <h4 class="font-bold text-slate-900 dark:text-white mb-2">Extended SoC Mapping (examples)</h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed transition-colors duration-300">
                                 The live engine uses a broader SoC table across Snapdragon, Dimensity, Apple A-series,
                                 Tensor, and Exynos tiers. Priority is strictly ordered,
                                 e.g. Snapdragon 8 Elite Gen 5 &gt; 8 Elite &gt; 8 Gen 3 &gt; 8 Gen 2 and Dimensity 9500 &gt;
@@ -205,10 +205,9 @@
                     </div>
                 </section>
 
-                <!-- More sections as needed... -->
                 <!-- Section H -->
                 <section
-                    class="bg-white dark:bg-[#121212] rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden">
+                    class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-white/5 overflow-hidden transition-colors duration-300">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5">
                         <h2 class="text-2xl font-bold text-slate-900 dark:text-white">H. Developer Freedom & Emulation (55
                             Points)</h2>
@@ -217,24 +216,24 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Bootloader & ROMs</h3>
-                                <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                                <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400 transition-colors duration-300">
                                     <li class="flex justify-between"><span>Bootloader Unlockable</span> <span
-                                            class="font-mono text-teal-600 font-bold">+10</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+10</span></li>
                                     <li class="flex justify-between"><span>Major Custom ROM Support</span> <span
-                                            class="font-mono text-teal-600 font-bold">+10</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+10</span></li>
                                     <li class="flex justify-between"><span>Near-AOSP / Easy Root</span> <span
-                                            class="font-mono text-teal-600 font-bold">+10</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+10</span></li>
                                 </ul>
                             </div>
                             <div>
                                 <h3 class="font-bold text-slate-900 dark:text-white mb-2">Emulation (GPU)</h3>
-                                <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                                <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400 transition-colors duration-300">
                                     <li class="flex justify-between"><span>Adreno 8xx Elite-class + Turnip</span> <span
-                                            class="font-mono text-teal-600 font-bold">+20</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+20</span></li>
                                     <li class="flex justify-between"><span>Adreno 7xx/6xx + Turnip</span> <span
-                                            class="font-mono text-teal-600 font-bold">+15/10</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+15/10</span></li>
                                     <li class="flex justify-between"><span>Mali / Immortalis</span> <span
-                                            class="font-mono text-teal-600 font-bold">+14 / +10 / +6</span></li>
+                                            class="font-mono text-teal-600 dark:text-teal-400 font-bold">+14 / +10 / +6</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -242,9 +241,9 @@
                 </section>
 
                 <div class="text-center pt-8">
-                    <p class="text-slate-500 mb-6">Full details available in our documentation.</p>
+                    <p class="text-slate-500 dark:text-slate-400 mb-6 transition-colors duration-300">Full details available in our documentation.</p>
                     <a href="{{ route('phones.rankings') }}"
-                        class="inline-flex items-center justify-center px-8 py-3 bg-slate-900 dark:bg-white text-white dark:text-black font-bold rounded-xl hover:scale-105 transition-transform">
+                        class="inline-flex items-center justify-center px-8 py-3 bg-slate-900 dark:bg-teal-600 text-white dark:text-white font-bold rounded-xl hover:scale-105 transition-transform shadow-lg shadow-teal-500/20">
                         Check the Rankings ->
                     </a>
                 </div>

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\SyncsToFirestore;
 use Illuminate\Database\Eloquent\Model;
 
 class SpecPlatform extends Model
 {
+    use SyncsToFirestore;
+
     protected $fillable = [
         'phone_id',
         'os',
@@ -36,7 +39,7 @@ class SpecPlatform extends Model
             // Auto-calculate RAM limits
             if ($model->isDirty('ram') && $model->ram) {
                 preg_match_all('/(\d+)\s*GB/i', $model->ram, $matches);
-                if (!empty($matches[1])) {
+                if (! empty($matches[1])) {
                     $rams = array_map('intval', $matches[1]);
                     $model->ram_min = min($rams);
                     $model->ram_max = max($rams);
@@ -48,16 +51,20 @@ class SpecPlatform extends Model
                 $storageValues = [];
                 // Match GB
                 preg_match_all('/(\d+)\s*GB/i', $model->internal_storage, $gbMatches);
-                if (!empty($gbMatches[1])) {
-                    foreach ($gbMatches[1] as $val) $storageValues[] = intval($val);
+                if (! empty($gbMatches[1])) {
+                    foreach ($gbMatches[1] as $val) {
+                        $storageValues[] = intval($val);
+                    }
                 }
                 // Match TB
                 preg_match_all('/(\d+)\s*TB/i', $model->internal_storage, $tbMatches);
-                if (!empty($tbMatches[1])) {
-                    foreach ($tbMatches[1] as $val) $storageValues[] = intval($val) * 1024;
+                if (! empty($tbMatches[1])) {
+                    foreach ($tbMatches[1] as $val) {
+                        $storageValues[] = intval($val) * 1024;
+                    }
                 }
 
-                if (!empty($storageValues)) {
+                if (! empty($storageValues)) {
                     $model->storage_min = min($storageValues);
                     $model->storage_max = max($storageValues);
                 }

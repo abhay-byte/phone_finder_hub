@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Phone;
+use Illuminate\Console\Command;
 
 class AddPhone extends Command
 {
     protected $signature = 'phone:add';
+
     protected $description = 'Add a new phone to the database with guided prompts';
 
     public function handle()
@@ -23,7 +24,7 @@ class AddPhone extends Command
         $releaseDate = $this->ask('Release date (YYYY-MM-DD)');
         $announcedDate = $this->ask('Announced date (YYYY-MM-DD)');
         $imageUrl = $this->ask('Image URL (e.g., "/storage/phones/phone-name.png")');
-        
+
         // Store URLs
         $amazonUrl = $this->ask('Amazon URL (or press Enter to skip)') ?: null;
         $flipkartUrl = $this->ask('Flipkart URL (or press Enter to skip)') ?: null;
@@ -63,7 +64,7 @@ class AddPhone extends Command
                 'geekbench_single' => $gbSingle,
                 'geekbench_multi' => $gbMulti,
                 'dmark_wild_life_extreme' => $dmark,
-                'dmark_wild_life_stress_stability' => (int)$stability, // Force integer
+                'dmark_wild_life_stress_stability' => (int) $stability, // Force integer
                 'dmark_test_type' => 'Wild Life Extreme',
             ]);
 
@@ -73,7 +74,7 @@ class AddPhone extends Command
         // Add other specs
         if ($this->confirm('Continue adding specs (body, platform, camera, etc.)?', true)) {
             $this->warn('Use tinker or manual SQL for detailed specs.');
-            $this->info("Run: php artisan tinker");
+            $this->info('Run: php artisan tinker');
             $this->info("Then: \$phone = App\\Models\\Phone::find({$phone->id});");
         }
 
@@ -81,8 +82,8 @@ class AddPhone extends Command
         $this->newLine();
         $this->info('Calculating scores...');
         $phone->updateScores();
-        
-        $this->info("✓ Scores calculated:");
+
+        $this->info('✓ Scores calculated:');
         $this->line("  FPI: {$phone->overall_score}");
         $this->line("  UEPS: {$phone->ueps_score}");
         $this->line("  GPX: {$phone->gpx_score}");

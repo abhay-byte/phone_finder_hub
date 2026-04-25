@@ -13,13 +13,13 @@ if ($poco) {
         'gpu_emulation_tier' => 'S-Tier (Snapdragon 8s Gen 4)',
         'custom_rom_support' => 'Excellent (Xiaomi community)',
     ]);
-    
+
     $poco->battery->update([
         'charging_specs_detailed' => '90W Wired (0-100% in 35 min), PD 3.0',
         'reverse_wired' => 'Yes (22.5W)',
         'reverse_wireless' => 'No',
     ]);
-    
+
     $poco->body->update([
         'display_brightness' => '3200 nits (peak)',
         'pwm_dimming' => '2160 Hz',

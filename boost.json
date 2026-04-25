@@ -1,0 +1,15 @@
+{
+    "agents": [
+        "claude_code",
+        "codex",
+        "opencode",
+        "gemini"
+    ],
+    "guidelines": true,
+    "herd_mcp": false,
+    "mcp": true,
+    "sail": false,
+    "skills": [
+        "tailwindcss-development"
+    ]
+}

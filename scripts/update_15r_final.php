@@ -1,22 +1,22 @@
 <?php
 
+use App\Models\Benchmark;
 use App\Models\Phone;
+use App\Models\SpecBattery;
 use App\Models\SpecBody;
-use App\Models\SpecPlatform;
 use App\Models\SpecCamera;
 use App\Models\SpecConnectivity;
-use App\Models\SpecBattery;
-use App\Models\Benchmark;
+use App\Models\SpecPlatform;
 use Illuminate\Support\Facades\DB;
 
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 // Find the phone
 $phone = Phone::where('model_variant', 'CPH2769')->orWhere('name', 'OnePlus 15R')->first();
 
-if (!$phone) {
+if (! $phone) {
     echo "OnePlus 15R not found!\n";
     exit(1);
 }
@@ -110,9 +110,9 @@ DB::transaction(function () use ($phone) {
     SpecBattery::updateOrCreate(
         ['phone_id' => $phone->id],
         [
-             'capacity' => 'Si/C Li-Ion 7400 mAh', // Preserving original capacity string style
-             'charging_wired' => '80W wired',
-             'charging_specs_detailed' => '80W wired',
+            'capacity' => 'Si/C Li-Ion 7400 mAh', // Preserving original capacity string style
+            'charging_wired' => '80W wired',
+            'charging_specs_detailed' => '80W wired',
         ]
     );
 
@@ -122,13 +122,13 @@ DB::transaction(function () use ($phone) {
         [
             'antutu_score' => 2981677, // Taking v11 score as primary or latest
             'geekbench_multi' => 9369,
-            'dmark_wild_life_extreme' => 5016, 
+            'dmark_wild_life_extreme' => 5016,
             'battery_endurance_hours' => 77.85, // 77:51h converted to decimal hours approx
             'battery_active_use_score' => '21:36',
             'energy_label' => 'Class A',
             'repairability_score' => 'Class B',
             'free_fall_rating' => 'Class D (45 falls)',
-            // 'loudspeaker_lufs' => -25.7, // Assuming we have this column or will add it? The user provided -25.7 LUFS. 
+            // 'loudspeaker_lufs' => -25.7, // Assuming we have this column or will add it? The user provided -25.7 LUFS.
             // Checking DB schema earlier, benchmarks table changes... assuming we might not have lufs column yet or mapped differently.
             // Let's stick to what we have in the model for now.
         ]

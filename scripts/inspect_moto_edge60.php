@@ -1,6 +1,7 @@
 <?php
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -15,8 +16,8 @@ foreach ($phones as $phone) {
     } else {
         echo "  - No Benchmarks\n";
     }
-    
+
     // Check key specs affecting score
     $main = $phone->cameras()->where('type', 'main')->first();
-    echo "  - Main Sensor: " . ($main ? $main->sensor_size : 'N/A') . "\n";
+    echo '  - Main Sensor: '.($main ? $main->sensor_size : 'N/A')."\n";
 }

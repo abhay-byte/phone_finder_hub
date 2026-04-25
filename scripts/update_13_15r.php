@@ -1,12 +1,12 @@
 <?php
 
+use App\Models\Benchmark;
 use App\Models\Phone;
+use App\Models\SpecBattery;
 use App\Models\SpecBody;
-use App\Models\SpecPlatform;
 use App\Models\SpecCamera;
 use App\Models\SpecConnectivity;
-use App\Models\SpecBattery;
-use App\Models\Benchmark;
+use App\Models\SpecPlatform;
 
 // OnePlus 13 (ID 1)
 $p13 = Phone::find(1);
@@ -79,7 +79,7 @@ if ($p13) {
     Benchmark::updateOrCreate(['phone_id' => 1], [
         'antutu_score' => '2690491', // v10
         'geekbench_score' => '9278', // v6
-        'dxomark_score' => null, 
+        'dxomark_score' => null,
         '3dmark_score' => '6615', // Wild Life Extreme
         'battery_endurance' => '61:36', // 61h 36m
         'battery_active_use_score' => '15:28', // 15h 28m
@@ -151,7 +151,7 @@ if ($p15r) {
     // Battery
     SpecBattery::updateOrCreate(['phone_id' => 2], [
         'battery_type' => 'Si/C Li-Ion 7400 mAh',
-        'charging' => 'non-removable', 
+        'charging' => 'non-removable',
         'charging_specs_detailed' => '80W wired',
     ]);
 
@@ -159,7 +159,7 @@ if ($p15r) {
     Benchmark::updateOrCreate(['phone_id' => 2], [
         'antutu_score' => '1954910', // v10 (taking the lower one as safer bet or concatenate?) User provided 1954910 (v10), 2981677 (v11). I'll use v10.
         'geekbench_score' => '9369', // v6
-        'dxomark_score' => null, 
+        'dxomark_score' => null,
         '3dmark_score' => '5016', // Wild Life Extreme
         'battery_endurance' => '77:51', // 77h 51m
         'battery_active_use_score' => '21:36', // 21h 36m

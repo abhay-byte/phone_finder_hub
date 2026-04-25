@@ -1,0 +1,247 @@
+[
+    {
+        "id": 1,
+        "migration": "0001_01_01_000000_create_users_table",
+        "batch": 1
+    },
+    {
+        "id": 2,
+        "migration": "0001_01_01_000001_create_cache_table",
+        "batch": 1
+    },
+    {
+        "id": 3,
+        "migration": "0001_01_01_000002_create_jobs_table",
+        "batch": 1
+    },
+    {
+        "id": 4,
+        "migration": "2026_02_14_080528_create_personal_access_tokens_table",
+        "batch": 1
+    },
+    {
+        "id": 5,
+        "migration": "2026_02_14_081655_create_phones_table",
+        "batch": 1
+    },
+    {
+        "id": 6,
+        "migration": "2026_02_14_081656_create_benchmarks_table",
+        "batch": 1
+    },
+    {
+        "id": 7,
+        "migration": "2026_02_14_082229_create_spec_bodies_table",
+        "batch": 1
+    },
+    {
+        "id": 8,
+        "migration": "2026_02_14_082230_create_spec_cameras_table",
+        "batch": 1
+    },
+    {
+        "id": 9,
+        "migration": "2026_02_14_082230_create_spec_connectivities_table",
+        "batch": 1
+    },
+    {
+        "id": 10,
+        "migration": "2026_02_14_082230_create_spec_platforms_table",
+        "batch": 1
+    },
+    {
+        "id": 11,
+        "migration": "2026_02_14_082231_create_spec_batteries_table",
+        "batch": 1
+    },
+    {
+        "id": 12,
+        "migration": "2026_02_14_094836_add_buy_links_to_phones_table",
+        "batch": 1
+    },
+    {
+        "id": 13,
+        "migration": "2026_02_14_095538_add_store_prices_to_phones_table",
+        "batch": 1
+    },
+    {
+        "id": 14,
+        "migration": "2026_02_14_101609_add_enthusiast_metrics_to_spec_platforms_table",
+        "batch": 1
+    },
+    {
+        "id": 15,
+        "migration": "2026_02_14_111713_add_detailed_specs_to_tables",
+        "batch": 1
+    },
+    {
+        "id": 16,
+        "migration": "2026_02_14_113341_add_missing_specs_columns",
+        "batch": 1
+    },
+    {
+        "id": 17,
+        "migration": "2026_02_14_115442_add_granular_specs_to_tables",
+        "batch": 1
+    },
+    {
+        "id": 18,
+        "migration": "2026_02_14_130144_add_ultrawide_to_spec_cameras_table",
+        "batch": 1
+    },
+    {
+        "id": 19,
+        "migration": "2026_02_14_130817_add_telephoto_to_spec_cameras_table",
+        "batch": 1
+    },
+    {
+        "id": 20,
+        "migration": "2026_02_14_140608_add_ueps_score_to_phones_table",
+        "batch": 1
+    },
+    {
+        "id": 21,
+        "migration": "2026_02_15_010900_add_developer_freedom_metrics_to_spec_platforms",
+        "batch": 1
+    },
+    {
+        "id": 22,
+        "migration": "2026_02_15_065727_add_unique_constraint_to_phones_name_table",
+        "batch": 2
+    },
+    {
+        "id": 24,
+        "migration": "2026_02_15_144219_add_indexes_to_phones_table",
+        "batch": 3
+    },
+    {
+        "id": 25,
+        "migration": "2026_02_15_134340_change_overall_score_to_decimal_in_phones_table",
+        "batch": 4
+    },
+    {
+        "id": 26,
+        "migration": "2026_02_15_183218_add_indexes_and_value_score_to_phones_table",
+        "batch": 5
+    },
+    {
+        "id": 27,
+        "migration": "2026_02_15_191214_add_gpx_score_to_phones_table",
+        "batch": 6
+    },
+    {
+        "id": 28,
+        "migration": "2026_02_15_193114_add_stability_to_benchmarks_table",
+        "batch": 7
+    },
+    {
+        "id": 29,
+        "migration": "2026_02_16_131702_add_cooling_type_to_spec_bodies_table",
+        "batch": 8
+    },
+    {
+        "id": 30,
+        "migration": "2026_02_16_151948_add_cms_score_to_phones_table",
+        "batch": 9
+    },
+    {
+        "id": 31,
+        "migration": "2026_02_16_151949_add_camera_benchmarks_to_benchmarks_table",
+        "batch": 9
+    },
+    {
+        "id": 32,
+        "migration": "2026_02_16_173832_add_other_benchmark_score_to_benchmarks_table",
+        "batch": 10
+    },
+    {
+        "id": 33,
+        "migration": "2026_02_17_113000_add_endurance_score_to_phones_table",
+        "batch": 11
+    },
+    {
+        "id": 34,
+        "migration": "2026_02_17_094959_add_expert_score_to_phones_table",
+        "batch": 12
+    },
+    {
+        "id": 35,
+        "migration": "2026_02_17_102418_add_capacity_limits_to_spec_platforms",
+        "batch": 13
+    },
+    {
+        "id": 36,
+        "migration": "2026_02_18_200012_change_sim_to_text_in_spec_bodies_table",
+        "batch": 14
+    },
+    {
+        "id": 37,
+        "migration": "2026_02_19_000001_add_role_username_to_users_table",
+        "batch": 15
+    },
+    {
+        "id": 38,
+        "migration": "2026_02_19_154347_expand_url_columns_on_phones_table",
+        "batch": 16
+    },
+    {
+        "id": 39,
+        "migration": "2026_02_20_050644_create_comments_table",
+        "batch": 17
+    },
+    {
+        "id": 40,
+        "migration": "2026_02_20_050645_create_comment_upvotes_table",
+        "batch": 17
+    },
+    {
+        "id": 41,
+        "migration": "2026_02_20_082327_make_user_id_nullable_on_comments_table",
+        "batch": 18
+    },
+    {
+        "id": 42,
+        "migration": "2026_02_20_101641_add_author_role_to_users_table",
+        "batch": 19
+    },
+    {
+        "id": 43,
+        "migration": "2026_02_20_101641_create_blogs_table",
+        "batch": 19
+    },
+    {
+        "id": 44,
+        "migration": "2026_02_20_102855_create_forum_categories_table",
+        "batch": 20
+    },
+    {
+        "id": 45,
+        "migration": "2026_02_20_102856_a_create_forum_posts_table",
+        "batch": 21
+    },
+    {
+        "id": 46,
+        "migration": "2026_02_20_102856_create_forum_comments_table",
+        "batch": 21
+    },
+    {
+        "id": 47,
+        "migration": "2026_02_21_075711_create_chats_table",
+        "batch": 22
+    },
+    {
+        "id": 48,
+        "migration": "2026_02_21_075712_create_chat_messages_table",
+        "batch": 22
+    },
+    {
+        "id": 49,
+        "migration": "2026_02_21_081727_add_order_and_rules_banner_to_forum_categories_table",
+        "batch": 23
+    },
+    {
+        "id": 50,
+        "migration": "2026_02_21_082148_add_upvotes_to_forum_posts_table",
+        "batch": 24
+    }
+]

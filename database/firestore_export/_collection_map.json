@@ -1,0 +1,18 @@
+{
+    "users": "users",
+    "phones": "phones",
+    "benchmarks": "benchmarks",
+    "spec_batteries": "spec_batteries",
+    "spec_bodies": "spec_bodies",
+    "spec_cameras": "spec_cameras",
+    "spec_connectivities": "spec_connectivities",
+    "spec_platforms": "spec_platforms",
+    "comments": "comments",
+    "comment_upvotes": "comment_upvotes",
+    "blogs": "blogs",
+    "forum_categories": "forum_categories",
+    "forum_posts": "forum_posts",
+    "forum_comments": "forum_comments",
+    "chats": "chats",
+    "chat_messages": "chat_messages"
+}

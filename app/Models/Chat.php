@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\SyncsToFirestore;
 use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model
 {
+    use SyncsToFirestore;
+
     protected $fillable = ['user_id', 'title'];
 
     public function user()

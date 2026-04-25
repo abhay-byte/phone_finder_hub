@@ -2,7 +2,7 @@
 
 @section('content')
     <div
-        class="bg-gray-50 dark:bg-black min-h-screen py-12 pt-24 font-sans selection:bg-teal-500 selection:text-white animate-fadeInUp">
+        class="bg-gray-50 dark:bg-slate-950 min-h-screen py-12 pt-24 font-sans selection:bg-teal-500 selection:text-white animate-fadeInUp">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <!-- Header -->
@@ -20,10 +20,10 @@
                 <!-- Sidebar (Only on Expert Tab) -->
                 <div class="lg:col-span-1 space-y-6">
                     <!-- Filter Card -->
-                    <div class="bg-white dark:bg-[#121212] rounded-2xl shadow-sm border border-slate-200 dark:border-white/5 p-6 sticky top-24">
+                    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-white/5 p-6 sticky top-24">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="font-bold text-lg text-slate-900 dark:text-white">Filters</h3>
-                            <button id="reset-filters" class="text-xs text-slate-500 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-400 font-medium transition-colors">
+                            <button id="reset-filters" class="text-xs text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors">
                                 Reset
                             </button>
                         </div>
@@ -139,11 +139,11 @@
                         <!-- Brand Filter -->
                         <div class="mb-4">
                             <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Brands</label>
-                            <div class="max-h-40 overflow-y-auto space-y-2 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-gray-50 dark:bg-black/20">
+                            <div class="max-h-40 overflow-y-auto space-y-2 p-2 border border-slate-200 dark:border-white/10 rounded-lg bg-gray-50 dark:bg-slate-800/50">
                                 @foreach($filterOptions['brands'] as $brand)
-                                    <label class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-white/5 rounded px-1 py-0.5 transition-colors">
+                                    <label class="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700 rounded px-1 py-0.5 transition-colors">
                                         <input type="checkbox" name="brands[]" value="{{ $brand }}" 
-                                            class="rounded border-gray-300 text-teal-600 focus:ring-teal-500 dark:bg-white/5 dark:border-white/10"
+                                            class="rounded border-gray-300 dark:border-white/10 dark:bg-slate-900 text-teal-600 focus:ring-teal-500"
                                             {{ in_array($brand, request('brands', [])) ? 'checked' : '' }}>
                                         <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">{{ $brand }}</span>
                                     </label>
@@ -160,7 +160,7 @@
                                         <input type="checkbox" name="ip_ratings[]" value="{{ $ip }}" 
                                             class="peer hidden" style="display:none"
                                             {{ in_array($ip, request('ip_ratings', [])) ? 'checked' : '' }}>
-                                        <span class="inline-block px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-xs font-bold text-slate-600 dark:text-slate-400 peer-checked:bg-teal-50 peer-checked:text-teal-700 peer-checked:border-teal-200 dark:peer-checked:bg-teal-900/30 dark:peer-checked:text-teal-300 dark:peer-checked:border-teal-800 transition-all hover:bg-slate-50 dark:hover:bg-white/10">
+                                        <span class="inline-block px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-400 peer-checked:bg-teal-50 dark:peer-checked:bg-teal-900/30 peer-checked:text-teal-700 dark:peer-checked:text-teal-400 peer-checked:border-teal-200 dark:peer-checked:border-teal-900/50 transition-all hover:bg-slate-50 dark:hover:bg-slate-700">
                                             {{ \Illuminate\Support\Str::before($ip, ' ') }}
                                         </span>
                                     </label>
@@ -206,29 +206,29 @@
                         <!-- Enthusiast Filters -->
                         <div class="mb-8 space-y-4">
                             <label class="flex items-center justify-between cursor-pointer group">
-                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-teal-600 transition-colors">Unlock Bootloader</span>
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">Unlock Bootloader</span>
                                 <div class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" id="bootloader" name="bootloader" value="1" {{ $bootloader ? 'checked' : '' }} class="sr-only peer">
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
                                 </div>
                             </label>
                             
                             <label class="flex items-center justify-between cursor-pointer group">
-                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-teal-600 transition-colors">Turnip Driver Support</span>
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">Turnip Driver Support</span>
                                 <div class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" id="turnip" name="turnip" value="1" {{ $turnip ? 'checked' : '' }} class="sr-only peer">
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
                                 </div>
                             </label>
 
                             <label class="flex items-center justify-between cursor-pointer group">
                                 <div class="flex flex-col">
-                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-teal-600 transition-colors">Show Unverified</span>
+                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">Show Unverified</span>
                                     <span class="text-[10px] text-slate-500 dark:text-slate-500 font-medium">Include phones with missing data</span>
                                 </div>
                                 <div class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" id="show_unverified" name="show_unverified" value="1" {{ $showUnverified ? 'checked' : '' }} class="sr-only peer">
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 dark:peer-focus:ring-teal-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
+                                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
                                 </div>
                             </label>
                         </div>
@@ -245,33 +245,33 @@
                 <div class="{{ $tab == 'overall' ? 'lg:col-span-3' : 'lg:col-span-4' }} space-y-6">
                     <div class="flex flex-col md:flex-row justify-end items-start md:items-center gap-4">
                         <!-- Tabs -->
-                        <div id="tabs-container" class="bg-gray-200 dark:bg-white/10 p-1.5 rounded-xl inline-flex font-bold text-sm overflow-x-auto max-w-full">
+                        <div id="tabs-container" class="bg-gray-200 dark:bg-slate-900 p-1.5 rounded-xl inline-flex font-bold text-sm overflow-x-auto max-w-full">
                     <a href="{{ route('phones.rankings', ['tab' => 'overall']) }}"
-                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'overall' ? 'bg-white dark:bg-black shadow-sm text-indigo-600 dark:text-indigo-400 font-extrabold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'overall' ? 'bg-white dark:bg-slate-800 shadow-sm text-indigo-600 dark:text-indigo-400 font-extrabold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Expert Score
                     </a>
                     <a href="{{ route('phones.rankings', ['tab' => 'ueps']) }}"
-                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'ueps' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'ueps' ? 'bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         UEPS 45
                     </a>
                     <a href="{{ route('phones.rankings', ['tab' => 'performance']) }}"
-                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'performance' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'performance' ? 'bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Performance
                     </a>
                     <a href="{{ route('phones.rankings', ['tab' => 'gaming']) }}"
-                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'gaming' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'gaming' ? 'bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Gaming (GPX)
                     </a>
                     <a href="{{ route('phones.rankings', ['tab' => 'cms']) }}"
-                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'cms' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'cms' ? 'bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Camera (CMS)
                     </a>
                     <a href="{{ route('phones.rankings', ['tab' => 'endurance']) }}"
-                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'endurance' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'endurance' ? 'bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Endurance
                     </a>
                     <a href="{{ route('phones.rankings', ['tab' => 'value']) }}"
-                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'value' ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
+                        class="px-4 py-2 rounded-lg transition-all {{ $tab == 'value' ? 'bg-white dark:bg-slate-800 shadow-sm text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Value
                     </a>
                 </div>

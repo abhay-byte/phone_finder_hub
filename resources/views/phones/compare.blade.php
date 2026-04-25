@@ -3,7 +3,7 @@
 @section('title', 'Compare Phones')
 
 @section('content')
-    <div class="bg-white dark:bg-black min-h-screen pb-20 pt-24 selection:bg-teal-500 selection:text-white font-sans animate-fadeInUp"
+    <div class="bg-white dark:bg-slate-950 min-h-screen pb-20 pt-24 selection:bg-teal-500 selection:text-white font-sans animate-fadeInUp"
         x-data='comparisonPage(@json($phones, JSON_HEX_APOS))'>
 
         <!-- Main Container for Header & Search -->
@@ -13,7 +13,7 @@
             <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 animate-fade-in-up">
                 <div>
                     <h1 class="text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">
-                        Compare <span class="text-teal-600 dark:text-teal-500">Devices</span>
+                        Compare <span class="text-teal-600">Devices</span>
                     </h1>
                     <p class="text-slate-600 dark:text-slate-400 font-medium">
                         Side-by-side specs, benchmarks, and value analysis.
@@ -23,7 +23,7 @@
                 <!-- Actions -->
                 <div class="flex gap-3">
                     <button @click="clearAll()" x-show="phones.length > 0"
-                        class="px-6 py-2.5 rounded-xl text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border border-transparent hover:border-red-100 dark:hover:border-red-900/30">
+                        class="px-6 py-2.5 rounded-xl text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors border border-transparent hover:border-red-100 dark:hover:border-red-900/20">
                         Clear All
                     </button>
                 </div>
@@ -31,9 +31,9 @@
 
             <!-- Empty State -->
             <div x-show="phones.length === 0" x-cloak
-                class="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-[2.5rem] bg-gray-50/50 dark:bg-white/5 backdrop-blur-sm w-full animate-fade-in-up">
+                class="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-[2.5rem] bg-gray-50/50 dark:bg-slate-900/50 backdrop-blur-sm w-full animate-fade-in-up">
                 <div
-                    class="w-24 h-24 bg-teal-50 dark:bg-teal-900/20 rounded-full flex items-center justify-center text-teal-600 mb-8">
+                    class="w-24 h-24 bg-teal-50 dark:bg-teal-900/20 rounded-full flex items-center justify-center text-teal-600 dark:text-teal-400 mb-8">
                     <svg class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
@@ -75,18 +75,18 @@
                         <div class="contents group/header">
                             <!-- Top-Left Corner (Empty/Sticky) -->
                             <div
-                                class="sticky top-0 left-0 z-50 bg-white/95 dark:bg-black/95 backdrop-blur-xl border-b border-r border-gray-200 dark:border-white/10 p-6 flex items-end pb-8">
+                                class="sticky top-0 left-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-r border-gray-200 dark:border-white/10 p-6 flex items-end pb-8">
                                 <span
-                                    class="text-xs font-bold text-gray-400 uppercase tracking-widest">Specifications</span>
+                                    class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Specifications</span>
                             </div>
 
                             <!-- Phone Headers -->
                             <template x-for="(phone, index) in phones" :key="phone.id">
                                 <div
-                                    class="sticky top-0 z-40 bg-white/95 dark:bg-black/95 backdrop-blur-xl border-b border-r border-gray-200 dark:border-white/10 p-8 flex flex-col items-center text-center relative transition-colors hover:bg-gray-50 dark:hover:bg-[#121212]">
+                                    class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-r border-gray-200 dark:border-white/10 p-8 flex flex-col items-center text-center relative transition-colors hover:bg-gray-50 dark:hover:bg-slate-800/50">
                                     <!-- Remove Button -->
                                     <button @click="removePhone(phone.id)"
-                                        class="absolute top-4 right-4 p-2 text-gray-300 hover:text-red-500 transition-colors bg-white dark:bg-white/5 rounded-full shadow-sm hover:shadow-md border border-gray-100 dark:border-white/5">
+                                        class="absolute top-4 right-4 p-2 text-gray-300 dark:text-gray-600 hover:text-red-500 dark:hover:text-red-400 transition-colors bg-white dark:bg-slate-800 rounded-full shadow-sm hover:shadow-md border border-gray-100 dark:border-white/5">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M6 18L18 6M6 6l12 12" />
@@ -96,7 +96,7 @@
                                     <!-- Image -->
                                     <div class="h-48 w-full mb-6 flex items-center justify-center p-4">
                                         <img :src="phone.image_url" :alt="phone.name"
-                                            class="max-h-full max-w-full object-contain filter drop-shadow-2xl transition-transform duration-500 hover:scale-110 will-change-transform">
+                                            class="max-h-full max-w-full object-contain filter drop-shadow-2xl transition-transform duration-500 hover:scale-110 will-change-transform dark:mix-blend-normal">
                                     </div>
 
                                     <!-- Name & Price -->
@@ -115,17 +115,17 @@
                                         <!-- UEPS -->
                                         <div class="w-full">
                                             <div class="flex justify-between items-end text-xs mb-1.5">
-                                                <span class="text-gray-400 font-bold uppercase tracking-wider">UEPS
+                                                <span class="text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">UEPS
                                                     4.5</span>
                                                 <div class="flex items-center gap-1.5">
                                                     <template x-if="isWinner(phone, 'ueps_score')"><span
-                                                            class="text-[10px] bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-teal-200 dark:border-teal-800">👑
+                                                            class="text-[10px] bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-400 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-teal-200 dark:border-teal-800/50">👑
                                                             Best</span></template>
                                                     <span class="text-lg font-black text-gray-900 dark:text-white"
                                                         x-text="formatScore(phone.ueps_score)"></span>
                                                 </div>
                                             </div>
-                                            <div class="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-2 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                                 <div class="h-full rounded-full bg-teal-500 shadow-[0_0_10px_rgba(20,184,166,0.3)]"
                                                     :style="`width: ${getBarWidth(phone, 'ueps_score')}%`"></div>
                                             </div>
@@ -133,17 +133,17 @@
                                         <!-- FPI -->
                                         <div class="w-full">
                                             <div class="flex justify-between items-end text-xs mb-1.5">
-                                                <span class="text-gray-400 font-bold uppercase tracking-wider">Perf.
+                                                <span class="text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Perf.
                                                     Index</span>
                                                 <div class="flex items-center gap-1.5">
                                                     <template x-if="isWinner(phone, 'overall_score')"><span
-                                                            class="text-[10px] bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-teal-200 dark:border-teal-800">👑
+                                                            class="text-[10px] bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-400 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-teal-200 dark:border-teal-800/50">👑
                                                             Best</span></template>
                                                     <span class="text-lg font-black text-gray-900 dark:text-white"
                                                         x-text="formatScore(phone.overall_score)"></span>
                                                 </div>
                                             </div>
-                                            <div class="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-2 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                                 <div class="h-full rounded-full bg-teal-500/80 shadow-[0_0_10px_rgba(20,184,166,0.3)]"
                                                     :style="`width: ${getBarWidth(phone, 'overall_score')}%`"></div>
                                             </div>
@@ -152,16 +152,16 @@
                                         <div class="w-full">
                                             <div class="flex justify-between items-end text-xs mb-1.5">
                                                 <span
-                                                    class="text-gray-400 font-bold uppercase tracking-wider">GPX-300</span>
+                                                    class="text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">GPX-300</span>
                                                 <div class="flex items-center gap-1.5">
                                                     <template x-if="isWinner(phone, 'gpx_score')"><span
-                                                            class="text-[10px] bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-red-200 dark:border-red-800">👑
+                                                            class="text-[10px] bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-red-200 dark:border-red-800/50">👑
                                                             Best</span></template>
                                                     <span class="text-lg font-black text-gray-900 dark:text-white"
                                                         x-text="formatScore(phone.gpx_score)"></span>
                                                 </div>
                                             </div>
-                                            <div class="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-2 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                                 <div class="h-full rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
                                                     :style="`width: ${getBarWidth(phone, 'gpx_score')}%`"></div>
                                             </div>
@@ -170,16 +170,16 @@
                                         <div class="w-full">
                                             <div class="flex justify-between items-end text-xs mb-1.5">
                                                 <span
-                                                    class="text-gray-400 font-bold uppercase tracking-wider">CMS-1330</span>
+                                                    class="text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">CMS-1330</span>
                                                 <div class="flex items-center gap-1.5">
                                                     <template x-if="isWinner(phone, 'cms_score')"><span
-                                                            class="text-[10px] bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-amber-200 dark:border-amber-800">👑
+                                                            class="text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-amber-200 dark:border-amber-800/50">👑
                                                             Best</span></template>
                                                     <span class="text-lg font-black text-gray-900 dark:text-white"
                                                         x-text="formatScore(phone.cms_score)"></span>
                                                 </div>
                                             </div>
-                                            <div class="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-2 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                                 <div class="h-full rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.3)]"
                                                     :style="`width: ${getBarWidth(phone, 'cms_score')}%`"></div>
                                             </div>
@@ -187,17 +187,17 @@
                                         <!-- Endurance Score -->
                                         <div class="w-full">
                                             <div class="flex justify-between items-end text-xs mb-1.5">
-                                                <span class="text-gray-400 font-bold uppercase tracking-wider">Endurance
+                                                <span class="text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Endurance
                                                     Rating</span>
                                                 <div class="flex items-center gap-1.5">
                                                     <template x-if="isWinner(phone, 'endurance_score')"><span
-                                                            class="text-[10px] bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-purple-200 dark:border-purple-800">👑
+                                                            class="text-[10px] bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-purple-200 dark:border-purple-800/50">👑
                                                             Best</span></template>
                                                     <span class="text-lg font-black text-gray-900 dark:text-white"
                                                         x-text="formatScore(phone.endurance_score)"></span>
                                                 </div>
                                             </div>
-                                            <div class="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-2 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                                 <div class="h-full rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.3)]"
                                                     :style="`width: ${getBarWidth(phone, 'endurance_score')}%`"></div>
                                             </div>
@@ -205,17 +205,17 @@
                                         <!-- Value -->
                                         <div class="w-full">
                                             <div class="flex justify-between items-end text-xs mb-1.5">
-                                                <span class="text-gray-400 font-bold uppercase tracking-wider">Value
+                                                <span class="text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">Value
                                                     Score</span>
                                                 <div class="flex items-center gap-1.5">
                                                     <template x-if="isWinner(phone, 'value_score')"><span
-                                                            class="text-[10px] bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-200 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-teal-200 dark:border-teal-800">👑
+                                                            class="text-[10px] bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-400 px-1.5 py-0.5 rounded font-bold flex items-center gap-1 border border-teal-200 dark:border-teal-800/50">👑
                                                             Best</span></template>
                                                     <span class="text-lg font-black text-gray-900 dark:text-white"
                                                         x-text="formatScore(phone.value_score)"></span>
                                                 </div>
                                             </div>
-                                            <div class="h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-2 bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                                 <div class="h-full rounded-full bg-teal-500/60 shadow-[0_0_10px_rgba(20,184,166,0.3)]"
                                                     :style="`width: ${getBarWidth(phone, 'value_score')}%`"></div>
                                             </div>
@@ -226,18 +226,18 @@
 
                             <!-- Add Button Header Slot -->
                             <div x-show="phones.length < 4"
-                                class="sticky top-0 z-40 bg-white/95 dark:bg-black/95 backdrop-blur-xl border-b border-gray-200 dark:border-white/10 p-8 flex flex-col items-center justify-center">
+                                class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-gray-200 dark:border-white/10 p-8 flex flex-col items-center justify-center">
                                 <button @click="openSearch(phones.length)"
-                                    class="w-full h-full min-h-[400px] border-2 border-dashed border-gray-300 dark:border-white/10 rounded-[2rem] flex flex-col items-center justify-center gap-6 hover:border-teal-500 dark:hover:border-teal-500 hover:bg-teal-50/50 dark:hover:bg-teal-900/10 transition-all group active:scale-95 duration-200">
+                                    class="w-full h-full min-h-[400px] border-2 border-dashed border-gray-300 dark:border-white/10 rounded-[2rem] flex flex-col items-center justify-center gap-6 hover:border-teal-500 dark:hover:border-teal-400 hover:bg-teal-50/50 dark:hover:bg-teal-900/10 transition-all group active:scale-95 duration-200">
                                     <div
-                                        class="w-20 h-20 rounded-full bg-white dark:bg-white/5 shadow-lg border border-gray-100 dark:border-white/10 flex items-center justify-center text-gray-300 group-hover:text-teal-500 transition-colors">
+                                        class="w-20 h-20 rounded-full bg-white dark:bg-slate-800 shadow-lg border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-300 dark:text-gray-600 group-hover:text-teal-500 dark:group-hover:text-teal-400 transition-colors">
                                         <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 4v16m8-8H4" />
                                         </svg>
                                     </div>
                                     <span
-                                        class="font-bold text-gray-400 dark:text-gray-500 group-hover:text-teal-500 uppercase tracking-wider text-sm">Add
+                                        class="font-bold text-gray-400 dark:text-gray-500 group-hover:text-teal-500 dark:group-hover:text-teal-400 uppercase tracking-wider text-sm">Add
                                         Device</span>
                                 </button>
                             </div>
@@ -247,9 +247,9 @@
                         <template x-for="section in specs" :key="section.title">
                             <div class="contents">
                                 <!-- Section Title Row -->
-                                <div class="col-span-full bg-gray-100 dark:bg-[#121212] border-b border-gray-200 dark:border-white/10 py-3 px-6 mt-0 sticky left-0 z-20"
+                                <div class="col-span-full bg-gray-100 dark:bg-slate-800/80 border-b border-gray-200 dark:border-white/5 py-3 px-6 mt-0 sticky left-0 z-20 transition-colors duration-300"
                                     :class="{
-                                        'cursor-pointer hover:bg-gray-200 dark:hover:bg-white/5 transition-colors': section
+                                        'cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors': section
                                             .title === 'UEPS Breakdown' || section.title === 'Gaming (GPX-300)' ||
                                             section.title === 'Camera (CMS-1330)'
                                     }"
@@ -265,9 +265,9 @@
                                         <!-- UEPS Toggle -->
                                         <template x-if="section.title === 'UEPS Breakdown'">
                                             <div class="flex items-center gap-2">
-                                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"
+                                                <span class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider"
                                                     x-text="showUeps ? 'Hide Breakdown' : 'Show Breakdown'"></span>
-                                                <svg class="w-4 h-4 text-gray-400 transition-transform duration-300"
+                                                <svg class="w-4 h-4 text-gray-400 dark:text-slate-500 transition-transform duration-300"
                                                     :class="{ 'rotate-180': showUeps }" fill="none"
                                                     viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -279,9 +279,9 @@
                                         <!-- GPX Toggle -->
                                         <template x-if="section.title === 'Gaming (GPX-300)'">
                                             <div class="flex items-center gap-2">
-                                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"
+                                                <span class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider"
                                                     x-text="showGpx ? 'Hide Index' : 'Show Index'"></span>
-                                                <svg class="w-4 h-4 text-gray-400 transition-transform duration-300"
+                                                <svg class="w-4 h-4 text-gray-400 dark:text-slate-500 transition-transform duration-300"
                                                     :class="{ 'rotate-180': showGpx }" fill="none" viewBox="0 0 24 24"
                                                     stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -293,9 +293,9 @@
                                         <!-- CMS Toggle -->
                                         <template x-if="section.title === 'Camera (CMS-1330)'">
                                             <div class="flex items-center gap-2">
-                                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider"
+                                                <span class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider"
                                                     x-text="showCms ? 'Hide Index' : 'Show Index'"></span>
-                                                <svg class="w-4 h-4 text-gray-400 transition-transform duration-300"
+                                                <svg class="w-4 h-4 text-gray-400 dark:text-slate-500 transition-transform duration-300"
                                                     :class="{ 'rotate-180': showCms }" fill="none" viewBox="0 0 24 24"
                                                     stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -316,35 +316,35 @@
                                     <div class="contents">
                                         <template x-for="row in section.rows" :key="row.key">
                                             <div
-                                                class="contents hover:bg-white dark:hover:bg-[#121212] transition-colors group">
+                                                class="contents hover:bg-white dark:hover:bg-slate-900 transition-colors group">
                                                 <!-- Label Column -->
                                                 <div
-                                                    class="sticky left-0 bg-gray-50 dark:bg-black group-hover:bg-white dark:group-hover:bg-[#121212] border-r border-b border-gray-200 dark:border-white/5 p-6 flex items-center z-30 transition-colors">
+                                                    class="sticky left-0 bg-gray-50 dark:bg-slate-950 group-hover:bg-white dark:group-hover:bg-slate-900 border-r border-b border-gray-200 dark:border-white/5 p-6 flex items-center z-30 transition-colors duration-300">
                                                     <span
-                                                        class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider leading-relaxed"
+                                                        class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider leading-relaxed"
                                                         x-text="row.label"></span>
                                                 </div>
 
                                                 <!-- Phone Values -->
                                                 <template x-for="(phone, index) in phones" :key="phone.id">
                                                     <div
-                                                        class="border-b border-r border-gray-200 dark:border-white/5 p-6 flex items-center justify-center text-center relative group-hover:bg-gray-50/30 dark:group-hover:bg-white/[0.02] transition-colors">
+                                                        class="border-b border-r border-gray-200 dark:border-white/5 p-6 flex items-center justify-center text-center relative group-hover:bg-gray-50/30 dark:group-hover:bg-slate-800/30 transition-colors duration-300">
 
                                                         <!-- Standard Text -->
                                                         <template x-if="section.title !== 'Raw Benchmarks'">
                                                             <span
-                                                                class="text-sm font-medium text-gray-700 dark:text-gray-200 leading-relaxed"
+                                                                class="text-sm font-medium text-gray-700 dark:text-slate-200 leading-relaxed transition-colors duration-300"
                                                                 x-html="getSpecValue(phone, row.key)"></span>
                                                         </template>
 
                                                         <!-- Benchmarks Bars -->
                                                         <template x-if="section.title === 'Raw Benchmarks'">
                                                             <div class="w-full">
-                                                                <div class="flex justify-between items-end mb-2">
+                                                                <div class="flex justify-between items-end mb-2 transition-colors duration-300">
                                                                     <div class="flex items-center gap-2">
                                                                         <template x-if="isWinner(phone, row.key)">
                                                                             <span
-                                                                                class="text-[10px] bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider border border-teal-200 dark:border-teal-800">👑
+                                                                                class="text-[10px] bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider border border-teal-200 dark:border-teal-800/50">👑
                                                                                 Best</span>
                                                                         </template>
                                                                     </div>
@@ -356,7 +356,7 @@
                                                                                 x-text="`-${getPercentageDiff(phone, row.key)}%`"></span>
                                                                         </template>
                                                                         <span
-                                                                            class="text-sm font-black font-mono text-gray-900 dark:text-white"
+                                                                            class="text-sm font-black font-mono text-gray-900 dark:text-white transition-colors duration-300"
                                                                             :class="{
                                                                                 'text-teal-600 dark:text-teal-400': isWinner(
                                                                                     phone, row.key)
@@ -365,11 +365,11 @@
                                                                     </div>
                                                                 </div>
                                                                 <div
-                                                                    class="h-3 w-full bg-gray-200 dark:bg-white/10 rounded-full overflow-hidden">
+                                                                    class="h-3 w-full bg-gray-200 dark:bg-slate-800 rounded-full overflow-hidden transition-colors duration-300">
                                                                     <div class="h-full rounded-full shadow-lg transition-all duration-700 ease-out"
                                                                         :class="isWinner(phone, row.key) ?
                                                                             'bg-teal-500 shadow-[0_0_10px_rgba(20,184,166,0.3)]' :
-                                                                            'bg-gray-300 dark:bg-gray-700'"
+                                                                            'bg-gray-300 dark:bg-slate-700'"
                                                                         :style="`width: ${getBarWidth(phone, row.key)}%`">
                                                                     </div>
                                                                 </div>
@@ -380,7 +380,7 @@
 
                                                 <!-- Empty Cell for Add Button Column -->
                                                 <div x-show="phones.length < 4"
-                                                    class="border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-black/50">
+                                                    class="border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-slate-950/50 transition-colors duration-300">
                                                 </div>
                                             </div>
                                         </template>
@@ -398,36 +398,36 @@
 
                                             <template x-for="row in section.rows" :key="row.key">
                                                 <div
-                                                    class="contents hover:bg-white dark:hover:bg-[#121212] transition-colors group">
+                                                    class="contents hover:bg-white dark:hover:bg-slate-900 transition-colors group">
                                                     <!-- Label Column -->
                                                     <div
-                                                        class="sticky left-0 bg-gray-50 dark:bg-black group-hover:bg-white dark:group-hover:bg-[#121212] border-r border-b border-gray-200 dark:border-white/5 p-6 flex items-center z-30 transition-colors">
+                                                        class="sticky left-0 bg-gray-50 dark:bg-slate-950 group-hover:bg-white dark:group-hover:bg-slate-900 border-r border-b border-gray-200 dark:border-white/5 p-6 flex items-center z-30 transition-colors duration-300">
                                                         <span
-                                                            class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider leading-relaxed"
+                                                            class="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider leading-relaxed"
                                                             x-text="row.label"></span>
                                                     </div>
 
                                                     <!-- Phone Values -->
                                                     <template x-for="(phone, index) in phones" :key="phone.id">
                                                         <div
-                                                            class="border-b border-r border-gray-200 dark:border-white/5 p-6 flex items-center justify-center text-center relative group-hover:bg-gray-50/30 dark:group-hover:bg-white/[0.02] transition-colors">
+                                                            class="border-b border-r border-gray-200 dark:border-white/5 p-6 flex items-center justify-center text-center relative group-hover:bg-gray-50/30 dark:group-hover:bg-slate-800/30 transition-colors duration-300">
                                                             <div class="w-full text-left">
                                                                 <!-- Check if data exists -->
                                                                 <template x-if="getVisualData(phone, row.key)">
                                                                     <div>
                                                                         <!-- Score Bar Row -->
-                                                                        <div class="flex justify-between items-end mb-1">
+                                                                        <div class="flex justify-between items-end mb-1 transition-colors duration-300">
                                                                             <span
-                                                                                class="text-xs font-bold text-gray-500 dark:text-gray-400"
+                                                                                class="text-xs font-bold text-gray-500 dark:text-slate-400"
                                                                                 x-text="getVisualData(phone, row.key).score + '/' + getVisualData(phone, row.key).max"></span>
                                                                             <template
                                                                                 x-if="getVisualData(phone, row.key).score === getVisualData(phone, row.key).max">
                                                                                 <span
-                                                                                    class="text-[10px] text-teal-600 dark:text-teal-400 font-bold">Max</span>
+                                                                                    class="text-[10px] text-teal-600 dark:text-teal-400 font-bold transition-colors duration-300">Max</span>
                                                                             </template>
                                                                         </div>
                                                                         <div
-                                                                            class="h-2 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden mb-2">
+                                                                            class="h-2 w-full bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden mb-2 transition-colors duration-300">
                                                                             <div class="h-full rounded-full transition-all duration-500"
                                                                                 :class="section.title === 'Gaming (GPX-300)' ?
                                                                                     (getVisualData(phone, row.key)
@@ -461,11 +461,11 @@
                                                                                     x-for="detail in getPositiveDetails(phone, row.key).slice(0, expanded ? undefined : 2)"
                                                                                     :key="detail.criterion">
                                                                                     <span
-                                                                                        class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5">
+                                                                                        class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-white/10 transition-colors duration-300">
                                                                                         <span
                                                                                             x-text="detail.criterion"></span>
                                                                                         <span
-                                                                                            class="ml-1 text-teal-600 dark:text-teal-400"
+                                                                                            class="ml-1 text-teal-600 dark:text-teal-400 font-bold"
                                                                                             x-text="`+${detail.points}`"></span>
                                                                                     </span>
                                                                                 </template>
@@ -474,18 +474,18 @@
                                                                                 <template
                                                                                     x-if="!expanded && getPositiveDetails(phone, row.key).length > 2">
                                                                                     <button @click="expanded = true"
-                                                                                        class="text-[10px] text-teal-600 font-bold hover:underline ml-1">More</button>
+                                                                                        class="text-[10px] text-teal-600 dark:text-teal-400 font-bold hover:underline ml-1">More</button>
                                                                                 </template>
                                                                                 <template x-if="expanded">
                                                                                     <button @click="expanded = false"
-                                                                                        class="text-[10px] text-gray-400 ml-1">Less</button>
+                                                                                        class="text-[10px] text-gray-400 dark:text-slate-500 ml-1">Less</button>
                                                                                 </template>
                                                                             </div>
                                                                         </template>
                                                                     </div>
                                                                 </template>
                                                                 <template x-if="!getVisualData(phone, row.key)">
-                                                                    <span class="text-gray-400">-</span>
+                                                                    <span class="text-gray-400 dark:text-slate-600">-</span>
                                                                 </template>
                                                             </div>
                                                         </div>
@@ -493,7 +493,7 @@
 
                                                     <!-- Empty Cell -->
                                                     <div x-show="phones.length < 4"
-                                                        class="border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-black/50">
+                                                        class="border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-slate-950/50 transition-colors duration-300">
                                                     </div>
                                                 </div>
                                             </template>
@@ -514,43 +514,52 @@
             <div x-show="isSearchOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
                 x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @click="isSearchOpen = false"
-                class="fixed inset-0 bg-gray-900/80 backdrop-blur-md" style="z-index: 9998;"></div>
+                class="fixed inset-0 bg-gray-900/80 dark:bg-black/80 backdrop-blur-md" style="z-index: 9998;"></div>
 
             <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
                 <div x-show="isSearchOpen" x-transition:enter="ease-out duration-300"
                     x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
                     x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100"
                     x-transition:leave-end="opacity-0 scale-95"
-                    class="relative mx-auto w-full max-w-2xl bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl ring-1 ring-black/5 dark:ring-white/10 overflow-hidden z-[9999]">
+                    class="relative mx-auto w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl ring-1 ring-black/5 dark:ring-white/10 overflow-hidden z-[9999] transition-colors duration-300">
 
                     <div class="relative border-b border-gray-100 dark:border-white/5">
-                        <svg class="pointer-events-none absolute top-4 left-4 h-6 w-6 text-gray-400" fill="none"
+                        <svg class="pointer-events-none absolute top-4 left-4 h-6 w-6 text-gray-400 dark:text-slate-500" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                         <input type="text" x-model="searchQuery" @input.debounce.300ms="performSearch()"
-                            class="h-14 w-full border-0 bg-transparent pl-14 pr-4 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-0 sm:text-sm"
+                            class="h-14 w-full border-0 bg-transparent pl-14 pr-4 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:ring-0 sm:text-sm transition-colors duration-300"
                             placeholder="Search for a phone (e.g. OnePlus 12)..." autofocus>
                     </div>
 
                     <ul class="max-h-[60vh] overflow-y-auto py-2">
                         <template x-if="isLoading">
-                            <li class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">Searching...</li>
+                            <li class="px-4 py-8 text-center text-sm text-gray-500 dark:text-slate-400">Searching...</li>
                         </template>
 
                         <template x-if="!isLoading && searchResults.length === 0 && searchQuery.length >= 2">
-                            <li class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">No phones found.
+                            <li class="px-4 py-8 text-center text-sm text-gray-500 dark:text-slate-400">No phones found.
                             </li>
                         </template>
 
                         <template x-for="result in searchResults" :key="result.id">
                             <li @click="selectPhone(result)"
-                                class="cursor-pointer px-4 py-3 hover:bg-teal-50 dark:hover:bg-white/5 flex items-center gap-4 transition-colors">
-                                <img :src="result.image" class="w-10 h-10 object-contain" alt="">
-                                <div>
-                                    <div class="font-medium text-gray-900 dark:text-white" x-text="result.name"></div>
-                                    <div class="text-xs text-gray-500 dark:text-gray-400" x-text="result.brand"></div>
+                                class="cursor-pointer px-4 py-3 hover:bg-teal-50 dark:hover:bg-teal-900/20 flex items-center gap-4 transition-colors duration-300">
+                                <div class="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 flex items-center justify-center transition-colors duration-300">
+                                    <template x-if="result.image">
+                                        <img :src="result.image" class="w-full h-full object-contain dark:mix-blend-normal" alt="">
+                                    </template>
+                                    <template x-if="!result.image">
+                                        <svg class="w-6 h-6 text-gray-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                    </template>
+                                </div>
+                                <div class="text-left">
+                                    <div class="font-medium text-gray-900 dark:text-white transition-colors duration-300" x-text="result.name"></div>
+                                    <div class="text-xs text-gray-500 dark:text-slate-400 transition-colors duration-300" x-text="result.brand"></div>
                                 </div>
                             </li>
                         </template>

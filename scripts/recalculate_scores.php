@@ -2,9 +2,9 @@
 
 use App\Models\Phone;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -21,7 +21,7 @@ foreach ($phones as $phone) {
         echo "  -> UEPS: {$phone->ueps_score}\n";
         echo "  -> FPI: {$phone->overall_score}\n";
     } catch (\Exception $e) {
-        echo "  ❌ Error: " . $e->getMessage() . "\n";
+        echo '  ❌ Error: '.$e->getMessage()."\n";
     }
 }
 

@@ -1,17 +1,17 @@
 <?php
 
+use App\Models\Benchmark;
 use App\Models\Phone;
+use App\Models\SpecBattery;
 use App\Models\SpecBody;
-use App\Models\SpecPlatform;
 use App\Models\SpecCamera;
 use App\Models\SpecConnectivity;
-use App\Models\SpecBattery;
-use App\Models\Benchmark;
+use App\Models\SpecPlatform;
 
 $phoneName = 'OnePlus 15R';
 $phone = Phone::where('name', 'LIKE', "%$phoneName%")->first();
 
-if (!$phone) {
+if (! $phone) {
     echo "Phone $phoneName not found!\n";
     exit(1);
 }

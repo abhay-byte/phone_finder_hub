@@ -16,7 +16,7 @@ class EnsureAuthorOrSuperAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! Auth::check() || (!Auth::user()->isSuperAdmin() && !Auth::user()->isAuthor())) {
+        if (! Auth::check() || (! Auth::user()->isSuperAdmin() && ! Auth::user()->isAuthor())) {
             abort(403, 'This area is restricted to approved authors and administrators.');
         }
 

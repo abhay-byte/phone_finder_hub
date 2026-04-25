@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\Phone;
-use Illuminate\Support\Facades\Auth;
 use App\Services\ProfanityFilter;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminCommentController extends Controller
 {
@@ -20,7 +20,7 @@ class AdminCommentController extends Controller
     public function index(Request $request)
     {
         $query = Comment::with(['phone', 'user'])
-                        ->withCount('upvotes');
+            ->withCount('upvotes');
 
         // Filter by specific phone if requested
         if ($phoneId = $request->input('phone_id')) {
@@ -51,6 +51,7 @@ class AdminCommentController extends Controller
     public function destroy(Comment $comment)
     {
         $comment->delete();
+
         return back()->with('success', 'Comment deleted successfully.');
     }
 
@@ -60,7 +61,7 @@ class AdminCommentController extends Controller
             'content' => 'required|string|max:2000',
         ]);
 
-        $reply = new Comment();
+        $reply = new Comment;
         $reply->content = $this->profanityFilter->censor($validated['content']);
         $reply->phone_id = $comment->phone_id;
         $reply->user_id = Auth::id(); // Admin's user ID

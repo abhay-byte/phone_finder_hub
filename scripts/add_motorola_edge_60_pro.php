@@ -51,7 +51,7 @@ $phone->platform()->updateOrCreate([], [
     'ram' => '8GB/12GB/16GB',
     'storage_type' => 'UFS 4.0',
     // Developer Freedom defaults based on general Moto policy unless specified
-    'bootloader_unlockable' => true, 
+    'bootloader_unlockable' => true,
     'os_openness' => 'Near-AOSP / Minimal restrictions',
     'turnip_support' => false,
     'turnip_support_level' => 'None', // Mali GPU
@@ -80,7 +80,7 @@ $phone->camera()->updateOrCreate([], [
 // Connectivity
 $phone->connectivity()->updateOrCreate([], [
     'wlan' => 'Wi-Fi 802.11 a/b/g/n/ac/6e, tri-band',
-    'bluetooth' => 'Yes', 
+    'bluetooth' => 'Yes',
     'positioning' => 'GPS, GLONASS, GALILEO, BDS, NavIC',
     'nfc' => 'Yes',
     'radio' => 'No',

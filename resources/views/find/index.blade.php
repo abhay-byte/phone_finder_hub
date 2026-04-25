@@ -7,26 +7,26 @@
 @section('hide_footer', true)
 
 @section('content')
-    <div class="h-[calc(100vh-64px)] min-h-[calc(100dvh-64px)] w-full flex bg-white dark:bg-[#131314] overflow-hidden relative"
+    <div class="h-[calc(100vh-64px)] min-h-[calc(100dvh-64px)] w-full flex bg-white dark:bg-slate-950 overflow-hidden relative transition-colors duration-300"
         x-data="chatAgent({{ json_encode($chats ?? []) }}, {{ json_encode(auth()->user()?->name ?? null) }})" x-init="sidebarOpen = window.innerWidth >= 1024" @send-msg.window="inputMessage = $event.detail; sendMessage();">
 
 
 
         <!-- Sidebar (History) -->
-        <div class="bg-gray-50 dark:bg-[#1e1f20] w-[260px] lg:w-[16.666%] h-full flex flex-col shrink-0 border-r border-gray-200 dark:border-gray-800 absolute lg:relative z-40 transform transition-all duration-300 ease-in-out"
+        <div class="bg-gray-50 dark:bg-slate-900/50 w-[260px] lg:w-[16.666%] h-full flex flex-col shrink-0 border-r border-gray-200 dark:border-white/5 absolute lg:relative z-40 transform transition-all duration-300 ease-in-out"
             :class="sidebarOpen ? 'translate-x-0 lg:ml-0' : '-translate-x-full lg:translate-x-0 lg:-ml-[16.666%]'">
 
             <!-- New Chat Button & Desktop Toggle -->
             <div class="p-4 pt-4 lg:pt-6 flex items-center justify-between gap-2">
                 <button @click="startNewChat()"
-                    class="flex-1 flex items-center gap-3 p-3 bg-white dark:bg-[#282a2c] hover:bg-gray-100 dark:hover:bg-[#333538] rounded-xl text-gray-800 dark:text-gray-200 font-medium transition shadow-sm border border-gray-200 dark:border-gray-700">
+                    class="flex-1 flex items-center gap-3 p-3 bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-xl text-gray-800 dark:text-gray-200 font-medium transition shadow-sm border border-gray-200 dark:border-white/10 transition-colors duration-300">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                     New chat
                 </button>
                 <button @click="sidebarOpen = false"
-                    class="hidden lg:flex p-3 rounded-xl bg-white dark:bg-[#282a2c] hover:bg-gray-100 dark:hover:bg-[#333538] border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 transition"
+                    class="hidden lg:flex p-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 transition transition-colors duration-300"
                     title="Close Sidebar">
                     <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
@@ -35,26 +35,26 @@
             </div>
 
             <div class="flex-1 overflow-y-auto px-3 pb-4">
-                <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2 px-3 mt-2">
+                <h3 class="text-xs font-semibold text-gray-500 dark:text-slate-500 uppercase tracking-wider mb-2 px-3 mt-2 transition-colors duration-300">
                     Recent</h3>
                 @auth
                     <div class="space-y-1">
                         <template x-for="chat in chatHistoryList" :key="chat.id">
                             <div class="relative group flex items-center w-full">
                                 <button @click="loadChat(chat.id)"
-                                    class="w-full text-left py-2.5 px-3 pr-8 rounded-xl border border-transparent hover:bg-gray-200 dark:hover:bg-[#282a2c] transition flex items-center gap-3"
-                                    :class="currentChatId === chat.id ? 'bg-gray-200 dark:bg-[#282a2c]' :
-                                        'text-gray-700 dark:text-gray-300'">
+                                    class="w-full text-left py-2.5 px-3 pr-8 rounded-xl border border-transparent hover:bg-gray-200 dark:hover:bg-slate-800 transition flex items-center gap-3 transition-colors duration-300"
+                                    :class="currentChatId === chat.id ? 'bg-gray-200 dark:bg-slate-800' :
+                                        'text-gray-700 dark:text-slate-300'">
                                     <svg class="w-4 h-4 shrink-0 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300"
                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                                     </svg>
                                     <span x-text="chat.title || 'Conversation ' + chat.id"
-                                        class="block text-sm truncate filter opacity-90"></span>
+                                        class="block text-sm truncate filter opacity-90 transition-colors duration-300"></span>
                                 </button>
                                 <button @click="deleteChat(chat.id)"
-                                    class="absolute right-2 p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-white dark:hover:bg-gray-700 opacity-0 group-hover:opacity-100 transition focus:opacity-100"
+                                    class="absolute right-2 p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-white dark:hover:bg-slate-700 opacity-0 group-hover:opacity-100 transition focus:opacity-100 transition-all duration-300"
                                     title="Delete Chat">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -64,16 +64,16 @@
                             </div>
                         </template>
                         <div x-show="chatHistoryList.length === 0"
-                            class="text-center text-sm text-gray-500 dark:text-gray-500 py-4 italic">
+                            class="text-center text-sm text-gray-500 dark:text-slate-500 py-4 italic transition-colors duration-300">
                             No recent chats.
                         </div>
                     </div>
                 @else
                     <div
-                        class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400 bg-white dark:bg-[#282a2c] rounded-xl border border-gray-200 dark:border-gray-700 text-center">
+                        class="px-3 py-4 text-sm text-gray-500 dark:text-slate-400 bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/10 text-center transition-colors duration-300">
                         <p class="mb-2">Log in to save your chat history.</p>
                         <a href="{{ route('login') }}"
-                            class="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">Log in</a>
+                            class="text-indigo-600 dark:text-indigo-400 hover:underline font-medium transition-colors duration-300">Log in</a>
                     </div>
                 @endauth
             </div>
@@ -86,9 +86,9 @@
 
         <!-- Main Chat Area -->
         <div class="flex-1 flex flex-col h-full relative min-w-0">
-            <div class="absolute top-2 left-2 z-20" x-show="!sidebarOpen">
+            <div class="absolute top-2 left-2 z-20 transition-colors duration-300" x-show="!sidebarOpen">
                 <button @click="sidebarOpen = !sidebarOpen"
-                    class="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition shadow-md">
+                    class="p-2 bg-gray-100 dark:bg-slate-800 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-700 transition shadow-md border border-transparent dark:border-white/10">
                     <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
@@ -102,21 +102,21 @@
 
                 <!-- Welcome State -->
                 <div x-show="messages.length === 0 && !isLoading"
-                    class="h-full flex flex-col items-center pt-[10vh] sm:pt-[15vh] lg:pt-[20vh] text-center w-full">
+                    class="h-full flex flex-col items-center pt-[10vh] sm:pt-[15vh] lg:pt-[20vh] text-center w-full transition-colors duration-300">
                     <h2
-                        class="text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 p-2">
+                        class="text-3xl sm:text-4xl md:text-5xl font-semibold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 p-2">
                         Hello, {{ auth()->check() ? explode(' ', auth()->user()->name)[0] : 'User' }}
                     </h2>
                     <h3
-                        class="text-2xl sm:text-3xl md:text-4xl font-medium text-gray-400 dark:text-[#444746] mb-8 lg:mb-12">
+                        class="text-2xl sm:text-3xl md:text-4xl font-medium text-gray-400 dark:text-slate-500 mb-8 lg:mb-12 transition-colors duration-300">
                         How can I help you find a phone today?</h3>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full max-w-4xl px-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full max-w-4xl px-4 transition-colors duration-300">
                         <button type="button"
                             @click="inputMessage = 'Suggest some phones for heavy gaming under ₹45,000.'; sendMessage()"
-                            class="p-4 bg-gray-50 hover:bg-gray-100 dark:bg-[#1e1f20] dark:hover:bg-[#282a2c] rounded-2xl text-left transition relative h-32 group border border-gray-100 dark:border-transparent">
+                            class="p-4 bg-gray-50 dark:bg-slate-900 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-2xl text-left transition relative h-32 group border border-gray-100 dark:border-white/5 transition-colors duration-300">
                             <p
-                                class="text-[15px] font-medium text-gray-700 dark:text-gray-200 line-clamp-3 group-hover:text-black dark:group-hover:text-white transition">
+                                class="text-[15px] font-medium text-gray-700 dark:text-slate-300 line-clamp-3 group-hover:text-black dark:group-hover:text-white transition">
                                 Suggest some phones for heavy gaming under ₹45,000.</p>
                             <div
                                 class="absolute bottom-3 right-3 bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full text-purple-600 dark:text-purple-400 opacity-0 group-hover:opacity-100 transition transform translate-y-2 group-hover:translate-y-0">
@@ -129,9 +129,9 @@
                         </button>
                         <button type="button"
                             @click="inputMessage = 'Which phones have the highest Camera Matrix Score (CMS) right now?'; sendMessage()"
-                            class="p-4 bg-gray-50 hover:bg-gray-100 dark:bg-[#1e1f20] dark:hover:bg-[#282a2c] rounded-2xl text-left transition relative h-32 group border border-gray-100 dark:border-transparent">
+                            class="p-4 bg-gray-50 dark:bg-slate-900 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-2xl text-left transition relative h-32 group border border-gray-100 dark:border-white/5 transition-colors duration-300">
                             <p
-                                class="text-[15px] font-medium text-gray-700 dark:text-gray-200 line-clamp-3 group-hover:text-black dark:group-hover:text-white transition">
+                                class="text-[15px] font-medium text-gray-700 dark:text-slate-300 line-clamp-3 group-hover:text-black dark:group-hover:text-white transition">
                                 Which phones have the highest Camera Matrix Score (CMS) right now?</p>
                             <div
                                 class="absolute bottom-3 right-3 bg-red-100 dark:bg-red-900/30 p-2 rounded-full text-red-600 dark:text-red-400 opacity-0 group-hover:opacity-100 transition transform translate-y-2 group-hover:translate-y-0">
@@ -144,9 +144,9 @@
                         </button>
                         <button type="button"
                             @click="inputMessage = 'Compare the top two phones based on their overall Expert Score.'; sendMessage()"
-                            class="p-4 bg-gray-50 hover:bg-gray-100 dark:bg-[#1e1f20] dark:hover:bg-[#282a2c] rounded-2xl text-left transition relative h-32 group border border-gray-100 dark:border-transparent hidden sm:block">
+                            class="p-4 bg-gray-50 dark:bg-slate-900 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-2xl text-left transition relative h-32 group border border-gray-100 dark:border-white/5 hidden sm:block transition-colors duration-300">
                             <p
-                                class="text-[15px] font-medium text-gray-700 dark:text-gray-200 line-clamp-3 group-hover:text-black dark:group-hover:text-white transition">
+                                class="text-[15px] font-medium text-gray-700 dark:text-slate-300 line-clamp-3 group-hover:text-black dark:group-hover:text-white transition">
                                 Compare the top two phones based on their overall Expert Score.</p>
                             <div
                                 class="absolute bottom-3 right-3 bg-yellow-100 dark:bg-yellow-900/30 p-2 rounded-full text-yellow-600 dark:text-yellow-400 opacity-0 group-hover:opacity-100 transition transform translate-y-2 group-hover:translate-y-0">
@@ -159,9 +159,9 @@
                         </button>
                         <button type="button"
                             @click="inputMessage = 'Show me phones with great Battery Endurance that cost under ₹30,000.'; sendMessage()"
-                            class="p-4 bg-gray-50 hover:bg-gray-100 dark:bg-[#1e1f20] dark:hover:bg-[#282a2c] rounded-2xl text-left transition relative h-32 group border border-gray-100 dark:border-transparent hidden lg:block">
+                            class="p-4 bg-gray-50 dark:bg-slate-900 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-2xl text-left transition relative h-32 group border border-gray-100 dark:border-white/5 hidden lg:block transition-colors duration-300">
                             <p
-                                class="text-[15px] font-medium text-gray-700 dark:text-gray-200 line-clamp-3 group-hover:text-black dark:group-hover:text-white transition">
+                                class="text-[15px] font-medium text-gray-700 dark:text-slate-300 line-clamp-3 group-hover:text-black dark:group-hover:text-white transition">
                                 Show me phones with great Battery Endurance that cost under ₹30,000.</p>
                             <div
                                 class="absolute bottom-3 right-3 bg-green-100 dark:bg-green-900/30 p-2 rounded-full text-green-600 dark:text-green-400 opacity-0 group-hover:opacity-100 transition transform translate-y-2 group-hover:translate-y-0">
@@ -177,29 +177,29 @@
 
                 <!-- Skeleton Loader State -->
                 <div x-show="messages.length === 0 && isLoading"
-                    class="flex flex-col items-center justify-center pt-[15vh] w-full gap-4 max-w-4xl mx-auto">
-                    <div class="h-8 w-48 bg-gray-200 dark:bg-[#1e1f20] rounded-lg animate-pulse"></div>
-                    <div class="h-4 w-64 bg-gray-100 dark:bg-[#1e1f20] rounded-lg animate-pulse mb-8"></div>
+                    class="flex flex-col items-center justify-center pt-[15vh] w-full gap-4 max-w-4xl mx-auto transition-colors duration-300">
+                    <div class="h-8 w-48 bg-gray-200 dark:bg-slate-800 rounded-lg animate-pulse"></div>
+                    <div class="h-4 w-64 bg-gray-100 dark:bg-slate-900 rounded-lg animate-pulse mb-8"></div>
 
                     <div class="w-full flex flex-col gap-6">
                         <div
-                            class="self-end w-3/4 max-w-[400px] h-16 bg-gray-100 dark:bg-[#1e1f20] rounded-[24px] rounded-br-[8px] animate-pulse">
+                            class="self-end w-3/4 max-w-[400px] h-16 bg-gray-100 dark:bg-slate-900 rounded-[24px] rounded-br-[8px] animate-pulse">
                         </div>
                         <div class="self-start w-full max-w-[500px] flex gap-4">
                             <div
-                                class="shrink-0 w-8 h-8 rounded-full bg-gray-200 dark:bg-[#1e1f20] animate-pulse hidden sm:block">
+                                class="shrink-0 w-8 h-8 rounded-full bg-gray-200 dark:bg-slate-800 animate-pulse hidden sm:block">
                             </div>
                             <div class="flex-1 space-y-3 pt-2">
-                                <div class="h-4 w-full bg-gray-200 dark:bg-[#1e1f20] rounded animate-pulse"></div>
-                                <div class="h-4 w-5/6 bg-gray-200 dark:bg-[#1e1f20] rounded animate-pulse"></div>
-                                <div class="h-4 w-4/6 bg-gray-200 dark:bg-[#1e1f20] rounded animate-pulse"></div>
+                                <div class="h-4 w-full bg-gray-200 dark:bg-slate-800 rounded animate-pulse"></div>
+                                <div class="h-4 w-5/6 bg-gray-200 dark:bg-slate-800 rounded animate-pulse"></div>
+                                <div class="h-4 w-4/6 bg-gray-200 dark:bg-slate-800 rounded animate-pulse"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Messages Loop -->
-                <div class="space-y-8 max-w-4xl mx-auto w-full pt-4 pb-12">
+                <div class="space-y-8 max-w-4xl mx-auto w-full pt-4 pb-12 transition-colors duration-300">
                     <template x-for="(msg, index) in messages" :key="index">
                         <div class="flex flex-col gap-2 relative">
                             <!-- User Message -->
@@ -207,9 +207,9 @@
                                 <div class="w-full flex justify-end">
                                     <div class="flex flex-col items-end gap-1 max-w-[85%] sm:max-w-[75%]">
                                         <template x-if="userName">
-                                            <span class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 mr-1" x-text="userName"></span>
+                                            <span class="text-[11px] font-semibold text-gray-400 dark:text-slate-500 mr-1" x-text="userName"></span>
                                         </template>
-                                        <div class="rounded-[20px] rounded-br-[6px] bg-gray-100 dark:bg-[#1e1f20] px-5 py-3 text-black dark:text-[#e3e3e3] text-[15px] leading-relaxed">
+                                        <div class="rounded-[20px] rounded-br-[6px] bg-gray-100 dark:bg-slate-800 px-5 py-3 text-black dark:text-gray-100 text-[15px] leading-relaxed transition-colors duration-300">
                                             <span x-html="renderMarkdown(msg.content)"></span>
                                         </div>
                                     </div>
@@ -218,9 +218,9 @@
 
                             <!-- Assistant Message -->
                             <template x-if="msg.role === 'assistant'">
-                                <div class="self-start max-w-full group w-full flex items-start gap-4">
+                                <div class="self-start max-w-full group w-full flex items-start gap-4 transition-colors duration-300">
                                     <div
-                                        class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 mt-1 hidden sm:flex">
+                                        class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 mt-1 hidden sm:flex shadow-sm shadow-indigo-500/20">
                                         <svg class="w-5 h-5 text-white"
                                             :class="{ 'animate-pulse': isLoading && index === messages.length - 1 }"
                                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -230,7 +230,7 @@
                                     </div>
                                     <div class="flex flex-col w-full max-w-none">
                                         <span
-                                            class="text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1 ml-2 sm:ml-1">PhoneFinder
+                                            class="text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-1 ml-2 sm:ml-1 transition-colors duration-300">PhoneFinder
                                             AI</span>
 
                                         <template x-if="msg.content === '' && isLoading && index === messages.length - 1">
@@ -244,7 +244,7 @@
                                         </template>
 
                                         <div x-show="msg.content !== ''"
-                                            class="prose prose-base dark:prose-invert prose-p:text-gray-800 dark:prose-p:text-[#e3e3e3] prose-headings:text-black dark:prose-headings:text-white prose-strong:text-black dark:prose-strong:text-white max-w-none w-full bg-transparent dark:bg-transparent rounded-2xl px-2 sm:px-1 py-1 mt-0 whitespace-pre-line break-words"
+                                            class="prose prose-base prose-p:text-gray-800 dark:prose-p:text-gray-200 prose-headings:text-black dark:prose-headings:text-white prose-strong:text-black dark:prose-strong:text-white max-w-none w-full bg-transparent rounded-2xl px-2 sm:px-1 py-1 mt-0 whitespace-pre-line break-words dark:prose-invert transition-colors duration-300"
                                             x-html="renderMarkdown(msg.content)">
                                         </div>
                                     </div>
@@ -257,19 +257,19 @@
 
             <!-- Sticky Input Area -->
             <div
-                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-white/0 dark:from-[#131314] dark:via-[#131314] dark:to-[#131314]/0 pt-6 pb-6 px-4 sm:px-6 lg:px-24 xl:px-48 pointer-events-none w-full">
+                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white dark:from-slate-950 via-white dark:via-slate-950 to-white/0 dark:to-slate-950/0 pt-6 pb-6 px-4 sm:px-6 lg:px-24 xl:px-48 pointer-events-none w-full transition-colors duration-300">
                 <div class="max-w-4xl mx-auto pointer-events-auto w-full">
                     <form @submit.prevent="sendMessage"
-                        class="relative group bg-gray-50 dark:bg-[#1e1f20] rounded-[24px] border border-gray-200 dark:border-transparent focus-within:bg-white dark:focus-within:bg-[#282a2c] shadow-sm focus-within:shadow-md transition-all duration-300">
+                        class="relative group bg-gray-50 dark:bg-slate-900 rounded-[24px] border border-gray-200 dark:border-white/10 focus-within:bg-white dark:focus-within:bg-slate-800 shadow-sm focus-within:shadow-md transition-all duration-300">
                         <textarea x-ref="inputField" x-model="inputMessage" @keydown.enter.prevent="if(!$event.shiftKey) sendMessage()"
                             @input="resizeTextarea" placeholder="Ask Phone Finder..."
-                            class="w-full max-h-[200px] min-h-[56px] bg-transparent border-none py-4 px-6 pr-14 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:ring-0 resize-none overflow-y-auto text-[15px] rounded-[24px]"
+                            class="w-full max-h-[200px] min-h-[56px] bg-transparent border-none py-4 px-6 pr-14 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:ring-0 resize-none overflow-y-auto text-[15px] rounded-[24px] transition-colors duration-300"
                             rows="1" :disabled="isLoading" autofocus></textarea>
 
                         <button type="submit" :disabled="!inputMessage.trim() || isLoading"
-                            class="absolute right-3 bottom-3 p-2 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed group-focus-within:text-black text-gray-400 hover:text-gray-800 dark:text-gray-400 dark:hover:text-[#e3e3e3] dark:group-focus-within:text-white"
+                            class="absolute right-3 bottom-3 p-2 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed group-focus-within:text-black dark:group-focus-within:text-white text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
                             :class="inputMessage.trim() && !isLoading ?
-                                'bg-indigo-600 hover:bg-indigo-700 text-white dark:text-white dark:hover:bg-indigo-500' :
+                                'bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20' :
                                 ''">
                             <svg class="w-5 h-5 translate-x-px rotate-90" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -279,7 +279,7 @@
                         </button>
                     </form>
                     <div
-                        class="text-xs text-center text-gray-500 dark:text-gray-400 mt-3 flex justify-center items-center gap-1.5 opacity-80">
+                        class="text-xs text-center text-gray-500 dark:text-slate-500 mt-3 flex justify-center items-center gap-1.5 opacity-80 transition-colors duration-300">
                         <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                             <path
                                 d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
@@ -288,6 +288,9 @@
                     </div>
                 </div>
             </div>
+
+        </div>
+    </div>
 
         </div>
     </div>
@@ -389,27 +392,27 @@
 
                             let buttonsHtml = '';
                             if (safeAmazon || safeFlipkart) {
-                                let amzBtn = safeAmazon ? `<a href="${safeAmazon}" target="_blank" class="flex-1 flex justify-center items-center gap-1.5 bg-[#FFF2EA] hover:bg-[#FFE3D0] dark:bg-[#43352A] dark:hover:bg-[#534030] text-[#D97706] font-semibold text-[11px] py-1.5 px-2 rounded-lg transition-colors no-underline shadow-sm" title="Buy on Amazon">
+                                let amzBtn = safeAmazon ? `<a href="${safeAmazon}" target="_blank" class="flex-1 flex justify-center items-center gap-1.5 bg-[#FFF2EA] dark:bg-amber-900/20 hover:bg-[#FFE3D0] dark:hover:bg-amber-900/40 text-[#D97706] dark:text-amber-500 font-semibold text-[11px] py-1.5 px-2 rounded-lg transition-colors no-underline shadow-sm" title="Buy on Amazon">
                             <img src="/assets/amazon-icon.png" class="w-3.5 h-3.5 object-contain" alt="Amazon"> Amazon
                         </a>` : '';
-                                let flpBtn = safeFlipkart ? `<a href="${safeFlipkart}" target="_blank" class="flex-1 flex justify-center items-center gap-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 font-semibold text-[11px] py-1.5 px-2 rounded-lg transition-colors no-underline shadow-sm" title="Buy on Flipkart">
+                                let flpBtn = safeFlipkart ? `<a href="${safeFlipkart}" target="_blank" class="flex-1 flex justify-center items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-blue-600 dark:text-blue-400 font-semibold text-[11px] py-1.5 px-2 rounded-lg transition-colors no-underline shadow-sm" title="Buy on Flipkart">
                             <img src="/assets/flipkart-icon.png" class="w-3.5 h-3.5 object-contain" alt="Flipkart"> Flipkart
                         </a>` : '';
 
                                 buttonsHtml =
-                                    `<div class="flex items-center gap-2 pt-3 mt-2 border-t border-gray-100 dark:border-gray-800/80 w-full">${amzBtn}${flpBtn}</div>`;
+                                    `<div class="flex items-center gap-2 pt-3 mt-2 border-t border-gray-100 dark:border-white/5 w-full">${amzBtn}${flpBtn}</div>`;
                             }
 
-                            return `<!--PHONECARD_START--><div class="not-prose phone-card-item flex flex-col p-3 border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-[#1e1f20] shadow-sm hover:shadow-md transition-all group w-full max-w-[220px] shrink-0">
+                            return `<!--PHONECARD_START--><div class="not-prose phone-card-item flex flex-col p-3 border border-gray-200 dark:border-white/5 rounded-2xl bg-white dark:bg-slate-900 shadow-sm hover:shadow-md transition-all group w-full max-w-[220px] shrink-0">
                         <div class="cursor-pointer flex flex-col items-center" onclick="window.open('${safeLink}', '_blank')">
-                            <div class="h-28 w-full bg-gray-50 dark:bg-[#282a2c] rounded-xl flex items-center justify-center p-2 mb-3 overflow-hidden border border-gray-100 dark:border-gray-800 transition-colors group-hover:bg-gray-100 dark:group-hover:bg-[#333538]">
+                            <div class="h-28 w-full bg-gray-50 dark:bg-slate-800 rounded-xl flex items-center justify-center p-2 mb-3 overflow-hidden border border-gray-100 dark:border-white/5 transition-colors group-hover:bg-gray-100 dark:group-hover:bg-slate-700">
                                 <img src="${imgSrc}" alt="${safeName}" class="max-h-full max-w-full object-contain mix-blend-multiply dark:mix-blend-normal hover:scale-105 transition-transform duration-300">
                             </div>
                             <div class="text-center w-full">
                                 <h4 class="font-bold text-gray-900 dark:text-white text-[15px] truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors m-0 leading-tight">${safeName}</h4>
                                 <p class="text-[14px] font-bold text-indigo-600 dark:text-indigo-400 mt-1 mb-0 leading-tight">${safePrice}</p>
                             </div>
-                            <div class="w-full mt-2 pt-2 border-t border-gray-100 dark:border-gray-800 text-[12px] text-gray-500 dark:text-gray-400 flex flex-col gap-1">
+                            <div class="w-full mt-2 pt-2 border-t border-gray-100 dark:border-white/5 text-[12px] text-gray-500 dark:text-slate-400 flex flex-col gap-1">
                                 <div class="flex items-center gap-1.5 whitespace-normal leading-snug text-left">
                                     <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
                                     <span class="truncate">${safeSoc}</span>
@@ -443,7 +446,7 @@
 
                     return finalHtml.replace(/\[BTN\|(.*?)\]/g, (match, text) => {
                         const safeText = text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                        return `<button type="button" onclick="window.dispatchEvent(new CustomEvent('send-msg', {detail: '${safeText}'}))" class="not-prose block w-full text-left my-2 px-4 py-3 bg-white dark:bg-[#282a2c] hover:bg-indigo-50 dark:hover:bg-indigo-900/30 border border-gray-200 dark:border-gray-700 rounded-xl text-[15px] font-medium text-gray-800 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm hover:border-indigo-200 dark:hover:border-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
+                        return `<button type="button" onclick="window.dispatchEvent(new CustomEvent('send-msg', {detail: '${safeText}'}))" class="not-prose block w-full text-left my-2 px-4 py-3 bg-white hover:bg-indigo-50 border border-gray-200 rounded-xl text-[15px] font-medium text-gray-800 hover:text-indigo-600 transition-colors shadow-sm hover:border-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
                         ${text}
                     </button>`;
                     });
@@ -623,11 +626,11 @@
                         let errMsg = error.message;
                         if (errMsg && errMsg.includes('usage limit')) {
                             errMsg =
-                                `<span class="text-red-500 dark:text-red-400 font-semibold mb-2 block">Rate Limit Exceeded</span>You have hit the daily limits for the AI service free tier. Please try again tomorrow, or consider upgrading API keys!`;
+                                `<span class="text-red-500 font-semibold mb-2 block">Rate Limit Exceeded</span>You have hit the daily limits for the AI service free tier. Please try again tomorrow, or consider upgrading API keys!`;
                         } else if (errMsg && (errMsg.includes('unavailable') || errMsg.includes(
                                 'Failed to connect'))) {
                             errMsg =
-                                `<span class="text-red-500 dark:text-red-400 font-semibold mb-2 block">Connection Failed</span>Failed to connect to the AI service. The model might be temporarily down or heavily loaded.`;
+                                `<span class="text-red-500 font-semibold mb-2 block">Connection Failed</span>Failed to connect to the AI service. The model might be temporarily down or heavily loaded.`;
                         }
                         this.messages[messageIndex].content += `\n\n${errMsg}`;
                     } finally {

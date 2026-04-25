@@ -5,9 +5,9 @@
 
                     <!-- Phone Image Card -->
                     <div
-                        class="relative w-full aspect-[4/5] bg-white dark:bg-[#121212] rounded-[2.5rem] shadow-xl ring-1 ring-gray-900/5 dark:ring-white/10 flex items-center justify-center p-10 overflow-hidden group">
+                        class="relative w-full aspect-[4/5] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-xl ring-1 ring-gray-900/5 dark:ring-white/10 flex items-center justify-center p-10 overflow-hidden group">
                         <div
-                            class="absolute inset-0 bg-gradient-to-br from-gray-50 to-transparent dark:from-white/5 dark:to-transparent opacity-50">
+                            class="absolute inset-0 bg-gradient-to-br from-gray-50 dark:from-slate-800 to-transparent opacity-50">
                         </div>
                         <!-- Subtle animated glow behind phone -->
                         <div
@@ -16,9 +16,9 @@
 
                         @if ($phone->image_url)
                             <img src="{{ $phone->image_url }}" alt="{{ $phone->name }}"
-                                class="relative z-10 w-full h-full object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500 ease-out will-change-transform">
-                        @else
-                            <div class="flex flex-col items-center justify-center text-gray-300 dark:text-gray-700">
+                                class="relative z-10 w-full h-full object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500 ease-out will-change-transform dark:mix-blend-normal">
+@else
+                            <div class="flex flex-col items-center justify-center text-gray-300 dark:text-gray-600">
                                 <svg class="w-24 h-24 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                         d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z">
@@ -31,7 +31,7 @@
 
                     <!-- Scores Grid moved from Right Column -->
                     <!-- Scores Grid moved from Right Column -->
-                    <div class="relative bg-gray-900 dark:bg-black rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group"
+                    <div class="relative bg-gray-900 rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group"
                         style="background-color: #111827; color: white;">
                         <!-- Background Blur Container (Clipped) -->
                         <div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
@@ -91,7 +91,7 @@
                     </div>
 
                     <!-- GPX Score Grid -->
-                    <div class="relative bg-zinc-900 dark:bg-black rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group mt-6"
+                    <div class="relative bg-zinc-900 rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group mt-6"
                         style="background-color: #111827; color: white;">
                         <!-- Background Blur Container (Clipped) -->
                         <div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
@@ -152,7 +152,7 @@
 
                     @if ($phone->cms_score && $phone->cms_score > 0)
                         <!-- CMS Score Grid -->
-                        <div class="relative bg-zinc-900 dark:bg-black rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group mt-6 transition-all hover:ring-amber-500/50"
+                        <div class="relative bg-zinc-900 rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group mt-6 transition-all hover:ring-amber-500/50"
                             style="background-color: #111827; color: white;">
                             <!-- Background Blur Container (Clipped) -->
                             <div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
@@ -218,7 +218,7 @@
                     @php $enduranceScore = $phone->calculateEnduranceScore(); @endphp
                     @if ($enduranceScore > 0)
                         <!-- Endurance Score Grid -->
-                        <div class="relative bg-zinc-900 dark:bg-black rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group mt-6 transition-all hover:ring-purple-500/50"
+                        <div class="relative bg-zinc-900 rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 group mt-6 transition-all hover:ring-purple-500/50"
                             style="background-color: #111827; color: white;">
                             <!-- Background Blur Container (Clipped) -->
                             <div class="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
@@ -280,14 +280,14 @@
                     @endif
 
                     <!-- UEPS Detailed Breakdown -->
-                    <div x-data="{ open: false }" class="bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
-                        <button @click="open = !open" class="w-full p-4 border-b border-gray-100 dark:border-white/5 bg-green-50/50 dark:bg-green-900/10 flex items-center justify-between cursor-pointer hover:bg-green-100/50 dark:hover:bg-green-900/20 transition-colors text-left">
-                            <h3 class="font-bold text-green-900 dark:text-green-100 flex items-center gap-2">
+                    <div x-data="{ open: false }" class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
+                        <button @click="open = !open" class="w-full p-4 border-b border-gray-100 dark:border-white/5 bg-green-50/50 dark:bg-teal-900/10 flex items-center justify-between cursor-pointer hover:bg-green-100/50 dark:hover:bg-teal-900/20 transition-colors text-left">
+                            <h3 class="font-bold text-green-900 dark:text-teal-400 flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-green-500"></span>
                                 UEPS Breakdown
                             </h3>
                             <div class="flex items-center gap-3">
-                                <span class="text-xs font-bold bg-green-100 dark:bg-green-900/40 px-2 py-1 rounded-full text-green-800 dark:text-green-200">{{ $phone->ueps_score }}</span>
+                                <span class="text-xs font-bold bg-green-100 dark:bg-teal-900/30 px-2 py-1 rounded-full text-green-800 dark:text-teal-400">{{ $phone->ueps_score }}</span>
                                 <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -297,10 +297,10 @@
                             <div class="overflow-hidden">
                                 @foreach ($phone->ueps_details['breakdown'] as $category => $data)
                                     <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
-                                        <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                                        <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors text-left">
                                             <div class="flex items-center gap-3">
-                                                <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-xs font-bold">{{ $data['score'] }}</div>
-                                                <span class="text-sm font-semibold">{{ $category }}</span>
+                                                <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white flex items-center justify-center text-xs font-bold">{{ $data['score'] }}</div>
+                                                <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $category }}</span>
                                             </div>
                                             <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -312,10 +312,10 @@
                                                     <div class="pl-[2.75rem] space-y-2">
                                                         @foreach ($data['details'] as $detail)
                                                             <div class="flex justify-between items-start text-xs">
-                                                                <span class="text-gray-500 w-2/3">{{ $detail['criterion'] }}</span>
+                                                                <span class="text-gray-500 dark:text-gray-400 w-2/3">{{ $detail['criterion'] }}</span>
                                                                 <div class="text-right">
-                                                                    <span class="font-bold block {{ $detail['points'] > 0 ? 'text-green-600 dark:text-green-400' : 'text-gray-400' }}">{{ $detail['points'] > 0 ? '+' . $detail['points'] : '0' }}</span>
-                                                                    <span class="text-[10px] text-gray-400">{{ $detail['reason'] }}</span>
+                                                                    <span class="font-bold block {{ $detail['points'] > 0 ? 'text-green-600 dark:text-teal-400' : 'text-gray-400' }}">{{ $detail['points'] > 0 ? '+' . $detail['points'] : '0' }}</span>
+                                                                    <span class="text-[10px] text-gray-400 dark:text-gray-500">{{ $detail['reason'] }}</span>
                                                                 </div>
                                                             </div>
                                                         @endforeach
@@ -331,14 +331,14 @@
 
                     <!-- CMS Detailed Breakdown -->
                     @if ($phone->cms_details)
-                    <div x-data="{ open: false }" class="bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
-                        <button @click="open = !open" class="w-full p-4 border-b border-gray-100 dark:border-white/5 bg-yellow-50/50 dark:bg-yellow-900/10 flex items-center justify-between cursor-pointer hover:bg-yellow-100/50 dark:hover:bg-yellow-900/20 transition-colors text-left">
-                            <h3 class="font-bold text-yellow-900 dark:text-yellow-100 flex items-center gap-2">
+                    <div x-data="{ open: false }" class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
+                        <button @click="open = !open" class="w-full p-4 border-b border-gray-100 dark:border-white/5 bg-yellow-50/50 dark:bg-amber-900/10 flex items-center justify-between cursor-pointer hover:bg-yellow-100/50 dark:hover:bg-amber-900/20 transition-colors text-left">
+                            <h3 class="font-bold text-yellow-900 dark:text-amber-400 flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
                                 Camera Mastery (CMS)
                             </h3>
                             <div class="flex items-center gap-3">
-                                <span class="text-xs font-bold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded-full">{{ $phone->cms_score }}</span>
+                                <span class="text-xs font-bold bg-yellow-100 dark:bg-amber-900/30 text-yellow-800 dark:text-amber-400 px-2 py-1 rounded-full">{{ $phone->cms_score }}</span>
                                 <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -348,10 +348,10 @@
                             <div class="overflow-hidden">
                                 @foreach ($phone->cms_details as $category => $data)
                                     <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
-                                        <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                                        <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors text-left">
                                             <div class="flex items-center gap-3">
-                                                <div class="w-8 h-8 rounded-full bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 flex items-center justify-center text-xs font-bold">{{ $data['score'] }}</div>
-                                                <span class="text-sm font-semibold">{{ ucwords(str_replace('_', ' ', $category)) }}</span>
+                                                <div class="w-8 h-8 rounded-full bg-yellow-50 dark:bg-amber-900/30 text-yellow-700 dark:text-amber-400 flex items-center justify-center text-xs font-bold">{{ $data['score'] }}</div>
+                                                <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ ucwords(str_replace('_', ' ', $category)) }}</span>
                                             </div>
                                             <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -363,8 +363,8 @@
                                                     @foreach ($data['details'] as $detail)
                                                         @if ($detail['points'] > 0)
                                                             <div class="flex justify-between items-start text-xs">
-                                                                <span class="text-gray-500 w-2/3">{{ $detail['criterion'] }} <span class="text-[10px] text-gray-400">{{ $detail['reason'] }}</span></span>
-                                                                <span class="font-bold text-green-600 dark:text-green-400">+{{ $detail['points'] }}</span>
+                                                                <span class="text-gray-500 dark:text-gray-400 w-2/3">{{ $detail['criterion'] }} <span class="text-[10px] text-gray-400 dark:text-gray-500">{{ $detail['reason'] }}</span></span>
+                                                                <span class="font-bold text-green-600 dark:text-teal-400">+{{ $detail['points'] }}</span>
                                                             </div>
                                                         @endif
                                                     @endforeach
@@ -380,14 +380,14 @@
 
                     <!-- GPX Detailed Breakdown -->
                     @if ($phone->gpx_details)
-                    <div x-data="{ open: false }" class="bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
+                    <div x-data="{ open: false }" class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
                         <button @click="open = !open" class="w-full p-4 border-b border-gray-100 dark:border-white/5 bg-red-50/50 dark:bg-red-900/10 flex items-center justify-between cursor-pointer hover:bg-red-100/50 dark:hover:bg-red-900/20 transition-colors text-left">
-                            <h3 class="font-bold text-red-900 dark:text-red-100 flex items-center gap-2">
+                            <h3 class="font-bold text-red-900 dark:text-red-400 flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-red-500"></span>
                                 Gaming Performance (GPX)
                             </h3>
                             <div class="flex items-center gap-3">
-                                <span class="text-xs font-bold bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200 px-2 py-1 rounded-full">{{ $phone->gpx_score }}</span>
+                                <span class="text-xs font-bold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 px-2 py-1 rounded-full">{{ $phone->gpx_score }}</span>
                                 <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -397,10 +397,10 @@
                             <div class="overflow-hidden">
                                 @foreach ($phone->gpx_details as $category => $data)
                                     <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
-                                        <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                                        <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors text-left">
                                             <div class="flex items-center gap-3">
-                                                <div class="w-8 h-8 rounded-full bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 flex items-center justify-center text-xs font-bold">{{ collect($data['details'])->sum('points') }}</div>
-                                                <span class="text-sm font-semibold">{{ $category }}</span>
+                                                <div class="w-8 h-8 rounded-full bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 flex items-center justify-center text-xs font-bold">{{ collect($data['details'])->sum('points') }}</div>
+                                                <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $category }}</span>
                                             </div>
                                             <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -412,8 +412,8 @@
                                                     @foreach ($data['details'] as $detail)
                                                         @if ($detail['points'] > 0)
                                                             <div class="flex justify-between items-start text-xs">
-                                                                <span class="text-gray-500 w-2/3">{{ $detail['criterion'] }} <span class="text-[10px] text-gray-400">{{ $detail['reason'] }}</span></span>
-                                                                <span class="font-bold text-green-600 dark:text-green-400">+{{ $detail['points'] }}</span>
+                                                                <span class="text-gray-500 dark:text-gray-400 w-2/3">{{ $detail['criterion'] }} <span class="text-[10px] text-gray-400 dark:text-gray-500">{{ $detail['reason'] }}</span></span>
+                                                                <span class="font-bold text-green-600 dark:text-teal-400">+{{ $detail['points'] }}</span>
                                                             </div>
                                                         @endif
                                                     @endforeach
@@ -430,14 +430,14 @@
                     <!-- Endurance Detailed Breakdown -->
                     @php $enduranceScore = $phone->calculateEnduranceScore(); @endphp
                     @if($enduranceScore > 0)
-                    <div x-data="{ open: false }" class="bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
+                    <div x-data="{ open: false }" class="bg-white dark:bg-slate-900 border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm overflow-hidden mt-6">
                         <button @click="open = !open" class="w-full p-4 border-b border-gray-100 dark:border-white/5 bg-purple-50/50 dark:bg-purple-900/10 flex items-center justify-between cursor-pointer hover:bg-purple-100/50 dark:hover:bg-purple-900/20 transition-colors text-left">
-                            <h3 class="font-bold text-purple-900 dark:text-purple-100 flex items-center gap-2">
+                            <h3 class="font-bold text-purple-900 dark:text-purple-400 flex items-center gap-2">
                                 <span class="w-2 h-2 rounded-full bg-purple-500"></span>
                                 Endurance Score
                             </h3>
                             <div class="flex items-center gap-3">
-                                <span class="text-xs font-bold bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-200 px-2 py-1 rounded-full">{{ $enduranceScore }}</span>
+                                <span class="text-xs font-bold bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 px-2 py-1 rounded-full">{{ $enduranceScore }}</span>
                                 <svg class="w-5 h-5 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -464,10 +464,10 @@
 
                                 <!-- Capacity Accordion -->
                                 <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
-                                    <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                                    <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors text-left">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 flex items-center justify-center text-xs font-bold">{{ $capacityScore }}</div>
-                                            <span class="text-sm font-semibold">Capacity</span>
+                                            <div class="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 flex items-center justify-center text-xs font-bold">{{ $capacityScore }}</div>
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">Capacity</span>
                                         </div>
                                         <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -477,7 +477,7 @@
                                         <div class="overflow-hidden">
                                             <div class="px-4 pb-4 pt-0 pl-[2.75rem] space-y-2">
                                                 <div class="flex justify-between items-start text-xs">
-                                                    <span class="text-gray-500 w-2/3">Battery Size</span>
+                                                    <span class="text-gray-500 dark:text-gray-400 w-2/3">Battery Size</span>
                                                     <span class="font-bold text-gray-700 dark:text-gray-300">{{ $mah > 0 ? $mah . ' mAh' : 'N/A' }}</span>
                                                 </div>
                                             </div>
@@ -487,10 +487,10 @@
                                 
                                 <!-- Efficiency Accordion -->
                                 <div x-data="{ open: false }" class="group border-b border-gray-100 dark:border-white/5 last:border-0">
-                                    <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                                    <button @click="open = !open" class="w-full flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors text-left">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 flex items-center justify-center text-xs font-bold">{{ $efficiencyScore }}</div>
-                                            <span class="text-sm font-semibold">Efficiency</span>
+                                            <div class="w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 flex items-center justify-center text-xs font-bold">{{ $efficiencyScore }}</div>
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">Efficiency</span>
                                         </div>
                                         <svg class="w-4 h-4 text-gray-400 transition-transform duration-300" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -501,18 +501,18 @@
                                             <div class="px-4 pb-4 pt-0 pl-[2.75rem] space-y-2">
                                                 @if($activeH > 0)
                                                 <div class="flex justify-between items-start text-xs">
-                                                    <span class="text-gray-500 w-2/3">Active Use Time</span>
+                                                    <span class="text-gray-500 dark:text-gray-400 w-2/3">Active Use Time</span>
                                                     <span class="font-bold text-gray-700 dark:text-gray-300">{{ round($activeH, 2) }}h</span>
                                                 </div>
                                                 @endif
                                                 @if($enduranceH > 0)
                                                 <div class="flex justify-between items-start text-xs">
-                                                    <span class="text-gray-500 w-2/3">Legacy Endurance Rating</span>
+                                                    <span class="text-gray-500 dark:text-gray-400 w-2/3">Legacy Endurance Rating</span>
                                                     <span class="font-bold text-gray-700 dark:text-gray-300">{{ $enduranceH }}h</span>
                                                 </div>
                                                 @endif
                                                 @if($activeH == 0 && $enduranceH == 0)
-                                                <div class="text-xs text-gray-500 italic">No efficiency data available</div>
+                                                <div class="text-xs text-gray-500 italic dark:text-gray-500">No efficiency data available</div>
                                                 @endif
                                             </div>
                                         </div>
@@ -531,7 +531,7 @@
                     <!-- Header -->
                     <div class="space-y-4">
                         <div
-                            class="inline-flex items-center px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white">
+                            class="inline-flex items-center px-3 py-1 rounded-full bg-black/5 dark:bg-white/5 text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white">
                             {{ $phone->brand }}
                         </div>
                         <!-- Fix: Prevent word wrap as requested -->
@@ -562,7 +562,7 @@
                     <div class="grid grid-cols-2 gap-4">
                         <!-- UEPS-45 Score Card Moved to Left Column -->
                         <!-- Value Score -->
-                        <div class="bg-teal-600 dark:bg-teal-900 rounded-3xl p-5 text-white shadow-lg ring-1 ring-white/10 flex flex-col justify-between group h-32"
+                        <div class="bg-teal-600 rounded-3xl p-5 text-white shadow-lg ring-1 ring-white/10 flex flex-col justify-between group h-32"
                             style="background-color: #0d9488; color: white;">
                             <div class="flex justify-between items-start">
                                 <div class="flex items-center gap-2">
@@ -601,7 +601,7 @@
                         <!-- FPI Score -->
                         @php $fpi = $phone->calculateFPI(); @endphp
                         <div
-                            class="bg-gray-100 dark:bg-white/5 rounded-3xl p-5 text-gray-900 dark:text-white shadow-sm ring-1 ring-black/5 dark:ring-white/10 flex flex-col justify-between h-32">
+                            class="bg-gray-100 dark:bg-slate-900 rounded-3xl p-5 text-gray-900 dark:text-white shadow-sm ring-1 ring-black/5 dark:ring-white/10 flex flex-col justify-between h-32">
                             <div class="flex justify-between items-start">
                                 <div class="flex items-center gap-2">
                                     <h3
@@ -624,7 +624,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <svg class="w-5 h-5 opacity-40" fill="none" viewBox="0 0 24 24"
+                                <svg class="w-5 h-5 opacity-40 text-gray-900 dark:text-white" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -640,7 +640,7 @@
 
                         <!-- Development Card (Moved to Top) -->
                         <div
-                            class="col-span-2 bg-gray-900 dark:bg-black rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 flex flex-col justify-center relative overflow-hidden group">
+                            class="col-span-2 bg-gray-900 rounded-3xl p-6 text-white shadow-lg ring-1 ring-white/10 flex flex-col justify-center relative overflow-hidden group">
                             <!-- Background Glow -->
                             <div
                                 class="absolute top-0 right-0 w-64 h-64 bg-green-500/10 rounded-full blur-[80px] group-hover:bg-green-500/20 transition-colors">
@@ -732,47 +732,47 @@
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         @if ($phone->platform)
                             <div
-                                class="col-span-2 p-6 bg-white dark:bg-[#121212] rounded-[2rem] border border-gray-100 dark:border-white/5">
+                                class="col-span-2 p-6 bg-white dark:bg-slate-900 rounded-[2rem] border border-gray-100 dark:border-white/5">
                                 <div class="flex items-center gap-3 mb-3">
                                     <div
-                                        class="p-2 rounded-lg bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400">
+                                        class="p-2 rounded-lg bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400">
                                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
                                         </svg>
                                     </div>
-                                    <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Chipset</span>
+                                    <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Chipset</span>
                                 </div>
-                                <p class="text-xl font-bold leading-tight">{{ $phone->platform->chipset }}</p>
+                                <p class="text-xl font-bold leading-tight text-gray-900 dark:text-white">{{ $phone->platform->chipset }}</p>
                             </div>
                         @endif
 
                         @if ($phone->body)
                             <div
-                                class="p-6 bg-white dark:bg-[#121212] rounded-[2rem] border border-gray-100 dark:border-white/5">
+                                class="p-6 bg-white dark:bg-slate-900 rounded-[2rem] border border-gray-100 dark:border-white/5">
                                 <div class="mb-3 text-orange-500">
                                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <p class="text-lg font-bold">{{ $phone->body->display_size }}</p>
-                                <p class="text-xs text-gray-500 mt-1 truncate font-medium">
+                                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $phone->body->display_size }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate font-medium">
                                     {{ $phone->body->display_type }}</p>
                             </div>
                         @endif
 
                         @if ($phone->battery)
                             <div
-                                class="p-6 bg-white dark:bg-[#121212] rounded-[2rem] border border-gray-100 dark:border-white/5">
+                                class="p-6 bg-white dark:bg-slate-900 rounded-[2rem] border border-gray-100 dark:border-white/5">
                                 <div class="mb-3 text-emerald-500">
                                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M13 10V3L4 14h7v7l9-11h-7z" />
                                     </svg>
                                 </div>
-                                <p class="text-lg font-bold">{{ $phone->battery->battery_type }}</p>
-                                <p class="text-xs text-gray-500 mt-1 truncate font-medium">
+                                <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $phone->battery->battery_type }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate font-medium">
                                     {{ $phone->battery->charging_wired }}</p>
                             </div>
                         @endif
@@ -782,12 +782,12 @@
 
                     <!-- 1. Launch, Design, Display & Body -->
                     <section>
-                        <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                        <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-gray-900 dark:text-white">
                             <span>Design & Display</span>
-                            <div class="h-px bg-gray-200 dark:bg-white/10 flex-1 ml-4"></div>
+                            <div class="h-px bg-gray-200 dark:bg-white/5 flex-1 ml-4"></div>
                         </h2>
                         <div
-                            class="bg-white dark:bg-[#121212] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5">
+                            class="bg-white dark:bg-slate-900 rounded-[2rem] p-8 border border-gray-100 dark:border-white/5">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 <!-- Launch Details (New) -->
                                 <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mb-2">
@@ -795,7 +795,7 @@
                                         <div>
                                             <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
                                                 Announced</dt>
-                                            <dd class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                            <dd class="text-sm font-semibold text-gray-900 dark:text-white">
                                                 {{ $phone->announced_date->format('M d, Y') }}</dd>
                                         </div>
                                     @endif
@@ -803,7 +803,7 @@
                                         <div>
                                             <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
                                                 Released</dt>
-                                            <dd class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                            <dd class="text-sm font-semibold text-gray-900 dark:text-white">
                                                 {{ $phone->release_date->format('M d, Y') }}</dd>
                                         </div>
                                     @endif
@@ -811,7 +811,7 @@
                                         <div>
                                             <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">OS
                                                 Details</dt>
-                                            <dd class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                            <dd class="text-sm font-semibold text-gray-900 dark:text-white">
                                                 {{ $phone->platform->os_details }}</dd>
                                         </div>
                                     @endif
@@ -825,17 +825,17 @@
                                         <div>
                                             <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Type
                                                 & Size</dt>
-                                            <dd class="text-base font-semibold text-gray-900 dark:text-gray-100">
+                                            <dd class="text-base font-semibold text-gray-900 dark:text-white">
                                                 {{ $phone->body->display_type }}</dd>
-                                            <dd class="text-sm text-gray-500 mt-1">{{ $phone->body->display_size }} <span
+                                            <dd class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ $phone->body->display_size }} <span
                                                     class="mx-1">•</span> {{ $phone->body->screen_to_body_ratio ?? '' }}
                                             </dd>
                                             @if ($phone->body->screen_area)
-                                                <dd class="text-xs text-gray-400 mt-0.5 font-medium">
+                                                <dd class="text-xs text-gray-400 dark:text-gray-500 mt-0.5 font-medium">
                                                     {{ $phone->body->screen_area }}</dd>
                                             @endif
                                             @if ($phone->body->aspect_ratio)
-                                                <dd class="text-xs text-gray-400 mt-0.5 font-medium">
+                                                <dd class="text-xs text-gray-400 dark:text-gray-500 mt-0.5 font-medium">
                                                     {{ $phone->body->aspect_ratio }}</dd>
                                             @endif
                                         </div>
@@ -845,7 +845,7 @@
                                             <dd class="text-base text-gray-700 dark:text-gray-300">
                                                 {{ $phone->body->display_resolution }}</dd>
                                             @if ($phone->body->pixel_density)
-                                                <dd class="text-xs text-gray-500 mt-1 font-medium">
+                                                <dd class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">
                                                     {{ $phone->body->pixel_density }}</dd>
                                             @endif
                                         </div>
@@ -857,7 +857,7 @@
                                                     {{ $phone->body->display_brightness }}</dd>
                                                 @if ($phone->body->measured_display_brightness)
                                                     <dd
-                                                        class="text-xs text-amber-600 dark:text-amber-500 font-bold mt-1 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded inline-block">
+                                                        class="text-xs text-amber-600 dark:text-amber-400 font-bold mt-1 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded inline-block">
                                                         Tested:
                                                         {{ \Illuminate\Support\Str::of($phone->body->measured_display_brightness)->replace(['max brightness', '(measured)'], '')->trim() }}
                                                     </dd>
@@ -878,11 +878,11 @@
                                             <dd class="text-base text-gray-700 dark:text-gray-300">
                                                 {{ $phone->body->display_protection ?? 'Not specified' }}</dd>
                                             @if ($phone->body->glass_protection_level)
-                                                <dd class="text-xs text-teal-500 font-bold mt-1">
+                                                <dd class="text-xs text-teal-500 dark:text-teal-400 font-bold mt-1">
                                                     {{ $phone->body->glass_protection_level }}</dd>
                                             @endif
                                             @if ($phone->body->screen_glass)
-                                                <dd class="text-xs text-gray-500 mt-0.5">{{ $phone->body->screen_glass }}
+                                                <dd class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{{ $phone->body->screen_glass }}
                                                 </dd>
                                             @endif
                                         </div>
@@ -932,7 +932,7 @@
                                                 <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">
                                                     IP Rating</dt>
                                                 <dd
-                                                    class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-bold border border-blue-100 dark:border-blue-800">
+                                                    class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-bold border border-blue-100 dark:border-blue-900/30">
                                                     {{ $phone->body->ip_rating }}</dd>
                                             </div>
                                         @endif
@@ -942,15 +942,15 @@
                         </div>
                     </section>
 
-                    <!-- 2. Platform & Memory (NEW) -->
+                    <!-- 2. Platform & Hardware -->
                     @if ($phone->platform)
                         <section>
-                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-gray-900 dark:text-white">
                                 <span>Platform & Hardware</span>
-                                <div class="h-px bg-gray-200 dark:bg-white/10 flex-1 ml-4"></div>
+                                <div class="h-px bg-gray-200 dark:bg-white/5 flex-1 ml-4"></div>
                             </h2>
                             <div
-                                class="bg-white dark:bg-[#121212] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5">
+                                class="bg-white dark:bg-slate-900 rounded-[2rem] p-8 border border-gray-100 dark:border-white/5">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                                     <div>
                                         <h4
@@ -960,14 +960,14 @@
                                             <div>
                                                 <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                                                     OS</dt>
-                                                <dd class="text-base font-semibold text-gray-900 dark:text-gray-100">
+                                                <dd class="text-base font-semibold text-gray-900 dark:text-white">
                                                     {{ $phone->platform->os }}</dd>
                                             </div>
                                             <div>
                                                 <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                                                     Chipset</dt>
                                                 <dd
-                                                    class="text-lg font-bold text-gray-900 dark:text-gray-100 leading-snug">
+                                                    class="text-lg font-bold text-gray-900 dark:text-white leading-snug">
                                                     {{ $phone->platform->chipset }}</dd>
                                             </div>
                                             <div>
@@ -993,13 +993,13 @@
                                             <div>
                                                 <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                                                     Internal Storage</dt>
-                                                <dd class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                                                <dd class="text-xl font-bold text-gray-900 dark:text-white">
                                                     {{ $phone->platform->internal_storage }}</dd>
                                             </div>
                                             <div>
                                                 <dt class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                                                     RAM</dt>
-                                                <dd class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                                                <dd class="text-xl font-bold text-gray-900 dark:text-white">
                                                     {{ $phone->platform->ram }}</dd>
                                             </div>
                                             <div>
@@ -1024,21 +1024,21 @@
                     <!-- 2. Performance & Benchmarks -->
                     @if ($phone->benchmarks)
                         <section>
-                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-gray-900 dark:text-white transition-colors duration-300">
                                 <span>Performance</span>
-                                <div class="h-px bg-gray-200 dark:bg-white/10 flex-1 ml-4"></div>
+                                <div class="h-px bg-gray-200 dark:bg-white/5 flex-1 ml-4"></div>
                             </h2>
                             <div
-                                class="bg-white dark:bg-[#121212] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5">
+                                class="bg-white dark:bg-slate-900 rounded-[2rem] p-8 border border-gray-100 dark:border-white/5 shadow-sm transition-colors duration-300">
 
                                 <!-- Antutu -->
                                 <div class="mb-10">
-                                    <div class="flex justify-between items-end mb-3">
-                                        <span class="font-bold text-gray-500">AnTuTu Score</span>
+                                    <div class="flex justify-between items-end mb-3 transition-colors duration-300">
+                                        <span class="font-bold text-gray-500 dark:text-gray-400">AnTuTu Score</span>
                                         <span
                                             class="text-3xl font-black tracking-tight text-teal-600 dark:text-teal-400">{{ number_format($phone->benchmarks->antutu_score) }}</span>
                                     </div>
-                                    <div class="h-5 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                    <div class="h-5 w-full bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden transition-colors duration-300">
                                         <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-600 w-0 animate-[fillBar_1s_ease-out_forwards]"
                                             style="width: {{ min(($phone->benchmarks->antutu_score / 3000000) * 100, 100) }}%">
                                         </div>
@@ -1048,29 +1048,29 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
                                     <!-- Geekbench -->
                                     <div>
-                                        <div class="flex justify-between mb-3">
-                                            <span class="font-bold text-gray-500 text-sm">Geekbench Multi</span>
+                                        <div class="flex justify-between mb-3 transition-colors duration-300">
+                                            <span class="font-bold text-gray-500 dark:text-gray-400 text-sm">Geekbench Multi</span>
                                             <span
                                                 class="font-bold text-xl text-blue-600 dark:text-blue-400">{{ number_format($phone->benchmarks->geekbench_multi) }}</span>
                                         </div>
                                         <div
-                                            class="h-3 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden mb-2">
+                                            class="h-3 w-full bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden mb-2 transition-colors duration-300">
                                             <div class="h-full bg-blue-500 rounded-full"
                                                 style="width: {{ min(($phone->benchmarks->geekbench_multi / 10000) * 100, 100) }}%">
                                             </div>
                                         </div>
-                                        <div class="text-right text-xs text-gray-400 font-medium">Single:
+                                        <div class="text-right text-xs text-gray-400 dark:text-slate-500 font-medium transition-colors duration-300">Single:
                                             {{ number_format($phone->benchmarks->geekbench_single) }}</div>
                                     </div>
 
                                     <!-- 3DMark -->
                                     <div>
-                                        <div class="flex justify-between mb-3">
-                                            <span class="font-bold text-gray-500 text-sm">3DMark Extreme</span>
+                                        <div class="flex justify-between mb-3 transition-colors duration-300">
+                                            <span class="font-bold text-gray-500 dark:text-gray-400 text-sm">3DMark Extreme</span>
                                             <span
                                                 class="font-bold text-xl text-orange-600 dark:text-orange-400">{{ number_format($phone->benchmarks->dmark_wild_life_extreme ?? 0) }}</span>
                                         </div>
-                                        <div class="h-3 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                        <div class="h-3 w-full bg-gray-100 dark:bg-slate-800 rounded-full overflow-hidden transition-colors duration-300">
                                             <div class="h-full bg-orange-500 rounded-full"
                                                 style="width: {{ min(($phone->benchmarks->dmark_wild_life_extreme / 8000) * 100, 100) }}%">
                                             </div>
@@ -1085,12 +1085,12 @@
                     <!-- 3. Camera -->
                     @if ($phone->camera)
                         <section>
-                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-gray-900 dark:text-white">
                                 <span>Camera</span>
-                                <div class="h-px bg-gray-200 dark:bg-white/10 flex-1 ml-4"></div>
+                                <div class="h-px bg-gray-200 dark:bg-white/5 flex-1 ml-4"></div>
                             </h2>
                             <div
-                                class="bg-white dark:bg-[#121212] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5">
+                                class="bg-white dark:bg-slate-900 rounded-[2rem] p-8 border border-gray-100 dark:border-white/5">
                                 <div class="space-y-10">
                                     <div class="pl-6 border-l-4 border-teal-500">
                                         <h4 class="text-sm font-bold uppercase text-teal-500 mb-2 tracking-wide">Main
@@ -1100,13 +1100,13 @@
 
                                         @if ($phone->camera->main_camera_zoom)
                                             <div
-                                                class="mt-2 inline-block px-3 py-1 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300 rounded-lg text-sm font-bold">
+                                                class="mt-2 inline-block px-3 py-1 bg-teal-50 text-teal-700 rounded-lg text-sm font-bold">
                                                 {{ $phone->camera->main_camera_zoom }}
                                             </div>
                                         @endif
 
                                         @if ($phone->camera->telephoto_camera_specs)
-                                            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                                            <div class="mt-4 pt-4 border-t border-gray-100">
                                                 <h5 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-1">
                                                     Telephoto</h5>
                                                 <p class="text-lg font-medium leading-relaxed">
@@ -1115,7 +1115,7 @@
                                         @endif
 
                                         @if ($phone->camera->ultrawide_camera_specs)
-                                            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                                            <div class="mt-4 pt-4 border-t border-gray-100">
                                                 <h5 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-1">
                                                     Ultrawide</h5>
                                                 <p class="text-lg font-medium leading-relaxed">
@@ -1130,7 +1130,7 @@
                                                     <span
                                                         class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Sensors</span>
                                                     <span
-                                                        class="text-gray-700 dark:text-gray-300 font-medium leading-snug block">{{ $phone->camera->main_camera_sensors }}</span>
+                                                        class="text-gray-700 font-medium leading-snug block">{{ $phone->camera->main_camera_sensors }}</span>
                                                 </div>
                                             @endif
                                             @if ($phone->camera->main_camera_apertures)
@@ -1138,7 +1138,7 @@
                                                     <span
                                                         class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Aperture</span>
                                                     <span
-                                                        class="text-gray-700 dark:text-gray-300 font-medium leading-snug block">{{ $phone->camera->main_camera_apertures }}</span>
+                                                        class="text-gray-700 font-medium leading-snug block">{{ $phone->camera->main_camera_apertures }}</span>
                                                 </div>
                                             @endif
                                             @if ($phone->camera->main_camera_focal_lengths)
@@ -1147,7 +1147,7 @@
                                                         class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Focal
                                                         Length</span>
                                                     <span
-                                                        class="text-gray-700 dark:text-gray-300 font-medium leading-snug block">{{ $phone->camera->main_camera_focal_lengths }}</span>
+                                                        class="text-gray-700 font-medium leading-snug block">{{ $phone->camera->main_camera_focal_lengths }}</span>
                                                 </div>
                                             @endif
                                             @if ($phone->camera->main_camera_ois)
@@ -1155,7 +1155,7 @@
                                                     <span
                                                         class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">OIS</span>
                                                     <span
-                                                        class="text-gray-700 dark:text-gray-300 font-medium leading-snug block">{{ $phone->camera->main_camera_ois }}</span>
+                                                        class="text-gray-700 font-medium leading-snug block">{{ $phone->camera->main_camera_ois }}</span>
                                                 </div>
                                             @endif
                                             @if ($phone->camera->main_camera_pdaf)
@@ -1163,13 +1163,13 @@
                                                     <span
                                                         class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Focus</span>
                                                     <span
-                                                        class="text-gray-700 dark:text-gray-300 font-medium leading-snug block">{{ $phone->camera->main_camera_pdaf }}</span>
+                                                        class="text-gray-700 font-medium leading-snug block">{{ $phone->camera->main_camera_pdaf }}</span>
                                                 </div>
                                             @endif
                                         </div>
 
                                         <p
-                                            class="text-sm text-gray-500 mt-6 font-medium border-t border-gray-100 dark:border-white/5 pt-4">
+                                            class="text-sm text-gray-500 mt-6 font-medium border-t border-gray-100 pt-4">
                                             {{ $phone->camera->main_camera_features }}</p>
                                     </div>
 
@@ -1179,23 +1179,23 @@
                                                 Camera</h4>
                                             <p class="font-bold text-xl mb-3">{{ $phone->camera->selfie_camera_specs }}
                                             </p>
-                                            <div class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                                            <div class="text-sm text-gray-600 space-y-2">
                                                 @if ($phone->camera->selfie_camera_aperture)
                                                     <div
-                                                        class="flex justify-between border-b border-gray-100 dark:border-white/5 pb-1">
+                                                        class="flex justify-between border-b border-gray-100 pb-1">
                                                         <span
                                                             class="font-bold text-xs uppercase text-gray-400">Aperture</span>
                                                         <span
-                                                            class="font-medium text-gray-900 dark:text-gray-100">{{ $phone->camera->selfie_camera_aperture }}</span>
+                                                            class="font-medium text-gray-900">{{ $phone->camera->selfie_camera_aperture }}</span>
                                                     </div>
                                                 @endif
                                                 @if ($phone->camera->selfie_camera_sensor)
                                                     <div
-                                                        class="flex justify-between border-b border-gray-100 dark:border-white/5 pb-1">
+                                                        class="flex justify-between border-b border-gray-100 pb-1">
                                                         <span
                                                             class="font-bold text-xs uppercase text-gray-400">Sensor</span>
                                                         <span
-                                                            class="font-medium text-gray-900 dark:text-gray-100">{{ $phone->camera->selfie_camera_sensor }}</span>
+                                                            class="font-medium text-gray-900">{{ $phone->camera->selfie_camera_sensor }}</span>
                                                     </div>
                                                 @endif
                                                 @if ($phone->camera->selfie_camera_autofocus)
@@ -1209,16 +1209,16 @@
                                                             class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Selfie
                                                             Video</span>
                                                         <span
-                                                            class="text-gray-900 dark:text-gray-100 font-medium block">{{ $phone->camera->selfie_video_features }}</span>
+                                                            class="text-gray-900 font-medium block">{{ $phone->camera->selfie_video_features }}</span>
                                                     </div>
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="pl-6 border-l-4 border-gray-300 dark:border-gray-700">
+                                        <div class="pl-6 border-l-4 border-gray-300">
                                             <h4 class="text-sm font-bold uppercase text-gray-500 mb-2 tracking-wide">Rear
                                                 Camera Video</h4>
                                             <p
-                                                class="text-base font-bold text-gray-900 dark:text-white leading-relaxed mb-2">
+                                                class="text-base font-bold text-gray-900 leading-relaxed mb-2">
                                                 {{ $phone->camera->main_video_capabilities }}</p>
                                             @if ($phone->camera->video_features)
                                                 <p class="text-xs text-gray-500 font-medium">
@@ -1235,7 +1235,7 @@
                     <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Development (Moved Up) / Connectivity & Audio -->
                         <div
-                            class="bg-white dark:bg-[#121212] p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 space-y-8">
+                            class="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 space-y-8">
                             @if ($phone->connectivity)
                                 <div>
                                     <h3
@@ -1253,7 +1253,7 @@
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">WLAN</span>
                                             <div>
                                                 <span
-                                                    class="text-gray-900 dark:text-white font-bold block mb-1 leading-snug break-words whitespace-normal">{{ $phone->connectivity->wlan }}</span>
+                                                    class="text-gray-900 font-bold block mb-1 leading-snug break-words whitespace-normal">{{ $phone->connectivity->wlan }}</span>
                                                 @if ($phone->connectivity->wifi_bands)
                                                     <span
                                                         class="text-xs text-gray-500 font-medium">{{ $phone->connectivity->wifi_bands }}</span>
@@ -1264,7 +1264,7 @@
                                             <span
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">BT</span>
                                             <span
-                                                class="text-gray-900 dark:text-white font-bold">{{ $phone->connectivity->bluetooth }}</span>
+                                                class="text-gray-900 font-bold">{{ $phone->connectivity->bluetooth }}</span>
                                         </li>
                                         <li class="grid grid-cols-[80px_1fr] gap-3">
                                             <span
@@ -1272,10 +1272,10 @@
                                             <div>
                                                 @if ($phone->connectivity->positioning_details)
                                                     <span
-                                                        class="text-gray-900 dark:text-white font-bold block mb-1 leading-snug">{{ $phone->connectivity->positioning_details }}</span>
+                                                        class="text-gray-900 font-bold block mb-1 leading-snug">{{ $phone->connectivity->positioning_details }}</span>
                                                 @else
                                                     <span
-                                                        class="text-gray-900 dark:text-white font-bold block mb-1 leading-snug">{{ $phone->connectivity->positioning }}</span>
+                                                        class="text-gray-900 font-bold block mb-1 leading-snug">{{ $phone->connectivity->positioning }}</span>
                                                 @endif
                                             </div>
                                         </li>
@@ -1283,51 +1283,51 @@
                                             <span
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">NFC/IR</span>
                                             <span
-                                                class="text-gray-900 dark:text-white font-bold">{{ $phone->connectivity->nfc }}
+                                                class="text-gray-900 font-bold">{{ $phone->connectivity->nfc }}
                                                 / {{ $phone->connectivity->infrared }}</span>
                                         </li>
                                         <li class="grid grid-cols-[80px_1fr] gap-3">
                                             <span
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">USB</span>
                                             <span
-                                                class="text-gray-900 dark:text-white font-bold">{{ $phone->connectivity->usb_details ?? ($phone->connectivity->usb ?? 'Not specified') }}</span>
+                                                class="text-gray-900 font-bold">{{ $phone->connectivity->usb_details ?? ($phone->connectivity->usb ?? 'Not specified') }}</span>
                                         </li>
                                         <li class="grid grid-cols-[80px_1fr] gap-3">
                                             <span
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">Sensors</span>
                                             <span
-                                                class="text-gray-700 dark:text-gray-300 font-medium leading-relaxed">{{ $phone->connectivity->sensors }}</span>
+                                                class="text-gray-700 font-medium leading-relaxed">{{ $phone->connectivity->sensors }}</span>
                                         </li>
                                         @if ($phone->connectivity->sar_value)
                                             <li class="grid grid-cols-[80px_1fr] gap-3">
                                                 <span
                                                     class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">SAR</span>
                                                 <span
-                                                    class="text-gray-700 dark:text-gray-300 font-medium">{{ $phone->connectivity->sar_value }}</span>
+                                                    class="text-gray-700 font-medium">{{ $phone->connectivity->sar_value }}</span>
                                             </li>
                                         @endif
 
                                         <!-- Audio Specs -->
                                         <li
-                                            class="grid grid-cols-[80px_1fr] gap-3 pt-4 mt-2 border-t border-gray-100 dark:border-white/5">
+                                            class="grid grid-cols-[80px_1fr] gap-3 pt-4 mt-2 border-t border-gray-100">
                                             <span
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">Audio</span>
                                             <div>
                                                 <span
-                                                    class="text-gray-900 dark:text-white font-bold block mb-2">{{ $phone->connectivity->audio_quality ?? 'High-Res Audio' }}</span>
+                                                    class="text-gray-900 font-bold block mb-2">{{ $phone->connectivity->audio_quality ?? 'High-Res Audio' }}</span>
 
                                                 <div class="space-y-1 text-sm">
                                                     <div class="flex items-center gap-2">
-                                                        <span class="text-gray-500 dark:text-gray-400">3.5mm Jack:</span>
+                                                        <span class="text-gray-500">3.5mm Jack:</span>
                                                         <span
-                                                            class="font-bold {{ $phone->connectivity->has_3_5mm_jack ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white' }}">
+                                                            class="font-bold {{ $phone->connectivity->has_3_5mm_jack ? 'text-green-600' : 'text-gray-900' }}">
                                                             {{ $phone->connectivity->has_3_5mm_jack ? 'Yes' : 'No' }}
                                                         </span>
                                                     </div>
 
                                                     <div class="flex items-center gap-2">
-                                                        <span class="text-gray-500 dark:text-gray-400">Speakers:</span>
-                                                        <span class="font-bold text-gray-900 dark:text-white">
+                                                        <span class="text-gray-500">Speakers:</span>
+                                                        <span class="font-bold text-gray-900">
                                                             {{ $phone->connectivity->loudspeaker ? 'Stereo' : 'Mono' }}
                                                         </span>
                                                     </div>
@@ -1341,7 +1341,7 @@
 
                         <!-- Battery & Charging -->
                         <div
-                            class="bg-white dark:bg-[#121212] p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 space-y-8">
+                            class="bg-white dark:bg-slate-900 p-8 rounded-[2rem] border border-gray-100 dark:border-white/5 space-y-8">
                             @if ($phone->battery)
                                 <div>
                                     <h3
@@ -1358,13 +1358,13 @@
                                             <span
                                                 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Type</span>
                                             <span
-                                                class="font-bold text-gray-900 dark:text-white">{{ $phone->battery->battery_type }}</span>
+                                                class="font-bold text-gray-900">{{ $phone->battery->battery_type }}</span>
                                         </li>
                                         <li class="grid grid-cols-[80px_1fr] gap-3">
                                             <span
                                                 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Wired</span>
                                             <span
-                                                class="font-bold text-gray-900 dark:text-white">{{ $phone->battery->charging_wired }}</span>
+                                                class="font-bold text-gray-900">{{ $phone->battery->charging_wired }}</span>
                                         </li>
                                         @if (
                                             $phone->battery->charging_specs_detailed &&
@@ -1373,20 +1373,20 @@
                                                 <span
                                                     class="text-xs font-bold text-gray-500 uppercase tracking-wider">Speeds</span>
                                                 <span
-                                                    class="text-gray-700 dark:text-gray-300">{{ $phone->battery->charging_specs_detailed }}</span>
+                                                    class="text-gray-700">{{ $phone->battery->charging_specs_detailed }}</span>
                                             </li>
                                         @endif
                                         <li class="grid grid-cols-[80px_1fr] gap-3">
                                             <span
                                                 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Wireless</span>
                                             <span
-                                                class="font-bold text-gray-900 dark:text-white">{{ $phone->battery->charging_wireless ?? 'No' }}</span>
+                                                class="font-bold text-gray-900">{{ $phone->battery->charging_wireless ?? 'No' }}</span>
                                         </li>
                                         @if ($phone->battery->reverse_wireless || $phone->battery->reverse_wired)
                                             <li class="grid grid-cols-[80px_1fr] gap-3">
                                                 <span
                                                     class="text-xs font-bold text-gray-500 uppercase tracking-wider">Reverse</span>
-                                                <span class="text-gray-700 dark:text-gray-300">
+                                                <span class="text-gray-700">
                                                     {{ $phone->battery->reverse_wireless ? 'Wireless: ' . $phone->battery->reverse_wireless : '' }}
                                                     {{ $phone->battery->reverse_wired ? ($phone->battery->reverse_wireless ? ' • ' : '') . 'Wired: ' . $phone->battery->reverse_wired : '' }}
                                                 </span>

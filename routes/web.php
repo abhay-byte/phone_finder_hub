@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PhoneController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminCommentController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentUpvoteController;
-use App\Http\Controllers\AdminCommentController;
+use App\Http\Controllers\PhoneController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public routes – accessible to everyone (no auth required)
@@ -19,6 +19,10 @@ Route::get('/forum/c/{category:slug}', [\App\Http\Controllers\ForumController::c
 Route::get('/forum/p/{post:slug}', [\App\Http\Controllers\ForumController::class, 'show'])->name('forum.post.show');
 
 Route::get('/', [PhoneController::class, 'index'])->name('home');
+
+Route::get('/dashboard', function () {
+    return redirect()->route('home');
+})->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/phones/search', [PhoneController::class, 'search'])->name('phones.search');
 Route::get('/phones/grid', [PhoneController::class, 'grid'])->name('phones.grid');
 Route::get('/find', [\App\Http\Controllers\FindController::class, 'index'])->name('find.index');
@@ -46,6 +50,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 });
+
+// Firebase Auth Callback
+Route::post('/auth/firebase/callback', [AuthController::class, 'firebaseCallback'])->name('auth.firebase.callback');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Authenticated routes (auth required)
@@ -81,13 +88,13 @@ Route::post('/phones/{phone}/comments', [CommentController::class, 'store'])->na
 
 Route::middleware(['auth', 'role:maintainer,moderator'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
-    
+
     // User & Role Management
     Route::middleware('super_admin')->group(function () {
         Route::get('/users', [\App\Http\Controllers\AdminUserController::class, 'index'])->name('users.index');
         Route::put('/users/{user}/role', [\App\Http\Controllers\AdminUserController::class, 'updateRole'])->name('users.role.update');
     });
-    
+
     // Phones Management
     Route::middleware('role:maintainer')->group(function () {
         Route::get('/phones', [AdminController::class, 'index'])->name('phones.index');
@@ -127,3 +134,8 @@ Route::middleware(['auth', 'author_admin'])->prefix('admin')->name('admin.')->gr
 // ─────────────────────────────────────────────────────────────────────────────
 Route::get('/blogs', [\App\Http\Controllers\BlogController::class, 'index'])->name('blogs.index');
 Route::get('/blogs/{blog:slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blogs.show');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Breeze Auth Routes (password reset, email verification)
+// ─────────────────────────────────────────────────────────────────────────────
+require __DIR__.'/auth.php';

@@ -1,0 +1,51 @@
+[
+  {
+    "id": 36,
+    "user_id": 1,
+    "title": "Best Phones for Gaming",
+    "created_at": "2026-02-22 13:59:39",
+    "updated_at": "2026-02-22 14:01:05"
+  },
+  {
+    "id": 37,
+    "user_id": 1,
+    "title": "Best Phones for Camera Quality",
+    "created_at": "2026-02-22 14:10:11",
+    "updated_at": "2026-02-22 14:10:23"
+  },
+  {
+    "id": 38,
+    "user_id": 1,
+    "title": "Best Gaming Phones Under \u20b945,000",
+    "created_at": "2026-02-22 14:34:03",
+    "updated_at": "2026-02-23 07:19:53"
+  },
+  {
+    "id": 8,
+    "user_id": 1,
+    "title": "Best Phone Under 45k",
+    "created_at": "2026-02-21 14:59:16",
+    "updated_at": "2026-02-21 14:59:16"
+  },
+  {
+    "id": 9,
+    "user_id": 1,
+    "title": "Best Budget Phone Options",
+    "created_at": "2026-02-21 15:03:51",
+    "updated_at": "2026-02-21 15:37:54"
+  },
+  {
+    "id": 12,
+    "user_id": 1,
+    "title": "Budget Gaming Phone Options",
+    "created_at": "2026-02-21 16:49:34",
+    "updated_at": "2026-02-21 16:52:29"
+  },
+  {
+    "id": 14,
+    "user_id": 1,
+    "title": "Current Top Camera Phones",
+    "created_at": "2026-02-21 18:58:37",
+    "updated_at": "2026-02-21 18:59:02"
+  }
+]

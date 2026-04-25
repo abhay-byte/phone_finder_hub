@@ -1,18 +1,18 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 use App\Models\Phone;
 use App\Services\CmsScoringService;
 
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
 $phoneName = 'OnePlus 13';
 $phone = Phone::where('name', $phoneName)->first();
 
-if (!$phone) {
+if (! $phone) {
     echo "❌ $phoneName not found!\n";
     exit;
 }
@@ -20,9 +20,9 @@ if (!$phone) {
 echo "📱 Updating Benchmarks for {$phone->name}...\n";
 
 $bench = $phone->benchmarks;
-if (!$bench) {
+if (! $bench) {
     echo "⚠️ No benchmarks found, creating...\n";
-    $bench = new \App\Models\Benchmark();
+    $bench = new \App\Models\Benchmark;
     $bench->phone_id = $phone->id;
 }
 
@@ -41,7 +41,7 @@ echo "\n🔄 Recalculating CMS Score...\n";
 $phone->refresh();
 $phone->load('benchmarks');  // Load the updated benchmarks
 
-$service = new CmsScoringService();
+$service = new CmsScoringService;
 $score = $service->calculate($phone);
 
 // Save Score
@@ -54,10 +54,10 @@ echo "🎉 New CMS Score: {$score['total_score']}/1330\n\n";
 // Detailed Breakdown Highlight for Benchmarks
 foreach ($score['breakdown'] as $key => $section) {
     if ($key === 'benchmarks') {
-        echo strtoupper($key) . ": {$section['score']}/{$section['max']}\n";
+        echo strtoupper($key).": {$section['score']}/{$section['max']}\n";
         foreach ($section['details'] as $detail) {
             $pts = str_pad($detail['points'], 5, ' ', STR_PAD_LEFT);
-            echo "  - " . str_pad($detail['criterion'], 25) . ": $pts pts ({$detail['reason']})\n";
+            echo '  - '.str_pad($detail['criterion'], 25).": $pts pts ({$detail['reason']})\n";
         }
     }
 }

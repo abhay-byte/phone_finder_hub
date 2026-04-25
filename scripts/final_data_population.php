@@ -80,7 +80,7 @@ if ($p13) {
 
     $p13->benchmarks()->updateOrCreate([], [
         'antutu_score' => 2690491,
-        'geekbench_single' => 0, 
+        'geekbench_single' => 0,
         'geekbench_multi' => 9278,
         'dmark_wild_life_extreme' => 6615,
         'battery_endurance_hours' => 61.6, // 61:36
@@ -132,7 +132,7 @@ if ($p15) {
     ]);
 
     $p15->camera()->updateOrCreate([], [
-        'main_camera_specs' => "50 MP (Main) + 50 MP (3.5x Tele) + 50 MP (Ultrawide)",
+        'main_camera_specs' => '50 MP (Main) + 50 MP (3.5x Tele) + 50 MP (Ultrawide)',
         'main_camera_features' => 'Laser focus, Hasselblad, LUT preview',
         'main_video_capabilities' => '8K@30fps, 4K@120fps, Dolby Vision',
         'selfie_camera_specs' => '32 MP, f/2.4',
@@ -211,11 +211,11 @@ if ($pf7) {
         'os_details' => 'HyperOS 2.0 (Heavily customized)',
         'turnip_support_level' => 'Full Support',
     ]);
-    
+
     $pf7->battery()->updateOrCreate([], [
         'battery_type' => 'Si/C Li-Ion 7550 mAh',
         'charging_wired' => '90W wired',
-        'charging_reverse' => '22.5W reverse wired', 
+        'charging_reverse' => '22.5W reverse wired',
         'charging_specs_detailed' => '90W wired (80% in 30 min)',
         'reverse_wired' => '22.5W',
     ]);

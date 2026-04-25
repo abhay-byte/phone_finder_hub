@@ -1,0 +1,86 @@
+[
+  {
+    "id": 2,
+    "name": "abhay",
+    "email": "abhay02delhi@gmail.com",
+    "email_verified_at": null,
+    "password": "$2y$12$77oVH/wMQgoqPmLiH47OOe.xGyitGBgDqVUDIW6QNg5JkI6Fj0Jp2",
+    "remember_token": null,
+    "created_at": "2026-02-19 13:52:10",
+    "updated_at": "2026-02-19 13:52:10",
+    "username": "abhay",
+    "role": "user"
+  },
+  {
+    "id": 3,
+    "name": "Updated Name",
+    "email": "testuser@gmail.com",
+    "email_verified_at": null,
+    "password": "$2y$12$p59ykAcnv/4x.KhvjMg5MuBaxtQAc6WwHs9lK1LO771tVSSF8894i",
+    "remember_token": null,
+    "created_at": "2026-02-19 14:05:36",
+    "updated_at": "2026-02-19 14:06:40",
+    "username": "testuser",
+    "role": "user"
+  },
+  {
+    "id": 4,
+    "name": "Unique Verify User",
+    "email": "unique_verify@gmail.com",
+    "email_verified_at": null,
+    "password": "$2y$12$GCbYEU4Ocv0GlDwHK63CFOLN0Fc0xkCmjUemqRGbtbV0R9hYAQ53W",
+    "remember_token": null,
+    "created_at": "2026-02-19 14:09:54",
+    "updated_at": "2026-02-19 14:09:54",
+    "username": "unique_verify_2026",
+    "role": "user"
+  },
+  {
+    "id": 5,
+    "name": "Test Logout",
+    "email": "logouttest2026@gmail.com",
+    "email_verified_at": null,
+    "password": "$2y$12$i3HnZIxJM.j5K3bp9AF5duluZh7SjvWmEbcuYITdOcVCw94G1gyci",
+    "remember_token": null,
+    "created_at": "2026-02-19 14:43:32",
+    "updated_at": "2026-02-19 14:43:32",
+    "username": "logouttest2026",
+    "role": "user"
+  },
+  {
+    "id": 6,
+    "name": "Verify User",
+    "email": "verify_user_123@testmail.com",
+    "email_verified_at": null,
+    "password": "$2y$12$SlRN25AozSJkCpHei.3hkevh3ppKnNHFHs.gEkFzxWHLK7maYDSg6",
+    "remember_token": null,
+    "created_at": "2026-02-19 14:50:00",
+    "updated_at": "2026-02-19 14:50:00",
+    "username": "verify_user_new_123",
+    "role": "user"
+  },
+  {
+    "id": 7,
+    "name": "Jetski User",
+    "email": "tester2@gmail.com",
+    "email_verified_at": null,
+    "password": "$2y$12$HFaJbbkP35crXyP.ztud.eLIu9zBVPQGNmnVo3mQEbQ4wW0KOXrwy",
+    "remember_token": null,
+    "created_at": "2026-02-20 05:13:47",
+    "updated_at": "2026-02-20 05:13:47",
+    "username": "jetski_tester_2",
+    "role": "user"
+  },
+  {
+    "id": 1,
+    "name": "Abhay",
+    "email": "abhay@phonefinderhub.local",
+    "email_verified_at": "2026-02-19 17:06:14",
+    "password": "$2y$12$MvqwqMF1JwdLgPcalEq4jOuGPLGnoDBwH4DPJi85Wyr3HV5nFJibi",
+    "remember_token": "pglM6ZabzQch3kgbN413YvYTAe0eMQd19eJQsAZfoUi7NqIkSkq1gJ2HM7xt",
+    "created_at": "2026-02-19 10:32:15",
+    "updated_at": "2026-02-19 17:06:14",
+    "username": "abhay-byte",
+    "role": "super_admin"
+  }
+]

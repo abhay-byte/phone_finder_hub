@@ -3,8 +3,8 @@
 use App\Models\Phone;
 use Illuminate\Support\Facades\DB;
 
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -78,7 +78,7 @@ DB::transaction(function () {
         'main_camera_specs' => "50 MP, f/1.6, 24mm (wide), 1/1.28\", 1.22µm, PDAF, OIS\n200 MP, f/2.7, 85mm (periscope telephoto), 1/1.4\", 0.56µm, multi-directional PDAF, OIS, 3.7x optical zoom, macro 2.7:1\n50 MP, f/2.0, 15mm, 119˚ (ultrawide), 1/2.76\", 0.64µm, AF",
         'telephoto_camera_specs' => '200 MP, f/2.7, 85mm (periscope telephoto), 1/1.4", 0.56µm, multi-directional PDAF, OIS, 3.7x optical zoom, macro 2.7:1',
         'ultrawide_camera_specs' => '50 MP, f/2.0, 15mm, 119˚ (ultrawide), 1/2.76", 0.64µm, AF',
-        
+
         // Granular fields for Table View
         'main_camera_sensors' => '1/1.28", 1/1.4", 1/2.76"',
         'main_camera_apertures' => 'f/1.6, f/2.7, f/2.0',
@@ -114,7 +114,7 @@ DB::transaction(function () {
         'charging_wired' => '90W wired',
         'charging_wireless' => '40W wireless',
         'charging_reverse' => 'Reverse wireless',
-        'reverse_wired' => 'Reverse wired', 
+        'reverse_wired' => 'Reverse wired',
     ]);
 
     // Benchmarks
@@ -128,13 +128,13 @@ DB::transaction(function () {
         'battery_endurance_hours' => 48,
         'battery_active_use_score' => '12:45',
     ]);
-    
+
     // External Camera Scores
-   DB::table('benchmarks')->where('phone_id', $phone->id)->update([
+    DB::table('benchmarks')->where('phone_id', $phone->id)->update([
         'dxomark_score' => 171,
         'phonearena_camera_score' => 150,
         'other_benchmark_score' => 87, // Avg of GSM (4.5/5=90) and 91M (8.3/10=83)
     ]);
 
-    echo "Phone synced successfully: " . $phone->name . " (ID: " . $phone->id . ")\n";
+    echo 'Phone synced successfully: '.$phone->name.' (ID: '.$phone->id.")\n";
 });

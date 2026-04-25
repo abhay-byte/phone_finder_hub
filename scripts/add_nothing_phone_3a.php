@@ -73,7 +73,7 @@ $phone->camera()->updateOrCreate([], [
     'main_camera_pdaf' => 'Dual Pixel PDAF (Main), PDAF (Tele)',
     'ultrawide_camera_specs' => '8 MP, f/2.2, 15mm, 120˚',
     'telephoto_camera_specs' => '50 MP, f/2.0, 50mm, 2x optical zoom',
-    
+
     'selfie_camera_specs' => '32 MP, f/2.2, 22mm (wide), 1/3.44"',
     'selfie_camera_features' => 'HDR',
     'selfie_video_capabilities' => '1080p@30fps',
@@ -120,4 +120,4 @@ $phone->ueps_score = (int) $ueps['total_score'];
 $phone->overall_score = (int) $phone->calculateFPI()['total'];
 $phone->save();
 
-echo "Added Nothing Phone (3a) with ID: " . $phone->id . "\n";
+echo 'Added Nothing Phone (3a) with ID: '.$phone->id."\n";

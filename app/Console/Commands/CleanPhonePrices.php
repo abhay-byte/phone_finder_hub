@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Phone;
+use Illuminate\Console\Command;
 
 class CleanPhonePrices extends Command
 {
     protected $signature = 'phone:clean-prices {--threshold=4000 : Minimum price threshold}';
+
     protected $description = 'Remove shopping links with suspiciously low prices';
 
     public function handle()
@@ -25,12 +26,12 @@ class CleanPhonePrices extends Command
             $this->line("Fixing {$phone->name}: Amazon Price ₹{$phone->amazon_price}");
             $phone->amazon_price = null;
             $phone->amazon_url = null;
-            
+
             // Recalculate main price
             if ($phone->flipkart_price && $phone->flipkart_price >= $threshold) {
-                 $phone->price = $phone->flipkart_price;
+                $phone->price = $phone->flipkart_price;
             } else {
-                 $phone->price = 0; 
+                $phone->price = 0;
             }
 
             $phone->save();
@@ -43,20 +44,20 @@ class CleanPhonePrices extends Command
         $fPhones = Phone::where('flipkart_price', '>', 0)
             ->where('flipkart_price', '<', $threshold)
             ->get();
-        
+
         $fCount = 0;
         foreach ($fPhones as $phone) {
             $this->line("Fixing {$phone->name}: Flipkart Price ₹{$phone->flipkart_price}");
             $phone->flipkart_price = null;
             $phone->flipkart_url = null;
-            
+
             // Recalculate main price
             if ($phone->amazon_price && $phone->amazon_price >= $threshold) {
                 $phone->price = $phone->amazon_price;
             } else {
                 $phone->price = 0;
             }
-            
+
             $phone->save();
             $fCount++;
         }
@@ -65,7 +66,7 @@ class CleanPhonePrices extends Command
 
         // clean placeholder links (#)
         $this->info("Cleaning marketplace links with '#' placeholders...");
-        
+
         $hashAmazon = Phone::where('amazon_url', '#')->get();
         foreach ($hashAmazon as $phone) {
             $this->line("Removing '#' Amazon link for {$phone->name}");
@@ -73,7 +74,7 @@ class CleanPhonePrices extends Command
             $phone->amazon_price = null;
             $phone->save();
         }
-        $this->info("Cleaned " . $hashAmazon->count() . " '#' Amazon links.");
+        $this->info('Cleaned '.$hashAmazon->count()." '#' Amazon links.");
 
         $hashFlipkart = Phone::where('flipkart_url', '#')->get();
         foreach ($hashFlipkart as $phone) {
@@ -82,7 +83,7 @@ class CleanPhonePrices extends Command
             $phone->flipkart_price = null;
             $phone->save();
         }
-        $this->info("Cleaned " . $hashFlipkart->count() . " '#' Flipkart links.");
+        $this->info('Cleaned '.$hashFlipkart->count()." '#' Flipkart links.");
 
         return 0;
     }

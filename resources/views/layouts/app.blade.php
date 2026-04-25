@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{
-    darkMode: localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
     selectedPhones: JSON.parse(localStorage.getItem('selectedPhones') || '[]'),
     mobileMenuOpen: false,
 
@@ -32,9 +31,8 @@
         const ids = this.selectedPhones.map(p => p.id).join(',');
         window.location.href = '/compare?ids=' + ids;
     }
-}" :class="{ 'dark': darkMode }"
-    x-init="$watch('darkMode', val => localStorage.setItem('theme', val ? 'dark' : 'light'));
-    $watch('selectedPhones', val => saveSelection());">
+}" :class="{ 'dark': $store.theme.darkMode }"
+    x-init="$watch('selectedPhones', val => saveSelection());">
 <script>
     // Immediate theme check to prevent FOUC
     if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia(
@@ -159,17 +157,9 @@
                                     Compare
                                 </a>
 
-                                <a href="{{ route('forum.index') }}"
-                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 {{ request()->routeIs('forum.*') ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'text-slate-600 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-300 hover:bg-teal-50/50 dark:hover:bg-teal-900/10' }}">
-                                    Forums
-                                </a>
                                 <a href="{{ route('blogs.index') }}"
                                     class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 {{ request()->routeIs('blogs.*') ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'text-slate-600 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-300 hover:bg-teal-50/50 dark:hover:bg-teal-900/10' }}">
                                     Blogs
-                                </a>
-                                <a href="{{ route('docs.index') }}"
-                                    class="nav-link inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 {{ request()->routeIs('docs.index') ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400' : 'text-slate-600 hover:text-teal-600 dark:text-slate-400 dark:hover:text-teal-300 hover:bg-teal-50/50 dark:hover:bg-teal-900/10' }}">
-                                    Docs
                                 </a>
                             @endif
                         </div>
@@ -189,15 +179,15 @@
                         </a>
 
                         {{-- Theme Toggle --}}
-                        <button @click="darkMode = !darkMode"
+                        <button @click="$store.theme.toggle()"
                             class="p-2 rounded-full text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-gray-400 dark:hover:bg-slate-800 dark:focus:bg-slate-800 transition duration-150 ease-in-out">
-                            <svg x-show="!darkMode" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            <svg x-show="!$store.theme.darkMode" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                             </svg>
-                            <svg x-show="darkMode" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" style="display: none;">
+                            <svg x-show="$store.theme.darkMode" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" style="display: none;" x-cloak>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
@@ -356,17 +346,9 @@
                         Compare
                     </a>
 
-                    <a href="{{ route('forum.index') }}"
-                        class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('forum.*') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
-                        Forums
-                    </a>
                     <a href="{{ route('blogs.index') }}"
                         class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('blogs.*') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
                         Blogs
-                    </a>
-                    <a href="{{ route('docs.index') }}"
-                        class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('docs.index') ? 'bg-teal-50 text-teal-700 dark:bg-gray-800 dark:text-teal-400' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800' }}">
-                        Docs
                     </a>
                 </div>
             </div>

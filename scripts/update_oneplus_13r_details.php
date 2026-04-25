@@ -1,12 +1,12 @@
 <?php
 
 use App\Models\Phone;
-use App\Models\SpecPlatform;
 use App\Models\SpecConnectivity;
+use App\Models\SpecPlatform;
 
 $phone = Phone::where('name', 'LIKE', '%OnePlus 13R%')->first();
 
-if (!$phone) {
+if (! $phone) {
     echo "OnePlus 13R not found!\n";
     exit(1);
 }

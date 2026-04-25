@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class AdminUserController extends Controller
 {
@@ -18,8 +18,8 @@ class AdminUserController extends Controller
 
         if ($search) {
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('username', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                ->orWhere('username', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
         }
 
         $users = $query->latest()->paginate(25)->withQueryString();
@@ -32,7 +32,7 @@ class AdminUserController extends Controller
      */
     public function updateRole(Request $request, User $user)
     {
-        // Only allow changing roles to valid enums. 
+        // Only allow changing roles to valid enums.
         // We shouldn't allow the currently logged in super admin to downgrade themselves accidentally.
         $validated = $request->validate([
             'role' => 'required|string|in:user,author,super_admin',

@@ -1,11 +1,11 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 use App\Models\Phone;
 use App\Services\CmsScoringService;
 
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -13,12 +13,12 @@ $phoneName = 'vivo iQOO Neo 10';
 echo "📱 Finding phone: $phoneName...\n";
 $phone = Phone::where('name', $phoneName)->first();
 
-if (!$phone) {
+if (! $phone) {
     echo "❌ $phoneName not found! Trying 'iQOO Neo 10'...\n";
     $phone = Phone::where('name', 'iQOO Neo 10')->first();
 }
 
-if (!$phone) {
+if (! $phone) {
     echo "❌ Phone not found via fallback either. Exiting.\n";
     exit(1);
 }
@@ -28,9 +28,9 @@ echo "📱 Updating Camera Specs...\n";
 
 // Update Camera Specs
 $camera = $phone->camera;
-if (!$camera) {
+if (! $camera) {
     echo "⚠️ No camera entry found, creating one...\n";
-    $camera = new \App\Models\Camera();
+    $camera = new \App\Models\Camera;
     $camera->phone_id = $phone->id;
 }
 
@@ -53,7 +53,7 @@ echo "✅ Camera specs updated.\n";
 
 // Recalculate Score
 echo "\n🔄 Recalculating CMS Score...\n";
-$service = new CmsScoringService();
+$service = new CmsScoringService;
 $score = $service->calculate($phone);
 
 // Save Score
@@ -66,10 +66,10 @@ echo "🎉 New CMS Score: {$score['total_score']}\n";
 // Show Breakdown for verification
 foreach ($score['breakdown'] as $key => $section) {
     if (in_array($key, ['sensor_optics', 'resolution', 'focus_stability', 'video', 'fusion'])) {
-        echo strtoupper(str_replace('_', ' ', $key)) . ": {$section['score']}/{$section['max']}\n";
+        echo strtoupper(str_replace('_', ' ', $key)).": {$section['score']}/{$section['max']}\n";
         foreach ($section['details'] as $detail) {
             $pts = str_pad($detail['points'], 5, ' ', STR_PAD_LEFT);
-            echo "  - " . str_pad($detail['criterion'], 30) . ": $pts pts ({$detail['reason']})\n";
+            echo '  - '.str_pad($detail['criterion'], 30).": $pts pts ({$detail['reason']})\n";
         }
         echo "\n";
     }

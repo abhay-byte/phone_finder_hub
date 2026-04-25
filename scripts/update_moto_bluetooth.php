@@ -1,8 +1,8 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -12,11 +12,11 @@ $phone = Phone::where('name', 'Motorola Edge 60 Pro')->first();
 
 if ($phone) {
     echo "Updating Bluetooth for {$phone->name}...\n";
-    echo "Old value: " . ($phone->connectivity->bluetooth ?? 'NULL') . "\n";
-    
+    echo 'Old value: '.($phone->connectivity->bluetooth ?? 'NULL')."\n";
+
     if ($phone->connectivity) {
         $phone->connectivity->update([
-            'bluetooth' => '5.4'
+            'bluetooth' => '5.4',
         ]);
         echo "New value: 5.4\n";
     } else {

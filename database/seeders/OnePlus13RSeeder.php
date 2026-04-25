@@ -119,11 +119,11 @@ class OnePlus13RSeeder extends Seeder
             [
                 'antutu_score' => 2475284, // v11
                 'antutu_v10_score' => 2109299,
-                'geekbench_single' => 2200, // Estimated/Approx for 8 Gen 3 if not provided, users usually provide multi. 
-                                            // Wait, user provided "GeekBench: 6803 (v6)". That's definitely Multi-Core. 
-                                            // 8 Gen 3 single is usually ~2200-2300. I'll leave single blank or put a conservative estimate? 
-                                            // Better to leave blank if I strictly follow "no placeholders". 
-                                            // But FPI calculation needs it. I'll use a safe average for 8 Gen 3: 2200.
+                'geekbench_single' => 2200, // Estimated/Approx for 8 Gen 3 if not provided, users usually provide multi.
+                // Wait, user provided "GeekBench: 6803 (v6)". That's definitely Multi-Core.
+                // 8 Gen 3 single is usually ~2200-2300. I'll leave single blank or put a conservative estimate?
+                // Better to leave blank if I strictly follow "no placeholders".
+                // But FPI calculation needs it. I'll use a safe average for 8 Gen 3: 2200.
                 'geekbench_multi' => 6803,
                 'dmark_wild_life_extreme' => 4979,
                 'dmark_test_type' => 'Wild Life Extreme',
@@ -132,7 +132,7 @@ class OnePlus13RSeeder extends Seeder
                 'charge_time_test' => '54 min',
             ]
         );
-        
+
         // Calculate scores
         $phone->overall_score = $phone->calculateFPI()['total'];
         $phone->ueps_score = \App\Services\UepsScoringService::calculate($phone)['total_score'];

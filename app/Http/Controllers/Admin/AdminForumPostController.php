@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ForumPost;
 use App\Models\ForumComment;
-use Illuminate\Http\Request;
+use App\Models\ForumPost;
 
 class AdminForumPostController extends Controller
 {
@@ -18,7 +17,7 @@ class AdminForumPostController extends Controller
             ->withCount('comments')
             ->orderBy('created_at', 'desc')
             ->paginate(20);
-            
+
         return view('admin.forums.posts.index', compact('posts'));
     }
 
@@ -28,6 +27,7 @@ class AdminForumPostController extends Controller
     public function show($id)
     {
         $post = ForumPost::with(['category', 'user', 'comments.user'])->findOrFail($id);
+
         return view('admin.forums.posts.show', compact('post'));
     }
 
@@ -38,7 +38,7 @@ class AdminForumPostController extends Controller
     {
         $post = ForumPost::findOrFail($id);
         $post->delete();
-        
+
         return redirect()->route('admin.forum.posts.index')->with('success', 'Forum Post and all its comments deleted successfully.');
     }
 
@@ -50,7 +50,7 @@ class AdminForumPostController extends Controller
         $comment = ForumComment::findOrFail($id);
         $postId = $comment->forum_post_id;
         $comment->delete();
-        
+
         return redirect()->route('admin.forum.posts.show', $postId)->with('success', 'Comment deleted successfully.');
     }
 }

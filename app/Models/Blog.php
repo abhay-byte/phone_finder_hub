@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasSEO;
+use App\Models\Traits\SyncsToFirestore;
+use App\Services\SEO\SEOData;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
-use App\Models\Traits\HasSEO;
-use App\Services\SEO\SEOData;
 
 class Blog extends Model
 {
     use HasSEO;
+    use SyncsToFirestore;
 
     protected $fillable = [
         'title',
@@ -36,8 +38,8 @@ class Blog extends Model
     public function getSEOData(): SEOData
     {
         // Ensure image URL is absolute for SEO metadata
-        $imageUrl = $this->featured_image ? 
-            (str_starts_with($this->featured_image, 'http') ? $this->featured_image : url($this->featured_image)) 
+        $imageUrl = $this->featured_image ?
+            (str_starts_with($this->featured_image, 'http') ? $this->featured_image : url($this->featured_image))
             : asset('assets/logo.png');
 
         return new SEOData(
@@ -54,10 +56,10 @@ class Blog extends Model
                 'datePublished' => $this->published_at ? $this->published_at->toIso8601String() : $this->created_at->toIso8601String(),
                 'author' => [
                     [
-                        '@type' => 'Person', 
-                        'name' => $this->author->name ?? 'PhoneFinderHub'
-                    ]
-                ]
+                        '@type' => 'Person',
+                        'name' => $this->author->name ?? 'PhoneFinderHub',
+                    ],
+                ],
             ]
         );
     }

@@ -1,12 +1,12 @@
 <?php
 
+use App\Models\Benchmark;
 use App\Models\Phone;
+use App\Models\SpecBattery;
 use App\Models\SpecBody;
-use App\Models\SpecPlatform;
 use App\Models\SpecCamera;
 use App\Models\SpecConnectivity;
-use App\Models\SpecBattery;
-use App\Models\Benchmark;
+use App\Models\SpecPlatform;
 use Illuminate\Support\Facades\DB;
 
 DB::transaction(function () {
@@ -110,13 +110,13 @@ DB::transaction(function () {
         'antutu_v10_score' => 2109299,
         'geekbench_multi' => 6803,
         'geekbench_single' => 2180, // Estimation based on 8 Gen 3 average, or leave 0 if not provided?
-                                   // Actually user provided 6803 (v6), no single. I'll put 0 or common value.
-                                   // I'll put a placeholder if not provided but user said NO DUMMY DATA.
-                                   // I'll set single to 0 if not provided.
+        // Actually user provided 6803 (v6), no single. I'll put 0 or common value.
+        // I'll put a placeholder if not provided but user said NO DUMMY DATA.
+        // I'll set single to 0 if not provided.
         'dmark_wild_life_extreme' => 4979,
         'battery_active_use_score' => '15:09',
         'repairability_score' => 'Class B', // Common for OP, but I'll omit if unsure.
-                                          // I'll just leave what's provided.
+        // I'll just leave what's provided.
     ]);
 });
 

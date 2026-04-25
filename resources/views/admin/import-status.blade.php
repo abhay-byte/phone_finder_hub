@@ -8,23 +8,23 @@ PhoneFinderHub – Import Status
 @section('admin-content')
 
 <div class="mb-8">
-    <a href="{{ route('admin.phones.add') }}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors mb-6">
+    <a href="{{ route('admin.phones.add') }}" class="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors mb-6">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
         Back to Add Phone
     </a>
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Import Progress</h1>
-    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Importing phone data. This can take 60–120 seconds.</p>
+    <h1 class="text-2xl font-bold text-slate-900 dark:text-white transition-colors duration-300">Import Progress</h1>
+    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1 transition-colors duration-300">Importing phone data. This can take 60–120 seconds.</p>
 </div>
 
 {{-- Progress Card --}}
-<div class="bg-white dark:bg-slate-900/60 rounded-2xl border border-slate-200 dark:border-white/5 p-8 max-w-2xl shadow-sm dark:shadow-none">
+<div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/5 p-8 max-w-2xl shadow-sm transition-colors duration-300">
     {{-- Overall Progress Bar --}}
     <div class="mb-8">
         <div class="flex items-center justify-between mb-3">
-            <span class="text-sm font-semibold text-slate-900 dark:text-white" id="statusLabel">Starting import…</span>
-            <span class="text-xs text-slate-500 dark:text-slate-500" id="progressText">0 / 8</span>
+            <span class="text-sm font-semibold text-slate-900 dark:text-white transition-colors duration-300" id="statusLabel">Starting import…</span>
+            <span class="text-xs text-slate-500 dark:text-slate-400" id="progressText">0 / 8</span>
         </div>
-        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
+        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden transition-colors duration-300">
             <div id="progressBar"
                  class="h-2.5 bg-gradient-to-r from-teal-500 to-teal-400 rounded-full transition-all duration-700 ease-out"
                  style="width: 0%"></div>
@@ -46,20 +46,20 @@ PhoneFinderHub – Import Status
         ];
         @endphp
         @foreach($stepDefs as $num => $label)
-        <div id="step-{{ $num }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-white/5 transition-all">
-            <div id="step-{{ $num }}-icon" class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-slate-100 dark:bg-slate-700/60 border border-slate-200 dark:border-white/5">
+        <div id="step-{{ $num }}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 transition-all">
+            <div id="step-{{ $num }}-icon" class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 transition-colors duration-300">
                 <span class="text-xs font-bold text-slate-400 dark:text-slate-500">{{ $num }}</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p id="step-{{ $num }}-label" class="text-sm text-slate-500 dark:text-slate-400">{{ $label }}</p>
-                <p id="step-{{ $num }}-msg" class="text-xs text-slate-400 dark:text-slate-600 hidden mt-0.5"></p>
+                <p id="step-{{ $num }}-label" class="text-sm text-slate-500 dark:text-slate-400 transition-colors duration-300">{{ $label }}</p>
+                <p id="step-{{ $num }}-msg" class="text-xs text-slate-400 dark:text-slate-500 hidden mt-0.5 transition-colors duration-300"></p>
             </div>
         </div>
         @endforeach
     </div>
 
     {{-- Success / Error State --}}
-    <div id="resultPanel" class="hidden mt-6">
+    <div id="resultPanel" class="hidden mt-6 transition-all duration-300">
         {{-- Dynamically injected --}}
     </div>
 </div>
@@ -84,17 +84,17 @@ function iconHtml(state) {
 }
 
 function iconClasses(state) {
-    if (state === 'running') return 'bg-teal-50 dark:bg-teal-500/15 border-teal-200 dark:border-teal-500/30';
-    if (state === 'done')    return 'bg-teal-50 dark:bg-teal-500/15 border-teal-200 dark:border-teal-500/30';
-    if (state === 'error')   return 'bg-red-50 dark:bg-red-500/15 border-red-200 dark:border-red-500/30';
-    return 'bg-slate-100 dark:bg-slate-700/60 border-slate-200 dark:border-white/5';
+    if (state === 'running') return 'bg-teal-50 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800/50';
+    if (state === 'done')    return 'bg-teal-50 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800/50';
+    if (state === 'error')   return 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800/50';
+    return 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-white/10';
 }
 
 function rowClasses(state) {
-    if (state === 'running') return 'bg-teal-50/50 dark:bg-teal-500/5 border-teal-200 dark:border-teal-500/20';
-    if (state === 'done')    return 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-white/5';
-    if (state === 'error')   return 'bg-red-50/50 dark:bg-red-500/5 border-red-200 dark:border-red-500/20';
-    return 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-white/5';
+    if (state === 'running') return 'bg-teal-50/50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800/50';
+    if (state === 'done')    return 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-white/5';
+    if (state === 'error')   return 'bg-red-50/50 dark:bg-red-900/20 border-red-200 dark:border-red-800/50';
+    return 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-white/5';
 }
 
 async function poll() {
@@ -123,7 +123,7 @@ async function poll() {
             row.className    = `flex items-center gap-3 px-4 py-3 rounded-xl border transition-all ${rowClasses(s.state)}`;
             iconEl.className = `w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${iconClasses(s.state)}`;
             iconEl.innerHTML = iconHtml(s.state, s.step);
-            labelEl.className = `text-sm font-medium ${s.state === 'done' ? 'text-slate-900 dark:text-white' : s.state === 'error' ? 'text-red-600 dark:text-red-300' : 'text-teal-700 dark:text-teal-300'}`;
+            labelEl.className = `text-sm font-medium ${s.state === 'done' ? 'text-slate-900 dark:text-white' : s.state === 'error' ? 'text-red-600 dark:text-red-400' : 'text-teal-700 dark:text-teal-400'}`;
             labelEl.textContent = s.name;
             if (s.msg) {
                 msgEl.textContent  = s.msg;
@@ -150,15 +150,15 @@ async function poll() {
             const resultPanel = document.getElementById('resultPanel');
             resultPanel.classList.remove('hidden');
             resultPanel.innerHTML = `
-                <div class="bg-teal-50 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/30 rounded-xl p-5 flex items-start gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-500/20 border border-teal-200 dark:border-teal-500/30 flex items-center justify-center flex-shrink-0">
+                <div class="bg-teal-50 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-800/50 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 border border-teal-200 dark:border-teal-800/50 flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                     </div>
                     <div>
                         <p class="font-semibold text-slate-900 dark:text-white">${data.phone_name || 'Phone'} added successfully!</p>
                         <div class="flex gap-3 mt-3">
-                            ${data.phone_id ? `<a href="${phoneRouteBase}/${data.phone_id}" target="_blank" class="inline-flex items-center gap-1.5 text-sm bg-teal-600 hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-400 text-white font-semibold px-4 py-2 rounded-lg transition-all">View Phone →</a>` : ''}
-                            <a href="/admin/phones/add" class="inline-flex items-center gap-1.5 text-sm bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-medium px-4 py-2 rounded-lg transition-all">Add Another</a>
+                            ${data.phone_id ? `<a href="${phoneRouteBase}/${data.phone_id}" target="_blank" class="inline-flex items-center gap-1.5 text-sm bg-teal-600 hover:bg-teal-700 text-white font-semibold px-4 py-2 rounded-lg transition-all">View Phone →</a>` : ''}
+                            <a href="/admin/phones/add" class="inline-flex items-center gap-1.5 text-sm bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-medium px-4 py-2 rounded-lg transition-all">Add Another</a>
                         </div>
                     </div>
                 </div>`;
@@ -174,10 +174,10 @@ async function poll() {
             const resultPanel = document.getElementById('resultPanel');
             resultPanel.classList.remove('hidden');
             resultPanel.innerHTML = `
-                <div class="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl p-5">
-                    <p class="font-semibold text-red-700 dark:text-red-300 mb-1">Import failed</p>
-                    <p class="text-sm text-red-600 dark:text-red-400/80">${data.error || 'An unknown error occurred.'}</p>
-                    <a href="/admin/phones/add" class="inline-flex items-center gap-1.5 text-sm bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-medium px-4 py-2 rounded-lg transition-all mt-3">Try Again</a>
+                <div class="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800/50 rounded-xl p-5">
+                    <p class="font-semibold text-red-700 dark:text-red-400 mb-1">Import failed</p>
+                    <p class="text-sm text-red-600 dark:text-red-300">${data.error || 'An unknown error occurred.'}</p>
+                    <a href="/admin/phones/add" class="inline-flex items-center gap-1.5 text-sm bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-medium px-4 py-2 rounded-lg transition-all mt-3">Try Again</a>
                 </div>`;
         }
 

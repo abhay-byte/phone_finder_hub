@@ -15,6 +15,7 @@ class AdminForumCategoryController extends Controller
     public function index()
     {
         $categories = ForumCategory::withCount('posts')->orderBy('order', 'asc')->paginate(15);
+
         return view('admin.forums.categories.index', compact('categories'));
     }
 
@@ -39,12 +40,12 @@ class AdminForumCategoryController extends Controller
         ]);
 
         $slug = Str::slug($request->name);
-        
+
         // Ensure slug is unique
         $originalSlug = $slug;
         $counter = 1;
         while (ForumCategory::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
+            $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 
@@ -80,13 +81,13 @@ class AdminForumCategoryController extends Controller
         ]);
 
         $slug = Str::slug($request->name);
-        
+
         // Ensure slug is unique if changed
         if ($slug !== $category->slug) {
             $originalSlug = $slug;
             $counter = 1;
             while (ForumCategory::where('slug', $slug)->where('id', '!=', $category->id)->exists()) {
-                $slug = $originalSlug . '-' . $counter;
+                $slug = $originalSlug.'-'.$counter;
                 $counter++;
             }
         }
@@ -108,6 +109,7 @@ class AdminForumCategoryController extends Controller
     public function destroy(ForumCategory $category)
     {
         $category->delete();
+
         return redirect()->route('admin.forum.categories.index')->with('success', 'Forum Category deleted successfully.');
     }
 }

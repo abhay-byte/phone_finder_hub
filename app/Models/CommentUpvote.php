@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Traits\SyncsToFirestore;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CommentUpvote extends Model
 {
+    use SyncsToFirestore;
+
     protected $fillable = [
         'comment_id',
         'user_id',

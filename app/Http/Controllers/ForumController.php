@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ForumCategory;
-use App\Models\ForumPost;
 use App\Models\ForumComment;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cache;
-use App\Services\SEO\SeoManager;
+use App\Models\ForumPost;
 use App\Services\SEO\SEOData;
+use App\Services\SEO\SeoManager;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class ForumController extends Controller
 {
     public function index(SeoManager $seo)
     {
-        $categoriesHtml = Cache::remember('forum_index_categories_html_v2', 300, function() {
+        $categoriesHtml = Cache::remember('forum_index_categories_html_v2', 300, function () {
             $categories = ForumCategory::withCount('posts')->orderBy('order', 'asc')->get();
+
             return view('forum.partials.index_categories', compact('categories'))->render();
         });
-        
+
         $seo->set(new SEOData(
             title: 'Phone Finder Forums | Community & Discussions',
             description: 'Join the community discussions about the latest smartphones, tech news, reviews, and troubleshooting.',
@@ -31,20 +32,20 @@ class ForumController extends Controller
 
     public function category(Request $request, $slug, SeoManager $seo)
     {
-        $category = Cache::remember('forum_category_' . $slug, 3600, function() use ($slug) {
+        $category = Cache::remember('forum_category_'.$slug, 3600, function () use ($slug) {
             return ForumCategory::where('slug', $slug)->firstOrFail();
         });
-        
+
         $sort = $request->input('sort', 'latest');
         $page = $request->input('page', 1);
-        
-        $latestUpdate = Cache::remember('forum_category_update_' . $category->id, 60, function() use ($category) {
+
+        $latestUpdate = Cache::remember('forum_category_update_'.$category->id, 60, function () use ($category) {
             return ForumPost::where('forum_category_id', $category->id)->max('updated_at');
         });
 
-        $queryCacheKey = 'forum_category_posts_v4_' . $category->id . '_' . $sort . '_page_' . $page . '_' . strtotime($latestUpdate);
-        
-        $posts = Cache::remember($queryCacheKey, 300, function() use ($category, $sort) {
+        $queryCacheKey = 'forum_category_posts_v4_'.$category->id.'_'.$sort.'_page_'.$page.'_'.strtotime($latestUpdate);
+
+        $posts = Cache::remember($queryCacheKey, 300, function () use ($category, $sort) {
             $query = ForumPost::where('forum_category_id', $category->id)
                 ->with(['user'])
                 ->withCount('comments');
@@ -73,13 +74,13 @@ class ForumController extends Controller
 
             return $query->paginate(15)->appends(['sort' => $sort]);
         });
-        
-        $cacheKeyHtml = 'forum_category_posts_html_' . $category->id . '_' . $sort . '_page_' . $page . '_' . strtotime($latestUpdate) . '_v3';
-        
-        $postsHtml = Cache::remember($cacheKeyHtml, 300, function() use ($posts) {
+
+        $cacheKeyHtml = 'forum_category_posts_html_'.$category->id.'_'.$sort.'_page_'.$page.'_'.strtotime($latestUpdate).'_v3';
+
+        $postsHtml = Cache::remember($cacheKeyHtml, 300, function () use ($posts) {
             return view('forum.partials.category_posts', compact('posts'))->render();
         });
-        
+
         $seo->set(new SEOData(
             title: "{$category->name} Forum | PhoneFinderHub",
             description: $category->description ?? "Discussions related to {$category->name}.",
@@ -91,15 +92,15 @@ class ForumController extends Controller
 
     public function show($slug, SeoManager $seo)
     {
-        $post = Cache::remember('forum_post_v3_' . $slug, 60, function() use ($slug) {
+        $post = Cache::remember('forum_post_v3_'.$slug, 60, function () use ($slug) {
             return ForumPost::where('slug', $slug)
                 ->with(['user', 'category', 'comments.user'])
                 ->firstOrFail();
         });
-            
+
         // Synchronous DB writes take 4s on external Postgres. Avoiding to save 4s page load.
         // $post->increment('views');
-        
+
         $seo->set(new SEOData(
             title: "{$post->title} | PhoneFinderHub Forums",
             description: Str::limit(strip_tags($post->content), 150),
@@ -113,19 +114,20 @@ class ForumController extends Controller
     public function create($slug)
     {
         $category = ForumCategory::where('slug', $slug)->firstOrFail();
+
         return view('forum.create-post', compact('category'));
     }
 
     public function store(Request $request, $slug)
     {
         $category = ForumCategory::where('slug', $slug)->firstOrFail();
-        
+
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
 
-        $postSlug = Str::slug($request->title) . '-' . uniqid();
+        $postSlug = Str::slug($request->title).'-'.uniqid();
 
         $post = ForumPost::create([
             'forum_category_id' => $category->id,
@@ -143,7 +145,7 @@ class ForumController extends Controller
     public function reply(Request $request, $slug)
     {
         $post = ForumPost::where('slug', $slug)->firstOrFail();
-        
+
         $request->validate([
             'content' => 'required|string',
         ]);
@@ -160,13 +162,13 @@ class ForumController extends Controller
     public function upvote($slug)
     {
         $post = ForumPost::where('slug', $slug)->firstOrFail();
-        
+
         // In a complex application, we'd record user votes in a pivot table to prevent double voting.
         // For simplicity as requested, we just increment the integer.
-        // Or actually, simple session check to prevent immediate double votes if wanted, 
+        // Or actually, simple session check to prevent immediate double votes if wanted,
         // but just incrementing is the MVP.
         $post->increment('upvotes');
-        
+
         return back()->with('success', 'Post upvoted!');
     }
 }

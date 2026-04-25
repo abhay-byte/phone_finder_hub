@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Blog;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AdminBlogController extends Controller
 {
@@ -20,7 +20,7 @@ class AdminBlogController extends Controller
         $query = Blog::with('author');
 
         // Non-super-admins (authors) can only manage their own blogs
-        if (!auth()->user()->isSuperAdmin()) {
+        if (! auth()->user()->isSuperAdmin()) {
             $query->where('user_id', auth()->id());
         }
 
@@ -55,18 +55,18 @@ class AdminBlogController extends Controller
             'is_published' => 'nullable|boolean',
         ]);
 
-        $blog = new Blog();
+        $blog = new Blog;
         $blog->title = $validated['title'];
-        
+
         // Generate a unique slug
         $baseSlug = Str::slug($validated['title']);
         $slug = $baseSlug;
         $counter = 1;
         while (Blog::where('slug', $slug)->exists()) {
-            $slug = $baseSlug . '-' . $counter++;
+            $slug = $baseSlug.'-'.$counter++;
         }
         $blog->slug = $slug;
-        
+
         $blog->content = $validated['content'];
         $blog->excerpt = $validated['excerpt'] ?? Str::words(strip_tags($validated['content']), 30);
         $blog->user_id = auth()->id();
@@ -77,8 +77,8 @@ class AdminBlogController extends Controller
 
         if ($request->hasFile('featured_image')) {
             $path = $request->file('featured_image')->store('blogs', 'public');
-            $blog->featured_image = '/storage/' . $path;
-        } elseif (!empty($validated['featured_image_url'])) {
+            $blog->featured_image = '/storage/'.$path;
+        } elseif (! empty($validated['featured_image_url'])) {
             $blog->featured_image = $validated['featured_image_url'];
         }
 
@@ -95,7 +95,7 @@ class AdminBlogController extends Controller
     public function edit(Blog $blog)
     {
         // Check authorization: SuperAdmin or the original author
-        if (!auth()->user()->isSuperAdmin() && $blog->user_id !== auth()->id()) {
+        if (! auth()->user()->isSuperAdmin() && $blog->user_id !== auth()->id()) {
             abort(403);
         }
 
@@ -107,7 +107,7 @@ class AdminBlogController extends Controller
      */
     public function update(Request $request, Blog $blog)
     {
-        if (!auth()->user()->isSuperAdmin() && $blog->user_id !== auth()->id()) {
+        if (! auth()->user()->isSuperAdmin() && $blog->user_id !== auth()->id()) {
             abort(403);
         }
 
@@ -121,7 +121,7 @@ class AdminBlogController extends Controller
         ]);
 
         $blog->title = $validated['title'];
-        
+
         // Only trigger new slug if title changed heavily, but we'll leave slug manual or identical normally.
         // For simplicity and SEO, usually slugs shouldn't change, but if they want to:
         if ($blog->isDirty('title')) {
@@ -129,19 +129,19 @@ class AdminBlogController extends Controller
             $slug = $baseSlug;
             $counter = 1;
             while (Blog::where('slug', $slug)->where('id', '!=', $blog->id)->exists()) {
-                $slug = $baseSlug . '-' . $counter++;
+                $slug = $baseSlug.'-'.$counter++;
             }
             $blog->slug = $slug;
         }
 
         $blog->content = $validated['content'];
         $blog->excerpt = $validated['excerpt'] ?? Str::words(strip_tags($validated['content']), 30);
-        
+
         $publishing = $request->has('is_published');
-        if ($publishing && !$blog->is_published) {
+        if ($publishing && ! $blog->is_published) {
             $blog->is_published = true;
             $blog->published_at = \Carbon\Carbon::now();
-        } elseif (!$publishing) {
+        } elseif (! $publishing) {
             $blog->is_published = false;
             $blog->published_at = null;
         }
@@ -153,8 +153,8 @@ class AdminBlogController extends Controller
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($relativePath);
             }
             $path = $request->file('featured_image')->store('blogs', 'public');
-            $blog->featured_image = '/storage/' . $path; // Changed to match store method's output format
-        } elseif (!empty($validated['featured_image_url'])) {
+            $blog->featured_image = '/storage/'.$path; // Changed to match store method's output format
+        } elseif (! empty($validated['featured_image_url'])) {
             // Delete old image if it's a local file
             if ($blog->featured_image && str_starts_with($blog->featured_image, '/storage/')) {
                 $relativePath = str_replace('/storage/', '', $blog->featured_image);
@@ -175,7 +175,7 @@ class AdminBlogController extends Controller
      */
     public function destroy(Blog $blog)
     {
-        if (!auth()->user()->isSuperAdmin() && $blog->user_id !== auth()->id()) {
+        if (! auth()->user()->isSuperAdmin() && $blog->user_id !== auth()->id()) {
             abort(403);
         }
 
@@ -190,13 +190,13 @@ class AdminBlogController extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp,gif|max:2048',
         ]);
 
         $path = $request->file('image')->store('blogs/content', 'public');
-        
+
         return response()->json([
-            'url' => Storage::url($path)
+            'url' => Storage::url($path),
         ]);
     }
 }

@@ -5,7 +5,7 @@ use App\Models\SpecCamera;
 
 $phone = Phone::where('name', 'OnePlus 15')->first();
 
-if (!$phone) {
+if (! $phone) {
     echo "OnePlus 15 not found!\n";
     exit(1);
 }

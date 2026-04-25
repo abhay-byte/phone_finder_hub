@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PhoneApiTest extends TestCase
@@ -28,7 +26,7 @@ class PhoneApiTest extends TestCase
                     'price',
                     'overall_score',
                     'image_url',
-                ]
+                ],
             ]);
     }
 
@@ -37,7 +35,7 @@ class PhoneApiTest extends TestCase
         $this->seed(\Database\Seeders\PhonesTableSeeder::class);
         $phone = \App\Models\Phone::first();
 
-        $response = $this->getJson('/api/phones/' . $phone->id);
+        $response = $this->getJson('/api/phones/'.$phone->id);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -50,7 +48,7 @@ class PhoneApiTest extends TestCase
                 ],
                 'benchmarks' => [
                     'antutu_score',
-                ]
+                ],
             ]);
     }
 }

@@ -1,19 +1,19 @@
 @foreach($phones as $phone)
-<a href="{{ route('phones.show', $phone) }}" class="group relative bg-white dark:bg-[#1A1A1A] rounded-[1.5rem] sm:rounded-[2rem] p-3 sm:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-white/5 flex flex-col h-full hover:-translate-y-1">
+<a href="{{ route('phones.show', $phone) }}" class="group relative bg-white dark:bg-slate-900 rounded-[1.5rem] sm:rounded-[2rem] p-3 sm:p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-white/5 flex flex-col h-full hover:-translate-y-1">
     
     <!-- Value Badge -->
     <div class="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 flex flex-col items-end gap-2">
         @if($phone->value_score)
         <div class="bg-black/5 dark:bg-white/10 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1 rounded-full border border-black/5 dark:border-white/5">
             <span class="text-[10px] sm:text-xs font-bold text-slate-900 dark:text-white">
-                {{ $phone->value_score }} <span class="text-slate-500 font-normal">pts/₹1k</span>
+                {{ $phone->value_score }} <span class="text-slate-500 dark:text-slate-400 font-normal">pts/₹1k</span>
             </span>
         </div>
         @endif
     </div>
 
     <!-- Image -->
-        <div class="relative w-full aspect-[4/5] mb-3 sm:mb-6 flex items-center justify-center p-2 sm:p-4 bg-slate-50 dark:bg-black/20 rounded-[1rem] sm:rounded-[1.5rem] group-hover:bg-teal-50/30 dark:group-hover:bg-teal-900/10 transition-colors">
+        <div class="relative w-full aspect-[4/5] mb-3 sm:mb-6 flex items-center justify-center p-2 sm:p-4 bg-slate-50 dark:bg-slate-800 rounded-[1rem] sm:rounded-[1.5rem] group-hover:bg-teal-50/30 dark:group-hover:bg-teal-900/10 transition-colors">
         @if($phone->image_url)
             <img src="{{ $phone->image_url }}" alt="{{ $phone->name }}" class="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal filter group-hover:scale-105 transition-transform duration-500">
         @else
@@ -27,7 +27,7 @@
     <div class="mt-auto">
         <p class="text-[10px] sm:text-xs font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wide mb-0.5 sm:mb-1">{{ $phone->brand }}</p>
         <h3 class="text-sm sm:text-xl font-bold text-slate-900 dark:text-white mb-0.5 sm:mb-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors leading-snug">{{ $phone->name }}</h3>
-        <p class="text-base sm:text-2xl font-black text-slate-900 dark:text-white mb-2 sm:mb-4">₹{{ number_format($phone->price) }}</p>
+        <p class="text-base sm:text-2xl font-black text-slate-900 dark:text-slate-100 mb-2 sm:mb-4">₹{{ number_format($phone->price) }}</p>
         
             <!-- Mini Specs -->
         <div class="hidden sm:grid grid-cols-2 gap-2 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-white/5 pt-4">

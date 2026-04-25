@@ -207,7 +207,7 @@
         margin: 2.5rem 0;
     }
 </style>
-<main class="w-full bg-[#f8f9fa] dark:bg-black min-h-screen pt-24 pb-16">
+<main class="w-full bg-[#f8f9fa] dark:bg-slate-950 min-h-screen pt-24 pb-16 transition-colors duration-300">
     <!-- Article Header -->
     <div class="max-w-4xl mx-auto px-4 mb-10 text-center">
         <a href="{{ route('blogs.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors uppercase tracking-widest mb-6">
@@ -219,7 +219,7 @@
             {{ $blog->title }}
         </h1>
         
-        <div class="flex items-center justify-center gap-4 text-sm font-medium border-y border-gray-200 dark:border-white/10 py-4 max-w-2xl mx-auto">
+        <div class="flex items-center justify-center gap-4 text-sm font-medium border-y border-gray-200 dark:border-white/5 py-4 max-w-2xl mx-auto">
             <div class="flex items-center gap-2 text-gray-900 dark:text-white">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold text-white shadow-sm shadow-indigo-500/20">
                     {{ substr($blog->author->name ?? 'A', 0, 1) }}
@@ -227,16 +227,16 @@
                 <span>{{ $blog->author->name ?? 'Guest Author' }}</span>
             </div>
             
-            <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-slate-700"></span>
             
-            <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+            <div class="flex items-center gap-2 text-gray-500 dark:text-slate-400">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                 Publish Date: {{ $blog->published_at->format('M j, Y') }}
             </div>
             
             @if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->id() === $blog->user_id))
-                <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-gray-600 hidden sm:block"></span>
-                <a href="{{ route('admin.blogs.edit', $blog) }}" class="hidden sm:inline-flex items-center gap-1 text-amber-500 hover:text-amber-600 transition-colors">
+                <span class="w-1.5 h-1.5 rounded-full bg-gray-300 dark:bg-slate-700 hidden sm:block"></span>
+                <a href="{{ route('admin.blogs.edit', $blog) }}" class="hidden sm:inline-flex items-center gap-1 text-amber-500 dark:text-amber-400 hover:text-amber-600 transition-colors">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                     Edit Post
                 </a>
@@ -247,8 +247,8 @@
     <!-- Featured Image -->
     @if($blog->featured_image)
     <div class="max-w-6xl mx-auto px-4 mb-14">
-        <div class="w-full aspect-[21/9] md:aspect-[3/1] rounded-[2rem] overflow-hidden shadow-2xl relative">
-            <img src="{{ $blog->featured_image }}" alt="Cover Image" class="w-full h-full object-cover">
+        <div class="w-full aspect-[21/9] md:aspect-[3/1] rounded-[2rem] overflow-hidden shadow-2xl relative border border-gray-100 dark:border-white/5 transition-colors duration-300">
+            <img src="{{ $blog->featured_image }}" alt="Cover Image" class="w-full h-full object-cover dark:mix-blend-normal">
             <!-- Subtle gradient overly to make the image blend better if it lacks contrast -->
             <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
         </div>
@@ -263,7 +263,7 @@
                 @include('partials.share-widget')
             </div>
 
-            <div class="bg-white dark:bg-[#121212] p-8 md:p-12 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm 
+            <div class="bg-white dark:bg-slate-900 p-8 md:p-12 rounded-[2rem] border border-gray-100 dark:border-white/5 shadow-sm transition-colors duration-300
                 blog-content font-serif text-lg">
                 <!-- Dropcap or intro text could go here, for now just render HTML securely -->
                 {!! \Illuminate\Support\Str::markdown($blog->content) !!}
@@ -279,21 +279,21 @@
 
             <!-- More Latest Articles -->
             @if($latestBlogs->count() > 0)
-                <div class="bg-white dark:bg-[#121212] p-8 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm">
-                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-gray-100 dark:border-white/5 shadow-sm transition-colors duration-300">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-gray-900 dark:text-white mb-6 flex items-center gap-2 transition-colors duration-300">
                         <span class="w-2 h-2 rounded-full bg-teal-500"></span> More to Read
                     </h3>
                     <div class="space-y-6">
                         @foreach($latestBlogs as $related)
                             <a href="{{ route('blogs.show', $related->slug) }}" class="group flex gap-4 items-center">
                                 @if($related->featured_image)
-                                    <div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 relative bg-gray-100 dark:bg-white/5">
+                                    <div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 relative bg-gray-100 dark:bg-slate-800 transition-colors duration-300">
                                         <img src="{{ $related->featured_image }}" alt="thumbnail" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                     </div>
                                 @endif
                                 <div>
-                                    <h4 class="font-bold text-sm text-gray-900 dark:text-gray-100 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2 leading-snug">{{ $related->title }}</h4>
-                                    <p class="text-xs text-gray-400 mt-1">{{ $related->published_at->format('M j, Y') }}</p>
+                                    <h4 class="font-bold text-sm text-gray-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors line-clamp-2 leading-snug">{{ $related->title }}</h4>
+                                    <p class="text-xs text-gray-400 dark:text-slate-500 mt-1 transition-colors duration-300">{{ $related->published_at->format('M j, Y') }}</p>
                                 </div>
                             </a>
                         @endforeach

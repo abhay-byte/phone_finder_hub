@@ -2,20 +2,17 @@
 
 use App\Models\Phone;
 use App\Models\SpecBody;
-use App\Models\SpecPlatform;
 use App\Models\SpecCamera;
 use App\Models\SpecConnectivity;
-use App\Models\SpecBattery;
-use App\Models\Benchmark;
 
 // OnePlus 13 (ID 1)
 $p13 = Phone::find(1);
 if ($p13) {
     echo "Updating OnePlus 13...\n";
-    
+
     // Body - Granular Updates
     SpecBody::updateOrCreate(['phone_id' => 1], [
-        'screen_area' => '113.0 cm²', 
+        'screen_area' => '113.0 cm²',
         'aspect_ratio' => '20:9', // Assuming standard, check if specific
         'glass_protection_level' => 'Mohs level 4',
     ]);
@@ -38,14 +35,14 @@ if ($p13) {
 $p15r = Phone::find(2);
 if ($p15r) {
     echo "Updating OnePlus 15R...\n";
-    
+
     // Body - Granular Updates
     SpecBody::updateOrCreate(['phone_id' => 2], [
         'screen_area' => '113.3 cm²',
         'aspect_ratio' => '20:9',
         'glass_protection_level' => 'Mohs level 5',
     ]);
-    
+
     // Camera - Granular Updates
     SpecCamera::updateOrCreate(['phone_id' => 2], [
         'main_camera_zoom' => 'No telephoto', // Or leave null if n/a

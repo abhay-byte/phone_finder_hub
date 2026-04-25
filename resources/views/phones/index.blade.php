@@ -4,29 +4,29 @@
     <div class="min-h-screen animate-fadeInUp">
 
         <!-- Modern Hero Section -->
-        <div class="relative bg-gradient-to-b from-teal-50/80 via-white to-gray-100 dark:from-teal-950/40 dark:via-[#050505] dark:to-[#050505] pt-24 pb-28 md:pt-32 md:pb-40 border-b border-teal-100 dark:border-teal-900/30 z-10">
+        <div class="relative bg-gradient-to-b from-teal-50/80 via-white to-gray-100 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 pt-24 pb-28 md:pt-32 md:pb-40 border-b border-teal-100 dark:border-white/5 z-10">
 
             <!-- Animated Background Elements -->
             <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-                <div class="absolute -top-24 -left-24 w-96 h-96 bg-teal-500/10 rounded-full blur-[120px] animate-pulse"></div>
-                <div class="absolute top-1/2 -right-24 w-80 h-80 bg-emerald-500/5 rounded-full blur-[100px] animate-pulse delay-1000"></div>
-                <div class="absolute bottom-0 left-1/3 w-64 h-64 bg-teal-400/5 rounded-full blur-[80px] animate-pulse delay-700"></div>
+                <div class="absolute -top-24 -left-24 w-96 h-96 bg-teal-500/10 dark:bg-teal-500/5 rounded-full blur-[120px] animate-pulse"></div>
+                <div class="absolute top-1/2 -right-24 w-80 h-80 bg-emerald-500/5 dark:bg-emerald-500/2 rounded-full blur-[100px] animate-pulse delay-1000"></div>
+                <div class="absolute bottom-0 left-1/3 w-64 h-64 bg-teal-400/5 dark:bg-teal-400/2 rounded-full blur-[80px] animate-pulse delay-700"></div>
             </div>
 
             <div class="w-full px-4 sm:px-6 lg:px-8 relative text-center" style="z-index: 95;">
                 <h1
-                    class="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 dark:text-white mb-8 leading-[0.9] md:leading-[0.85]">
+                    class="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 dark:text-white mb-8 leading-[1.2] md:leading-[1.2] py-4">
                     <span class="inline-block animate-title-reveal">Find Value,</span>
                     <br class="hidden md:block">
                     <span class="inline-block animate-title-reveal delay-200">
-                        <span class="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 bg-[length:200%_auto] animate-gradient-x">
+                        <span class="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-500 via-emerald-400 to-teal-600 bg-[length:200%_auto] animate-gradient-x py-4">
                             Not Hype.
                         </span>
                     </span>
                 </h1>
                 <p
                     class="text-lg md:text-xl text-slate-500 dark:text-slate-400 max-w-xl mx-auto mb-12 font-medium leading-relaxed animate-fadeInUp delay-500">
-                    The only <span class="text-teal-600 dark:text-teal-400 font-bold italic">data-driven</span> smartphone ranking based on real-world performance per rupee. No bias, just math.
+                    The only <span class="text-teal-600 font-bold italic dark:text-teal-400">data-driven</span> smartphone ranking based on real-world performance per rupee. No bias, just math.
                 </p>
 
                 <!-- Search & Filter Bar -->
@@ -105,7 +105,7 @@
 
                     <!-- Input Container -->
                     <div
-                        class="relative flex items-center bg-white/80 dark:bg-black/40 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white/20 dark:border-white/5 p-1.5 transition-all duration-500 group-hover:border-teal-500/30">
+                        class="relative flex items-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/20 dark:border-white/10 p-1.5 transition-all duration-500 group-hover:border-teal-500/30">
                         <div class="pl-6 text-teal-500/50">
                             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -140,13 +140,13 @@
                         x-transition:leave="transition ease-in duration-150"
                         x-transition:leave-start="opacity-100 translate-y-0"
                         x-transition:leave-end="opacity-0 translate-y-2" @click.away="results = []"
-                        class="absolute top-full left-0 right-0 mt-4 bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-2xl ring-1 ring-black/5 dark:ring-white/10 overflow-hidden z-[100] max-h-96 overflow-y-auto"
-                        style="display: none;">
+                        class="absolute top-full left-0 right-0 mt-4 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl ring-1 ring-black/5 overflow-hidden z-[100] max-h-96 overflow-y-auto"
+                        style="display: none;" x-cloak>
                         <template x-for="phone in results" :key="phone.id">
                             <a :href="`/phones/${phone.id}`"
-                                class="block p-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors border-b border-gray-100 dark:border-white/5 last:border-0 flex items-center gap-4 group">
+                                class="block p-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-gray-100 dark:border-white/5 last:border-0 flex items-center gap-4 group">
                                 <div
-                                    class="h-16 w-16 bg-gray-100 dark:bg-white/5 rounded-xl p-2 flex items-center justify-center flex-shrink-0">
+                                    class="h-16 w-16 bg-gray-100 dark:bg-slate-800 rounded-xl p-2 flex items-center justify-center flex-shrink-0">
                                     <template x-if="phone.image">
                                         <img :src="phone.image" :alt="phone.name"
                                             class="h-full w-full object-contain mix-blend-multiply dark:mix-blend-normal transform group-hover:scale-110 transition-transform duration-300">
@@ -164,7 +164,7 @@
                                         x-text="phone.full_name"></div>
                                     <div class="flex items-center gap-2 mt-1">
                                         <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300">
+                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400">
                                             Value Score: <span x-text="phone.value_score || 'N/A'"
                                                 class="ml-1 font-bold"></span>
                                         </span>
@@ -172,7 +172,7 @@
                                             x-text="formatPrice(phone.price)"></span>
                                     </div>
                                 </div>
-                                <div class="text-slate-400 dark:text-slate-600 group-hover:text-teal-500 transition-colors">
+                                <div class="text-slate-400 group-hover:text-teal-500 transition-colors">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 5l7 7-7 7" />
@@ -187,7 +187,7 @@
                 <div class="flex flex-wrap justify-center gap-4 mt-12 animate-fadeInUp delay-1000">
                     <!-- Top Value (active style) -->
                     <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border-2 border-teal-500 bg-teal-50 dark:bg-teal-900/30 shadow-md">
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border-2 border-teal-500 bg-teal-50 dark:bg-teal-900/10 shadow-md">
                         <span class="relative flex items-center gap-2 text-teal-700 dark:text-teal-400 text-sm font-black uppercase tracking-tighter">
                             <svg class="w-4 h-4 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
@@ -198,7 +198,7 @@
                     
                     <!-- Gaming -->
                     <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/30 bg-white dark:bg-white/10 shadow-sm">
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900 shadow-sm">
                         <span class="relative flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
@@ -209,7 +209,7 @@
 
                     <!-- Camera -->
                     <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/30 bg-white dark:bg-white/10 shadow-sm">
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900 shadow-sm">
                         <span class="relative flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
@@ -221,7 +221,7 @@
 
                     <!-- Battery -->
                     <button
-                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/30 bg-white dark:bg-white/10 shadow-sm">
+                        class="group relative px-6 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-900 shadow-sm">
                         <span class="relative flex items-center gap-2 text-slate-700 dark:text-slate-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 text-sm font-bold uppercase tracking-tighter">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
@@ -238,7 +238,7 @@
         @include('phones.partials.ai_finder_banner')
 
         <!-- Phone Grid Section -->
-        <div class="bg-slate-100 dark:bg-[#0a0a0a] border-t border-slate-200 dark:border-white/5">
+        <div class="bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-white/5">
         <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8 pb-12 lg:pb-16 pt-6 lg:pt-10 w-full">
             <div class="relative z-10 w-full" x-data="{
                 searchOpen: false,
@@ -320,7 +320,7 @@
                         class="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
                         Latest Rankings
                         <span
-                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-200">
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-gray-300">
                             Updated Live
                         </span>
                     </h2>
@@ -330,7 +330,7 @@
                             by:</span>
                         <div class="relative w-full sm:w-auto shadow-sm" x-data="{ open: false }">
                             <button @click="open = !open" @click.away="open = false"
-                                class="w-full flex items-center gap-2 bg-white dark:bg-[#161616] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-white/5 hover:border-teal-300 dark:hover:border-teal-500/50 transition-all focus:outline-none focus:ring-4 focus:ring-teal-500/20 sm:min-w-[210px] justify-between group relative overflow-hidden">
+                                class="w-full flex items-center gap-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-teal-300 transition-all focus:outline-none focus:ring-4 focus:ring-teal-500/20 sm:min-w-[210px] justify-between group relative overflow-hidden">
                                 <span class="relative z-10 flex items-center gap-2">
                                     <svg class="w-4 h-4 text-teal-500" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
@@ -357,7 +357,7 @@
                                 x-transition:leave="transition ease-in duration-150"
                                 x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
                                 x-transition:leave-end="transform opacity-0 scale-95 translate-y-[-10px]"
-                                class="absolute right-0 sm:right-0 left-0 sm:left-auto mt-2 w-full sm:w-64 bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 py-2 z-[100] origin-top flex flex-col focus:outline-none ring-1 ring-black/5 dark:ring-white/5"
+                                class="absolute right-0 sm:right-0 left-0 sm:left-auto mt-2 w-full sm:w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 py-2 z-[100] origin-top flex flex-col focus:outline-none ring-1 ring-black/5"
                                 style="display: none;">
 
                                 <div class="px-4 py-2 border-b border-gray-100 dark:border-white/5 mb-1">
@@ -372,8 +372,8 @@
             'ueps_score' => 'UEPS Score (Endurance)',
         ] as $key => $label)
                                     <button @click="updateSort('{{ $key }}'); open = false"
-                                        class="w-full flex items-center justify-between px-4 py-3 text-sm text-left text-slate-600 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-teal-900/10 hover:text-teal-700 dark:hover:text-teal-400 transition-colors group"
-                                        :class="{ 'bg-teal-50/50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 font-semibold': currentSort === '{{ $key }}' }">
+                                        class="w-full flex items-center justify-between px-4 py-3 text-sm text-left text-slate-600 dark:text-slate-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 hover:text-teal-700 dark:hover:text-teal-400 transition-colors group"
+                                        :class="{ 'bg-teal-50/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 font-semibold': currentSort === '{{ $key }}' }">
                                         <span class="truncate pr-4">{{ $label }}</span>
                                         <template x-if="currentSort === '{{ $key }}'">
                                             <svg class="w-4 h-4 text-teal-500 shrink-0" fill="none"
@@ -393,46 +393,46 @@
                     x-ref="gridContainer">
                     <!-- Skeleton Loading Grid -->
                     <div x-show="isLoading"
-                        class="absolute inset-0 bg-gray-50/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md z-40 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-5 lg:gap-6"
+                        class="absolute inset-0 bg-gray-50/80 dark:bg-slate-950/80 backdrop-blur-md z-40 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-5 lg:gap-6"
                         style="display: none;">
 
                         @for ($i = 0; $i < 10; $i++)
                             <div
-                                class="bg-white dark:bg-[#161616] rounded-[2rem] p-5 shadow-sm border border-gray-100 dark:border-white/5 h-full flex flex-col">
+                                class="bg-white dark:bg-slate-900 rounded-[2rem] p-5 shadow-sm border border-gray-100 dark:border-white/5 h-full flex flex-col">
                                 <div class="relative mb-6">
                                     <div
-                                        class="h-56 w-full bg-gray-100 dark:bg-white/5 rounded-2xl skeleton skeleton-shimmer">
+                                        class="h-56 w-full bg-gray-100 dark:bg-slate-800 rounded-2xl skeleton skeleton-shimmer">
                                     </div>
                                     <div
-                                        class="absolute -bottom-3 right-4 h-6 w-20 rounded-full bg-gray-200 dark:bg-white/10 skeleton skeleton-shimmer">
+                                        class="absolute -bottom-3 right-4 h-6 w-20 rounded-full bg-gray-200 dark:bg-slate-700 skeleton skeleton-shimmer">
                                     </div>
                                 </div>
                                 <div class="flex-1 flex flex-col">
                                     <div class="mb-4 space-y-2">
                                         <div
-                                            class="h-4 w-16 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer">
+                                            class="h-4 w-16 bg-gray-200 dark:bg-slate-700 rounded skeleton skeleton-shimmer">
                                         </div>
                                         <div
-                                            class="h-6 w-3/4 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer">
+                                            class="h-6 w-3/4 bg-gray-200 dark:bg-slate-700 rounded skeleton skeleton-shimmer">
                                         </div>
                                     </div>
                                     <div class="space-y-3 mb-6 flex-1">
                                         <div class="grid grid-cols-2 gap-2">
                                             <div
-                                                class="h-9 bg-gray-100 dark:bg-white/5 rounded-lg skeleton skeleton-shimmer">
+                                                class="h-9 bg-gray-100 dark:bg-slate-800 rounded-lg skeleton skeleton-shimmer">
                                             </div>
                                             <div
-                                                class="h-9 bg-gray-100 dark:bg-white/5 rounded-lg skeleton skeleton-shimmer">
+                                                class="h-9 bg-gray-100 dark:bg-slate-800 rounded-lg skeleton skeleton-shimmer">
                                             </div>
                                         </div>
                                     </div>
                                     <div
                                         class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-white/5 mt-auto">
                                         <div
-                                            class="h-5 w-24 bg-gray-200 dark:bg-white/10 rounded skeleton skeleton-shimmer">
+                                            class="h-5 w-24 bg-gray-200 dark:bg-slate-700 rounded skeleton skeleton-shimmer">
                                         </div>
                                         <div
-                                            class="h-8 w-8 rounded-full bg-gray-200 dark:bg-white/10 skeleton skeleton-shimmer">
+                                            class="h-8 w-8 rounded-full bg-gray-200 dark:bg-slate-700 skeleton skeleton-shimmer">
                                         </div>
                                     </div>
                                 </div>
@@ -445,5 +445,54 @@
             </div>
         </div>
         </div>{{-- end bg-slate wrapper --}}
+
+        <!-- Community & Resources Sections -->
+        <div class="bg-white dark:bg-black py-16 lg:py-24 border-t border-slate-100 dark:border-white/5 transition-colors duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    
+                    <!-- Forums Section -->
+                    <div class="group relative bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] p-8 lg:p-10 border border-slate-100 dark:border-white/5 overflow-hidden transition-all hover:shadow-xl">
+                        <div class="absolute top-0 right-0 w-48 h-48 bg-teal-500/5 rounded-full blur-3xl -mr-24 -mt-24 group-hover:bg-teal-500/10 transition-colors"></div>
+                        <div class="relative z-10">
+                            <div class="w-12 h-12 rounded-2xl bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                                </svg>
+                            </div>
+                            <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight transition-colors">Community Forums</h2>
+                            <p class="text-slate-600 dark:text-slate-400 mb-8 text-lg leading-relaxed transition-colors">
+                                Join the conversation. Discuss the latest smartphones, get personalized recommendations, and share your tech experiences with enthusiasts worldwide.
+                            </p>
+                            <a href="{{ route('forum.index') }}" class="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-teal-500/20 group-hover:scale-105">
+                                Visit Forums
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Docs Section -->
+                    <div class="group relative bg-slate-50 dark:bg-slate-900 rounded-[2.5rem] p-8 lg:p-10 border border-slate-100 dark:border-white/5 overflow-hidden transition-all hover:shadow-xl">
+                        <div class="absolute top-0 right-0 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl -mr-24 -mt-24 group-hover:bg-indigo-500/10 transition-colors"></div>
+                        <div class="relative z-10">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-6">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                            </div>
+                            <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight transition-colors">Documentation</h2>
+                            <p class="text-slate-600 dark:text-slate-400 mb-8 text-lg leading-relaxed transition-colors">
+                                Transparent methodologies. Understand exactly how we calculate UEPS-45, FPI, and CMS scores through our open-source documentation.
+                            </p>
+                            <a href="{{ route('docs.index') }}" class="inline-flex items-center gap-2 bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg group-hover:scale-105 transition-colors">
+                                Read Docs
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

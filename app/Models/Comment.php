@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Traits\SyncsToFirestore;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Comment extends Model
 {
+    use SyncsToFirestore;
+
     protected $fillable = [
         'phone_id',
         'user_id',
@@ -49,6 +52,6 @@ class Comment extends Model
 
         // Generate a consistently random but anonymous sounding name based on the comment ID or IP
         // Since we don't have IP here easily without request, let's use a hash of the comment ID to keep it somewhat stable
-        return 'Anonymous ' . substr(md5('anon' . $this->id), 0, 6);
+        return 'Anonymous '.substr(md5('anon'.$this->id), 0, 6);
     }
 }

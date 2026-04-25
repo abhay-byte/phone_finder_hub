@@ -1,12 +1,12 @@
-    <div class="bg-white dark:bg-[#1a1c23] border border-slate-200 dark:border-white/5 rounded-2xl shadow-sm overflow-hidden">
-        <div class="hidden sm:grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50 dark:bg-white/[0.02] border-b border-slate-200 dark:border-white/5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/5 rounded-2xl shadow-sm overflow-hidden">
+        <div class="hidden sm:grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-white/5 text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider">
             <div class="col-span-12 sm:col-span-8 lg:col-span-9">Category</div>
             <div class="col-span-12 sm:col-span-4 lg:col-span-3 text-right">Statistics</div>
         </div>
 
         <ul class="divide-y divide-slate-100 dark:divide-white/5">
             @forelse($categories as $category)
-                <li class="group hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors duration-300">
+                <li class="group hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-300">
                     <a href="{{ route('forum.category', $category->slug) }}" class="block px-6 py-5 md:py-6">
                         <div class="grid grid-cols-12 gap-4 sm:items-center">
                             
@@ -31,7 +31,7 @@
                             
                             <!-- Category Stats -->
                             <div class="col-span-12 sm:col-span-4 lg:col-span-3 flex sm:justify-end mt-3 sm:mt-0 pl-16 sm:pl-0">
-                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 group-hover:bg-white dark:group-hover:bg-white/10 group-hover:shadow-sm group-hover:border-teal-200 dark:group-hover:border-teal-500/30 transition-all duration-300">
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 group-hover:bg-white dark:group-hover:bg-slate-700 group-hover:shadow-sm group-hover:border-teal-200 transition-all duration-300">
                                     <svg class="w-4 h-4 text-slate-400 group-hover:text-teal-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                                     </svg>
@@ -45,7 +45,7 @@
                 </li>
             @empty
                 <li class="px-6 py-16 text-center">
-                    <div class="w-16 h-16 mx-auto bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 mx-auto bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
                         <svg class="h-8 w-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>

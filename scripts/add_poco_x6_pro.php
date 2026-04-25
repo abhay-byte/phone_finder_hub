@@ -3,8 +3,8 @@
 use App\Models\Phone;
 use App\Services\UepsScoringService;
 
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 $phone = Phone::updateOrCreate(
@@ -115,4 +115,4 @@ $fresh->ueps_score = (int) round($ueps['total_score']);
 $fresh->overall_score = is_array($fpi) ? (int) round($fpi['total']) : 0;
 $fresh->saveQuietly();
 
-echo 'Added/updated: ' . $fresh->name . ' (ID ' . $fresh->id . ') | UEPS ' . $fresh->ueps_score . ' | FPI ' . $fresh->overall_score . PHP_EOL;
+echo 'Added/updated: '.$fresh->name.' (ID '.$fresh->id.') | UEPS '.$fresh->ueps_score.' | FPI '.$fresh->overall_score.PHP_EOL;

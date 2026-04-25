@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PhoneSeeder extends Seeder
@@ -36,7 +35,7 @@ class PhoneSeeder extends Seeder
                 'flipkart_price' => 60999.00,
             ]);
 
-            if (!$phone->body) {
+            if (! $phone->body) {
                 $phone->body()->create([
                     'dimensions' => '162.9 x 76.5 x 8.5 mm',
                     'weight' => '210 g',
@@ -52,7 +51,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone->platform) {
+            if (! $phone->platform) {
                 $phone->platform()->create([
                     'os' => 'Android 15, OxygenOS 16',
                     'chipset' => 'Qualcomm SM8750-AB Snapdragon 8 Elite (3 nm)',
@@ -68,7 +67,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone->camera) {
+            if (! $phone->camera) {
                 $phone->camera()->create([
                     'main_camera_specs' => '50 MP, f/1.6, 23mm (wide) + 50 MP, f/2.6, 73mm (periscope telephoto) + 50 MP, f/2.0, 15mm (ultrawide)',
                     'main_camera_features' => 'Hasselblad Color Calibration, Dual-LED flash, HDR, panorama',
@@ -79,7 +78,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone->connectivity) {
+            if (! $phone->connectivity) {
                 $phone->connectivity()->create([
                     'wlan' => 'Wi-Fi 802.11 a/b/g/n/ac/6/7, dual or tri-band, Wi-Fi Direct',
                     'bluetooth' => '5.4, A2DP, LE, aptX HD, LHDC 5',
@@ -94,7 +93,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone->battery) {
+            if (! $phone->battery) {
                 $phone->battery()->create([
                     'battery_type' => 'Si/C Li-Ion 6000 mAh, non-removable',
                     'charging_wired' => '100W',
@@ -103,7 +102,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone->benchmarks) {
+            if (! $phone->benchmarks) {
                 $phone->benchmarks()->create([
                     'antutu_score' => 3034524, // v11
                     'geekbench_single' => 3000,
@@ -129,7 +128,7 @@ class PhoneSeeder extends Seeder
                     'image_url' => '/assets/oneplus-15r_nobg.png',
                 ]
             );
-            
+
             // Force update fields
             $phone15r->update([
                 'image_url' => 'https://m.media-amazon.com/images/I/61h53LtSVVL._AC_UF894,1000_QL80_.jpg',
@@ -139,7 +138,7 @@ class PhoneSeeder extends Seeder
                 'flipkart_price' => 47999.00,
             ]);
 
-            if (!$phone15r->body) {
+            if (! $phone15r->body) {
                 $phone15r->body()->create([
                     'dimensions' => '163.4 x 77 x 8.1 mm',
                     'weight' => '213 g',
@@ -155,7 +154,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone15r->platform) {
+            if (! $phone15r->platform) {
                 $phone15r->platform()->create([
                     'os' => 'Android 16, OxygenOS 16',
                     'chipset' => 'Snapdragon 8 Gen 5 (3 nm)',
@@ -171,7 +170,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone15r->camera) {
+            if (! $phone15r->camera) {
                 $phone15r->camera()->create([
                     'main_camera_specs' => '50 MP (wide) + 8 MP (ultrawide)',
                     'main_camera_features' => 'LED flash, HDR, panorama',
@@ -182,7 +181,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone15r->connectivity) {
+            if (! $phone15r->connectivity) {
                 $phone15r->connectivity()->create([
                     'wlan' => 'Wi-Fi 802.11 a/b/g/n/ac/6/7',
                     'bluetooth' => '6.0, A2DP, LE, aptX HD',
@@ -197,7 +196,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone15r->battery) {
+            if (! $phone15r->battery) {
                 $phone15r->battery()->create([
                     'battery_type' => 'Si/C Li-Ion 7400 mAh',
                     'charging_wired' => '80W wired',
@@ -206,20 +205,20 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone15r->benchmarks) {
+            if (! $phone15r->benchmarks) {
                 $phone15r->benchmarks()->create([
                     'antutu_score' => 2981677, // v11
-                    'geekbench_single' => 3200, 
+                    'geekbench_single' => 3200,
                     'geekbench_multi' => 9369,
                     'dmark_wild_life_extreme' => 5016,
-                    'battery_endurance_hours' => 21.6, 
+                    'battery_endurance_hours' => 21.6,
                 ]);
             } else {
-                 $phone15r->benchmarks->update([
+                $phone15r->benchmarks->update([
                     'antutu_score' => 2981677, // v11
                 ]);
             }
-            
+
             // OnePlus 15
             $phone15 = \App\Models\Phone::firstOrCreate(
                 ['name' => 'OnePlus 15'],
@@ -229,12 +228,12 @@ class PhoneSeeder extends Seeder
                     'price' => 72998.00,
                     'overall_score' => 96,
                     'release_date' => '2025-10-28',
-                    'image_url' => '/assets/oneplus-15_nobg.png', 
+                    'image_url' => '/assets/oneplus-15_nobg.png',
                 ]
             );
 
-             // Force update fields
-             $phone15->update([
+            // Force update fields
+            $phone15->update([
                 'image_url' => '/assets/oneplus-15_nobg.png',
                 'amazon_url' => 'https://www.amazon.in/OnePlus-Snapdragon%C2%AE-7300mAh-Personalised-Game-Changing/dp/B0FTR2PJTV?th=1',
                 'amazon_price' => 72998.00,
@@ -243,8 +242,8 @@ class PhoneSeeder extends Seeder
             ]);
 
             // ... (rest of OP15 body/platform/camera/connectivity/battery relations same as before, assuming created) ...
-            
-             if (!$phone15->body) {
+
+            if (! $phone15->body) {
                 $phone15->body()->create([
                     'dimensions' => '161.4 x 76.7 x 8.1 mm',
                     'weight' => '211 g',
@@ -260,7 +259,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone15->platform) {
+            if (! $phone15->platform) {
                 $phone15->platform()->create([
                     'os' => 'Android 16, OxygenOS 16',
                     'chipset' => 'Snapdragon 8 Elite Gen 5 (3 nm)',
@@ -276,7 +275,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone15->camera) {
+            if (! $phone15->camera) {
                 $phone15->camera()->create([
                     'main_camera_specs' => '50 MP (wide) + 50 MP (periscope) + 50 MP (ultrawide)',
                     'main_camera_features' => 'Laser focus, color spectrum, LED flash, HDR, panorama, LUT',
@@ -287,7 +286,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone15->connectivity) {
+            if (! $phone15->connectivity) {
                 $phone15->connectivity()->create([
                     'wlan' => 'Wi-Fi 802.11 a/b/g/n/ac/6/7',
                     'bluetooth' => '6.0, A2DP, LE, aptX HD/Adaptive, LHDC 5',
@@ -302,7 +301,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone15->battery) {
+            if (! $phone15->battery) {
                 $phone15->battery()->create([
                     'battery_type' => 'Si/C Li-Ion 7300 mAh',
                     'charging_wired' => '120W wired',
@@ -311,13 +310,13 @@ class PhoneSeeder extends Seeder
                 ]);
             }
 
-            if (!$phone15->benchmarks) {
+            if (! $phone15->benchmarks) {
                 $phone15->benchmarks()->create([
                     'antutu_score' => 3688274, // v11
-                    'geekbench_single' => 3250, 
-                    'geekbench_multi' => 11062, 
+                    'geekbench_single' => 3250,
+                    'geekbench_multi' => 11062,
                     'dmark_wild_life_extreme' => 7370,
-                    'battery_endurance_hours' => 23.1, 
+                    'battery_endurance_hours' => 23.1,
                 ]);
             } else {
                 $phone15->benchmarks->update([
@@ -325,7 +324,7 @@ class PhoneSeeder extends Seeder
                 ]);
             }
         } catch (\Exception $e) {
-            echo "Seeder Error: " . $e->getMessage() . "\n";
+            echo 'Seeder Error: '.$e->getMessage()."\n";
             throw $e;
         }
     }

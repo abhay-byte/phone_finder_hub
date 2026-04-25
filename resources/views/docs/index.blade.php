@@ -37,7 +37,7 @@
             <h1 class="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl">
                 Documentation
             </h1>
-            <p class="mt-4 text-xl text-gray-500 dark:text-gray-400">
+            <p class="mt-4 text-xl text-slate-500 dark:text-slate-400">
                 Understanding how we score and rank devices.
             </p>
         </div>
@@ -45,10 +45,10 @@
         <div class="grid grid-cols-1 gap-10 sm:grid-cols-2">
             <!-- UEPS Card -->
             <a href="{{ route('methodology.ueps') }}"
-                class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-100">
+                class="group relative bg-white dark:bg-slate-900 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg border border-transparent dark:border-white/5 transition-all duration-300 animate-fadeInUp delay-100">
                 <div>
                     <span
-                        class="rounded-lg inline-flex p-3 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 ring-4 ring-white dark:ring-gray-800">
+                        class="rounded-lg inline-flex p-3 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 ring-4 ring-white dark:ring-slate-800">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -56,15 +56,15 @@
                     </span>
                 </div>
                 <div class="mt-4">
-                    <h3 class="text-lg font-medium">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         UEPS-45 Methodology
                     </h3>
-                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
                         Unlock the details behind our Ultra-Extensive Phone Scoring system. 40 criteria across 7 categories.
                     </p>
                 </div>
-                <span class="pointer-events-none absolute top-6 right-6 text-gray-300 group-hover:text-gray-400"
+                <span class="pointer-events-none absolute top-6 right-6 text-gray-300 dark:text-gray-700 group-hover:text-gray-400 dark:group-hover:text-gray-500"
                     aria-hidden="true">
                     <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                         <path
@@ -75,10 +75,10 @@
 
             <!-- FPI Card -->
             <a href="{{ route('methodology.fpi') }}"
-                class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-200">
+                class="group relative bg-white dark:bg-slate-900 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg border border-transparent dark:border-white/5 transition-all duration-300 animate-fadeInUp delay-200">
                 <div>
                     <span
-                        class="rounded-lg inline-flex p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 ring-4 ring-white dark:ring-gray-800">
+                        class="rounded-lg inline-flex p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 ring-4 ring-white dark:ring-slate-800">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -86,11 +86,11 @@
                     </span>
                 </div>
                 <div class="mt-4">
-                    <h3 class="text-lg font-medium">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         Final Performance Index (FPI)
                     </h3>
-                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
                         How we define and calculate "Final" status based on raw specs, features, and performance.
                     </p>
                 </div>
@@ -98,10 +98,10 @@
 
             <!-- GPX Card -->
             <a href="{{ route('methodology.gpx') }}"
-                class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-200">
+                class="group relative bg-white dark:bg-slate-900 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-teal-500 rounded-2xl shadow-sm hover:shadow-lg border border-transparent dark:border-white/5 transition-all duration-300 animate-fadeInUp delay-200">
                 <div>
                     <span
-                        class="rounded-lg inline-flex p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 ring-4 ring-white dark:ring-gray-800">
+                        class="rounded-lg inline-flex p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 ring-4 ring-white dark:ring-slate-800">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
@@ -115,7 +115,7 @@
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         GPX-300 Gaming Index
                     </h3>
-                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
                         The new standard for competitive mobile gaming. 300-point system covering thermals, emulation, and
                         input latency.
                     </p>
@@ -124,10 +124,10 @@
 
             <!-- CMS-1330 Card -->
             <a href="{{ route('methodology.cms') }}"
-                class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-amber-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
+                class="group relative bg-white dark:bg-slate-900 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-amber-500 rounded-2xl shadow-sm hover:shadow-lg border border-transparent dark:border-white/5 transition-all duration-300 animate-fadeInUp delay-300">
                 <div>
                     <span
-                        class="rounded-lg inline-flex p-3 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 ring-4 ring-white dark:ring-gray-800">
+                        class="rounded-lg inline-flex p-3 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 ring-4 ring-white dark:ring-slate-800">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -141,7 +141,7 @@
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         CMS-1330 Camera Mastery
                     </h3>
-                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
                         Comprehensive 1330-point camera scoring system evaluating hardware specs, imaging capabilities, and
                         professional benchmarks.
                     </p>
@@ -150,10 +150,10 @@
 
             <!-- Endurance Card -->
             <a href="{{ route('methodology.endurance') }}"
-                class="group relative bg-white dark:bg-gray-800 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-purple-500 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
+                class="group relative bg-white dark:bg-slate-900 p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-purple-500 rounded-2xl shadow-sm hover:shadow-lg border border-transparent dark:border-white/5 transition-all duration-300 animate-fadeInUp delay-300">
                 <div>
                     <span
-                        class="rounded-lg inline-flex p-3 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 ring-4 ring-white dark:ring-gray-800">
+                        class="rounded-lg inline-flex p-3 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 ring-4 ring-white dark:ring-slate-800">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -165,7 +165,7 @@
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         Endurance Score Beta
                     </h3>
-                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
                         Our adaptive system for rating battery life. Combines raw capacity (mAh) with active efficiency
                         (hours).
                     </p>
@@ -174,10 +174,10 @@
 
             <!-- Value Calculation Card -->
             <div
-                class="group relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
+                class="group relative bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm hover:shadow-lg border border-transparent dark:border-white/5 transition-all duration-300 animate-fadeInUp delay-300">
                 <div>
                     <span
-                        class="rounded-lg inline-flex p-3 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 ring-4 ring-white dark:ring-gray-800">
+                        class="rounded-lg inline-flex p-3 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 ring-4 ring-white dark:ring-slate-800">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -188,12 +188,12 @@
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                         Value Calculation
                     </h3>
-                    <div class="mt-2 text-sm text-gray-500 dark:text-gray-400 space-y-4">
+                    <div class="mt-2 text-sm text-slate-500 dark:text-slate-400 space-y-4">
                         <p>
                             Our <strong>Value Score</strong> is derived from a proprietary algorithm that balances a phone's
                             capabilities against its current market price.
                         </p>
-                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 font-mono text-[10px] leading-relaxed">
+                        <div class="bg-gray-50 dark:bg-slate-800 rounded-lg p-3 font-mono text-[10px] leading-relaxed dark:text-slate-300">
                             Weighted Rating = (UEPS/2.55 × 0.25) + (FPI × 0.25) + (CMS/13.3 × 0.25) + (GPX/3 × 0.15) +
                             (Endurance/1.6 × 0.10)<br>
                             Value Score = (Weighted Rating / Price) × 10,000
@@ -206,9 +206,9 @@
                 </div>
             </div>
             {{-- Authentication & RBAC Card --}}
-            <div class="group relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 animate-fadeInUp delay-300">
+            <div class="group relative bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm hover:shadow-lg border border-transparent dark:border-white/5 transition-all duration-300 animate-fadeInUp delay-300">
                 <div>
-                    <span class="rounded-lg inline-flex p-3 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 ring-4 ring-white dark:ring-gray-800">
+                    <span class="rounded-lg inline-flex p-3 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 ring-4 ring-white dark:ring-slate-800">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                         </svg>
@@ -216,32 +216,32 @@
                 </div>
                 <div class="mt-4">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white">Authentication &amp; Access Control</h3>
-                    <div class="mt-2 text-sm text-gray-500 dark:text-gray-400 space-y-3">
+                    <div class="mt-2 text-sm text-slate-500 dark:text-slate-400 space-y-3">
                         <p>PhoneFinderHub uses session-based authentication with two distinct roles:</p>
 
                         <div class="space-y-2">
                             <div class="flex items-start gap-2">
-                                <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
+                                <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center transition-colors">
                                     <svg class="w-3 h-3 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                 </span>
                                 <div>
-                                    <span class="font-semibold text-gray-700 dark:text-gray-300">super_admin</span>
-                                    <span class="text-gray-500 dark:text-gray-400"> — Single privileged account with full platform access. Protected by role middleware.</span>
+                                    <span class="font-semibold text-gray-700 dark:text-slate-200">super_admin</span>
+                                    <span class="text-slate-500 dark:text-slate-400"> — Single privileged account with full platform access. Protected by role middleware.</span>
                                 </div>
                             </div>
                             <div class="flex items-start gap-2">
-                                <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                <span class="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center transition-colors">
                                     <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                 </span>
                                 <div>
-                                    <span class="font-semibold text-gray-700 dark:text-gray-300">user</span>
-                                    <span class="text-gray-500 dark:text-gray-400"> — Standard authenticated account. Created via public registration.</span>
+                                    <span class="font-semibold text-gray-700 dark:text-slate-200">user</span>
+                                    <span class="text-slate-500 dark:text-slate-400"> — Standard authenticated account. Created via public registration.</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 space-y-1 text-xs font-mono">
-                            <p class="font-semibold text-gray-600 dark:text-gray-300 font-sans text-[11px] uppercase tracking-wide mb-1">Security Features</p>
+                        <div class="bg-gray-50 dark:bg-slate-800 rounded-lg p-3 space-y-1 text-xs font-mono dark:text-slate-300">
+                            <p class="font-semibold text-gray-600 dark:text-slate-400 font-sans text-[11px] uppercase tracking-wide mb-1">Security Features</p>
                             <p>✓ bcrypt password hashing (cost = 12)</p>
                             <p>✓ Rate limiting — 5 login / 3 registration attempts per minute per IP</p>
                             <p>✓ Session regeneration on login &amp; logout</p>
@@ -250,8 +250,8 @@
                             <p>✓ Password breach check (HaveIBeenPwned via <code>uncompromised()</code>)</p>
                         </div>
 
-                        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 text-xs font-mono">
-                            <p class="font-semibold text-gray-600 dark:text-gray-300 font-sans text-[11px] uppercase tracking-wide mb-1">Middleware Aliases</p>
+                        <div class="bg-gray-50 dark:bg-slate-800 rounded-lg p-3 text-xs font-mono dark:text-slate-300">
+                            <p class="font-semibold text-gray-600 dark:text-slate-400 font-sans text-[11px] uppercase tracking-wide mb-1">Middleware Aliases</p>
                             <p><span class="text-teal-600 dark:text-teal-400">auth</span> — Redirects guests to /login</p>
                             <p><span class="text-teal-600 dark:text-teal-400">guest</span> — Redirects authenticated users to home</p>
                             <p><span class="text-teal-600 dark:text-teal-400">super_admin</span> — Restricts to super_admin role (403 for others)</p>
@@ -262,7 +262,7 @@
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14"/></svg>
                                 Sign in
                             </a>
-                            <span class="text-gray-300 dark:text-gray-600">|</span>
+                            <span class="text-gray-300 dark:text-slate-700">|</span>
                             <a href="{{ route('register') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline">
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
                                 Create account

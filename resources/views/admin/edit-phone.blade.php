@@ -13,38 +13,37 @@ Edit Phone: {{ $phone->name }}
         $val = e($value);
         return <<<HTML
         <div>
-            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">$label</label>
+            <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">$label</label>
             <input type="$type" name="$name" value="$val" $reqAttr $stepAttr
-                   class="w-full bg-slate-800/60 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500/40 transition-all">
+                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500/40 transition-all transition-colors duration-300">
         </div>
 HTML;
     }
     
     function renderCheckbox($label, $name, $checked, $value = '1') {
         $isChecked = $checked ? 'checked' : '';
-        // Hidden input ensures a value is sent even if unchecked (defaulting to 0 or empty string)
         $hiddenVal = ($value === 'Yes') ? '' : '0'; 
         return <<<HTML
         <label class="flex items-center gap-3 cursor-pointer group select-none">
             <input type="hidden" name="$name" value="$hiddenVal">
             <input type="checkbox" name="$name" value="$value" $isChecked
-                   class="w-5 h-5 rounded border-white/10 bg-slate-800/60 text-teal-500 focus:ring-teal-500/40 transition-all">
-            <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">$label</span>
+                   class="w-5 h-5 rounded border-slate-300 dark:border-white/10 bg-slate-50 dark:bg-slate-800/60 text-teal-500 focus:ring-teal-500/40 transition-all">
+            <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">$label</span>
         </label>
 HTML;
     }
 @endphp
 
-<div class="mb-6 flex items-center justify-between">
+<div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-        <h1 class="text-2xl font-bold text-white">Edit Phone</h1>
-        <p class="text-slate-400 text-sm mt-1">Editing <span class="text-teal-400">{{ $phone->name }}</span> (ID: {{ $phone->id }})</p>
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-white transition-colors duration-300">Edit Phone</h1>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1 transition-colors duration-300">Editing <span class="text-teal-600 dark:text-teal-400 font-semibold">{{ $phone->name }}</span> (ID: {{ $phone->id }})</p>
     </div>
     <div class="flex items-center gap-3">
-        <a href="{{ route('phones.show', $phone) }}" target="_blank" class="text-slate-400 hover:text-white text-sm transition-colors flex items-center gap-1">
-            View Live Page <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        <a href="{{ route('phones.show', $phone) }}" target="_blank" class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors flex items-center gap-1">
+            View Live <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
         </a>
-        <button type="submit" form="editForm" class="bg-teal-500 hover:bg-teal-400 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-teal-500/20 hover:shadow-teal-500/40 transition-all flex items-center gap-2">
+        <button type="submit" form="editForm" class="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-teal-500/20 hover:shadow-teal-500/40 transition-all flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
             Save Changes
         </button>
@@ -52,23 +51,23 @@ HTML;
 </div>
 
 @if(session('success'))
-<div class="mb-6 bg-green-500/10 border border-green-500/30 rounded-2xl p-4 flex items-center gap-3 animate-fade-in-up">
-    <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
-        <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/30 rounded-2xl p-4 flex items-center gap-3 animate-fade-in-up transition-colors duration-300">
+    <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center flex-shrink-0 transition-colors duration-300">
+        <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
     </div>
     <div>
-        <h3 class="text-green-400 font-bold text-sm">Success</h3>
-        <p class="text-green-300 text-sm">{{ session('success') }}</p>
+        <h3 class="text-green-800 dark:text-green-400 font-bold text-sm">Success</h3>
+        <p class="text-green-700 dark:text-green-300 text-sm">{{ session('success') }}</p>
     </div>
 </div>
 @endif
 
 @if($errors->any())
-<div class="mb-6 bg-red-500/10 border border-red-500/30 rounded-2xl p-5">
-    <p class="text-sm font-semibold text-red-400 mb-2">Please fix errors:</p>
+<div class="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/30 rounded-2xl p-5 transition-colors duration-300">
+    <p class="text-sm font-semibold text-red-600 dark:text-red-400 mb-2">Please fix errors:</p>
     <ul class="list-disc list-inside space-y-1">
         @foreach($errors->all() as $error)
-        <li class="text-sm text-red-300">{{ $error }}</li>
+        <li class="text-sm text-red-500 dark:text-red-400">{{ $error }}</li>
         @endforeach
     </ul>
 </div>
@@ -79,11 +78,11 @@ HTML;
     @method('PUT')
 
     {{-- Tabs Navigation --}}
-    <div class="flex flex-wrap gap-1 mb-6 border-b border-white/10">
+    <div class="flex flex-wrap gap-1 mb-6 border-b border-slate-200 dark:border-white/10 transition-colors duration-300">
         @foreach(['identity' => 'Identity', 'body' => 'Body & Display', 'platform' => 'Platform', 'camera' => 'Cameras', 'connectivity' => 'Connectivity', 'battery' => 'Battery', 'benchmarks' => 'Benchmarks'] as $key => $label)
         <button type="button" @click="tab = '{{ $key }}'"
-                :class="tab === '{{ $key }}' ? 'text-teal-400 border-teal-400 bg-white/[0.03]' : 'text-slate-400 hover:text-slate-200 border-transparent hover:bg-white/[0.02]'"
-                class="px-5 py-3 text-sm font-semibold transition-all border-b-2 rounded-t-lg -mb-[2px]">
+                :class="tab === '{{ $key }}' ? 'text-teal-600 dark:text-teal-400 border-teal-600 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/20 font-extrabold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50'"
+                class="px-5 py-3 text-sm font-semibold transition-all border-b-2 rounded-t-lg -mb-[2px] transition-colors duration-300">
             {{ $label }}
         </button>
         @endforeach
@@ -91,10 +90,10 @@ HTML;
 
     {{-- ── Identity Tab ──────────────────────────────────────────────────────── --}}
     <div x-show="tab === 'identity'" class="space-y-5 animate-fade-in">
-        <div class="bg-slate-900/60 rounded-2xl border border-white/5 p-6">
-            <div class="flex items-center gap-3 mb-5 border-b border-white/5 pb-4">
-                <div class="w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center text-teal-400 font-bold">1</div>
-                <h3 class="text-lg font-bold text-white">Core Identity</h3>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/5 p-6 shadow-sm transition-colors duration-300">
+            <div class="flex items-center gap-3 mb-5 border-b border-slate-100 dark:border-white/5 pb-4 transition-colors duration-300">
+                <div class="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-400 font-bold transition-colors duration-300">1</div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white transition-colors duration-300">Core Identity</h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {!! renderInput('Phone Name', 'name', $phone->name, 'text', true) !!}
@@ -105,10 +104,10 @@ HTML;
             </div>
         </div>
 
-        <div class="bg-slate-900/60 rounded-2xl border border-white/5 p-6">
-            <div class="flex items-center gap-3 mb-5 border-b border-white/5 pb-4">
-                <div class="w-8 h-8 rounded-lg bg-violet-500/20 flex items-center justify-center text-violet-400 font-bold">₹</div>
-                <h3 class="text-lg font-bold text-white">Pricing & Images</h3>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/5 p-6 shadow-sm transition-colors duration-300">
+            <div class="flex items-center gap-3 mb-5 border-b border-slate-100 dark:border-white/5 pb-4 transition-colors duration-300">
+                <div class="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center text-violet-600 dark:text-violet-400 font-bold transition-colors duration-300">₹</div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white transition-colors duration-300">Pricing & Images</h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {!! renderInput('Price (₹)', 'price', $phone->price, 'number') !!}
@@ -122,7 +121,7 @@ HTML;
     </div>
 
     {{-- ── Body Tab ────────────────────────────────────────────────────────── --}}
-    <div x-show="tab === 'body'" class="bg-slate-900/60 rounded-2xl border border-white/5 p-6 animate-fade-in">
+    <div x-show="tab === 'body'" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/5 p-6 shadow-sm animate-fade-in transition-colors duration-300">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         @php
             $body = $phone->body ?? new \App\Models\SpecBody();
@@ -147,8 +146,8 @@ HTML;
     {{-- ── Platform Tab ────────────────────────────────────────────────────── --}}
     <div x-show="tab === 'platform'" class="space-y-5 animate-fade-in">
         @php $plat = $phone->platform ?? new \App\Models\SpecPlatform(); @endphp
-        <div class="bg-slate-900/60 rounded-2xl border border-white/5 p-6">
-            <h3 class="text-white font-bold mb-4">Hardware & OS</h3>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/5 p-6 shadow-sm transition-colors duration-300">
+            <h3 class="text-slate-900 dark:text-white font-bold mb-4">Hardware & OS</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             @foreach([
                 'OS'=>'os', 'OS Details'=>'os_details', 'Chipset'=>'chipset', 'CPU'=>'cpu', 'GPU'=>'gpu',
@@ -165,8 +164,8 @@ HTML;
             @endforeach
             </div>
         </div>
-        <div class="bg-slate-900/60 rounded-2xl border border-white/5 p-6">
-            <h3 class="text-white font-bold mb-4">Features</h3>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/5 p-6 shadow-sm transition-colors duration-300">
+            <h3 class="text-slate-900 dark:text-white font-bold mb-4">Features</h3>
             <div class="flex flex-wrap gap-6">
                 {!! renderCheckbox('Bootloader Unlockable', 'platform[bootloader_unlockable]', $plat->bootloader_unlockable) !!}
                 {!! renderCheckbox('Turnip Support', 'platform[turnip_support]', $plat->turnip_support) !!}
@@ -175,7 +174,7 @@ HTML;
     </div>
 
     {{-- ── Camera Tab ──────────────────────────────────────────────────────── --}}
-    <div x-show="tab === 'camera'" class="bg-slate-900/60 rounded-2xl border border-white/5 p-6 animate-fade-in">
+    <div x-show="tab === 'camera'" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/5 p-6 shadow-sm animate-fade-in transition-colors duration-300">
         @php $cam = $phone->camera ?? new \App\Models\SpecCamera(); @endphp
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
             {!! renderInput('Main Specs', 'camera[main_camera_specs]', $cam->main_camera_specs) !!}
@@ -185,8 +184,8 @@ HTML;
             {!! renderInput('Selfie Features', 'camera[selfie_camera_features]', $cam->selfie_camera_features) !!}
             {!! renderInput('Selfie Video', 'camera[selfie_video_capabilities]', $cam->selfie_video_capabilities) !!}
             
-            <div class="col-span-1 md:col-span-2 border-t border-white/5 pt-5 mt-2">
-                <h4 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Parsed Details</h4>
+            <div class="col-span-1 md:col-span-2 border-t border-slate-100 dark:border-white/5 pt-5 mt-2 transition-colors duration-300">
+                <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4 transition-colors duration-300">Parsed Details</h4>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     {!! renderInput('Sensors', 'camera[main_camera_sensors]', $cam->main_camera_sensors) !!}
                     {!! renderInput('Apertures', 'camera[main_camera_apertures]', $cam->main_camera_apertures) !!}
@@ -205,7 +204,7 @@ HTML;
     </div>
 
     {{-- ── Connectivity Tab ────────────────────────────────────────────────── --}}
-    <div x-show="tab === 'connectivity'" class="bg-slate-900/60 rounded-2xl border border-white/5 p-6 animate-fade-in">
+    <div x-show="tab === 'connectivity'" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/5 p-6 shadow-sm animate-fade-in transition-colors duration-300">
         @php $conn = $phone->connectivity ?? new \App\Models\SpecConnectivity(); @endphp
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             @foreach([
@@ -222,7 +221,7 @@ HTML;
     </div>
 
     {{-- ── Battery Tab ─────────────────────────────────────────────────────── --}}
-    <div x-show="tab === 'battery'" class="bg-slate-900/60 rounded-2xl border border-white/5 p-6 animate-fade-in">
+    <div x-show="tab === 'battery'" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/5 p-6 shadow-sm animate-fade-in transition-colors duration-300">
         @php $bat = $phone->battery ?? new \App\Models\SpecBattery(); @endphp
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
              {!! renderInput('Type', 'battery[battery_type]', $bat->battery_type) !!}
@@ -238,7 +237,7 @@ HTML;
     </div>
 
     {{-- ── Benchmarks Tab ──────────────────────────────────────────────────── --}}
-    <div x-show="tab === 'benchmarks'" class="bg-slate-900/60 rounded-2xl border border-white/5 p-6 animate-fade-in">
+    <div x-show="tab === 'benchmarks'" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/5 p-6 shadow-sm animate-fade-in transition-colors duration-300">
         @php $bench = $phone->benchmarks->first() ?? new \App\Models\Benchmark(); @endphp
         <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
             @foreach([

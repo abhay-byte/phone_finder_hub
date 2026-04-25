@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Decide It Yourself",
+    "slug": "decide-it-yourself",
+    "description": "Ask the community for help deciding which phone to buy.",
+    "created_at": "2026-02-20 11:05:39",
+    "updated_at": "2026-02-20 11:05:39",
+    "\"order\"": 0,
+    "rules_banner": null
+  },
+  {
+    "id": 2,
+    "name": "Recommendations",
+    "slug": "recommendations",
+    "description": "Ask for advice",
+    "created_at": "2026-02-21 08:00:38",
+    "updated_at": "2026-02-21 08:02:01",
+    "\"order\"": 0,
+    "rules_banner": null
+  },
+  {
+    "id": 3,
+    "name": "Benchmarks",
+    "slug": "benchmarks",
+    "description": "Show you phone's benchmarks",
+    "created_at": "2026-02-21 08:02:53",
+    "updated_at": "2026-02-21 08:02:53",
+    "\"order\"": 0,
+    "rules_banner": null
+  },
+  {
+    "id": 4,
+    "name": "Comparisons",
+    "slug": "comparisons",
+    "description": "Compare two or more device for you choice and decide which is better",
+    "created_at": "2026-02-21 08:03:39",
+    "updated_at": "2026-02-21 08:03:39",
+    "\"order\"": 0,
+    "rules_banner": null
+  },
+  {
+    "id": 5,
+    "name": "Emulation",
+    "slug": "emulation",
+    "description": "Showcase the emulation capabilities of your device",
+    "created_at": "2026-02-21 08:05:36",
+    "updated_at": "2026-02-21 08:05:36",
+    "\"order\"": 0,
+    "rules_banner": null
+  },
+  {
+    "id": 6,
+    "name": "Leaks News and Stuff",
+    "slug": "leaks-news-and-stuff",
+    "description": "discussion for latest new android development, news and leaks.",
+    "created_at": "2026-02-21 08:08:56",
+    "updated_at": "2026-02-21 08:08:56",
+    "\"order\"": 0,
+    "rules_banner": null
+  },
+  {
+    "id": 7,
+    "name": "General Discussions",
+    "slug": "general-discussions",
+    "description": "Introduce yourself, and talk many things.",
+    "created_at": "2026-02-21 08:10:02",
+    "updated_at": "2026-02-21 15:30:08",
+    "\"order\"": 1,
+    "rules_banner": "Anything can be talked here, but promotion of any kind and links will not be tolerated."
+  }
+]

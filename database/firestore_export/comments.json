@@ -1,0 +1,262 @@
+[
+  {
+    "id": 1,
+    "phone_id": 23,
+    "user_id": 7,
+    "parent_id": null,
+    "content": "This is a test comment from the subagent.",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 05:16:09",
+    "updated_at": "2026-02-20 05:16:09"
+  },
+  {
+    "id": 3,
+    "phone_id": 23,
+    "user_id": 7,
+    "parent_id": null,
+    "content": "This is a test comment from the subagent.",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 05:17:24",
+    "updated_at": "2026-02-20 05:17:24"
+  },
+  {
+    "id": 4,
+    "phone_id": 2,
+    "user_id": 7,
+    "parent_id": null,
+    "content": "This is a test comment from the subagent.",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 05:19:30",
+    "updated_at": "2026-02-20 05:19:30"
+  },
+  {
+    "id": 5,
+    "phone_id": 2,
+    "user_id": 7,
+    "parent_id": null,
+    "content": "This is a test comment from the subagent via fetch.",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 05:21:31",
+    "updated_at": "2026-02-20 05:21:31"
+  },
+  {
+    "id": 7,
+    "phone_id": 3,
+    "user_id": 7,
+    "parent_id": null,
+    "content": "Test comment.",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 05:22:34",
+    "updated_at": "2026-02-20 05:22:34"
+  },
+  {
+    "id": 8,
+    "phone_id": 3,
+    "user_id": 7,
+    "parent_id": null,
+    "content": "This is a very long test comment to ensure that I am meeting any potential minimum length requirements for the comment content. It is much longer than the previous ones.",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 05:23:11",
+    "updated_at": "2026-02-20 05:23:11"
+  },
+  {
+    "id": 9,
+    "phone_id": 3,
+    "user_id": 7,
+    "parent_id": null,
+    "content": "Native test comment.",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 05:24:02",
+    "updated_at": "2026-02-20 05:24:02"
+  },
+  {
+    "id": 11,
+    "phone_id": 2,
+    "user_id": 7,
+    "parent_id": 6,
+    "content": "Testing reply after cache fix.",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 05:32:11",
+    "updated_at": "2026-02-20 05:32:11"
+  },
+  {
+    "id": 6,
+    "phone_id": 2,
+    "user_id": 7,
+    "parent_id": null,
+    "content": "This is a test comment from the subagent via manual form.",
+    "upvotes_count": 1,
+    "created_at": "2026-02-20 05:21:43",
+    "updated_at": "2026-02-20 05:32:41"
+  },
+  {
+    "id": 10,
+    "phone_id": 23,
+    "user_id": 7,
+    "parent_id": null,
+    "content": "Final test comment.",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 05:27:34",
+    "updated_at": "2026-02-20 06:12:00"
+  },
+  {
+    "id": 12,
+    "phone_id": 23,
+    "user_id": 1,
+    "parent_id": 3,
+    "content": "hello",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 06:12:15",
+    "updated_at": "2026-02-20 06:12:15"
+  },
+  {
+    "id": 13,
+    "phone_id": 23,
+    "user_id": 1,
+    "parent_id": null,
+    "content": "this is a test",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 06:12:42",
+    "updated_at": "2026-02-20 06:12:42"
+  },
+  {
+    "id": 16,
+    "phone_id": 23,
+    "user_id": 7,
+    "parent_id": 2,
+    "content": "testing",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 06:26:06",
+    "updated_at": "2026-02-20 06:26:06"
+  },
+  {
+    "id": 2,
+    "phone_id": 23,
+    "user_id": 7,
+    "parent_id": null,
+    "content": "This is a test comment from the subagent.",
+    "upvotes_count": 2,
+    "created_at": "2026-02-20 05:16:35",
+    "updated_at": "2026-02-20 06:31:43"
+  },
+  {
+    "id": 19,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": null,
+    "content": "test",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 09:14:26",
+    "updated_at": "2026-02-20 09:14:26"
+  },
+  {
+    "id": 21,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": null,
+    "content": "Testing comment on full reload",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 09:22:50",
+    "updated_at": "2026-02-20 09:22:50"
+  },
+  {
+    "id": 22,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": null,
+    "content": "Final verification test successful on reload",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 09:25:16",
+    "updated_at": "2026-02-20 09:25:16"
+  },
+  {
+    "id": 23,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": null,
+    "content": "Final HTMX submission test",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 09:30:52",
+    "updated_at": "2026-02-20 09:30:52"
+  },
+  {
+    "id": 24,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": null,
+    "content": "Verified HTMX AJAX submission working perfectly!",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 09:31:22",
+    "updated_at": "2026-02-20 09:31:22"
+  },
+  {
+    "id": 25,
+    "phone_id": 4,
+    "user_id": null,
+    "parent_id": null,
+    "content": "Test from puppeteer HTMX nav",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 09:32:50",
+    "updated_at": "2026-02-20 09:32:50"
+  },
+  {
+    "id": 26,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": 24,
+    "content": "yo",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 09:43:48",
+    "updated_at": "2026-02-20 09:43:48"
+  },
+  {
+    "id": 27,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": 26,
+    "content": "This is a test reply from the admin panel",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 09:56:46",
+    "updated_at": "2026-02-20 09:56:46"
+  },
+  {
+    "id": 29,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": null,
+    "content": "This is a great phone! Highly recommend.",
+    "upvotes_count": 1,
+    "created_at": "2026-02-20 12:08:12",
+    "updated_at": "2026-02-20 13:03:43"
+  },
+  {
+    "id": 28,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": null,
+    "content": "Testing restored UI!",
+    "upvotes_count": 1,
+    "created_at": "2026-02-20 10:05:10",
+    "updated_at": "2026-02-20 13:03:44"
+  },
+  {
+    "id": 31,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": null,
+    "content": "hi",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 13:04:54",
+    "updated_at": "2026-02-20 13:04:54"
+  },
+  {
+    "id": 32,
+    "phone_id": 4,
+    "user_id": 1,
+    "parent_id": null,
+    "content": "Testing AJAX submission",
+    "upvotes_count": 0,
+    "created_at": "2026-02-20 13:07:45",
+    "updated_at": "2026-02-20 13:07:45"
+  }
+]

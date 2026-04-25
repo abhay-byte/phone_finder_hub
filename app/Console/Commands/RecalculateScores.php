@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Phone;
+use Illuminate\Console\Command;
 
 class RecalculateScores extends Command
 {
@@ -40,7 +40,7 @@ class RecalculateScores extends Command
             try {
                 $phone->updateScores();
             } catch (\Exception $e) {
-                $this->error("Failed to update scores for {$phone->name}: " . $e->getMessage());
+                $this->error("Failed to update scores for {$phone->name}: ".$e->getMessage());
             }
             $bar->advance();
         }

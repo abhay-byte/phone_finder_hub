@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\SyncsToFirestore;
 use Illuminate\Database\Eloquent\Model;
 
 class SpecConnectivity extends Model
 {
+    use SyncsToFirestore;
+
     protected $fillable = [
         'phone_id',
         'wlan',

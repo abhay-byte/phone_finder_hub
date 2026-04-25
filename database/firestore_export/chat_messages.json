@@ -1,0 +1,410 @@
+[
+  {
+    "id": 228,
+    "chat_id": 37,
+    "role": "user",
+    "content": "Which phones have the highest Camera Matrix Score (CMS) right now?",
+    "created_at": "2026-02-22 14:10:11",
+    "updated_at": "2026-02-22 14:10:11"
+  },
+  {
+    "id": 229,
+    "chat_id": 37,
+    "role": "assistant",
+    "content": "[CARD|vivo X300 Pro|\u20b9109,998|/storage/phones/vivo-x300-pro.webp|/phones/22|Mediatek Dimensity 9500 (3 nm)|Si/C Li-Ion 6510 mAh|https://www.amazon.in/vivo-X300-Pro-Additional-Exchange/dp/B0G26JXRTX|]\\n\\n[CARD|Oppo Find X9 Pro|\u20b9109,999|/storage/phones/oppo-find-x9-pro.webp|/phones/23|Mediatek Dimensity 9500 (3 nm)|Si/C Li-Ion 7500 mAh|https://www.amazon.in/Titanium-Charcoal-Storage-Additional-Exchange/dp/B0FXXJRXVX|https://www.flipkart.com/oppo-find-x9-pro-titanium-charcoal-512-gb/p/itma0d37896b3848]\\n\\n[CARD|Google Pixel 9 Pro|\u20b988,990|/storage/google_pixel_9_pro_nobg.png|/phones/28|Google Tensor G4 (4 nm)|Li-Ion 4700 mAh|https://www.amazon.in/Google-Pixel-Pro-Obsidian-Storage/dp/B0FLQQF6YP/ref=sr_1_1|https://www.flipkart.com/google-pixel-9-pro-xl-obsidian-256-gb/p/itm5583d8ff28427]\\n\\nThese phones have the highest Camera Mastery Score (CMS) right now. The vivo X300 Pro has a CMS of 1258.6, followed closely by the Oppo Find X9 Pro with a CMS of 1224.8, and the Google Pixel 9 Pro with a CMS of 1159.5. They are among the top camera phones available in the market.",
+    "created_at": "2026-02-22 14:10:16",
+    "updated_at": "2026-02-22 14:10:16"
+  },
+  {
+    "id": 222,
+    "chat_id": 36,
+    "role": "user",
+    "content": "now best camera phone under 45k??",
+    "created_at": "2026-02-22 14:00:11",
+    "updated_at": "2026-02-22 14:00:11"
+  },
+  {
+    "id": 21,
+    "chat_id": 8,
+    "role": "user",
+    "content": "can u tell me a phone to buy under 45k",
+    "created_at": "2026-02-21 14:59:16",
+    "updated_at": "2026-02-21 14:59:16"
+  },
+  {
+    "id": 22,
+    "chat_id": 8,
+    "role": "assistant",
+    "content": "Sure! I can help you find the perfect phone under\u202f\u20b945,000. To narrow it down, could you let me know what matters most to you?\\n\\n- **Camera quality** (photos, video)\\n- **Gaming performance**\\n- **Battery life / endurance**\\n- **Overall smooth experience**\\n- Any specific brand preference or other features you\u2019re looking for?\\n\\nJust let me know your priorities, and I\u2019ll recommend the best option for you!",
+    "created_at": "2026-02-21 14:59:18",
+    "updated_at": "2026-02-21 14:59:18"
+  },
+  {
+    "id": 23,
+    "chat_id": 9,
+    "role": "user",
+    "content": "best value for money phone",
+    "created_at": "2026-02-21 15:03:51",
+    "updated_at": "2026-02-21 15:03:51"
+  },
+  {
+    "id": 24,
+    "chat_id": 9,
+    "role": "assistant",
+    "content": "Sure thing! To help you find the best value\u2011for\u2011money phone, could you let me know:\\n\\n- Your exact budget or price range  \\n- What matters most to you in a phone (e.g., camera quality, gaming performance, battery life, overall experience)\\n\\n[BTN|Camera Quality (Photos & Video)]\\n[BTN|Heavy Gaming Performance]\\n[BTN|All\u2011day Battery Life]\\n[BTN|Balanced Overall Experience]",
+    "created_at": "2026-02-21 15:03:54",
+    "updated_at": "2026-02-21 15:03:54"
+  },
+  {
+    "id": 25,
+    "chat_id": 9,
+    "role": "user",
+    "content": "Heavy Gaming Performance",
+    "created_at": "2026-02-21 15:07:20",
+    "updated_at": "2026-02-21 15:07:20"
+  },
+  {
+    "id": 26,
+    "chat_id": 9,
+    "role": "assistant",
+    "content": "Got it! For a phone that delivers strong gaming performance, I\u2019ll need a bit more detail about your budget. Could you pick the price segment that fits you best?\\n\\n[BTN|Under \u20b920,000]  \\n[BTN|\u20b920,000\u202f\u2013\u202f\u20b940,000]  \\n[BTN|\u20b940,000\u202f\u2013\u202f\u20b970,000]  \\n[BTN|Above \u20b970,000]  ",
+    "created_at": "2026-02-21 15:07:21",
+    "updated_at": "2026-02-21 15:07:21"
+  },
+  {
+    "id": 27,
+    "chat_id": 9,
+    "role": "user",
+    "content": "\u20b920,000\u202f\u2013\u202f\u20b940,000",
+    "created_at": "2026-02-21 15:07:46",
+    "updated_at": "2026-02-21 15:07:46"
+  },
+  {
+    "id": 28,
+    "chat_id": 9,
+    "role": "assistant",
+    "content": "Based on the \u20b920,000\u202f\u2013\u202f\u20b940,000 budget and your focus on **heavy gaming performance**, the phone with the strongest Gaming Performance Index (GPX) is the **OnePlus** model:\\n\\n[CAR\u200bD|OnePlus |\u20b939,999|/storage/phones/oneplus-13r.png|/phones/9]\\n\\n**Why it stands out for gaming**\\n\\n- **GPX (Gaming Performance Index):**\u202f**242.17** \u2013 the highest among the options, meaning smoother frame rates and better handling of graphically intensive games.  \\n- **UEPS (User Experience Performance Score):**\u202f**168.0** \u2013 strong overall responsiveness.  \\n- **CMS (Camera Matrix Score):**\u202f**732.5** \u2013 solid camera performance if you also care about photos/videos.  \\n- **Endurance (Battery Life Rating):**\u202f**113** \u2013 good stamina for long gaming sessions.  \\n\\nIf you\u2019d like to explore alternatives with slightly lower price but still solid gaming capability, the two **vivo** models are also in the same range:\\n\\n- **vivo** \u2013 \u20b926,998 \u2013 GPX\u202f191.23, UEPS\u202f118.0, Endurance\u202f64.  \\n- **vivo** \u2013 \u20b935,999 \u2013 GPX\u202f205.20, UEPS\u202f114.0, Endurance\u202f55.  \\n\\nBoth provide decent gaming performance, but the OnePlus leads in raw gaming power while staying within your budget ceiling. Let me know if you\u2019d like more details on any of these phones or want to compare other aspects!",
+    "created_at": "2026-02-21 15:07:49",
+    "updated_at": "2026-02-21 15:07:49"
+  },
+  {
+    "id": 29,
+    "chat_id": 9,
+    "role": "user",
+    "content": "i need bootloader unclocking and turnip support strictly",
+    "created_at": "2026-02-21 15:11:57",
+    "updated_at": "2026-02-21 15:11:57"
+  },
+  {
+    "id": 30,
+    "chat_id": 9,
+    "role": "assistant",
+    "content": "[CAR\u200bD|OnePlus 15|\u20b972,998|/storage/oneplus_15_nobg.png|/phones/4]\\n\\nOnePlus 15 is the most suitable choice for your requirements. The OnePlus line has a reputation for providing an **unlocked bootloader out\u2011of\u2011the\u2011box** (or with a simple unlock process) and strong community support for custom kernels, including **Turnip** (the Linux kernel for Android devices). Its high GPX score (294.76) also means it\u2019s powerful enough for demanding tasks once you\u2019re running custom software.\\n\\nIf you have any other constraints (e.g., price ceiling, camera focus, battery life), let me know and I can fine\u2011tune the recommendation!",
+    "created_at": "2026-02-21 15:12:00",
+    "updated_at": "2026-02-21 15:12:00"
+  },
+  {
+    "id": 31,
+    "chat_id": 9,
+    "role": "user",
+    "content": "too much pricy, need under 50k, tell best under 50k pls",
+    "created_at": "2026-02-21 15:12:37",
+    "updated_at": "2026-02-21 15:12:37"
+  },
+  {
+    "id": 32,
+    "chat_id": 9,
+    "role": "assistant",
+    "content": "[CAR\u200bD|OnePlus 15R|\u20b947,999|/storage/phones/oneplus-15r.png|/phones/3]\\n\\nOnePlus 15R is the top pick for you under\u202f\u20b950,000. It ships with an easily unlockable bootloader and a strong community that provides **Turnip** kernel support for custom Android builds. Its performance scores back it up for heavy gaming and overall speed:\\n\\n- **GPX (Gaming Performance Index):**\u202f272.01 \u2013 excellent for demanding games.  \\n- **UEPS (User Experience Performance Score):**\u202f177.0 \u2013 smooth daily use.  \\n- **CMS (Camera Matrix Score):**\u202f556.7 \u2013 decent photo/video quality.  \\n- **Endurance (Battery Life Rating):**\u202f148.8 \u2013 solid stamina for long sessions.  \\n\\nCompared to the Samsung Galaxy S24 (locked bootloader) and Realme GT\u202f7\u202fPro (bootloader unlockable but Turnip support is less mature), the OnePlus 15R gives you the best combination of price, performance, and custom\u2011ROM friendliness. Let me know if you\u2019d like more details on unlocking steps or Turnip installation!",
+    "created_at": "2026-02-21 15:12:41",
+    "updated_at": "2026-02-21 15:12:41"
+  },
+  {
+    "id": 33,
+    "chat_id": 9,
+    "role": "user",
+    "content": "under 40k??",
+    "created_at": "2026-02-21 15:16:30",
+    "updated_at": "2026-02-21 15:16:30"
+  },
+  {
+    "id": 34,
+    "chat_id": 9,
+    "role": "assistant",
+    "content": "[CARD|OnePlus 13R|\u20b939,999|/storage/phones/oneplus-13r.png|/phones/9]\\n\\nOnePlus 13R is the best option under\u202f\u20b940,000 for your needs.  \\n\\n- **Bootloader:** OnePlus devices ship with an unlockable bootloader that can be opened via the official fastboot method, making it straightforward to flash custom recoveries and ROMs.  \\n- **Turnip (Linux kernel) support:** The OnePlus community has mature Turnip kernels available, allowing you to run a Linux\u2011based kernel on the device with good stability.  \\n- **Gaming Performance:** GPX\u202f242.17 \u2013 strong enough for heavy gaming.  \\n- **Overall experience:** UEPS\u202f168.0 ensures smooth day\u2011to\u2011day performance.  \\n- **Camera:** CMS\u202f732.5 gives solid photo/video quality if you need it.  \\n- **Battery endurance:** Rating\u202f113 provides decent stamina for extended gaming sessions.  \\n\\nIf you\u2019d like instructions on unlocking the bootloader or setting up Turnip, just let me know!",
+    "created_at": "2026-02-21 15:16:34",
+    "updated_at": "2026-02-21 15:16:34"
+  },
+  {
+    "id": 35,
+    "chat_id": 9,
+    "role": "user",
+    "content": "under 35k??",
+    "created_at": "2026-02-21 15:25:04",
+    "updated_at": "2026-02-21 15:25:04"
+  },
+  {
+    "id": 36,
+    "chat_id": 9,
+    "role": "assistant",
+    "content": "[CARD|Poco F7|\u20b933,998|/storage/phones/poco-f7.png|/phones/7|Snapdragon 8s Gen 4 (4nm)|Si/C Li-Ion 7550 mAh||https://www.flipkart.com/poco-f7-5g-phantom-black-256-gb/p/itm632bdcafce49a]\\n\\nPoco\u202fF7 is the top pick under\u202f\u20b935,000 that meets both of your strict requirements:\\n\\n- **Bootloader:** The device ships with an unlockable bootloader via the standard fastboot `oem unlock` command, making it straightforward to flash custom recoveries, ROMs, and kernels.  \\n- **Turnip support:** The Snapdragon\u202f8\u202fGen\u202f4 GPU in the F7 has an active Turnip (Linux) kernel community, allowing you to run a Linux\u2011based GPU driver for enhanced gaming/emulation performance.  \\n- **Gaming Performance:** GPX\u202f**234.86** \u2013 strong enough for heavy gaming and demanding titles.  \\n- **User Experience:** UEPS\u202f**150.0** ensures smooth everyday use and fast app launches.  \\n- **Camera:** CMS\u202f**561.3** provides good photo/video quality if you need it.  \\n- **Battery Endurance:** Endurance rating\u202f**140.3** with a 7550\u202fmAh battery gives long play sessions.  \\n\\nOverall, the Poco\u202fF7 balances price, unlockability, and community support while delivering solid gaming performance within your \u20b935k budget. Let me know if you\u2019d like step\u2011by\u2011step instructions for unlocking the bootloader or installing a Turnip kernel!",
+    "created_at": "2026-02-21 15:25:07",
+    "updated_at": "2026-02-21 15:25:07"
+  },
+  {
+    "id": 37,
+    "chat_id": 9,
+    "role": "user",
+    "content": "can u suggest more phones pls",
+    "created_at": "2026-02-21 15:37:55",
+    "updated_at": "2026-02-21 15:37:55"
+  },
+  {
+    "id": 38,
+    "chat_id": 9,
+    "role": "assistant",
+    "content": "Here are the phones that are in our current catalog, along with their key specs and whether they meet your \u201cbootloader unlock\u202f+\u202fTurnip support\u201d requirement.\\n\\n[CARD|Samsung Galaxy S24|\u20b942,999|https://cdn.beebom.com/mobile/2024/03/Samsung-GalaxyS24-FE.png|/phones/141|Qualcomm SM8650-AC Snapdragon 8 Gen 3 (4 nm) - USA/Canada/China Exynos 2400 (4 nm) - International|Li-Ion 4000 mAh|https://www.amazon.in/Samsung-Galaxy-Snapdragon-Amber-Yellow/dp/B0GGHQY1BG?crid=279G5RYC232F0|https://www.flipkart.com/samsung-galaxy-s24-5g-snapdragon-cobalt-violet-128-gb/p/itm994d8dcac3256]\\n\\n- **Bootloader:** Samsung devices are typically **locked** and require an official unlock request (often not granted).  \\n- **Turnip support:** Community Turnip kernels are **still emerging** for this model, so support is limited.  \\n- **Price:** \u20b942,999 (slightly above your \u20b935\u202fk target).  \\n\\n[CARD|OnePlus 15|\u20b972,998|/storage/oneplus_15_nobg.png|/phones/4|Qualcomm SM8850-AC Snapdragon 8 Elite Gen 5 (3 nm)|Si/C Li-Ion 7300 mAh||https://www.flipkart.com/oneplus-15-5g-sand-storm-256-gb/p/itm0106a23b51268]\\n\\n- **Bootloader:** OnePlus provides an **official unlockable bootloader** (fastboot `oem unlock`).  \\n- **Turnip support:** The OnePlus community has **mature Turnip kernels** for Snapdragon\u202f8\u202fGen\u202f5, giving excellent Linux\u2011GPU performance.  \\n- **Price:** \u20b972,998 (well above \u20b935\u202fk).  \\n\\n[CARD|vivo X300",
+    "created_at": "2026-02-21 15:37:59",
+    "updated_at": "2026-02-21 15:37:59"
+  },
+  {
+    "id": 230,
+    "chat_id": 37,
+    "role": "user",
+    "content": "best under 45k",
+    "created_at": "2026-02-22 14:10:23",
+    "updated_at": "2026-02-22 14:10:23"
+  },
+  {
+    "id": 231,
+    "chat_id": 37,
+    "role": "assistant",
+    "content": "[CARD|Motorola Edge 60 Pro|\u20b928,999|https://cdn.beebom.com/mobile/Untitled%20design%20(25).png|/phones/140|Qualcomm SM7550-AB Snapdragon 7 Gen 3 (4 nm)|Li-Po 4500 mAh|https://www.amazon.in/Motorola-Edge-125W-Charger-Lavender/dp/B0D37WRCP1?dib=eyJ2IjoiMSJ9.yOQjhpz2uOVZffSwh8ZjQ8I8MWccwm8YQMk4QUYJYWjk9C9bzH-m5DpU5Mc6JbiDs78NG3RiMxi7wqQQBKTSipMdy-_umytzm_My15vzdVf6P-fsN4IVU6rgG1yb0R_PcM5aHsbdNli2wqmciJKLAJ7Cbom5Hp79FxWsYtEDK-JQpKRcsnOA66sPOpueHcuwAjwQM6YL3RUTfXJzgpjgorgclnYyenPPRhwsu61GpYM.ZcthZjnsXzfgqlj2rJYkI_zbAQmJ5q5sRmHKP3B7E6Q&dib_tag=se&keywords=Motorola+Edge+50+Pro&qid=1771657303&sr=8-3|https://www.flipkart.com/motorola-edge-50-pro-5g-125w-charger-luxe-lavender-256-gb/p/itm3281f9ac32d1a?pid=MOBGXFXY2SBHGSVN&lid=LSTMOBGXFXY2SBHGSVNA7P8ER&marketplace=FLIPKART&q=Motorola+Edge+50+Pro&store=tyy%2F4io&srno=s_1_1&otracker=search&fm=search&iid=958b4ba3-9688-4cf0-89c2-0781ba41093b.MOBGXFXY2SBHGSVN.SEARCH&ppt=hp&ppn=homepage&ssid=se1du5t8m9de2j9c1771657303144&qH=4398462ea471ceac&ov_redirect=true]\\n\\n[CARD|OnePlus 13R|\u20b939,999|/storage/phones/oneplus-13r.png|/phones/9|Qualcomm SM8650-AB Snapdragon 8 Gen 3 (4 nm)|Li-Ion 6000 mAh|https://www.amazon.in/OnePlus-13R-Smarter-Lifetime-Warranty/dp/B0DPS62DYH|https://www.flipkart.com/oneplus-13r-5g-astral-trail-256-gb/p/itmff6561809fab8]\\n\\n[CARD|Vivo V70|\u20b945,999|https://media-ik.croma.com/prod/https://media.tatacroma.com/Croma%20Assets/Communication/Mobiles/Images/320419_0_NYIdgUYJ4b.png?updatedAt=1770992580137|/phones/138|Qualcomm SM7750-AB Snapdragon 7 Gen 4 (4 nm)|Si/C Li-Ion 6500 mAh|https://www.amazon.in/dp/B0GHQVR1N8?pf_rd_r=ZHFVB1S3J2BW0Q427W7M&pf_rd_p=0a1ca078-a70c-470d-8588-dfd6c817b5a4&pf_rd_m=A1VBAL9TL5WCBF&pf_rd_s=merchandised-search-11&pf_rd_t=undefined&pf_rd_i=1389401031&th=1|https://www.flipkart.com/vivo-v70-passion-red-256-gb/p/itmecfa7a31699de?pid=MOBHKJPYG7CHYDPY&lid=LSTMOBHKJPYG7CHYDPYBFZNVD&marketplace=FLIPKART&q=vivo+v70&store=tyy%2F4io&srno=s_1_1&otracker=search&otracker1=search&fm=organic&iid=d8d33291-81d8-4a3f-97d0-fa67f53e24fc.MOBHKJPYG7CHYDPY.SEARCH&ppt=pp&ppn=pp&ssid=eszseh5w6kfo3ksg1771515450742&qH=c412861f9c9aa589&ov_redirect=true]\\n\\nThese phones have the highest Camera Mastery Score (CMS) under the budget of \u20b945,000. The Motorola Edge 60 Pro has a CMS of 798.6, followed closely by the OnePlus 13R with a CMS of 732.5, and the Vivo V70 with a CMS of 720.0. They are among the top camera phones available in this price range.",
+    "created_at": "2026-02-22 14:10:35",
+    "updated_at": "2026-02-22 14:10:35"
+  },
+  {
+    "id": 232,
+    "chat_id": 38,
+    "role": "user",
+    "content": "Suggest some phones for heavy gaming under \u20b945,000.",
+    "created_at": "2026-02-22 14:34:03",
+    "updated_at": "2026-02-22 14:34:03"
+  },
+  {
+    "id": 233,
+    "chat_id": 38,
+    "role": "assistant",
+    "content": "Based on our database, here are some top recommendations for heavy gaming under \u20b945,000:\\n\\n[CARD|OnePlus 13R|\u20b939,999|/storage/phones/oneplus-13r.png|/phones/9|Qualcomm SM8650-AB Snapdragon 8 Gen 3 (4 nm)|Li-Ion 6000 mAh|https://www.amazon.in/OnePlus-13R-Smarter-Lifetime-Warranty/dp/B0DPS62DYH|https://www.flipkart.com/oneplus-13r-5g-astral-trail-256-gb/p/itmff6561809fab8]\\n\\n[CARD|Poco F7|\u20b933,998|/storage/phones/poco-f7.png|/phones/7|Snapdragon 8s Gen 4 (4nm)|Si/C Li-Ion 7550 mAh||https://www.flipkart.com/poco-f7-5g-phantom-black-256-gb/p/itm632bdcafce49a]\\n\\n[CARD|Realme GT 7|\u20b940,860|/storage/realme_gt_7_nobg.png|/phones/31|Mediatek Dimensity 9400e (4 nm)|Si/C Li-Ion 7000 mAh|https://www.amazon.in/realme-IceSense-MediaTek-Dimensity-Strongest/dp/B0F6YPX2X5/ref=sr_1_1|https://www.flipkart.com/realme-gt-7-icesense-blue-256-gb/p/itm6cc8f84d92e2f]\\n\\nThese phones have high Gaming Performance Index scores, with the OnePlus 13R leading at 242.17, followed by the Poco F7 at 234.86, and the Realme GT 7 at 223.37. They also have powerful processors, ample RAM, and large batteries to support long gaming sessions.",
+    "created_at": "2026-02-22 14:34:08",
+    "updated_at": "2026-02-22 14:34:08"
+  },
+  {
+    "id": 234,
+    "chat_id": 38,
+    "role": "user",
+    "content": "best camaera phone under 45k??",
+    "created_at": "2026-02-22 14:34:36",
+    "updated_at": "2026-02-22 14:34:36"
+  },
+  {
+    "id": 235,
+    "chat_id": 38,
+    "role": "assistant",
+    "content": "Based on our database, here are some top recommendations for camera phones under \u20b945,000:\\n\\n[CARD|vivo V70|\u20b945,999|https://media-ik.croma.com/prod/https://media.tatacroma.com/Croma%20Assets/Communication/Mobiles/Images/320419_0_NYIdgUYJ4b.png?updatedAt=1770992580137|/phones/138|Qualcomm SM7750-AB Snapdragon 7 Gen 4 (4 nm)|Si/C Li-Ion 6500 mAh|https://www.amazon.in/dp/B0GHQVR1N8?pf_rd_r=ZHFVB1S3J2BW0Q427W7M&pf_rd_p=0a1ca078-a70c-470d-8588-dfd6c817b5a4&pf_rd_m=A1VBAL9TL5WCBF&pf_rd_s=merchandised-search-11&pf_rd_t=undefined&pf_rd_i=1389401031&th=1|https://www.flipkart.com/vivo-v70-passion-red-256-gb/p/itmecfa7a31699de?pid=MOBHKJPYG7CHYDPY&lid=LSTMOBHKJPYG7CHYDPYBFZNVD&marketplace=FLIPKART&q=vivo+v70&store=tyy%2F4io&srno=s_1_1&otracker=search&otracker1=search&fm=organic&iid=d8d33291-81d8-4a3f-97d0-fa67f53e24fc.MOBHKJPYG7CHYDPY.SEARCH&ppt=pp&ppn=pp&ssid=eszseh5w6kfo3ksg1771515450742&qH=c412861f9c9aa589&ov_redirect=true]\\n\\n[CARD|Motorola Edge 60 Pro|\u20b928,999|/storage/phones/motorola-edge-60-pro.png|/phones/16|Mediatek Dimensity 8350 Extreme (4 nm)|Si/C Li-Ion 6000 mAh||]\\n\\n[CARD|OnePlus 13R|\u20b939,999|/storage/phones/oneplus-13r.png|/phones/9|Qualcomm SM8650-AB Snapdragon 8 Gen 3 (4 nm)|Li-Ion 6000 mAh|https://www.amazon.in/OnePlus-13R-Smarter-Lifetime-Warranty/dp/B0DPS62DYH|https://www.flipkart.com/oneplus-13r-5g-astral-trail-256-gb/p/itmff6561809fab8]\\n\\n[CARD|Nothing Phone (3)|\u20b946,900|/storage/phones/nothing-phone-3.png|/phones/8|Qualcomm SM8735 Snapdragon 8s Gen 4 (4 nm)|Si/C 5500 mAh|https://www.amazon.in/Nothing-Phone-Black-12GB-256GB/dp/B0F7R6V1LM|https://www.flipkart.com/nothing-phone-3-black-256-gb/p/itm0c32a18b0df8a]\\n\\nThese phones have high Camera Mastery Scores, with the Motorola Edge 60 Pro leading at 798.6, followed by the Nothing Phone (3) at 718.4, and the OnePlus 13R at 732.5. They also have powerful processors and ample RAM to support smooth camera performance.",
+    "created_at": "2026-02-22 14:34:46",
+    "updated_at": "2026-02-22 14:34:46"
+  },
+  {
+    "id": 67,
+    "chat_id": 12,
+    "role": "user",
+    "content": "Suggest some phones for heavy gaming under $500.",
+    "created_at": "2026-02-21 16:49:35",
+    "updated_at": "2026-02-21 16:49:35"
+  },
+  {
+    "id": 68,
+    "chat_id": 12,
+    "role": "assistant",
+    "content": "To narrow it down, could you let me know what is your exact budget within the $500 range, is it more towards $300 or are you willing to spend up to $500?",
+    "created_at": "2026-02-21 16:49:37",
+    "updated_at": "2026-02-21 16:49:37"
+  },
+  {
+    "id": 69,
+    "chat_id": 12,
+    "role": "user",
+    "content": "only upto 45k max",
+    "created_at": "2026-02-21 16:50:06",
+    "updated_at": "2026-02-21 16:50:06"
+  },
+  {
+    "id": 70,
+    "chat_id": 12,
+    "role": "assistant",
+    "content": "To find the best phone for heavy gaming within your budget of \u20b945,000, could you please tell me what matters most to you: \\n[BTN|Camera Quality (Photos & Video)]\\n[BTN|Heavy Gaming Performance]\\n[BTN|All-day Battery Life]",
+    "created_at": "2026-02-21 16:50:08",
+    "updated_at": "2026-02-21 16:50:08"
+  },
+  {
+    "id": 71,
+    "chat_id": 12,
+    "role": "user",
+    "content": "Heavy Gaming Performance",
+    "created_at": "2026-02-21 16:50:20",
+    "updated_at": "2026-02-21 16:50:20"
+  },
+  {
+    "id": 72,
+    "chat_id": 12,
+    "role": "assistant",
+    "content": "To find the best phone for heavy gaming within your budget of \u20b945,000, are you open to considering last year's models or older flagships that might offer great gaming performance at a lower price, or do you prefer the latest models?\\n[BTN|Latest Models]\\n[BTN|Open to Older Models]",
+    "created_at": "2026-02-21 16:50:22",
+    "updated_at": "2026-02-21 16:50:22"
+  },
+  {
+    "id": 73,
+    "chat_id": 12,
+    "role": "user",
+    "content": "Open to Older Models",
+    "created_at": "2026-02-21 16:50:46",
+    "updated_at": "2026-02-21 16:50:46"
+  },
+  {
+    "id": 74,
+    "chat_id": 12,
+    "role": "user",
+    "content": "continue",
+    "created_at": "2026-02-21 16:51:30",
+    "updated_at": "2026-02-21 16:51:30"
+  },
+  {
+    "id": 75,
+    "chat_id": 12,
+    "role": "assistant",
+    "content": "Based on your budget of \u20b945,000 and preference for heavy gaming performance, I'd like to recommend a phone that fits your needs. \\n[CARD|Samsung Galaxy S24|\u20b942,999|/image/path.jpg|/phones/5|Snapdragon 8 Gen 3|4000 mAh|https://www.amazon.in/Samsung-Galaxy-S24/s?k=Samsung+Galaxy+S24|https://www.flipkart.com/samsung-galaxy-s24]\\nThis phone features a powerful Snapdragon 8 Gen 3 chipset, which should provide excellent gaming performance. It also has a high-quality display and a long-lasting battery. \\n\\nPlease note that the phone's price might vary depending on the seller and availability. \\n\\nWould you like to consider other options or proceed with this recommendation? \\n[BTN|Consider Other Options]\\n[BTN|Proceed with Recommendation]",
+    "created_at": "2026-02-21 16:51:35",
+    "updated_at": "2026-02-21 16:51:35"
+  },
+  {
+    "id": 76,
+    "chat_id": 12,
+    "role": "user",
+    "content": "Proceed with Recommendation",
+    "created_at": "2026-02-21 16:52:02",
+    "updated_at": "2026-02-21 16:52:02"
+  },
+  {
+    "id": 77,
+    "chat_id": 12,
+    "role": "assistant",
+    "content": "[CARD|Samsung Galaxy S24|\u20b942,999|/image/path.jpg|/phones/5|Qualcomm SM8650-AC Snapdragon 8 Gen 3 (4 nm) - USA/Canada/China Exynos 2400 (4 nm) - International|Li-Ion 4000 mAh|https://www.amazon.in/Samsung-Galaxy-S24/s?k=Samsung+Galaxy+S24|https://www.flipkart.com/samsung-galaxy-s24-5g-snapdragon-cobalt-violet-128-gb/p/itm994d8dcac3256?pid=MOBHDVFKTRZHMETK&lid=LSTMOBHDVFKTRZHMETKIJ2HY7&marketplace=FLIPKART&q=Samsung+Galaxy+S24&store=tyy/4io&srno=s_1_3&otracker=search&fm=search&iid=c879564f-3d9c-4069-98a7-f3579128cd5e.MOBHDVFKTRZHMETK.SEARCH&ppt=None&ppn=None&ssid=1bhjs628oceulngg1771658428338&qH=562156a97eea0cf1&ov_redirect=true]\\nThis phone features a powerful Snapdragon 8 Gen 3 chipset, which should provide excellent gaming performance. It also has a high-quality display and a long-lasting battery. The phone's UEPS score is 142.0, CMS score is 646.5, and GPX score is 182.88, indicating good overall performance, camera capabilities, and gaming performance. \\n\\nPlease note that the phone's price might vary depending on the seller and availability. \\n\\nWould you like to consider other options or proceed with this recommendation? \\n[BTN|Consider Other Options]\\n[BTN|Proceed with Recommendation]",
+    "created_at": "2026-02-21 16:52:07",
+    "updated_at": "2026-02-21 16:52:07"
+  },
+  {
+    "id": 78,
+    "chat_id": 12,
+    "role": "user",
+    "content": "tell me in detail about this phone",
+    "created_at": "2026-02-21 16:52:30",
+    "updated_at": "2026-02-21 16:52:30"
+  },
+  {
+    "id": 236,
+    "chat_id": 38,
+    "role": "user",
+    "content": "hi",
+    "created_at": "2026-02-23 07:19:53",
+    "updated_at": "2026-02-23 07:19:53"
+  },
+  {
+    "id": 237,
+    "chat_id": 38,
+    "role": "assistant",
+    "content": "Hello. How can I assist you today? Are you looking for a new phone?",
+    "created_at": "2026-02-23 07:19:54",
+    "updated_at": "2026-02-23 07:19:54"
+  },
+  {
+    "id": 91,
+    "chat_id": 14,
+    "role": "user",
+    "content": "Which phones have the highest Camera Matrix Score (CMS) right now?",
+    "created_at": "2026-02-21 18:58:37",
+    "updated_at": "2026-02-21 18:58:37"
+  },
+  {
+    "id": 92,
+    "chat_id": 14,
+    "role": "assistant",
+    "content": "To find the best phone for you with a high Camera Matrix Score (CMS), could you please tell me what is your exact budget or price range for this new phone?",
+    "created_at": "2026-02-21 18:58:40",
+    "updated_at": "2026-02-21 18:58:40"
+  },
+  {
+    "id": 93,
+    "chat_id": 14,
+    "role": "user",
+    "content": "any price",
+    "created_at": "2026-02-21 18:59:03",
+    "updated_at": "2026-02-21 18:59:03"
+  },
+  {
+    "id": 223,
+    "chat_id": 36,
+    "role": "assistant",
+    "content": "For the best camera phone under \u20b945,000, I recommend the following options: [CARD|Realme GT 7 Pro|\u20b949,999|/storage/phones/realme-gt-7-pro.png|/phones/20|Qualcomm SM8750-AB Snapdragon 8 Elite (3 nm)|Si/C Li-Ion 6500 mAh|https://www.amazon.in/realme-Snapdragon-Processor-Periscope-RealWorld/dp/B0DMFD8L7J|https://www.flipkart.com/realme-gt-7-pro-grey-256-gb/p/itma117bb1885029] [CARD|OnePlus 13R|\u20b939,999|/storage/phones/oneplus-13r.png|/phones/9|Qualcomm SM8650-AB Snapdragon 8 Gen 3 (4 nm)|Li-Ion 6000 mAh|https://www.amazon.in/OnePlus-13R-Smarter-Lifetime-Warranty/dp/B0DPS62DYH|https://www.flipkart.com/oneplus-13r-5g-astral-trail-256-gb/p/itmff6561809fab8] [CARD|vivo iQOO Neo 10|\u20b936,998|/assets/iqoo-neo-10_nobg.png|/phones/11|Qualcomm SM8735 Snapdragon 8s Gen 4 (4 nm)|Si/C Li-Ion 7000 mAh|https://www.amazon.in/iQOO-Snapdragon-Processor-SuperComputing-Smartphone/dp/B0F83LL1D2|https://www.flipkart.com/iqoo-neo-10-inferno-red-256-gb/p/itm4faf25d0485ec] However, considering the budget constraint, the Realme GT 7 Pro might be slightly out of budget. Among the remaining options, the OnePlus 13R has a Camera Mastery Score of 732.5, while the vivo iQOO Neo 10 has a score of 431.7. The OnePlus 13R has a more impressive camera performance, but it's slightly above the budget.",
+    "created_at": "2026-02-22 14:00:18",
+    "updated_at": "2026-02-22 14:00:18"
+  },
+  {
+    "id": 224,
+    "chat_id": 36,
+    "role": "user",
+    "content": "can u comapre these 3",
+    "created_at": "2026-02-22 14:00:40",
+    "updated_at": "2026-02-22 14:00:40"
+  },
+  {
+    "id": 225,
+    "chat_id": 36,
+    "role": "assistant",
+    "content": "Here's a comparison of the three phones:\\n\\n**Camera Performance:**\\nThe Realme GT 7 Pro has the highest Camera Mastery Score of 659.7, followed by the OnePlus 13R with a score of 732.5 (higher than GT7 Pro but GT7 Pro is out of budget), and then the vivo iQOO Neo 10 with a score of 431.7.\\n\\n**Gaming Performance:**\\nThe Realme GT 7 Pro has a Gaming Performance Index of 277.72, followed by the OnePlus 13R with a score of 242.17, and then the vivo iQOO Neo 10 with a score of 221.07.\\n\\n**Battery Life:**\\nThe vivo iQOO Neo 10 has the largest battery with a capacity of 7000mAh, followed by the Realme GT 7 Pro with a 6500mAh battery, and then the OnePlus 13R with a 6000mAh battery.\\n\\n**Price:**\\nThe vivo iQOO Neo 10 is the most affordable option at \u20b936,998, followed by the OnePlus 13R at \u20b939,999, and then the Realme GT 7 Pro at \u20b949,999 (which is out of budget).\\n\\nOverall, the OnePlus 13R offers a great balance of camera performance, gaming performance, and battery life, but it's slightly above the budget. The vivo iQOO Neo 10 is a more affordable option with a large battery, but its camera performance is not as impressive as the other two options.\\n\\nHere are the [CARD|...] strings for the three phones:\\n\\n[CARD|OnePlus 13R|\u20b939,999|/storage/phones/oneplus-13r.png|/phones/9|Qualcomm SM8650-AB Snapdragon 8 Gen 3 (4 nm)|Li-Ion 6000 mAh|https://www.amazon.in/OnePlus-13R-Smarter-Lifetime-Warranty/dp/B0DPS62DYH|https://www.flipkart.com/oneplus-13r-5g-astral-trail-256-gb/p/itmff6561809fab8]\\n\\n[CARD|vivo iQOO Neo 10|\u20b936,998|/assets/iqoo-neo-10_nobg.png|/phones/11|Qualcomm SM8735 Snapdragon 8s Gen 4 (4 nm)|Si/C Li-Ion 7000 mAh|https://www.amazon.in/iQOO-Snapdragon-Processor-SuperComputing-Smartphone/dp/B0F83LL1D2|https://www.flipkart.com/iqoo-neo-10-inferno-red-256-gb/p/itm4faf25d0485ec]\\n\\n[CARD|Realme GT 7 Pro|\u20b949,999|/storage/phones/realme-gt-7-pro.png|/phones/20|Qualcomm SM8750-AB Snapdragon 8 Elite (3 nm)|Si/C Li-Ion 6500 mAh|https://www.amazon.in/realme-Snapdragon-Processor-Periscope-RealWorld/dp/B0DMFD8L7J|https://www.flipkart.com/realme-gt-7-pro-grey-256-gb/p/itma117bb1885029]",
+    "created_at": "2026-02-22 14:00:49",
+    "updated_at": "2026-02-22 14:00:49"
+  },
+  {
+    "id": 226,
+    "chat_id": 36,
+    "role": "user",
+    "content": "comapre specs pls",
+    "created_at": "2026-02-22 14:01:05",
+    "updated_at": "2026-02-22 14:01:05"
+  },
+  {
+    "id": 227,
+    "chat_id": 36,
+    "role": "assistant",
+    "content": "Here's a comparison of the specs of the three phones:\\n\\n**Processors:**\\n- OnePlus 13R: Qualcomm SM8650-AB Snapdragon 8 Gen 3 (4 nm)\\n- vivo iQOO Neo 10: Qualcomm SM8735 Snapdragon 8s Gen 4 (4 nm)\\n- Realme GT 7 Pro: Qualcomm SM8750-AB Snapdragon 8 Elite (3 nm)\\n\\nThe Realme GT 7 Pro has the most powerful processor, followed by the OnePlus 13R and then the vivo iQOO Neo 10.\\n\\n**Batteries:**\\n- OnePlus 13R: Li-Ion 6000 mAh\\n- vivo iQOO Neo 10: Si/C Li-Ion 7000 mAh\\n- Realme GT 7 Pro: Si/C Li-Ion 6500 mAh\\n\\nThe vivo iQOO Neo 10 has the largest battery, followed by the Realme GT 7 Pro and then the OnePlus 13R.\\n\\n**Scores:**\\n- OnePlus 13R: Overall Score - 50.5, Expert Score - 62.27, Value Score - 12.2, UEPS - 177.0, CMS - 636.9, GPX - 272.85, Endurance - 121.3\\n- vivo iQOO Neo 10: Overall Score - 34.5, Expert Score - 46.58, Value Score - 12.6, UEPS - 147.0, CMS - 431.7, GPX - 221.07, Endurance - 70\\n- Realme GT 7 Pro: Overall Score - 50.5, Expert Score - 65.82, Value Score - 13.2, UEPS - 194.0, CMS - 659.7, GPX - 277.72, Endurance - 126.3\\n\\nThe Realme GT 7 Pro has the highest Expert Score and Camera Mastery Score, while the OnePlus 13R has a higher Value Score. The vivo iQOO Neo 10 has a lower Overall Score and Expert Score compared to the other two phones.\\n\\nHere are the [CARD|...] strings for the three phones: [CARD|OnePlus 13R|\u20b939,999|/storage/phones/oneplus-13r.png|/phones/9|Qualcomm SM8650-AB Snapdragon 8 Gen 3 (4 nm)|Li-Ion 6000 mAh|https://www.amazon.in/OnePlus-13R-Smarter-Lifetime-Warranty/dp/B0DPS62DYH|https://www.flipkart.com/oneplus-13r-5g-astral-trail-256-gb/p/itmff6561809fab8] [CARD|vivo iQOO Neo 10|\u20b936,998|/assets/iqoo-neo-10_nobg.png|/phones/11|Qualcomm SM8735 Snapdragon 8s Gen 4 (4 nm)|Si/C Li-Ion 7000 mAh|https://www.amazon.in/iQOO-Snapdragon-Processor-SuperComputing-Smartphone/dp/B0F83LL1D2|https://www.flipkart.com/iqoo-neo-10-inferno-red-256-gb/p/itm4faf25d0485ec] [CARD|Realme GT 7 Pro|\u20b949,999|/storage/phones/realme-gt-7-pro.png|/phones/20|Qualcomm SM8750-AB Snapdragon 8 Elite (3 nm)|Si/C Li-Ion 6500 mAh|https://www.amazon.in/realme-Snapdragon-Processor-Periscope-RealWorld/dp/B0DMFD8L7J|https://www.flipkart.com/realme-gt-7-pro-grey-256-gb/p/itma117bb1885029]",
+    "created_at": "2026-02-22 14:01:19",
+    "updated_at": "2026-02-22 14:01:19"
+  },
+  {
+    "id": 220,
+    "chat_id": 36,
+    "role": "user",
+    "content": "Suggest some phones for heavy gaming under \u20b945,000.",
+    "created_at": "2026-02-22 13:59:39",
+    "updated_at": "2026-02-22 13:59:39"
+  },
+  {
+    "id": 221,
+    "chat_id": 36,
+    "role": "assistant",
+    "content": "For heavy gaming under \u20b945,000, I recommend the following options:\\n\\n[CARD|OnePlus 13R|\u20b939,999|/storage/phones/oneplus-13r.png|/phones/9|Qualcomm SM8650-AB Snapdragon 8 Gen 3 (4 nm)|Li-Ion 6000 mAh|https://www.amazon.in/OnePlus-13R-Smarter-Lifetime-Warranty/dp/B0DPS62DYH|https://www.flipkart.com/oneplus-13r-5g-astral-trail-256-gb/p/itmff6561809fab8]\\n\\n[CARD|vivo T4 Ultra|\u20b935,999|/storage/phones/vivo-t4-ultra.png|/phones/18|Mediatek Dimensity 9300+ (4 nm)|Si/C Li-Ion 5500 mAh|https://www.amazon.in/vivo-Battery-Periscope-Dimensity-Processor/dp/B0FF29BYHF|https://www.flipkart.com/vivo-t4-ultra-5g-meteor-grey-256-gb/p/itm9cfd8118c9ce0]\\n\\n[CARD|Poco F7|\u20b933,998|/storage/phones/poco-f7.png|/phones/7|Snapdragon 8s Gen 4 (4nm)|Si/C Li-Ion 7550 mAh||https://www.flipkart.com/poco-f7-5g-phantom-black-256-gb/p/itm632bdcafce49a]\\n\\nThese phones have impressive gaming performance, with the OnePlus 13R and Poco F7 featuring powerful Snapdragon processors. The vivo T4 Ultra also offers a large battery and a fast charging system.\\n\\nIn terms of gaming performance, the OnePlus 13R has a Gaming Performance Index of 242.17, while the Poco F7 has a score of 234.86. The vivo T4 Ultra's score is 205.20.",
+    "created_at": "2026-02-22 13:59:46",
+    "updated_at": "2026-02-22 13:59:46"
+  }
+]

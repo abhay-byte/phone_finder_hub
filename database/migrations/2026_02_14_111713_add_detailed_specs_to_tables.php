@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('screen_glass')->nullable()->after('display_protection'); // Gorilla Glass 7i etc.
         });
 
-        // 3. Build Variants (already covered by build_material, but let's add specific frame if needed, 
+        // 3. Build Variants (already covered by build_material, but let's add specific frame if needed,
         // strictly following user request for "Micro-Arc Oxidation" which can go in build_material)
 
         // 4. Camera (Sensors, Aperture, Focal Length)
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->text('main_camera_apertures')->nullable()->after('main_camera_sensors'); // f/1.8, f/2.6...
             $table->text('main_camera_focal_lengths')->nullable()->after('main_camera_apertures'); // 24mm, 73mm...
             $table->string('main_camera_ois')->nullable()->after('main_camera_features'); // OIS support details
-            
+
             $table->string('selfie_camera_aperture')->nullable()->after('selfie_camera_specs');
             $table->string('selfie_camera_sensor')->nullable()->after('selfie_camera_aperture');
             $table->boolean('selfie_camera_autofocus')->default(false)->after('selfie_camera_features');
@@ -47,7 +47,7 @@ return new class extends Migration
 
         // 5. Video
         Schema::table('spec_cameras', function (Blueprint $table) {
-             $table->text('video_features')->nullable()->after('main_video_capabilities'); // Auto HDR, Gyro-EIS, LUT
+            $table->text('video_features')->nullable()->after('main_video_capabilities'); // Auto HDR, Gyro-EIS, LUT
         });
 
         // 6. Audio
@@ -80,10 +80,10 @@ return new class extends Migration
             $table->string('battery_active_use_score')->nullable()->after('battery_endurance_hours'); // 23h 07m
             $table->string('battery_charge_time_100')->nullable()->after('charging_specs_detailed'); // 40 min (wait, this fits in battery table or benchmark? Benchmark is tests)
         });
-        
+
         // Correcting location for charge time to benchmarks as it's a test result
         Schema::table('benchmarks', function (Blueprint $table) {
-             $table->string('charge_time_test')->nullable()->after('battery_active_use_score'); // 100% in 40 min
+            $table->string('charge_time_test')->nullable()->after('battery_active_use_score'); // 100% in 40 min
         });
     }
 
@@ -92,14 +92,28 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Dropping columns is tedious, usually we just rollback. 
+        // Dropping columns is tedious, usually we just rollback.
         // But for completeness:
-        Schema::table('phones', function (Blueprint $table) { $table->dropColumn('announced_date'); });
-        Schema::table('spec_platforms', function (Blueprint $table) { $table->dropColumn('os_details'); });
-        Schema::table('spec_bodies', function (Blueprint $table) { $table->dropColumn(['display_brightness', 'pwm_dimming', 'screen_to_body_ratio', 'pixel_density', 'touch_sampling_rate', 'screen_glass']); });
-        Schema::table('spec_cameras', function (Blueprint $table) { $table->dropColumn(['main_camera_sensors', 'main_camera_apertures', 'main_camera_focal_lengths', 'main_camera_ois', 'selfie_camera_aperture', 'selfie_camera_sensor', 'selfie_camera_autofocus', 'video_features']); });
-        Schema::table('spec_connectivities', function (Blueprint $table) { $table->dropColumn(['audio_quality', 'loudness_test_result', 'wifi_bands', 'usb_details', 'sar_value', 'network_bands']); });
-        Schema::table('spec_batteries', function (Blueprint $table) { $table->dropColumn(['charging_specs_detailed', 'reverse_wired', 'reverse_wireless']); });
-        Schema::table('benchmarks', function (Blueprint $table) { $table->dropColumn(['antutu_v10_score', 'dmark_test_type', 'repairability_score', 'energy_label', 'battery_active_use_score', 'charge_time_test']); });
+        Schema::table('phones', function (Blueprint $table) {
+            $table->dropColumn('announced_date');
+        });
+        Schema::table('spec_platforms', function (Blueprint $table) {
+            $table->dropColumn('os_details');
+        });
+        Schema::table('spec_bodies', function (Blueprint $table) {
+            $table->dropColumn(['display_brightness', 'pwm_dimming', 'screen_to_body_ratio', 'pixel_density', 'touch_sampling_rate', 'screen_glass']);
+        });
+        Schema::table('spec_cameras', function (Blueprint $table) {
+            $table->dropColumn(['main_camera_sensors', 'main_camera_apertures', 'main_camera_focal_lengths', 'main_camera_ois', 'selfie_camera_aperture', 'selfie_camera_sensor', 'selfie_camera_autofocus', 'video_features']);
+        });
+        Schema::table('spec_connectivities', function (Blueprint $table) {
+            $table->dropColumn(['audio_quality', 'loudness_test_result', 'wifi_bands', 'usb_details', 'sar_value', 'network_bands']);
+        });
+        Schema::table('spec_batteries', function (Blueprint $table) {
+            $table->dropColumn(['charging_specs_detailed', 'reverse_wired', 'reverse_wireless']);
+        });
+        Schema::table('benchmarks', function (Blueprint $table) {
+            $table->dropColumn(['antutu_v10_score', 'dmark_test_type', 'repairability_score', 'energy_label', 'battery_active_use_score', 'charge_time_test']);
+        });
     }
 };

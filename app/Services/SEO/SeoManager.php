@@ -8,12 +8,13 @@ class SeoManager
 
     public function __construct()
     {
-        $this->data = new SEOData(); // Loads defaults
+        $this->data = new SEOData; // Loads defaults
     }
 
     public function set(SEOData $data): self
     {
         $this->data = $data;
+
         return $this;
     }
 

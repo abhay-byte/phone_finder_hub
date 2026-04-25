@@ -2,11 +2,8 @@
 
 use App\Models\Phone;
 use App\Models\SpecBody;
-use App\Models\SpecPlatform;
 use App\Models\SpecCamera;
 use App\Models\SpecConnectivity;
-use App\Models\SpecBattery;
-use App\Models\Benchmark;
 
 // OnePlus 15 (ID 3)
 $p15 = Phone::find(3);

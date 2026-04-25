@@ -3,8 +3,8 @@
 use App\Models\Phone;
 use Illuminate\Support\Facades\DB;
 
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -78,7 +78,7 @@ DB::transaction(function () {
         'main_camera_specs' => "50 MP, f/1.5, 23mm (wide), 1/1.28\", 1.22µm, multi-directional PDAF, OIS\n200 MP, f/2.1, 70mm (periscope telephoto), 1/1.56\", 0.5µm, 3x optical zoom, multi-directional PDAF, OIS\n50 MP, f/2.0, 15mm, 120˚ (ultrawide), 1/2.76\", 0.64µm, multi-directional PDAF",
         'telephoto_camera_specs' => '200 MP, f/2.1, 70mm (periscope telephoto), 1/1.56", 0.5µm, 3x optical zoom, multi-directional PDAF, OIS',
         'ultrawide_camera_specs' => '50 MP, f/2.0, 15mm, 120˚ (ultrawide), 1/2.76", 0.64µm, multi-directional PDAF',
-        
+
         // Granular fields for Table View
         'main_camera_sensors' => '1/1.28", 1/1.56", 1/2.76"',
         'main_camera_apertures' => 'f/1.5, f/2.1, f/2.0',
@@ -121,7 +121,7 @@ DB::transaction(function () {
     $phone->benchmarks()->updateOrCreate([], [
         'antutu_score' => 3563384, // Using the higher score from text (v11) as it matches X300 Pro range
         'antutu_v10_score' => 2719560,
-        // Block said 3469273 for v11, but text said 3563384. 
+        // Block said 3469273 for v11, but text said 3563384.
         // 3563384 is explicitly labeled v11 in "Our Tests". I will use that.
         'geekbench_single' => 3235,
         'geekbench_multi' => 9626,
@@ -134,8 +134,8 @@ DB::transaction(function () {
         // GSM Arena: 4.6/5 -> 92
         // Mobile91: 9/10 -> 90
         // Average: 91
-        'other_benchmark_score' => 91, 
+        'other_benchmark_score' => 91,
     ]);
-    
-    echo "Phone synced successfully: " . $phone->name . " (ID: " . $phone->id . ")\n";
+
+    echo 'Phone synced successfully: '.$phone->name.' (ID: '.$phone->id.")\n";
 });

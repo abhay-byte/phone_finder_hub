@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use App\Models\Benchmark;
 use App\Models\Phone;
+use App\Models\SpecBattery;
 use App\Models\SpecBody;
-use App\Models\SpecPlatform;
 use App\Models\SpecCamera;
 use App\Models\SpecConnectivity;
-use App\Models\SpecBattery;
-use App\Models\Benchmark;
+use App\Models\SpecPlatform;
+use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
 class ImportPhone extends Command
@@ -23,6 +23,7 @@ class ImportPhone extends Command
     protected $description = 'Import phone data from Python aggregator script and populate all database tables';
 
     protected $data;
+
     protected $phone;
 
     public function handle()
@@ -35,19 +36,21 @@ class ImportPhone extends Command
             // For now, let's keep JSON logic for single phone if only 1 arg is passed
             if (count($phones) !== 1) {
                 $this->error('JSON import currently supports only one phone argument at a time.');
+
                 return 1;
             }
             $this->importSinglePhone($phones[0], $jsonFile);
+
             return 0;
         }
 
-        $this->info("Starting batch import for " . count($phones) . " phones...");
-        
+        $this->info('Starting batch import for '.count($phones).' phones...');
+
         foreach ($phones as $phoneName) {
             try {
                 $this->importSinglePhone($phoneName);
             } catch (\Exception $e) {
-                $this->error("Error importing {$phoneName}: " . $e->getMessage());
+                $this->error("Error importing {$phoneName}: ".$e->getMessage());
             }
         }
 
@@ -55,16 +58,16 @@ class ImportPhone extends Command
         $this->info('Recalculating all phone rankings...');
         $this->call('phone:recalculate-scores');
         $this->call('cache:clear');
-        
+
         return 0;
     }
 
     protected function importSinglePhone($phoneName, $jsonFile = null)
     {
         $this->newLine();
-        $this->info("------------------------------------------------------------");
+        $this->info('------------------------------------------------------------');
         $this->info("=== Importing Phone: {$phoneName} ===");
-        $this->info("------------------------------------------------------------");
+        $this->info('------------------------------------------------------------');
         $this->newLine();
 
         // Step 1: Get data
@@ -76,15 +79,17 @@ class ImportPhone extends Command
             $this->data = $this->fetchPhoneData($phoneName);
         }
 
-        if (!$this->data) {
+        if (! $this->data) {
             $this->error("Failed to fetch data for {$phoneName}");
+
             return;
         }
 
         // Step 2: Check if phone exists (case-insensitive)
         $existingPhone = Phone::whereRaw('LOWER(name) = ?', [Str::lower($phoneName)])->first();
-        if ($existingPhone && !$this->option('force')) {
+        if ($existingPhone && ! $this->option('force')) {
             $this->warn("Phone '{$phoneName}' already exists. Skipping.");
+
             return;
         }
 
@@ -112,17 +117,17 @@ class ImportPhone extends Command
         $this->table(['Metric', 'Value'], [
             ['ID', $this->phone->id],
             ['Name', $this->phone->name],
-            ['Price', '₹' . number_format($this->phone->price, 0)],
+            ['Price', '₹'.number_format($this->phone->price, 0)],
             ['FPI', $this->phone->overall_score],
             ['UEPS', $this->phone->ueps_score],
         ]);
-        
+
         // Log to progress.md
         $progressFile = '/home/abhay/.gemini/antigravity/brain/b2a9296f-fac2-457c-a4c4-eb874c68234d/progress.md';
         if (file_exists($progressFile)) {
             file_put_contents($progressFile, "- [x] {$this->phone->name} (ID: {$this->phone->id})\n", FILE_APPEND);
         }
-        
+
         $this->newLine();
     }
 
@@ -133,9 +138,10 @@ class ImportPhone extends Command
         $pythonScript = base_path('python/phone_data_aggregator.py');
         $venvPython = base_path('.venv/bin/python');
 
-        if (!file_exists($venvPython)) {
+        if (! file_exists($venvPython)) {
             $this->error("Python venv not found at: {$venvPython}");
-            $this->line("Run: python -m venv .venv && source .venv/bin/activate && pip install -r python/requirements.txt");
+            $this->line('Run: python -m venv .venv && source .venv/bin/activate && pip install -r python/requirements.txt');
+
             return null;
         }
 
@@ -147,12 +153,12 @@ class ImportPhone extends Command
         if ($this->option('skip-shopping')) {
             $skipSteps[] = 'shopping';
         }
-        $skipArg = !empty($skipSteps) ? '--skip=' . implode(',', $skipSteps) : '';
+        $skipArg = ! empty($skipSteps) ? '--skip='.implode(',', $skipSteps) : '';
 
         // Use temp file for output to avoid stdout parsing issues
-        $tempFile = tempnam(sys_get_temp_dir(), 'phone_import_') . '.json';
-        
-        $command = "{$venvPython} {$pythonScript} " . escapeshellarg($phoneName) . " --output " . escapeshellarg($tempFile) . " {$skipArg} 2>&1";
+        $tempFile = tempnam(sys_get_temp_dir(), 'phone_import_').'.json';
+
+        $command = "{$venvPython} {$pythonScript} ".escapeshellarg($phoneName).' --output '.escapeshellarg($tempFile)." {$skipArg} 2>&1";
         $this->line("Running: {$command}");
 
         // Use proc_open to stream output in real-time
@@ -162,15 +168,16 @@ class ImportPhone extends Command
             2 => ['pipe', 'w'],
         ], $pipes, base_path());
 
-        if (!is_resource($process)) {
+        if (! is_resource($process)) {
             $this->error('Failed to start Python script');
+
             return null;
         }
 
         fclose($pipes[0]);
 
         // Stream output
-        while (!feof($pipes[1])) {
+        while (! feof($pipes[1])) {
             $line = fgets($pipes[1]);
             if ($line !== false) {
                 $line = trim($line);
@@ -183,33 +190,36 @@ class ImportPhone extends Command
         fclose($pipes[2]);
 
         $exitCode = proc_close($process);
-        
-        if (!file_exists($tempFile)) {
+
+        if (! file_exists($tempFile)) {
             $this->error('Python script did not produce output file');
+
             return null;
         }
 
         $output = file_get_contents($tempFile);
         unlink($tempFile);
-        
-        if (!$output) {
+
+        if (! $output) {
             $this->error('Empty output file from Python script');
+
             return null;
         }
 
         $data = json_decode($output, true);
-        
+
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->error('Failed to parse JSON: ' . json_last_error_msg());
+            $this->error('Failed to parse JSON: '.json_last_error_msg());
+
             return null;
         }
 
         $this->info('✓ Data fetched successfully');
         $summary = $data['summary'] ?? [];
-        $this->line("  Steps: " . ($summary['successful_steps'] ?? '?') . "/" . ($summary['total_steps'] ?? '?') . " successful");
-        
-        if (!empty($data['errors'])) {
-            $this->warn('  Warnings: ' . implode(', ', $data['errors']));
+        $this->line('  Steps: '.($summary['successful_steps'] ?? '?').'/'.($summary['total_steps'] ?? '?').' successful');
+
+        if (! empty($data['errors'])) {
+            $this->warn('  Warnings: '.implode(', ', $data['errors']));
         }
 
         return $data;
@@ -242,12 +252,12 @@ class ImportPhone extends Command
 
         if ($shopping) {
             $amazonItems = $shopping['amazon'] ?? [];
-            if (!empty($amazonItems[0])) {
+            if (! empty($amazonItems[0])) {
                 $amazonUrl = $amazonItems[0]['link'] ?? null;
                 $amazonPrice = $this->parsePrice($amazonItems[0]['price'] ?? null);
             }
             $flipkartItems = $shopping['flipkart'] ?? [];
-            if (!empty($flipkartItems[0])) {
+            if (! empty($flipkartItems[0])) {
                 $flipkartUrl = $flipkartItems[0]['link'] ?? null;
                 $flipkartPrice = $this->parsePrice($flipkartItems[0]['price'] ?? null);
             }
@@ -255,23 +265,23 @@ class ImportPhone extends Command
 
         // Image path
         $imageUrl = null;
-        if ($image && !empty($image['image_path'])) {
+        if ($image && ! empty($image['image_path'])) {
             $imgPath = $image['image_path'];
             // Normalize path separator
             $imgPath = str_replace('\\', '/', $imgPath);
-            
+
             if (str_contains($imgPath, 'storage/app/public/')) {
                 // "storage/app/public/foo.png" -> "/storage/foo.png"
-                $imageUrl = '/storage/' . str_replace('storage/app/public/', '', $imgPath);
+                $imageUrl = '/storage/'.str_replace('storage/app/public/', '', $imgPath);
             } elseif (str_contains($imgPath, 'storage/public/')) {
                 // "storage/public/foo.png" -> "/storage/foo.png"
-                $imageUrl = '/storage/' . str_replace('storage/public/', '', $imgPath);
+                $imageUrl = '/storage/'.str_replace('storage/public/', '', $imgPath);
             } elseif (str_starts_with($imgPath, 'storage/')) {
-                 $imageUrl = '/' . $imgPath;
+                $imageUrl = '/'.$imgPath;
             } else {
-                 $imageUrl = '/storage/' . basename($imgPath);
+                $imageUrl = '/storage/'.basename($imgPath);
             }
-        } elseif ($gsmarena && !empty($gsmarena['image_url'])) {
+        } elseif ($gsmarena && ! empty($gsmarena['image_url'])) {
             $imageUrl = $gsmarena['image_url'];
         }
 
@@ -297,7 +307,7 @@ class ImportPhone extends Command
             $this->phone = Phone::create($phoneData);
         }
 
-        $this->line("  Phone ID: {$this->phone->id}, Price: ₹" . number_format($this->phone->price, 0));
+        $this->line("  Phone ID: {$this->phone->id}, Price: ₹".number_format($this->phone->price, 0));
     }
 
     // ─── Spec Records ────────────────────────────────────────────────
@@ -430,7 +440,7 @@ class ImportPhone extends Command
         $osDetails = null;
         if ($osRaw && str_contains($osRaw, ',')) {
             $parts = explode(',', $osRaw, 2);
-            $os = trim($parts[0]) . ',' . trim($parts[1]);
+            $os = trim($parts[0]).','.trim($parts[1]);
             $osDetails = trim($parts[1]);
         }
 
@@ -442,7 +452,7 @@ class ImportPhone extends Command
 
         // Parse RAM variants — look for all "XGB RAM" patterns
         $ram = $this->parseRamFromInternal($internalRaw);
-        
+
         // Parse storage variants
         $storage = $this->parseStorageFromInternal($internalRaw);
 
@@ -496,7 +506,7 @@ class ImportPhone extends Command
         // Get main camera specs — can be under Triple, Quad, Dual, Single, or other keys
         $mainSpecs = null;
         foreach (['Quad', 'Triple', 'Dual', 'Single', 'Main'] as $key) {
-            if (!empty($mainCamera[$key])) {
+            if (! empty($mainCamera[$key])) {
                 $mainSpecs = $mainCamera[$key];
                 break;
             }
@@ -507,7 +517,7 @@ class ImportPhone extends Command
         }
         // Split concatenated camera lines: "50 MP, f/1.8, ... OIS 50 MP, f/2.0, ..."
         // by looking for " XX MP" pattern mid-string
-        if ($mainSpecs && !str_contains($mainSpecs, "\n")) {
+        if ($mainSpecs && ! str_contains($mainSpecs, "\n")) {
             $mainSpecs = preg_replace('/\s+(\d+ MP,)/', "\n$1", $mainSpecs);
         }
 
@@ -526,7 +536,7 @@ class ImportPhone extends Command
         // Selfie camera specs
         $selfieSpecs = null;
         foreach (['Dual', 'Single', 'Main'] as $key) {
-            if (!empty($selfieCamera[$key])) {
+            if (! empty($selfieCamera[$key])) {
                 $selfieSpecs = $selfieCamera[$key];
                 break;
             }
@@ -604,11 +614,11 @@ class ImportPhone extends Command
         $misc = $specs['Misc'] ?? [];
 
         // Helper to safely convert any value to string
-        $s = fn($v) => is_array($v) ? implode(', ', $v) : ($v ? (string)$v : null);
+        $s = fn ($v) => is_array($v) ? implode(', ', $v) : ($v ? (string) $v : null);
 
         // 3.5mm jack
         $jack = $s($sound['3.5mm jack'] ?? 'No');
-        $hasJack = !str_contains(strtolower($jack), 'no');
+        $hasJack = ! str_contains(strtolower($jack), 'no');
 
         // NFC
         $nfc = $s($comms['NFC'] ?? 'No');
@@ -636,8 +646,8 @@ class ImportPhone extends Command
 
         // Audio quality from tests
         $audioQuality = $s($sound['Quality'] ?? null);
-        
-        // Loudness 
+
+        // Loudness
         $loudnessTest = $s($sound['Loudness'] ?? null);
 
         // SAR value
@@ -735,12 +745,12 @@ class ImportPhone extends Command
         $specs = $gsmarena['specifications'] ?? $gsmarena ?? [];
         $ourTests = $specs['Our Tests'] ?? [];
         $euLabel = $specs['EU LABEL'] ?? [];
-        
-        $nanoreview = $this->data['nanoreview_benchmarks']['scores'] ?? 
+
+        $nanoreview = $this->data['nanoreview_benchmarks']['scores'] ??
                       $this->data['nanoreview_benchmarks']['data']['scores'] ?? [];
-        $gpu = $this->data['gpu_benchmarks']['gpu_benchmark'] ?? 
+        $gpu = $this->data['gpu_benchmarks']['gpu_benchmark'] ??
                $this->data['gpu_benchmarks']['data']['gpu_benchmark'] ?? [];
-        $camera = $this->data['camera_benchmarks']['camera_benchmark'] ?? 
+        $camera = $this->data['camera_benchmarks']['camera_benchmark'] ??
                   $this->data['camera_benchmarks']['data']['camera_benchmark'] ?? [];
 
         // AnTuTu
@@ -751,19 +761,23 @@ class ImportPhone extends Command
         $antutuStr = $ourTests['Performance']['AnTuTu'] ?? $ourTests['Performance']['Antutu'] ?? null;
         if ($antutuStr) {
             if (preg_match('/(\d+)\s*\(v11\)/i', $antutuStr, $m)) {
-                $antutuScore = (int)$m[1];
+                $antutuScore = (int) $m[1];
             }
             if (preg_match('/(\d+)\s*\(v10\)/i', $antutuStr, $m)) {
-                $antutuV10 = (int)$m[1];
+                $antutuV10 = (int) $m[1];
             }
-            if (!$antutuScore && preg_match('/(\d+)/', $antutuStr, $m)) {
-                $antutuScore = (int)$m[1];
+            if (! $antutuScore && preg_match('/(\d+)/', $antutuStr, $m)) {
+                $antutuScore = (int) $m[1];
             }
         }
 
         // Override with nanoreview (more reliable)
-        if (!empty($nanoreview['antutu_v11'])) $antutuScore = (int)$nanoreview['antutu_v11'];
-        if (!empty($nanoreview['antutu_v10'])) $antutuV10 = (int)$nanoreview['antutu_v10'];
+        if (! empty($nanoreview['antutu_v11'])) {
+            $antutuScore = (int) $nanoreview['antutu_v11'];
+        }
+        if (! empty($nanoreview['antutu_v10'])) {
+            $antutuV10 = (int) $nanoreview['antutu_v10'];
+        }
 
         // Geekbench
         $geekbenchSingle = null;
@@ -773,43 +787,47 @@ class ImportPhone extends Command
         if ($gbStr) {
             // May contain "single: 3200 / multi: 10200" or just a number
             if (preg_match('/single[:\s]*(\d+)/i', $gbStr, $m)) {
-                $geekbenchSingle = (int)$m[1];
+                $geekbenchSingle = (int) $m[1];
             }
             if (preg_match('/multi[:\s]*(\d+)/i', $gbStr, $m)) {
-                $geekbenchMulti = (int)$m[1];
+                $geekbenchMulti = (int) $m[1];
             }
         }
 
         // Override with nanoreview (top-level keys or individual_scores arrays)
-        if (!empty($nanoreview['geekbench_6_single'])) $geekbenchSingle = (int)$nanoreview['geekbench_6_single'];
-        if (!empty($nanoreview['geekbench_6_multi'])) $geekbenchMulti = (int)$nanoreview['geekbench_6_multi'];
+        if (! empty($nanoreview['geekbench_6_single'])) {
+            $geekbenchSingle = (int) $nanoreview['geekbench_6_single'];
+        }
+        if (! empty($nanoreview['geekbench_6_multi'])) {
+            $geekbenchMulti = (int) $nanoreview['geekbench_6_multi'];
+        }
 
         // Also check individual_scores from nanoreview (contains arrays of values)
         $nanoIndividual = $this->data['nanoreview_benchmarks']['individual_scores'] ??
                           $this->data['nanoreview_benchmarks']['data']['individual_scores'] ?? [];
-        if (!$geekbenchSingle && !empty($nanoIndividual['geekbench_6_single_values'])) {
-            $geekbenchSingle = (int)max($nanoIndividual['geekbench_6_single_values']);
+        if (! $geekbenchSingle && ! empty($nanoIndividual['geekbench_6_single_values'])) {
+            $geekbenchSingle = (int) max($nanoIndividual['geekbench_6_single_values']);
         }
-        if (!$geekbenchMulti && !empty($nanoIndividual['geekbench_6_multi_values'])) {
-            $geekbenchMulti = (int)max($nanoIndividual['geekbench_6_multi_values']);
+        if (! $geekbenchMulti && ! empty($nanoIndividual['geekbench_6_multi_values'])) {
+            $geekbenchMulti = (int) max($nanoIndividual['geekbench_6_multi_values']);
         }
 
         // 3DMark
         $dmarkScore = null;
         $dmarkStr = $ourTests['Performance']['3DMark'] ?? null;
         if ($dmarkStr && preg_match('/(\d+)/', $dmarkStr, $m)) {
-            $dmarkScore = (int)$m[1];
+            $dmarkScore = (int) $m[1];
         }
-        
+
         // Override with GPU benchmark data
-        if (!empty($gpu['wildlife_extreme_peak'])) {
-            $dmarkScore = (int)$gpu['wildlife_extreme_peak'];
+        if (! empty($gpu['wildlife_extreme_peak'])) {
+            $dmarkScore = (int) $gpu['wildlife_extreme_peak'];
         }
 
         // Stability
         $stability = null;
-        if (!empty($gpu['wildlife_extreme_stability'])) {
-            $stability = (int)round($gpu['wildlife_extreme_stability']);
+        if (! empty($gpu['wildlife_extreme_stability'])) {
+            $stability = (int) round($gpu['wildlife_extreme_stability']);
         }
 
         // Battery endurance
@@ -820,17 +838,19 @@ class ImportPhone extends Command
         // EU Label battery
         $euBattery = $euLabel['Battery'] ?? null;
         if ($euBattery && preg_match('/(\d+):(\d+)h\s*endurance/i', $euBattery, $m)) {
-            $enduranceHours = (float)$m[1] + ((float)$m[2] / 60);
+            $enduranceHours = (float) $m[1] + ((float) $m[2] / 60);
         }
 
         // Active use score
-        if (!empty($ourTests['Battery'])) {
+        if (! empty($ourTests['Battery'])) {
             $activeUseScore = is_array($ourTests['Battery']) ? implode(', ', $ourTests['Battery']) : $ourTests['Battery'];
         }
 
         // Charge time from battery charging spec
         $chargingSpec = $specs['Battery']['Charging'] ?? null;
-        if (is_array($chargingSpec)) $chargingSpec = implode(', ', $chargingSpec);
+        if (is_array($chargingSpec)) {
+            $chargingSpec = implode(', ', $chargingSpec);
+        }
         if ($chargingSpec && preg_match('/(\d+)\s*min/i', $chargingSpec, $m)) {
             $chargeTimeTest = $m[0];
         }
@@ -840,7 +860,7 @@ class ImportPhone extends Command
         $phonearena = $camera['phonearena'] ?? null;
         $otherBenchmark = $camera['mobile91'] ?? $camera['gsmarena'] ?? null;
         if ($otherBenchmark && $otherBenchmark <= 10) {
-            $otherBenchmark = (int)($otherBenchmark * 10); // Convert 9.0/10 to 90
+            $otherBenchmark = (int) ($otherBenchmark * 10); // Convert 9.0/10 to 90
         }
 
         Benchmark::updateOrCreate(
@@ -857,19 +877,19 @@ class ImportPhone extends Command
                 'battery_active_use_score' => $activeUseScore,
                 'charge_time_test' => $chargeTimeTest,
                 'battery_charge_time_100' => $chargeTimeTest,
-                'dxomark_score' => $dxomark ? (int)$dxomark : null,
-                'phonearena_camera_score' => $phonearena ? (int)$phonearena : null,
-                'other_benchmark_score' => $otherBenchmark ? (int)$otherBenchmark : null,
+                'dxomark_score' => $dxomark ? (int) $dxomark : null,
+                'phonearena_camera_score' => $phonearena ? (int) $phonearena : null,
+                'other_benchmark_score' => $otherBenchmark ? (int) $otherBenchmark : null,
                 'repairability_score' => $euLabel['Repairability'] ?? null,
                 'energy_label' => $euLabel['Energy'] ?? null,
                 'free_fall_rating' => $euLabel['Free fall'] ?? null,
             ]
         );
 
-        $this->line("  ✓ Benchmarks (AnTuTu: " . ($antutuScore ?? 'N/A') .
-            ", GB: " . ($geekbenchSingle ?? '?') . "/" . ($geekbenchMulti ?? '?') .
-            ", 3DMark: " . ($dmarkScore ?? 'N/A') .
-            ", Stability: " . ($stability ?? 'N/A') . "%)");
+        $this->line('  ✓ Benchmarks (AnTuTu: '.($antutuScore ?? 'N/A').
+            ', GB: '.($geekbenchSingle ?? '?').'/'.($geekbenchMulti ?? '?').
+            ', 3DMark: '.($dmarkScore ?? 'N/A').
+            ', Stability: '.($stability ?? 'N/A').'%)');
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -878,36 +898,43 @@ class ImportPhone extends Command
 
     protected function parsePrice(?string $priceStr): ?float
     {
-        if (!$priceStr) return null;
+        if (! $priceStr) {
+            return null;
+        }
         if (preg_match('/₹\s*([\d,]+)/u', $priceStr, $m)) {
-            return (float)str_replace(',', '', $m[1]);
+            return (float) str_replace(',', '', $m[1]);
         }
         if (preg_match('/€\s*([\d,]+)/u', $priceStr, $m)) {
-            return (float)str_replace(',', '', $m[1]) * 90;
+            return (float) str_replace(',', '', $m[1]) * 90;
         }
         if (preg_match('/\$\s*([\d,]+)/u', $priceStr, $m)) {
-            return (float)str_replace(',', '', $m[1]) * 83;
+            return (float) str_replace(',', '', $m[1]) * 83;
         }
         if (preg_match('/([\d,]+)\s*(?:INR|Rs)/i', $priceStr, $m)) {
-            return (float)str_replace(',', '', $m[1]);
+            return (float) str_replace(',', '', $m[1]);
         }
+
         return null;
     }
 
     protected function parseDate(?string $dateStr): ?string
     {
-        if (!$dateStr) return null;
+        if (! $dateStr) {
+            return null;
+        }
         // "Released 2025, January 20" or "2025, January"
         if (preg_match('/(\d{4}),?\s*(\w+)\s*(\d+)?/', $dateStr, $m)) {
             $year = $m[1];
             $month = $m[2];
             $day = $m[3] ?? '01';
             $monthNum = date('m', strtotime("{$month} 1"));
-            return "{$year}-{$monthNum}-" . str_pad($day, 2, '0', STR_PAD_LEFT);
+
+            return "{$year}-{$monthNum}-".str_pad($day, 2, '0', STR_PAD_LEFT);
         }
         if (preg_match('/(\d{4})/', $dateStr, $m)) {
             return "{$m[1]}-01-01";
         }
+
         return null;
     }
 
@@ -915,10 +942,15 @@ class ImportPhone extends Command
     {
         // Handle "vivo iQOO" brand prefix
         $lowerName = strtolower($phoneName);
-        if (str_starts_with($lowerName, 'vivo iqoo')) return 'vivo';
-        if (str_starts_with($lowerName, 'iqoo')) return 'vivo';
-        
+        if (str_starts_with($lowerName, 'vivo iqoo')) {
+            return 'vivo';
+        }
+        if (str_starts_with($lowerName, 'iqoo')) {
+            return 'vivo';
+        }
+
         $parts = explode(' ', $phoneName);
+
         return $parts[0] ?? 'Unknown';
     }
 
@@ -926,104 +958,144 @@ class ImportPhone extends Command
 
     protected function parseScreenArea(?string $sizeStr): ?string
     {
-        if (!$sizeStr) return null;
+        if (! $sizeStr) {
+            return null;
+        }
         // Match "97.9 cm²" or "97.9 cm 2" or "97.9 cm2"
         if (preg_match('/([\d.]+)\s*cm\s*[²2]/', $sizeStr, $m)) {
-            return $m[1] . ' cm²';
+            return $m[1].' cm²';
         }
+
         return null;
     }
 
     protected function parseDisplayBrightness(?string $typeStr): ?string
     {
-        if (!$typeStr) return null;
+        if (! $typeStr) {
+            return null;
+        }
         // Match highest nits value — "1600 nits (HBM), 4500 nits (peak)"
         $allNits = [];
         if (preg_match_all('/(\d+)\s*nits/i', $typeStr, $matches)) {
             $allNits = array_map('intval', $matches[1]);
         }
-        if (!empty($allNits)) {
+        if (! empty($allNits)) {
             $maxNits = max($allNits);
-            return $maxNits . ' nits (peak)';
+
+            return $maxNits.' nits (peak)';
         }
+
         return null;
     }
 
     protected function parseIpRating(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         if (preg_match('/(IP\d+[A-Z]*)/i', $str, $m)) {
             return strtoupper($m[1]);
         }
+
         return null;
     }
 
     protected function parsePwmDimming(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         // Match "2160Hz PWM" or "2160 Hz PWM" or "PWM 2160Hz"
         if (preg_match('/(\d+)\s*Hz\s*PWM/i', $str, $m)) {
-            return $m[1] . 'Hz PWM';
+            return $m[1].'Hz PWM';
         }
         if (preg_match('/PWM\s*(\d+)\s*Hz/i', $str, $m)) {
-            return $m[1] . 'Hz PWM';
+            return $m[1].'Hz PWM';
         }
         // Also match comma-separated format: "120Hz, 2160Hz PWM"
         if (preg_match('/(\d+)Hz\s*PWM/i', $str, $m)) {
-            return $m[1] . 'Hz PWM';
+            return $m[1].'Hz PWM';
         }
         if (stripos($str, 'PWM') !== false) {
             return 'Yes';
         }
+
         return null;
     }
 
     protected function parseTouchSamplingRate(?string $str): ?string
     {
-        if (!$str) return null;
-        if (preg_match('/(\d+)\s*Hz\s*touch/i', $str, $m)) {
-            return $m[1] . 'Hz';
+        if (! $str) {
+            return null;
         }
+        if (preg_match('/(\d+)\s*Hz\s*touch/i', $str, $m)) {
+            return $m[1].'Hz';
+        }
+
         return null;
     }
 
     protected function parseScreenToBody(?string $str): ?string
     {
-        if (!$str) return null;
-        if (preg_match('/~([\d.]+%)/', $str, $m)) {
-            return '~' . $m[1];
+        if (! $str) {
+            return null;
         }
+        if (preg_match('/~([\d.]+%)/', $str, $m)) {
+            return '~'.$m[1];
+        }
+
         return null;
     }
 
     protected function parsePixelDensity(?string $str): ?string
     {
-        if (!$str) return null;
-        if (preg_match('/~(\d+)\s*ppi/i', $str, $m)) {
-            return '~' . $m[1] . ' ppi';
+        if (! $str) {
+            return null;
         }
+        if (preg_match('/~(\d+)\s*ppi/i', $str, $m)) {
+            return '~'.$m[1].' ppi';
+        }
+
         return null;
     }
 
     protected function parseAspectRatio(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         if (preg_match('/(\d+:\d+)/', $str, $m)) {
             return $m[1];
         }
+
         return null;
     }
 
     protected function parseGlassProtectionLevel(?string $protection): ?string
     {
-        if (!$protection) return null;
+        if (! $protection) {
+            return null;
+        }
         $p = strtolower($protection);
-        if (str_contains($p, 'victus 2')) return 'Gorilla Glass Victus 2';
-        if (str_contains($p, 'victus')) return 'Gorilla Glass Victus';
-        if (str_contains($p, 'gorilla glass 7')) return 'Gorilla Glass 7';
-        if (str_contains($p, 'gorilla glass 6')) return 'Gorilla Glass 6';
-        if (str_contains($p, 'gorilla glass 5')) return 'Gorilla Glass 5';
-        if (str_contains($p, 'ceramic shield')) return 'Ceramic Shield';
+        if (str_contains($p, 'victus 2')) {
+            return 'Gorilla Glass Victus 2';
+        }
+        if (str_contains($p, 'victus')) {
+            return 'Gorilla Glass Victus';
+        }
+        if (str_contains($p, 'gorilla glass 7')) {
+            return 'Gorilla Glass 7';
+        }
+        if (str_contains($p, 'gorilla glass 6')) {
+            return 'Gorilla Glass 6';
+        }
+        if (str_contains($p, 'gorilla glass 5')) {
+            return 'Gorilla Glass 5';
+        }
+        if (str_contains($p, 'ceramic shield')) {
+            return 'Ceramic Shield';
+        }
+
         return $protection;
     }
 
@@ -1031,20 +1103,26 @@ class ImportPhone extends Command
 
     protected function parseRamFromInternal(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         // "256GB 12GB RAM, 512GB 16GB RAM" → "12GB, 16GB"
         preg_match_all('/(\d+)\s*GB\s*RAM/i', $str, $m);
-        if (!empty($m[1])) {
+        if (! empty($m[1])) {
             $unique = array_unique($m[1]);
             sort($unique, SORT_NUMERIC);
-            return implode(', ', array_map(fn($v) => $v . 'GB', $unique));
+
+            return implode(', ', array_map(fn ($v) => $v.'GB', $unique));
         }
+
         return null;
     }
 
     protected function parseStorageFromInternal(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         // "256GB 12GB RAM, 512GB 16GB RAM, 1TB 16GB RAM" → "256GB, 512GB, 1TB"
         $storages = [];
         // Match TB
@@ -1057,36 +1135,54 @@ class ImportPhone extends Command
         foreach ($gbM[0] as $gb) {
             $storages[] = trim($gb);
         }
-        if (!empty($storages)) {
+        if (! empty($storages)) {
             return implode(', ', array_unique($storages));
         }
+
         return null;
     }
 
     protected function parseStorageType(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         if (preg_match('/(UFS\s*[\d.]+)/i', $str, $m)) {
             return strtoupper(str_replace(' ', ' ', $m[1]));
         }
-        if (stripos($str, 'NVMe') !== false) return 'NVMe';
+        if (stripos($str, 'NVMe') !== false) {
+            return 'NVMe';
+        }
+
         return null;
     }
 
     protected function determineOsOpenness(string $brand, ?string $os): string
     {
         $brand = strtolower($brand);
-        if (in_array($brand, ['google', 'motorola'])) return 'Near-AOSP';
-        if (in_array($brand, ['oneplus', 'nothing'])) return 'Moderately restricted';
-        if (in_array($brand, ['xiaomi', 'poco'])) return 'Moderately restricted';
+        if (in_array($brand, ['google', 'motorola'])) {
+            return 'Near-AOSP';
+        }
+        if (in_array($brand, ['oneplus', 'nothing'])) {
+            return 'Moderately restricted';
+        }
+        if (in_array($brand, ['xiaomi', 'poco'])) {
+            return 'Moderately restricted';
+        }
+
         return 'Restricted OEM skin';
     }
 
     protected function determineCustomRomSupport(string $brand): string
     {
         $brand = strtolower($brand);
-        if (in_array($brand, ['oneplus', 'xiaomi', 'poco', 'google', 'nothing'])) return 'Major';
-        if (in_array($brand, ['motorola', 'samsung', 'realme'])) return 'Limited';
+        if (in_array($brand, ['oneplus', 'xiaomi', 'poco', 'google', 'nothing'])) {
+            return 'Major';
+        }
+        if (in_array($brand, ['motorola', 'samsung', 'realme'])) {
+            return 'Limited';
+        }
+
         return 'None';
     }
 
@@ -1098,22 +1194,44 @@ class ImportPhone extends Command
     protected function determineTurnipLevel(string $gpu): string
     {
         $gpu = strtolower($gpu);
-        if (str_contains($gpu, 'adreno 830') || str_contains($gpu, 'adreno 750')) return 'Full';
-        if (str_contains($gpu, 'adreno 8')) return 'Full';
-        if (str_contains($gpu, 'adreno 7')) return 'Stable';
-        if (str_contains($gpu, 'adreno 6')) return 'Partial';
+        if (str_contains($gpu, 'adreno 830') || str_contains($gpu, 'adreno 750')) {
+            return 'Full';
+        }
+        if (str_contains($gpu, 'adreno 8')) {
+            return 'Full';
+        }
+        if (str_contains($gpu, 'adreno 7')) {
+            return 'Stable';
+        }
+        if (str_contains($gpu, 'adreno 6')) {
+            return 'Partial';
+        }
+
         return 'Stable';
     }
 
     protected function determineGpuEmulationTier(string $gpu): ?string
     {
         $gpu = strtolower($gpu);
-        if (str_contains($gpu, 'adreno 830') || str_contains($gpu, 'adreno 750')) return 'Adreno 8xx High-tier';
-        if (str_contains($gpu, 'adreno 8')) return 'Adreno 8xx High-tier';
-        if (str_contains($gpu, 'adreno 7')) return 'Adreno 7xx Mid-tier';
-        if (str_contains($gpu, 'adreno 6')) return 'Adreno 6xx Entry-tier';
-        if (str_contains($gpu, 'immortalis')) return 'Mali Immortalis High-tier';
-        if (str_contains($gpu, 'mali-g')) return 'Mali Mid-tier';
+        if (str_contains($gpu, 'adreno 830') || str_contains($gpu, 'adreno 750')) {
+            return 'Adreno 8xx High-tier';
+        }
+        if (str_contains($gpu, 'adreno 8')) {
+            return 'Adreno 8xx High-tier';
+        }
+        if (str_contains($gpu, 'adreno 7')) {
+            return 'Adreno 7xx Mid-tier';
+        }
+        if (str_contains($gpu, 'adreno 6')) {
+            return 'Adreno 6xx Entry-tier';
+        }
+        if (str_contains($gpu, 'immortalis')) {
+            return 'Mali Immortalis High-tier';
+        }
+        if (str_contains($gpu, 'mali-g')) {
+            return 'Mali Mid-tier';
+        }
+
         return null;
     }
 
@@ -1121,12 +1239,25 @@ class ImportPhone extends Command
     {
         $brand = strtolower($brand);
         $os = strtolower($os ?? '');
-        if (str_contains($os, 'pixel') || $brand === 'google') return 10;
-        if ($brand === 'nothing') return 9;
-        if ($brand === 'motorola') return 8;
-        if ($brand === 'oneplus') return 7;
-        if (in_array($brand, ['xiaomi', 'poco'])) return 5;
-        if (in_array($brand, ['samsung', 'oppo', 'vivo', 'realme'])) return 4;
+        if (str_contains($os, 'pixel') || $brand === 'google') {
+            return 10;
+        }
+        if ($brand === 'nothing') {
+            return 9;
+        }
+        if ($brand === 'motorola') {
+            return 8;
+        }
+        if ($brand === 'oneplus') {
+            return 7;
+        }
+        if (in_array($brand, ['xiaomi', 'poco'])) {
+            return 5;
+        }
+        if (in_array($brand, ['samsung', 'oppo', 'vivo', 'realme'])) {
+            return 4;
+        }
+
         return 5;
     }
 
@@ -1135,18 +1266,39 @@ class ImportPhone extends Command
         $name = strtolower($name);
         $brand = strtolower($brand);
         // Gaming phones with active fans
-        if (str_contains($name, 'rog') || str_contains($name, 'redmagic')) return 'Active Fan';
+        if (str_contains($name, 'rog') || str_contains($name, 'redmagic')) {
+            return 'Active Fan';
+        }
         // Flagships with vapor chambers
-        if (str_contains($name, 'iqoo') && (str_contains($name, 'pro') || str_contains($name, 'ultra'))) return 'Vapor Chamber';
-        if ($brand === 'oneplus' && (str_contains($name, '13') || str_contains($name, '15'))) return 'Vapor Chamber';
-        if (str_contains($name, 'find x')) return 'Vapor Chamber';
-        if (str_contains($name, 'galaxy s2') && str_contains($name, 'ultra')) return 'Vapor Chamber';
-        if (str_contains($name, 'xiaomi 15') || str_contains($name, 'xiaomi 14')) return 'Vapor Chamber';
-        if (str_contains($name, 'pixel 9 pro')) return 'Vapor Chamber';
-        if (str_contains($name, 'gt 7 pro') || str_contains($name, 'gt 6')) return 'Vapor Chamber';
+        if (str_contains($name, 'iqoo') && (str_contains($name, 'pro') || str_contains($name, 'ultra'))) {
+            return 'Vapor Chamber';
+        }
+        if ($brand === 'oneplus' && (str_contains($name, '13') || str_contains($name, '15'))) {
+            return 'Vapor Chamber';
+        }
+        if (str_contains($name, 'find x')) {
+            return 'Vapor Chamber';
+        }
+        if (str_contains($name, 'galaxy s2') && str_contains($name, 'ultra')) {
+            return 'Vapor Chamber';
+        }
+        if (str_contains($name, 'xiaomi 15') || str_contains($name, 'xiaomi 14')) {
+            return 'Vapor Chamber';
+        }
+        if (str_contains($name, 'pixel 9 pro')) {
+            return 'Vapor Chamber';
+        }
+        if (str_contains($name, 'gt 7 pro') || str_contains($name, 'gt 6')) {
+            return 'Vapor Chamber';
+        }
         // Mid-range with graphite
-        if (str_contains($name, 'poco') || str_contains($name, 'nord') || str_contains($name, 'nothing phone')) return 'Graphite';
-        if (str_contains($name, 'gt 7') && !str_contains($name, 'pro')) return 'Graphite';
+        if (str_contains($name, 'poco') || str_contains($name, 'nord') || str_contains($name, 'nothing phone')) {
+            return 'Graphite';
+        }
+        if (str_contains($name, 'gt 7') && ! str_contains($name, 'pro')) {
+            return 'Graphite';
+        }
+
         return null;
     }
 
@@ -1154,13 +1306,18 @@ class ImportPhone extends Command
 
     protected function parseOis(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
+
         return stripos($str, 'OIS') !== false ? 'Yes' : 'No';
     }
 
     protected function parseUltrawide(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         $lines = preg_split('/[\n;]+/', $str);
         foreach ($lines as $line) {
             $line = trim($line);
@@ -1168,12 +1325,15 @@ class ImportPhone extends Command
                 return $line;
             }
         }
+
         return null;
     }
 
     protected function parseTelephoto(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         $lines = preg_split('/[\n;]+/', $str);
         foreach ($lines as $line) {
             $line = trim($line);
@@ -1181,97 +1341,136 @@ class ImportPhone extends Command
                 return $line;
             }
         }
+
         return null;
     }
 
     protected function parseCameraSensors(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         $sensors = [];
         $lines = preg_split('/[\n;]+/', $str);
         foreach ($lines as $line) {
             if (preg_match('/(\d+)\s*MP/i', $line, $m)) {
                 $label = 'Main';
-                if (preg_match('/ultrawide|ultra-wide/i', $line)) $label = 'Ultrawide';
-                elseif (preg_match('/telephoto|periscope/i', $line)) $label = 'Telephoto';
-                
+                if (preg_match('/ultrawide|ultra-wide/i', $line)) {
+                    $label = 'Ultrawide';
+                } elseif (preg_match('/telephoto|periscope/i', $line)) {
+                    $label = 'Telephoto';
+                }
+
                 // Extract sensor size if present
                 $sensorSize = '';
                 if (preg_match('/(1\/[\d.]+")[,\s]/i', $line, $sm)) {
-                    $sensorSize = ' (' . $sm[1] . ')';
+                    $sensorSize = ' ('.$sm[1].')';
                 }
-                $sensors[] = $label . ': ' . $m[1] . 'MP' . $sensorSize;
+                $sensors[] = $label.': '.$m[1].'MP'.$sensorSize;
             }
         }
-        return !empty($sensors) ? implode(', ', $sensors) : null;
+
+        return ! empty($sensors) ? implode(', ', $sensors) : null;
     }
 
     protected function parseCameraApertures(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         $apertures = [];
         $lines = preg_split('/[\n;]+/', $str);
         foreach ($lines as $line) {
             if (preg_match('/(f\/[\d.]+)/i', $line, $m)) {
                 $label = 'main';
-                if (preg_match('/ultrawide|ultra-wide/i', $line)) $label = 'ultrawide';
-                elseif (preg_match('/telephoto|periscope/i', $line)) $label = 'telephoto';
-                $apertures[] = $m[1] . ' (' . $label . ')';
+                if (preg_match('/ultrawide|ultra-wide/i', $line)) {
+                    $label = 'ultrawide';
+                } elseif (preg_match('/telephoto|periscope/i', $line)) {
+                    $label = 'telephoto';
+                }
+                $apertures[] = $m[1].' ('.$label.')';
             }
         }
-        return !empty($apertures) ? implode(', ', $apertures) : null;
+
+        return ! empty($apertures) ? implode(', ', $apertures) : null;
     }
 
     protected function parseCameraFocalLengths(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         $lengths = [];
         $lines = preg_split('/[\n;]+/', $str);
         foreach ($lines as $line) {
             if (preg_match('/(\d+)mm/i', $line, $m)) {
                 $label = 'main';
-                if (preg_match('/ultrawide|ultra-wide/i', $line)) $label = 'ultrawide';
-                elseif (preg_match('/telephoto|periscope/i', $line)) $label = 'telephoto';
-                $lengths[] = $m[1] . 'mm (' . $label . ')';
+                if (preg_match('/ultrawide|ultra-wide/i', $line)) {
+                    $label = 'ultrawide';
+                } elseif (preg_match('/telephoto|periscope/i', $line)) {
+                    $label = 'telephoto';
+                }
+                $lengths[] = $m[1].'mm ('.$label.')';
             }
         }
-        return !empty($lengths) ? implode(', ', $lengths) : null;
+
+        return ! empty($lengths) ? implode(', ', $lengths) : null;
     }
 
     protected function parsePdaf(?string $str): ?string
     {
-        if (!$str) return null;
-        if (stripos($str, 'multi-directional PDAF') !== false) return 'Multi-directional PDAF';
-        if (stripos($str, 'Dual Pixel') !== false || stripos($str, 'DPAF') !== false) return 'Dual Pixel AF';
-        if (stripos($str, 'PDAF') !== false) return 'PDAF';
-        if (stripos($str, 'Laser') !== false) return 'Laser AF';
+        if (! $str) {
+            return null;
+        }
+        if (stripos($str, 'multi-directional PDAF') !== false) {
+            return 'Multi-directional PDAF';
+        }
+        if (stripos($str, 'Dual Pixel') !== false || stripos($str, 'DPAF') !== false) {
+            return 'Dual Pixel AF';
+        }
+        if (stripos($str, 'PDAF') !== false) {
+            return 'PDAF';
+        }
+        if (stripos($str, 'Laser') !== false) {
+            return 'Laser AF';
+        }
+
         return null;
     }
 
     protected function parseZoom(?string $str): ?string
     {
-        if (!$str) return null;
-        if (preg_match('/(\d+x)\s*optical\s*zoom/i', $str, $m)) {
-            return $m[1] . ' optical zoom';
+        if (! $str) {
+            return null;
         }
+        if (preg_match('/(\d+x)\s*optical\s*zoom/i', $str, $m)) {
+            return $m[1].' optical zoom';
+        }
+
         return null;
     }
 
     protected function parseSelfieAperture(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         if (preg_match('/(f\/[\d.]+)/i', $str, $m)) {
             return $m[1];
         }
+
         return null;
     }
 
     protected function parseSelfieSensor(?string $str): ?string
     {
-        if (!$str) return null;
-        if (preg_match('/(\d+)\s*MP/i', $str, $m)) {
-            return $m[1] . 'MP';
+        if (! $str) {
+            return null;
         }
+        if (preg_match('/(\d+)\s*MP/i', $str, $m)) {
+            return $m[1].'MP';
+        }
+
         return null;
     }
 
@@ -1279,34 +1478,47 @@ class ImportPhone extends Command
 
     protected function parseWifiBands(?string $str): ?string
     {
-        if (!$str) return null;
-        if (stripos($str, 'tri-band') !== false) return 'Tri-band';
-        if (stripos($str, 'dual-band') !== false) return 'Dual-band';
+        if (! $str) {
+            return null;
+        }
+        if (stripos($str, 'tri-band') !== false) {
+            return 'Tri-band';
+        }
+        if (stripos($str, 'dual-band') !== false) {
+            return 'Dual-band';
+        }
+
         return null;
     }
 
     protected function parseWiredCharging(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         if (preg_match('/(\d+)\s*W\s*(?:wired|,)/i', $str, $m)) {
-            return $m[1] . 'W wired';
+            return $m[1].'W wired';
         }
         // First number with W is often wired
         if (preg_match('/(\d+)\s*W/i', $str, $m)) {
-            return $m[1] . 'W wired';
+            return $m[1].'W wired';
         }
+
         return null;
     }
 
     protected function parseWirelessCharging(?string $str): ?string
     {
-        if (!$str) return null;
+        if (! $str) {
+            return null;
+        }
         if (preg_match('/(\d+)\s*W\s*wireless/i', $str, $m)) {
-            return $m[1] . 'W wireless';
+            return $m[1].'W wireless';
         }
         if (preg_match('/(\d+)\s*W\s*Qi/i', $str, $m)) {
-            return $m[1] . 'W wireless';
+            return $m[1].'W wireless';
         }
+
         return null;
     }
 }

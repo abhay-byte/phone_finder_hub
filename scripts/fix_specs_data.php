@@ -1,8 +1,6 @@
 <?php
 
 use App\Models\Phone;
-use App\Models\SpecBody;
-use App\Models\SpecPlatform;
 
 // 1. Fix OnePlus 15 (ID 3) Display Features
 $p15 = Phone::find(3);
@@ -29,7 +27,7 @@ foreach ($ids as $id) {
         $chipset = $phone->platform->chipset;
         // Regex to remove "Qualcomm SMxxxx-xx " or "Qualcomm SMxxxx "
         $newChipset = preg_replace('/^Qualcomm\s+SM[A-Z0-9-]+\s+/', '', $chipset);
-        
+
         if ($newChipset !== $chipset) {
             echo "Fixing Chipset for {$phone->name} (ID $id)...\n";
             echo "Old: $chipset\nNew: $newChipset\n";

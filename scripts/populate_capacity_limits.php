@@ -1,11 +1,10 @@
 <?php
 
 use App\Models\Phone;
-use Illuminate\Support\Facades\DB;
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -14,7 +13,9 @@ echo "🚀 Starting capacity limits population...\n";
 $phones = Phone::with('platform')->get();
 
 foreach ($phones as $phone) {
-    if (!$phone->platform) continue;
+    if (! $phone->platform) {
+        continue;
+    }
 
     echo "Processing {$phone->name}...\n";
 
@@ -29,7 +30,7 @@ foreach ($phones as $phone) {
     // Parse RAM
     if ($ramString) {
         preg_match_all('/(\d+)\s*GB/i', $ramString, $matches);
-        if (!empty($matches[1])) {
+        if (! empty($matches[1])) {
             $rams = array_map('intval', $matches[1]);
             $ramMin = min($rams);
             $ramMax = max($rams);
@@ -39,10 +40,10 @@ foreach ($phones as $phone) {
     // Parse Storage
     if ($storageString) {
         $storageValues = [];
-        
+
         // Match GB
         preg_match_all('/(\d+)\s*GB/i', $storageString, $gbMatches);
-        if (!empty($gbMatches[1])) {
+        if (! empty($gbMatches[1])) {
             foreach ($gbMatches[1] as $val) {
                 $storageValues[] = intval($val);
             }
@@ -50,13 +51,13 @@ foreach ($phones as $phone) {
 
         // Match TB
         preg_match_all('/(\d+)\s*TB/i', $storageString, $tbMatches);
-        if (!empty($tbMatches[1])) {
+        if (! empty($tbMatches[1])) {
             foreach ($tbMatches[1] as $val) {
                 $storageValues[] = intval($val) * 1024;
             }
         }
 
-        if (!empty($storageValues)) {
+        if (! empty($storageValues)) {
             $storageMin = min($storageValues);
             $storageMax = max($storageValues);
         }

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\SyncsToFirestore;
 use Illuminate\Database\Eloquent\Model;
 
 class ForumPost extends Model
 {
+    use SyncsToFirestore;
+
     protected $fillable = ['forum_category_id', 'user_id', 'title', 'slug', 'content', 'views', 'upvotes'];
 
     public function category()

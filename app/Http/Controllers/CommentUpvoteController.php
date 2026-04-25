@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\CommentUpvote;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CommentUpvoteController extends Controller
@@ -15,10 +14,10 @@ class CommentUpvoteController extends Controller
     public function toggle(Comment $comment)
     {
         $userId = Auth::id();
-        
+
         $existingUpvote = CommentUpvote::where('comment_id', $comment->id)
-                                       ->where('user_id', $userId)
-                                       ->first();
+            ->where('user_id', $userId)
+            ->first();
 
         if ($existingUpvote) {
             // User already upvoted, so un-upvote
