@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
-use App\Models\Phone;
+use App\Repositories\CommentRepository;
+use App\Repositories\PhoneRepository;
 use App\Services\ProfanityFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,76 +12,87 @@ class CommentController extends Controller
 {
     protected ProfanityFilter $profanityFilter;
 
-    public function __construct(ProfanityFilter $profanityFilter)
+    protected CommentRepository $comments;
+
+    protected PhoneRepository $phones;
+
+    public function __construct(ProfanityFilter $profanityFilter, CommentRepository $comments, PhoneRepository $phones)
     {
         $this->profanityFilter = $profanityFilter;
+        $this->comments = $comments;
+        $this->phones = $phones;
     }
 
-    /**
-     * Fetch comments for a phone (supports AJAX sorting).
-     */
-    public function index(Request $request, Phone $phone)
+    public function index(Request $request, string $phoneId)
     {
-        $sort = $request->input('sort', 'newest'); // default
+        $phone = $this->phones->findOrFail($phoneId);
+        $sort = $request->input('sort', 'newest');
 
-        $query = $phone->comments()
-            ->whereNull('parent_id')
-            ->with(['user', 'replies.user', 'upvotes']);
+        $comments = $this->comments->forPhone($phone->id);
 
         switch ($sort) {
             case 'top':
-                $query->orderByDesc('upvotes_count')->latest();
+                usort($comments, function ($a, $b) {
+                    $cmp = ($b->upvotes_count ?? 0) <=> ($a->upvotes_count ?? 0);
+                    if ($cmp !== 0) {
+                        return $cmp;
+                    }
+
+                    return ($b->created_at ?? '') <=> ($a->created_at ?? '');
+                });
                 break;
             case 'oldest':
-                $query->oldest();
+                usort($comments, function ($a, $b) {
+                    return ($a->created_at ?? '') <=> ($b->created_at ?? '');
+                });
                 break;
             case 'newest':
             default:
-                $query->latest();
+                usort($comments, function ($a, $b) {
+                    return ($b->created_at ?? '') <=> ($a->created_at ?? '');
+                });
                 break;
         }
-
-        $comments = $query->get();
 
         if ($request->wantsJson()) {
             return response()->json([
                 'html' => view('partials.comments-list-ajax', compact('comments', 'phone'))->render(),
-                'total_count' => $phone->comments()->count(),
+                'total_count' => $this->comments->countForPhone($phone->id),
             ]);
         }
 
-        // Fallback for direct load
         return view('partials.comments', compact('comments', 'phone'));
     }
 
-    /**
-     * Store a newly created comment or reply.
-     */
-    public function store(Request $request, Phone $phone)
+    public function store(Request $request, string $phoneId)
     {
+        $phone = $this->phones->findOrFail($phoneId);
+
         $validated = $request->validate([
             'content' => [
                 'required',
                 'string',
                 'max:2000',
                 function ($attribute, $value, $fail) {
-                    // Block http/https URLs, www. subdomains, and common TLDs to prevent spam links
                     if (preg_match('/(https?:\/\/[^\s]+)|(www\.[^\s]+)|([a-zA-Z0-9\-]+\.(com|org|net|co|io|me|info|biz)\b)/i', $value)) {
                         $fail('Links are not allowed in comments.');
                     }
                 },
             ],
-            'parent_id' => 'nullable|exists:comments,id',
+            'parent_id' => 'nullable|string',
         ]);
 
-        $comment = new Comment;
-        $comment->content = $this->profanityFilter->censor($validated['content']);
-        $comment->phone_id = $phone->id;
-        $comment->user_id = Auth::id(); // Will be null for anonymous users
+        $data = [
+            'content' => $this->profanityFilter->censor($validated['content']),
+            'phone_id' => $phone->id,
+            'user_id' => Auth::id(),
+            'parent_id' => null,
+            'upvotes_count' => 0,
+            'created_at' => now()->format('c'),
+        ];
 
         if (! empty($validated['parent_id'])) {
-            // Verify the parent actually belongs to the same phone
-            $parent = Comment::findOrFail($validated['parent_id']);
+            $parent = $this->comments->findOrFail($validated['parent_id']);
             if ($parent->phone_id !== $phone->id) {
                 if ($request->wantsJson()) {
                     return response()->json(['error' => 'Invalid reply target.'], 403);
@@ -89,25 +100,22 @@ class CommentController extends Controller
 
                 return back()->with('error', 'Invalid reply target.');
             }
-            $comment->parent_id = $parent->id;
+            $data['parent_id'] = $parent->id;
         }
 
-        $comment->save();
+        $this->comments->create($data);
 
         if ($request->wantsJson()) {
-            // Return JSON success, the frontend will trigger a re-fetch of the comments list
             return response()->json(['success' => true]);
         }
 
         return back()->with('success', 'Comment posted successfully!');
     }
 
-    /**
-     * Update the specified comment.
-     */
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request, string $commentId)
     {
-        // Must be the owner to edit
+        $comment = $this->comments->findOrFail($commentId);
+
         if ($comment->user_id !== Auth::id()) {
             abort(403, 'Unauthorized action.');
         }
@@ -125,7 +133,7 @@ class CommentController extends Controller
             ],
         ]);
 
-        $comment->update([
+        $this->comments->update($comment->id, [
             'content' => $this->profanityFilter->censor($validated['content']),
         ]);
 
@@ -136,12 +144,10 @@ class CommentController extends Controller
         return back()->with('success', 'Comment updated.');
     }
 
-    /**
-     * Remove the specified comment.
-     */
-    public function destroy(Comment $comment)
+    public function destroy(string $commentId)
     {
-        // Must be the owner OR a super admin to delete
+        $comment = $this->comments->findOrFail($commentId);
+
         if ($comment->user_id !== Auth::id() && ! Auth::user()->isSuperAdmin()) {
             if (request()->wantsJson()) {
                 return response()->json(['error' => 'Unauthorized'], 403);
@@ -149,7 +155,7 @@ class CommentController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $comment->delete();
+        $this->comments->delete($comment->id);
 
         if (request()->wantsJson()) {
             return response()->json(['success' => true]);

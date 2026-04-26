@@ -2,17 +2,50 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
 {
-    use RefreshDatabase;
+    protected UserRepository $users;
+
+    protected array $createdUserIds = [];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->users = app(UserRepository::class);
+    }
+
+    protected function tearDown(): void
+    {
+        foreach ($this->createdUserIds as $id) {
+            $this->users->delete($id);
+        }
+        parent::tearDown();
+    }
+
+    protected function createUser(array $overrides = []): object
+    {
+        $user = $this->users->create(array_merge([
+            'name' => 'Test User',
+            'email' => 'test_'.uniqid().'@example.com',
+            'username' => 'test_'.uniqid(),
+            'password' => Hash::make('SecurePass123!'),
+            'role' => 'user',
+            'email_verified_at' => now()->format('c'),
+            'created_at' => now()->format('c'),
+        ], $overrides));
+
+        $this->createdUserIds[] = $user->id;
+
+        return $user;
+    }
 
     public function test_profile_page_is_displayed(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)
@@ -23,7 +56,7 @@ class ProfileTest extends TestCase
 
     public function test_profile_information_can_be_updated(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)
@@ -36,16 +69,16 @@ class ProfileTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect('/profile');
 
-        $user->refresh();
+        $updated = $this->users->find($user->id);
 
-        $this->assertSame('Test User', $user->name);
-        $this->assertSame('test@example.com', $user->email);
-        $this->assertNull($user->email_verified_at);
+        $this->assertSame('Test User', $updated->name);
+        $this->assertSame('test@example.com', $updated->email);
+        $this->assertNull($updated->email_verified_at);
     }
 
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)
@@ -58,17 +91,18 @@ class ProfileTest extends TestCase
             ->assertSessionHasNoErrors()
             ->assertRedirect('/profile');
 
-        $this->assertNotNull($user->refresh()->email_verified_at);
+        $updated = $this->users->find($user->id);
+        $this->assertNotNull($updated->email_verified_at);
     }
 
     public function test_user_can_delete_their_account(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)
             ->delete('/profile', [
-                'password' => 'password',
+                'password' => 'SecurePass123!',
             ]);
 
         $response
@@ -76,12 +110,12 @@ class ProfileTest extends TestCase
             ->assertRedirect('/');
 
         $this->assertGuest();
-        $this->assertNull($user->fresh());
+        $this->assertNull($this->users->find($user->id));
     }
 
     public function test_correct_password_must_be_provided_to_delete_account(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createUser();
 
         $response = $this
             ->actingAs($user)
@@ -94,6 +128,6 @@ class ProfileTest extends TestCase
             ->assertSessionHasErrorsIn('userDeletion', 'password')
             ->assertRedirect('/profile');
 
-        $this->assertNotNull($user->fresh());
+        $this->assertNotNull($this->users->find($user->id));
     }
 }

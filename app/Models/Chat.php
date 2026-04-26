@@ -2,22 +2,19 @@
 
 namespace App\Models;
 
-use App\Models\Traits\SyncsToFirestore;
-use Illuminate\Database\Eloquent\Model;
+use App\Repositories\ChatMessageRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Collection;
 
-class Chat extends Model
+class Chat extends FirestoreModel
 {
-    use SyncsToFirestore;
-
-    protected $fillable = ['user_id', 'title'];
-
-    public function user()
+    public function user(): ?User
     {
-        return $this->belongsTo(User::class);
+        return app(UserRepository::class)->find($this->attributes['user_id'] ?? '');
     }
 
-    public function messages()
+    public function messages(): Collection
     {
-        return $this->hasMany(ChatMessage::class);
+        return collect(app(ChatMessageRepository::class)->forChat($this->attributes['id'] ?? ''));
     }
 }

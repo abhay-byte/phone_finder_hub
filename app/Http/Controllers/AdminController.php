@@ -2,54 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Benchmark;
-use App\Models\Phone;
-use App\Models\SpecBattery;
-use App\Models\SpecBody;
-use App\Models\SpecCamera;
-use App\Models\SpecConnectivity;
-use App\Models\SpecPlatform;
+use App\Repositories\PhoneRepository;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
-    // ─── Dashboard ──────────────────────────────────────────────────────
+    protected PhoneRepository $phones;
+
+    public function __construct(PhoneRepository $phones)
+    {
+        $this->phones = $phones;
+    }
 
     public function dashboard()
     {
-        $latestPhones = Phone::latest()->take(8)->get();
-        $totalPhones = Phone::count();
-        $expertRated = Phone::where('expert_score', '>', 0)->count();
+        $all = $this->phones->all();
+        usort($all, function ($a, $b) {
+            return ($b->created_at ?? '') <=> ($a->created_at ?? '');
+        });
+        $latestPhones = collect(array_slice($all, 0, 8));
+        $totalPhones = count($all);
+        $expertRated = count(array_filter($all, fn ($p) => ($p->expert_score ?? 0) > 0));
 
         return view('admin.dashboard', compact('latestPhones', 'totalPhones', 'expertRated'));
     }
 
     public function index(Request $request)
     {
-        $query = Phone::latest();
+        $all = $this->phones->all();
+        usort($all, function ($a, $b) {
+            return ($b->created_at ?? '') <=> ($a->created_at ?? '');
+        });
 
         if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('brand', 'like', "%{$search}%");
+            $lower = strtolower($search);
+            $all = array_filter($all, function ($phone) use ($lower) {
+                return str_contains(strtolower($phone->name), $lower)
+                    || str_contains(strtolower($phone->brand), $lower);
             });
         }
 
-        $phones = $query->paginate(20)->withQueryString();
+        $page = (int) $request->input('page', 1);
+        $perPage = 20;
+        $total = count($all);
+        $items = array_slice($all, ($page - 1) * $perPage, $perPage);
+
+        $phones = new LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         return view('admin.phones', compact('phones'));
     }
-
-    // ─── Add Phone Form ─────────────────────────────────────────────────
 
     public function addPhone()
     {
         return view('admin.add-phone');
     }
-
-    // ─── Store / Trigger Import ──────────────────────────────────────────
 
     public function storePhone(Request $request)
     {
@@ -71,7 +86,6 @@ class AdminController extends Controller
 
         $jobId = (string) Str::uuid();
 
-        // Initial status
         Cache::put("admin_import_{$jobId}", [
             'status' => 'pending',
             'step' => 0,
@@ -79,9 +93,8 @@ class AdminController extends Controller
             'steps' => [],
             'phone_id' => null,
             'error' => null,
-        ], 600); // 10 minute TTL
+        ], 600);
 
-        // Build overrides from form (only if provided)
         $overrides = array_filter([
             'price' => $request->input('price'),
             'image_url' => $request->input('image_url'),
@@ -103,13 +116,10 @@ class AdminController extends Controller
             'gsmarena_url' => $request->input('gsmarena_url'),
         ];
 
-        // Run the import synchronously (in-process, streaming progress to cache)
         $this->runImport($jobId, $request->input('phone_name'), $overrides, $importOptions);
 
         return redirect()->route('admin.phones.status', ['jobId' => $jobId]);
     }
-
-    // ─── Import Status (polling endpoint) ───────────────────────────────
 
     public function importStatus(string $jobId)
     {
@@ -122,8 +132,6 @@ class AdminController extends Controller
         return response()->json($status);
     }
 
-    // ─── Import Status Page (HTML) ──────────────────────────────────────
-
     public function importStatusPage(string $jobId)
     {
         $status = Cache::get("admin_import_{$jobId}");
@@ -135,10 +143,6 @@ class AdminController extends Controller
 
         return view('admin.import-status', compact('jobId', 'status'));
     }
-
-    // ═══════════════════════════════════════════════════════════════════
-    // Import Logic (run synchronously with progress caching)
-    // ═══════════════════════════════════════════════════════════════════
 
     protected function runImport(string $jobId, string $phoneName, array $overrides, array $options): void
     {
@@ -155,25 +159,18 @@ class AdminController extends Controller
         ), 600);
 
         try {
-            // ── Step 1: Call Python Aggregator ───────────────────────────────
             $progress(1, 'Calling Python aggregator', 'running');
 
-            // Resolve the Python binary using a priority chain:
-            //   1. PYTHON_BIN env var  (set by Docker at build time)
-            //   2. Docker venv path    (/opt/phonefinder-venv/bin/python3)
-            //   3. Local project venv  (.venv/bin/python)
-            //   4. System python3
             $pythonBin = env('PYTHON_BIN');
             if (! $pythonBin || ! file_exists($pythonBin)) {
                 $candidates = [
-                    '/opt/phonefinder-venv/bin/python3',   // Docker
-                    base_path('.venv/bin/python3'),         // local venv (python3)
-                    base_path('.venv/bin/python'),          // local venv (python)
-                    'python3',                              // system fallback
+                    '/opt/phonefinder-venv/bin/python3',
+                    base_path('.venv/bin/python3'),
+                    base_path('.venv/bin/python'),
+                    'python3',
                 ];
                 $pythonBin = null;
                 foreach ($candidates as $candidate) {
-                    // For system commands (no leading /) we skip file_exists
                     if (! str_starts_with($candidate, '/') || file_exists($candidate)) {
                         $pythonBin = $candidate;
                         break;
@@ -212,8 +209,6 @@ class AdminController extends Controller
 
             $pythonOutput = [];
             exec($command, $pythonOutput, $exitCode);
-
-            // Capture step logs from Python output for display
             $pythonLogs = implode("\n", $pythonOutput);
 
             if (! file_exists($tempFile)) {
@@ -236,40 +231,45 @@ class AdminController extends Controller
 
             $progress(1, 'Calling Python aggregator', 'done', "Data fetched. Steps: {$data['summary']['successful_steps']}/{$data['summary']['total_steps']} ok");
 
-            // ── Step 2: Check/apply overrides ────────────────────────────────
             $progress(2, 'Applying manual overrides', 'running');
-            // We store them separately and apply during DB save
             $progress(2, 'Applying manual overrides', 'done', count($overrides).' field(s) will override scraped data');
 
-            // ── Step 3: Create phone record ──────────────────────────────────
             $progress(3, 'Saving phone to database', 'running');
-            $phone = $this->savePhoneRecord($phoneName, $data, $overrides, $options);
+            $phoneData = $this->buildPhoneDocument($phoneName, $data, $overrides, $options);
+
+            $existing = null;
+            foreach ($this->phones->all() as $p) {
+                if (strtolower($p->name) === strtolower($phoneName)) {
+                    $existing = $p;
+                    break;
+                }
+            }
+
+            if ($existing && ! ($options['force'] ?? false)) {
+                $this->phones->update($existing->id, $phoneData);
+                $phone = $this->phones->find($existing->id);
+            } elseif ($existing) {
+                $this->phones->update($existing->id, $phoneData);
+                $phone = $this->phones->find($existing->id);
+            } else {
+                $phone = $this->phones->create($phoneData);
+            }
+
             $progress(3, 'Saving phone to database', 'done', "Phone ID: {$phone->id}");
 
-            // ── Step 4: Spec records ─────────────────────────────────────────
-            $progress(4, 'Saving specification records', 'running');
-            $this->saveSpecRecords($phone, $data);
             $progress(4, 'Saving specification records', 'done');
-
-            // ── Step 5: Benchmark records ────────────────────────────────────
-            $progress(5, 'Saving benchmark records', 'running');
-            $this->saveBenchmarkRecords($phone, $data, $overrides);
             $progress(5, 'Saving benchmark records', 'done');
 
-            // ── Step 6: Calculate scores ─────────────────────────────────────
             $progress(6, 'Calculating scores', 'running');
-            $phone->load(['benchmarks', 'body', 'platform', 'camera', 'connectivity', 'battery']);
             $phone->updateScores();
-            $phone->refresh();
+            $this->phones->update($phone->id, $phone->getAttributes());
             $progress(6, 'Calculating scores', 'done',
                 "FPI: {$phone->overall_score} | UEPS: {$phone->ueps_score} | Expert: {$phone->expert_score}");
 
-            // ── Step 7: Clear cache ──────────────────────────────────────────
             $progress(7, 'Clearing caches', 'running');
             \Artisan::call('cache:clear');
             $progress(7, 'Clearing caches', 'done');
 
-            // ── Step 8: Done ─────────────────────────────────────────────────
             $progress(8, 'Import complete!', 'done', "✓ {$phone->name} added successfully. Click below to view.");
 
             Cache::put("admin_import_{$jobId}", array_merge(
@@ -289,29 +289,20 @@ class AdminController extends Controller
         }
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // DB Save helpers (extracted from ImportPhone command)
-    // ═══════════════════════════════════════════════════════════════════
-
-    protected function savePhoneRecord(string $phoneName, array $data, array $overrides, array $options): Phone
+    protected function buildPhoneDocument(string $phoneName, array $data, array $overrides, array $options): array
     {
         $gsmarena = $data['gsmarena']['data'] ?? $data['gsmarena'] ?? null;
         $specs = ($gsmarena['specifications'] ?? $gsmarena) ?? [];
         $shopping = $data['shopping_links']['data'] ?? $data['shopping_links'] ?? null;
         $image = $data['image']['data'] ?? $data['image'] ?? null;
 
-        // Price: override > scraped GSMArena > Amazon/Flipkart
         $scrapedPrice = $this->parsePrice($specs['Misc']['Price'] ?? null);
         $price = isset($overrides['price']) ? (float) $overrides['price'] : $scrapedPrice;
 
-        // Dates
         $releaseDate = $this->parseDate($specs['Launch']['Status'] ?? null);
         $announcedDate = $this->parseDate($specs['Launch']['Announced'] ?? null);
-
-        // Brand
         $brand = $this->parseBrand($phoneName);
 
-        // Shopping links: override if provided
         $amazonUrl = $overrides['amazon_url'] ?? null;
         $flipkartUrl = $overrides['flipkart_url'] ?? null;
         $amazonPrice = null;
@@ -332,7 +323,6 @@ class AdminController extends Controller
             }
         }
 
-        // Image: override > scraped
         $imageUrl = $overrides['image_url'] ?? null;
         if (! $imageUrl) {
             if ($image && ! empty($image['image_path'])) {
@@ -364,39 +354,18 @@ class AdminController extends Controller
             'amazon_price' => $amazonPrice,
             'flipkart_url' => $flipkartUrl,
             'flipkart_price' => $flipkartPrice,
+            'body' => $this->buildBodySpecs($phoneName, $brand, $specs),
+            'platform' => $this->buildPlatformSpecs($brand, $specs),
+            'camera' => $this->buildCameraSpecs($specs),
+            'connectivity' => $this->buildConnectivitySpecs($specs),
+            'battery' => $this->buildBatterySpecs($specs),
+            'benchmarks' => $this->buildBenchmarks($data, $overrides),
         ];
 
-        $existingPhone = Phone::whereRaw('LOWER(name) = ?', [Str::lower($phoneName)])->first();
-
-        if ($existingPhone && ! ($options['force'] ?? false)) {
-            // Update existing
-            $existingPhone->update($phoneData);
-
-            return $existingPhone;
-        }
-
-        if ($existingPhone) {
-            $existingPhone->update($phoneData);
-
-            return $existingPhone;
-        }
-
-        return Phone::create($phoneData);
+        return $phoneData;
     }
 
-    protected function saveSpecRecords(Phone $phone, array $data): void
-    {
-        $gsmarena = $data['gsmarena']['data'] ?? $data['gsmarena'] ?? [];
-        $specs = $gsmarena['specifications'] ?? $gsmarena ?? [];
-
-        $this->saveBodySpecs($phone, $specs);
-        $this->savePlatformSpecs($phone, $specs);
-        $this->saveCameraSpecs($phone, $specs);
-        $this->saveConnectivitySpecs($phone, $specs);
-        $this->saveBatterySpecs($phone, $specs);
-    }
-
-    protected function saveBodySpecs(Phone $phone, array $specs): void
+    protected function buildBodySpecs(string $phoneName, string $brand, array $specs): array
     {
         $body = $specs['Body'] ?? [];
         $display = $specs['Display'] ?? [];
@@ -429,10 +398,9 @@ class AdminController extends Controller
         $glassLevel = $this->parseGlassProtectionLevel($protection);
         $pwm = $this->parsePwmDimming($displayType);
         $touchRate = $this->parseTouchSamplingRate($displayType);
-        $brand = strtolower($phone->brand);
-        $coolingType = $this->determineCoolingType($brand, $phone->name);
+        $coolingType = $this->determineCoolingType($brand, $phoneName);
 
-        SpecBody::updateOrCreate(['phone_id' => $phone->id], [
+        return [
             'dimensions' => $dimensions,
             'weight' => $weight,
             'build_material' => $build,
@@ -455,10 +423,10 @@ class AdminController extends Controller
             'screen_glass' => $protection,
             'glass_protection_level' => $glassLevel,
             'display_features' => $displayType,
-        ]);
+        ];
     }
 
-    protected function savePlatformSpecs(Phone $phone, array $specs): void
+    protected function buildPlatformSpecs(string $brand, array $specs): array
     {
         $platform = $specs['Platform'] ?? [];
         $memory = $specs['Memory'] ?? [];
@@ -480,9 +448,9 @@ class AdminController extends Controller
         $storage = $this->parseStorageFromInternal($internalRaw);
         $storageType = $this->parseStorageType($internalRaw);
         $gpu = $platform['GPU'] ?? '';
-        $brand = strtolower($phone->brand);
+        $brandLower = strtolower($brand);
 
-        SpecPlatform::updateOrCreate(['phone_id' => $phone->id], [
+        return [
             'os' => $os,
             'os_details' => $osDetails,
             'chipset' => $platform['Chipset'] ?? null,
@@ -492,17 +460,17 @@ class AdminController extends Controller
             'internal_storage' => $storage ?? $internalRaw,
             'ram' => $ram ?? $internalRaw,
             'storage_type' => $storageType,
-            'bootloader_unlockable' => in_array($brand, ['oneplus', 'xiaomi', 'poco', 'nothing', 'google', 'motorola', 'realme']),
+            'bootloader_unlockable' => in_array($brandLower, ['oneplus', 'xiaomi', 'poco', 'nothing', 'google', 'motorola', 'realme']),
             'turnip_support' => $this->determineTurnipSupport($gpu),
             'turnip_support_level' => $this->determineTurnipSupport($gpu) ? $this->determineTurnipLevel($gpu) : null,
-            'os_openness' => $this->determineOsOpenness($brand, $os),
+            'os_openness' => $this->determineOsOpenness($brandLower, $os),
             'gpu_emulation_tier' => $this->determineGpuEmulationTier($gpu),
-            'aosp_aesthetics_score' => $this->determineAospAesthetics($brand, $os),
-            'custom_rom_support' => $this->determineCustomRomSupport($brand),
-        ]);
+            'aosp_aesthetics_score' => $this->determineAospAesthetics($brandLower, $os),
+            'custom_rom_support' => $this->determineCustomRomSupport($brandLower),
+        ];
     }
 
-    protected function saveCameraSpecs(Phone $phone, array $specs): void
+    protected function buildCameraSpecs(array $specs): array
     {
         $mainCamera = $specs['Main Camera'] ?? [];
         $selfieCamera = $specs['Selfie camera'] ?? [];
@@ -549,7 +517,7 @@ class AdminController extends Controller
             $selfieFeatures = implode(', ', $selfieFeatures);
         }
 
-        SpecCamera::updateOrCreate(['phone_id' => $phone->id], [
+        return [
             'main_camera_specs' => $mainSpecs,
             'main_camera_sensors' => $this->parseCameraSensors($mainSpecs),
             'main_camera_apertures' => $this->parseCameraApertures($mainSpecs),
@@ -573,10 +541,10 @@ class AdminController extends Controller
             ),
             'selfie_video_capabilities' => $selfieVideo,
             'selfie_video_features' => $selfieVideo,
-        ]);
+        ];
     }
 
-    protected function saveConnectivitySpecs(Phone $phone, array $specs): void
+    protected function buildConnectivitySpecs(array $specs): array
     {
         $comms = $specs['Comms'] ?? [];
         $features = $specs['Features'] ?? [];
@@ -597,7 +565,7 @@ class AdminController extends Controller
         $sarValue = $s($misc['SAR'] ?? null);
         $radio = $s($comms['Radio'] ?? 'No');
 
-        SpecConnectivity::updateOrCreate(['phone_id' => $phone->id], [
+        return [
             'network_bands' => $s($network['Technology'] ?? null),
             'wlan' => $wlan,
             'wifi_bands' => $this->parseWifiBands($wlan),
@@ -616,10 +584,10 @@ class AdminController extends Controller
             'jack_3_5mm' => $jack,
             'has_3_5mm_jack' => ! str_contains(strtolower($jack), 'no'),
             'sar_value' => $sarValue,
-        ]);
+        ];
     }
 
-    protected function saveBatterySpecs(Phone $phone, array $specs): void
+    protected function buildBatterySpecs(array $specs): array
     {
         $battery = $specs['Battery'] ?? [];
         $batteryType = $battery['Type'] ?? null;
@@ -637,7 +605,7 @@ class AdminController extends Controller
         $hasReverseWireless = str_contains(strtolower($charging ?? ''), 'reverse wireless');
         $chargingReverse = $hasReverseWireless ? 'Reverse wired + wireless' : ($hasReverseWired ? 'Reverse wired' : null);
 
-        SpecBattery::updateOrCreate(['phone_id' => $phone->id], [
+        return [
             'battery_type' => $batteryType,
             'charging_wired' => $wiredCharging,
             'charging_wireless' => $wirelessCharging,
@@ -645,10 +613,10 @@ class AdminController extends Controller
             'charging_reverse' => $chargingReverse,
             'reverse_wired' => $hasReverseWired ? 'Yes' : null,
             'reverse_wireless' => $hasReverseWireless ? 'Yes' : null,
-        ]);
+        ];
     }
 
-    protected function saveBenchmarkRecords(Phone $phone, array $data, array $overrides): void
+    protected function buildBenchmarks(array $data, array $overrides): array
     {
         $gsmarena = $data['gsmarena']['data'] ?? $data['gsmarena'] ?? [];
         $specs = $gsmarena['specifications'] ?? $gsmarena ?? [];
@@ -661,7 +629,6 @@ class AdminController extends Controller
         $camera = $data['camera_benchmarks']['camera_benchmark'] ??
                      $data['camera_benchmarks']['data']['camera_benchmark'] ?? [];
 
-        // AnTuTu (v11)
         $antutuScore = null;
         $antutuV10 = null;
         if (! empty($nanoreview['antutu_v11'])) {
@@ -670,12 +637,10 @@ class AdminController extends Controller
         if (! empty($nanoreview['antutu_v10'])) {
             $antutuV10 = (int) $nanoreview['antutu_v10'];
         }
-        // Override
         if (isset($overrides['antutu_score']) && $overrides['antutu_score'] !== null) {
             $antutuScore = (int) $overrides['antutu_score'];
         }
 
-        // Geekbench
         $geekbenchSingle = null;
         $geekbenchMulti = null;
         if (! empty($nanoreview['geekbench_6_single'])) {
@@ -684,7 +649,6 @@ class AdminController extends Controller
         if (! empty($nanoreview['geekbench_6_multi'])) {
             $geekbenchMulti = (int) $nanoreview['geekbench_6_multi'];
         }
-        // Also check individual_scores
         $nanoIndividual = $data['nanoreview_benchmarks']['individual_scores'] ??
                           $data['nanoreview_benchmarks']['data']['individual_scores'] ?? [];
         if (! $geekbenchSingle && ! empty($nanoIndividual['geekbench_6_single_values'])) {
@@ -693,7 +657,6 @@ class AdminController extends Controller
         if (! $geekbenchMulti && ! empty($nanoIndividual['geekbench_6_multi_values'])) {
             $geekbenchMulti = (int) max($nanoIndividual['geekbench_6_multi_values']);
         }
-        // Override
         if (isset($overrides['geekbench_single']) && $overrides['geekbench_single'] !== null) {
             $geekbenchSingle = (int) $overrides['geekbench_single'];
         }
@@ -701,7 +664,6 @@ class AdminController extends Controller
             $geekbenchMulti = (int) $overrides['geekbench_multi'];
         }
 
-        // 3DMark
         $dmarkScore = null;
         $stability = null;
         if (! empty($gpu['wildlife_extreme_peak'])) {
@@ -710,7 +672,6 @@ class AdminController extends Controller
         if (! empty($gpu['wildlife_extreme_stability'])) {
             $stability = (int) round($gpu['wildlife_extreme_stability']);
         }
-        // Override
         if (isset($overrides['dmark_score']) && $overrides['dmark_score'] !== null) {
             $dmarkScore = (int) $overrides['dmark_score'];
         }
@@ -718,10 +679,8 @@ class AdminController extends Controller
             $stability = (int) $overrides['dmark_stability'];
         }
 
-        // Camera benchmarks
         $dxomark = $camera['dxomark'] ?? null;
         $phonearena = $camera['phonearena'] ?? null;
-        // Override
         if (isset($overrides['dxomark_score']) && $overrides['dxomark_score'] !== null) {
             $dxomark = (int) $overrides['dxomark_score'];
         }
@@ -729,20 +688,18 @@ class AdminController extends Controller
             $phonearena = (int) $overrides['phonearena_score'];
         }
 
-        // Battery endurance
         $enduranceHours = null;
         $euBattery = $euLabel['Battery'] ?? null;
         if ($euBattery && preg_match('/(\d+):(\d+)h\s*endurance/i', $euBattery, $m)) {
             $enduranceHours = (float) $m[1] + ((float) $m[2] / 60);
         }
 
-        // Active use score
         $activeUseScore = null;
         if (! empty($ourTests['Battery'])) {
             $activeUseScore = is_array($ourTests['Battery']) ? implode(', ', $ourTests['Battery']) : $ourTests['Battery'];
         }
 
-        Benchmark::updateOrCreate(['phone_id' => $phone->id], [
+        return [
             'antutu_score' => $antutuScore,
             'antutu_v10_score' => $antutuV10,
             'geekbench_single' => $geekbenchSingle,
@@ -757,12 +714,56 @@ class AdminController extends Controller
             'repairability_score' => $euLabel['Repairability'] ?? null,
             'energy_label' => $euLabel['Energy'] ?? null,
             'free_fall_rating' => $euLabel['Free fall'] ?? null,
-        ]);
+        ];
     }
 
-    // ═══════════════════════════════════════════════════════════════════
-    // Parser helpers (duplicated from ImportPhone for self-containedness)
-    // ═══════════════════════════════════════════════════════════════════
+    public function editPhone(string $phoneId)
+    {
+        $phone = $this->phones->findOrFail($phoneId);
+
+        return view('admin.edit-phone', compact('phone'));
+    }
+
+    public function updatePhone(Request $request, string $phoneId)
+    {
+        $phone = $this->phones->findOrFail($phoneId);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'brand' => 'required|string|max:100',
+            'price' => 'nullable|numeric|min:0',
+        ]);
+
+        $updateData = array_merge(
+            $phone->getAttributes(),
+            $request->only([
+                'name', 'brand', 'model_variant', 'price', 'release_date', 'announced_date',
+                'image_url', 'amazon_url', 'flipkart_url', 'amazon_price', 'flipkart_price',
+            ])
+        );
+
+        $relations = ['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks'];
+        foreach ($relations as $relationName) {
+            $data = $request->input($relationName, []);
+            if (! empty($data)) {
+                $updateData[$relationName] = array_merge(
+                    (array) ($phone->$relationName ?? []),
+                    $data
+                );
+            }
+        }
+
+        $this->phones->update($phone->id, $updateData);
+
+        $phone = $this->phones->find($phone->id);
+        $phone->updateScores();
+        $this->phones->update($phone->id, $phone->getAttributes());
+
+        return redirect()->route('admin.phones.edit', $phone->id)
+            ->with('success', 'Phone updated successfully. Scores recalculated.');
+    }
+
+    // ─── Parser helpers ────────────────────────────────────────────────
 
     protected function parsePrice(?string $priceStr): ?float
     {
@@ -1108,10 +1109,10 @@ class AdminController extends Controller
         if (! $str) {
             return null;
         }
-        if (preg_match('/omnidirectional\s*PDAF/i', $str)) {
+        if (preg_match('/omnidirectional\s*PDAF/i', $str, $m)) {
             return 'Omnidirectional PDAF';
         }
-        if (preg_match('/PDAF/i', $str)) {
+        if (preg_match('/PDAF/i', $str, $m)) {
             return 'PDAF';
         }
 
@@ -1179,32 +1180,20 @@ class AdminController extends Controller
         return 3;
     }
 
-    /**
-     * Returns a string label matching the DB schema: 'Major', 'Limited', or 'None'.
-     * (The column is varchar, not boolean.)
-     */
     protected function determineCustomRomSupport(string $brand): string
     {
-        // Brands with active, major custom ROM communities
         if (in_array($brand, ['google', 'oneplus', 'nothing', 'motorola'])) {
             return 'Major';
         }
-        // Brands with some ROMs but less vibrant community
         if (in_array($brand, ['xiaomi', 'poco', 'realme', 'asus'])) {
             return 'Limited';
         }
 
-        // All others (vivo, oppo, samsung, apple, etc.)
         return 'None';
     }
 
-    /**
-     * Turnip (Mesa Vulkan driver) only works on Qualcomm Adreno GPUs.
-     * MediaTek (Mali/Immortalis) has NO Turnip support.
-     */
     protected function determineTurnipSupport(string $gpu): bool
     {
-        // Explicit MediaTek / ARM Mali exclusion
         if (stripos($gpu, 'mali') !== false) {
             return false;
         }
@@ -1215,13 +1204,11 @@ class AdminController extends Controller
             return false;
         }
 
-        // Turnip = Adreno only
         return stripos($gpu, 'adreno') !== false;
     }
 
     protected function determineTurnipLevel(string $gpu): ?string
     {
-        // MediaTek GPUs → no Turnip
         if (stripos($gpu, 'mali') !== false || stripos($gpu, 'immortalis') !== false) {
             return null;
         }
@@ -1273,64 +1260,5 @@ class AdminController extends Controller
         }
 
         return 3;
-    }
-
-    // ─── Edit Phone ─────────────────────────────────────────────────────
-
-    public function editPhone(Phone $phone)
-    {
-        $phone->load(['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks']);
-
-        return view('admin.edit-phone', compact('phone'));
-    }
-
-    public function updatePhone(Request $request, Phone $phone)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'brand' => 'required|string|max:100',
-            'price' => 'nullable|numeric|min:0',
-        ]);
-
-        // 1. Update Core Phone Data
-        $phone->update($request->only([
-            'name', 'brand', 'model_variant', 'price', 'release_date', 'announced_date',
-            'image_url', 'amazon_url', 'flipkart_url', 'amazon_price', 'flipkart_price',
-        ]));
-
-        // 2. Update Relations (Body, Platform, Camera, etc.)
-        // We iterate through relations and update/create them
-        $relations = [
-            'body' => \App\Models\SpecBody::class,
-            'platform' => \App\Models\SpecPlatform::class,
-            'camera' => \App\Models\SpecCamera::class,
-            'connectivity' => \App\Models\SpecConnectivity::class,
-            'battery' => \App\Models\SpecBattery::class,
-            'benchmarks' => \App\Models\Benchmark::class,
-        ];
-
-        foreach ($relations as $relationName => $modelClass) {
-            $data = $request->input($relationName, []);
-
-            // Filter out purely empty strings to verify if we even have data?
-            // Actually, admin might want to clear fields, so we accept empty strings (which become null via middleware usually)
-
-            if ($phone->$relationName) {
-                $phone->$relationName->update($data);
-            } else {
-                // Only create if there is at least one non-null/non-empty value to avoid empty rows?
-                // But if the admin filled it, we should create it.
-                if (! empty(array_filter($data, fn ($v) => ! is_null($v) && $v !== ''))) {
-                    $phone->$relationName()->create($data);
-                }
-            }
-        }
-
-        // 3. Recalculate Scores
-        $phone->refresh();
-        $phone->updateScores();
-
-        return redirect()->route('admin.phones.edit', $phone)
-            ->with('success', 'Phone updated successfully. Scores recalculated.');
     }
 }

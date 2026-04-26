@@ -2,26 +2,18 @@
 
 namespace App\Models;
 
-use App\Models\Traits\SyncsToFirestore;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Repositories\CommentRepository;
+use App\Repositories\UserRepository;
 
-class CommentUpvote extends Model
+class CommentUpvote extends FirestoreModel
 {
-    use SyncsToFirestore;
-
-    protected $fillable = [
-        'comment_id',
-        'user_id',
-    ];
-
-    public function comment(): BelongsTo
+    public function comment(): ?Comment
     {
-        return $this->belongsTo(Comment::class);
+        return app(CommentRepository::class)->find($this->attributes['comment_id'] ?? '');
     }
 
-    public function user(): BelongsTo
+    public function user(): ?User
     {
-        return $this->belongsTo(User::class);
+        return app(UserRepository::class)->find($this->attributes['user_id'] ?? '');
     }
 }

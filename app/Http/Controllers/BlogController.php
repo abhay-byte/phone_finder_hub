@@ -2,30 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Blog;
+use App\Repositories\BlogRepository;
 use App\Services\SEO\SEOData;
 use App\Services\SEO\SeoManager;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 
 class BlogController extends Controller
 {
-    /**
-     * Display a listing of all published blogs.
-     */
+    protected BlogRepository $blogs;
+
+    public function __construct(BlogRepository $blogs)
+    {
+        $this->blogs = $blogs;
+    }
+
     public function index(SeoManager $seo)
     {
-        $page = request('page', 1);
-        $latestUpdate = Cache::remember('blogs_latest_update', 60, function () {
-            return Blog::max('updated_at');
-        });
+        $page = (int) request('page', 1);
+        $perPage = 12;
 
-        $cacheKey = 'blogs_index_v4_page_'.$page.'_'.strtotime($latestUpdate);
+        $cacheKey = 'blogs_index_v5_page_'.$page;
 
-        $blogs = Cache::remember($cacheKey, 3600, function () {
-            return Blog::with('author')
-                ->where('is_published', true)
-                ->latest('published_at')
-                ->paginate(12);
+        $blogs = Cache::remember($cacheKey, 3600, function () use ($page, $perPage) {
+            $all = $this->blogs->published()->all();
+            $total = count($all);
+            $items = array_slice($all, ($page - 1) * $perPage, $perPage);
+
+            return new LengthAwarePaginator(
+                $items,
+                $total,
+                $perPage,
+                $page,
+                ['path' => request()->url(), 'query' => request()->query()]
+            );
         });
 
         $blogsHtml = Cache::remember('blogs_html_'.$cacheKey, 3600, function () use ($blogs) {
@@ -41,24 +51,18 @@ class BlogController extends Controller
         return view('blogs.index', compact('blogs', 'blogsHtml'));
     }
 
-    /**
-     * Display the specified blog post.
-     */
     public function show($slug, SeoManager $seo)
     {
-        $blog = Cache::remember('blog_model_'.$slug, 3600, function () use ($slug) {
-            return Blog::with('author')
-                ->where('slug', $slug)
-                ->where('is_published', true)
-                ->firstOrFail();
+        $blog = Cache::remember('blog_model_v2_'.$slug, 3600, function () use ($slug) {
+            return $this->blogs->findBySlug($slug) ?? abort(404);
         });
 
-        $latestBlogs = Cache::remember('blog_latest_sidebar_'.$blog->id, 3600, function () use ($blog) {
-            return Blog::where('is_published', true)
-                ->where('id', '!=', $blog->id)
-                ->latest('published_at')
-                ->take(5)
-                ->get();
+        $latestBlogs = Cache::remember('blog_latest_sidebar_v2_'.$blog->id, 3600, function () use ($blog) {
+            $all = $this->blogs->published();
+
+            return collect(array_slice(array_filter($all->all(), function ($b) use ($blog) {
+                return $b->id !== $blog->id;
+            }), 0, 5));
         });
 
         $seo->set($blog->getSEOData());

@@ -2,128 +2,175 @@
 
 namespace App\Models;
 
-use App\Models\Traits\SyncsToFirestore;
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Notifications\RoutesNotifications;
+use Illuminate\Support\Collection;
 
-class User extends Authenticatable
+class User extends FirestoreModel implements Authenticatable, MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use RoutesNotifications;
 
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use SyncsToFirestore;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'name',
-        'username',
-        'email',
-        'password',
-        'role',
-        'firebase_uid',
-        'photo_url',
+    protected array $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function getAuthIdentifierName(): string
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return 'id';
     }
 
-    /**
-     * Check if the user is a super admin.
-     */
+    public function getAuthIdentifier(): string
+    {
+        return $this->attributes['id'] ?? '';
+    }
+
+    public function getKey(): string
+    {
+        return $this->attributes['id'] ?? '';
+    }
+
+    public function getEmailForVerification(): string
+    {
+        return $this->attributes['email'] ?? '';
+    }
+
+    public function hasVerifiedEmail(): bool
+    {
+        return ! empty($this->attributes['email_verified_at']);
+    }
+
+    public function markEmailAsVerified(): bool
+    {
+        $this->attributes['email_verified_at'] = now()->format('c');
+        app(\App\Repositories\UserRepository::class)
+            ->update($this->attributes['id'], ['email_verified_at' => $this->attributes['email_verified_at']]);
+
+        return true;
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        \Illuminate\Support\Facades\Notification::send($this, new \Illuminate\Auth\Notifications\VerifyEmail);
+    }
+
+    public function update(array $attributes): bool
+    {
+        app(\App\Repositories\UserRepository::class)
+            ->update($this->attributes['id'], $attributes);
+        $this->attributes = array_merge($this->attributes, $attributes);
+
+        return true;
+    }
+
+    public function refresh(): static
+    {
+        $fresh = app(\App\Repositories\UserRepository::class)
+            ->find($this->attributes['id']);
+
+        if ($fresh) {
+            $this->attributes = $fresh->getAttributes();
+        }
+
+        return $this;
+    }
+
+    public function fresh(): ?static
+    {
+        return app(\App\Repositories\UserRepository::class)
+            ->find($this->attributes['id'] ?? '');
+    }
+
+    public function getAuthPassword(): string
+    {
+        return $this->attributes['password'] ?? '';
+    }
+
+    public function getRememberToken(): string
+    {
+        return $this->attributes['remember_token'] ?? '';
+    }
+
+    public function setRememberToken($value): void
+    {
+        $this->attributes['remember_token'] = $value;
+    }
+
+    public function getRememberTokenName(): string
+    {
+        return 'remember_token';
+    }
+
+    public function getAuthPasswordName(): string
+    {
+        return 'password';
+    }
+
     public function isSuperAdmin(): bool
     {
-        return $this->role === 'super_admin';
+        return ($this->attributes['role'] ?? '') === 'super_admin';
     }
 
-    /**
-     * Check if the user is a regular user.
-     */
     public function isUser(): bool
     {
-        return $this->role === 'user';
+        return ($this->attributes['role'] ?? '') === 'user';
     }
 
-    /**
-     * Check if the user is an author.
-     */
     public function isAuthor(): bool
     {
-        return $this->role === 'author';
+        return ($this->attributes['role'] ?? '') === 'author';
     }
 
-    /**
-     * Check if the user is a maintainer.
-     */
     public function isMaintainer(): bool
     {
-        return $this->role === 'maintainer';
+        return ($this->attributes['role'] ?? '') === 'maintainer';
     }
 
-    /**
-     * Check if the user is a moderator.
-     */
     public function isModerator(): bool
     {
-        return $this->role === 'moderator';
+        return ($this->attributes['role'] ?? '') === 'moderator';
     }
 
-    /**
-     * Check if user has admin panel access
-     */
     public function hasAdminAccess(): bool
     {
-        return in_array($this->role, ['super_admin', 'maintainer', 'moderator', 'author']);
+        return in_array($this->attributes['role'] ?? '', ['super_admin', 'maintainer', 'moderator', 'author']);
     }
 
-    public function blogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function blogs(): Collection
     {
-        return $this->hasMany(Blog::class);
+        return collect(app(\App\Repositories\BlogRepository::class)
+            ->where('user_id', '==', $this->attributes['id'] ?? '')
+            ->get());
     }
 
-    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function comments(): Collection
     {
-        return $this->hasMany(Comment::class);
+        return collect(app(\App\Repositories\CommentRepository::class)
+            ->where('user_id', '==', $this->attributes['id'] ?? '')
+            ->get());
     }
 
-    public function upvotes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function upvotes(): Collection
     {
-        return $this->hasMany(CommentUpvote::class);
+        return collect(app(\App\Repositories\CommentUpvoteRepository::class)
+            ->where('user_id', '==', $this->attributes['id'] ?? '')
+            ->get());
     }
 
-    public function forumPosts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function forumPosts(): Collection
     {
-        return $this->hasMany(ForumPost::class);
+        return collect(app(\App\Repositories\ForumPostRepository::class)
+            ->where('user_id', '==', $this->attributes['id'] ?? '')
+            ->get());
     }
 
-    public function forumComments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function forumComments(): Collection
     {
-        return $this->hasMany(ForumComment::class);
+        return collect(app(\App\Repositories\ForumCommentRepository::class)
+            ->where('user_id', '==', $this->attributes['id'] ?? '')
+            ->get());
     }
 }

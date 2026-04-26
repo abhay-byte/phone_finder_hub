@@ -2,99 +2,107 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Blog;
+use App\Repositories\BlogRepository;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AdminBlogController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected BlogRepository $blogs;
+
+    public function __construct(BlogRepository $blogs)
+    {
+        $this->blogs = $blogs;
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $all = $this->blogs->all();
 
-        $query = Blog::with('author');
-
-        // Non-super-admins (authors) can only manage their own blogs
         if (! auth()->user()->isSuperAdmin()) {
-            $query->where('user_id', auth()->id());
+            $all = array_filter($all, fn ($blog) => $blog->user_id === auth()->id());
         }
 
         if ($search) {
-            $query->where('title', 'like', "%{$search}%");
+            $lower = strtolower($search);
+            $all = array_filter($all, fn ($blog) => str_contains(strtolower($blog->title), $lower));
         }
 
-        $blogs = $query->latest()->paginate(15)->withQueryString();
+        usort($all, function ($a, $b) {
+            return ($b->created_at ?? '') <=> ($a->created_at ?? '');
+        });
+
+        $page = (int) $request->input('page', 1);
+        $perPage = 15;
+        $total = count($all);
+        $items = array_slice($all, ($page - 1) * $perPage, $perPage);
+
+        $blogs = new LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         return view('admin.blogs.index', compact('blogs'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('admin.blogs.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'excerpt' => 'nullable|string|max:500',
             'content' => 'required|string',
-            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048', // max 2MB
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048',
             'featured_image_url' => 'nullable|url|max:1024',
             'is_published' => 'nullable|boolean',
         ]);
 
-        $blog = new Blog;
-        $blog->title = $validated['title'];
-
-        // Generate a unique slug
         $baseSlug = Str::slug($validated['title']);
         $slug = $baseSlug;
         $counter = 1;
-        while (Blog::where('slug', $slug)->exists()) {
+        while ($this->blogs->findBySlug($slug)) {
             $slug = $baseSlug.'-'.$counter++;
         }
-        $blog->slug = $slug;
 
-        $blog->content = $validated['content'];
-        $blog->excerpt = $validated['excerpt'] ?? Str::words(strip_tags($validated['content']), 30);
-        $blog->user_id = auth()->id();
-        $blog->is_published = $request->has('is_published');
-        if ($blog->is_published) {
-            $blog->published_at = \Carbon\Carbon::now();
-        }
+        $data = [
+            'title' => $validated['title'],
+            'slug' => $slug,
+            'content' => $validated['content'],
+            'excerpt' => $validated['excerpt'] ?? Str::words(strip_tags($validated['content']), 30),
+            'user_id' => auth()->id(),
+            'is_published' => $request->has('is_published'),
+            'published_at' => $request->has('is_published') ? now()->format('c') : null,
+            'created_at' => now()->format('c'),
+        ];
 
         if ($request->hasFile('featured_image')) {
             $path = $request->file('featured_image')->store('blogs', 'public');
-            $blog->featured_image = '/storage/'.$path;
+            $data['featured_image'] = '/storage/'.$path;
         } elseif (! empty($validated['featured_image_url'])) {
-            $blog->featured_image = $validated['featured_image_url'];
+            $data['featured_image'] = $validated['featured_image_url'];
         }
 
-        $blog->save();
-
+        $this->blogs->create($data);
         Cache::forget('latest_blogs_home');
 
         return redirect()->route('admin.blogs.index')->with('success', 'Blog post created successfully.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Blog $blog)
+    public function edit(string $blogId)
     {
-        // Check authorization: SuperAdmin or the original author
+        $blog = $this->blogs->findOrFail($blogId);
+
         if (! auth()->user()->isSuperAdmin() && $blog->user_id !== auth()->id()) {
             abort(403);
         }
@@ -102,11 +110,10 @@ class AdminBlogController extends Controller
         return view('admin.blogs.edit', compact('blog'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Blog $blog)
+    public function update(Request $request, string $blogId)
     {
+        $blog = $this->blogs->findOrFail($blogId);
+
         if (! auth()->user()->isSuperAdmin() && $blog->user_id !== auth()->id()) {
             abort(403);
         }
@@ -120,73 +127,55 @@ class AdminBlogController extends Controller
             'is_published' => 'nullable|boolean',
         ]);
 
-        $blog->title = $validated['title'];
-
-        // Only trigger new slug if title changed heavily, but we'll leave slug manual or identical normally.
-        // For simplicity and SEO, usually slugs shouldn't change, but if they want to:
-        if ($blog->isDirty('title')) {
-            $baseSlug = Str::slug($validated['title']);
-            $slug = $baseSlug;
-            $counter = 1;
-            while (Blog::where('slug', $slug)->where('id', '!=', $blog->id)->exists()) {
-                $slug = $baseSlug.'-'.$counter++;
-            }
-            $blog->slug = $slug;
-        }
-
-        $blog->content = $validated['content'];
-        $blog->excerpt = $validated['excerpt'] ?? Str::words(strip_tags($validated['content']), 30);
+        $data = [
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'excerpt' => $validated['excerpt'] ?? Str::words(strip_tags($validated['content']), 30),
+        ];
 
         $publishing = $request->has('is_published');
-        if ($publishing && ! $blog->is_published) {
-            $blog->is_published = true;
-            $blog->published_at = \Carbon\Carbon::now();
+        if ($publishing && ! ($blog->is_published ?? false)) {
+            $data['is_published'] = true;
+            $data['published_at'] = now()->format('c');
         } elseif (! $publishing) {
-            $blog->is_published = false;
-            $blog->published_at = null;
+            $data['is_published'] = false;
+            $data['published_at'] = null;
         }
 
         if ($request->hasFile('featured_image')) {
-            // Delete old image if it's a local file
             if ($blog->featured_image && str_starts_with($blog->featured_image, '/storage/')) {
                 $relativePath = str_replace('/storage/', '', $blog->featured_image);
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($relativePath);
+                Storage::disk('public')->delete($relativePath);
             }
             $path = $request->file('featured_image')->store('blogs', 'public');
-            $blog->featured_image = '/storage/'.$path; // Changed to match store method's output format
+            $data['featured_image'] = '/storage/'.$path;
         } elseif (! empty($validated['featured_image_url'])) {
-            // Delete old image if it's a local file
             if ($blog->featured_image && str_starts_with($blog->featured_image, '/storage/')) {
                 $relativePath = str_replace('/storage/', '', $blog->featured_image);
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($relativePath);
+                Storage::disk('public')->delete($relativePath);
             }
-            $blog->featured_image = $validated['featured_image_url'];
+            $data['featured_image'] = $validated['featured_image_url'];
         }
 
-        $blog->save();
-
-        Cache::forget('latest_blogs_home'); // Added this line
+        $this->blogs->update($blog->id, $data);
+        Cache::forget('latest_blogs_home');
 
         return redirect()->route('admin.blogs.index')->with('success', 'Blog post updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Blog $blog)
+    public function destroy(string $blogId)
     {
+        $blog = $this->blogs->findOrFail($blogId);
+
         if (! auth()->user()->isSuperAdmin() && $blog->user_id !== auth()->id()) {
             abort(403);
         }
 
-        $blog->delete();
+        $this->blogs->delete($blog->id);
 
         return redirect()->route('admin.blogs.index')->with('success', 'Blog post deleted successfully.');
     }
 
-    /**
-     * Handle image uploads directly from the rich text editor (e.g., Quill).
-     */
     public function uploadImage(Request $request)
     {
         $request->validate([

@@ -3,33 +3,48 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ForumCategory;
+use App\Repositories\ForumCategoryRepository;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Str;
 
 class AdminForumCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected ForumCategoryRepository $categories;
+
+    public function __construct(ForumCategoryRepository $categories)
     {
-        $categories = ForumCategory::withCount('posts')->orderBy('order', 'asc')->paginate(15);
+        $this->categories = $categories;
+    }
+
+    public function index(Request $request)
+    {
+        $all = $this->categories->ordered();
+        foreach ($all as $category) {
+            $category->posts_count = 0; // Could compute from repository if needed
+        }
+
+        $page = (int) $request->input('page', 1);
+        $perPage = 15;
+        $total = count($all);
+        $items = array_slice($all, ($page - 1) * $perPage, $perPage);
+
+        $categories = new LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         return view('admin.forums.categories.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('admin.forums.categories.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -40,39 +55,36 @@ class AdminForumCategoryController extends Controller
         ]);
 
         $slug = Str::slug($request->name);
-
-        // Ensure slug is unique
         $originalSlug = $slug;
         $counter = 1;
-        while (ForumCategory::where('slug', $slug)->exists()) {
+        while ($this->categories->where('slug', '==', $slug)->first()) {
             $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 
-        ForumCategory::create([
+        $this->categories->create([
             'name' => $request->name,
             'slug' => $slug,
             'description' => $request->description,
             'order' => $request->order ?? 0,
             'rules_banner' => $request->rules_banner,
+            'created_at' => now()->format('c'),
         ]);
 
         return redirect()->route('admin.forum.categories.index')->with('success', 'Forum Category created successfully.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ForumCategory $category)
+    public function edit(string $categoryId)
     {
+        $category = $this->categories->findOrFail($categoryId);
+
         return view('admin.forums.categories.edit', compact('category'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, ForumCategory $category)
+    public function update(Request $request, string $categoryId)
     {
+        $category = $this->categories->findOrFail($categoryId);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -81,18 +93,16 @@ class AdminForumCategoryController extends Controller
         ]);
 
         $slug = Str::slug($request->name);
-
-        // Ensure slug is unique if changed
-        if ($slug !== $category->slug) {
+        if ($slug !== ($category->slug ?? '')) {
             $originalSlug = $slug;
             $counter = 1;
-            while (ForumCategory::where('slug', $slug)->where('id', '!=', $category->id)->exists()) {
+            while ($this->categories->where('slug', '==', $slug)->first()?->id !== $category->id) {
                 $slug = $originalSlug.'-'.$counter;
                 $counter++;
             }
         }
 
-        $category->update([
+        $this->categories->update($category->id, [
             'name' => $request->name,
             'slug' => $slug,
             'description' => $request->description,
@@ -103,12 +113,9 @@ class AdminForumCategoryController extends Controller
         return redirect()->route('admin.forum.categories.index')->with('success', 'Forum Category updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ForumCategory $category)
+    public function destroy(string $categoryId)
     {
-        $category->delete();
+        $this->categories->delete($categoryId);
 
         return redirect()->route('admin.forum.categories.index')->with('success', 'Forum Category deleted successfully.');
     }

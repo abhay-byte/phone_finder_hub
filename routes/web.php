@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 // Public Forum Routes
 Route::get('/forum', [\App\Http\Controllers\ForumController::class, 'index'])->name('forum.index');
-Route::get('/forum/c/{category:slug}', [\App\Http\Controllers\ForumController::class, 'category'])->name('forum.category');
-Route::get('/forum/p/{post:slug}', [\App\Http\Controllers\ForumController::class, 'show'])->name('forum.post.show');
+Route::get('/forum/c/{slug}', [\App\Http\Controllers\ForumController::class, 'category'])->name('forum.category');
+Route::get('/forum/p/{slug}', [\App\Http\Controllers\ForumController::class, 'show'])->name('forum.post.show');
 
 Route::get('/', [PhoneController::class, 'index'])->name('home');
 
@@ -60,8 +60,9 @@ Route::post('/auth/firebase/callback', [AuthController::class, 'firebaseCallback
 
 Route::middleware('auth')->group(function () {
     // User Profile
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Comments & Upvotes
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
@@ -133,7 +134,7 @@ Route::middleware(['auth', 'author_admin'])->prefix('admin')->name('admin.')->gr
 // Public Blog Routes
 // ─────────────────────────────────────────────────────────────────────────────
 Route::get('/blogs', [\App\Http\Controllers\BlogController::class, 'index'])->name('blogs.index');
-Route::get('/blogs/{blog:slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blogs.show');
+Route::get('/blogs/{slug}', [\App\Http\Controllers\BlogController::class, 'show'])->name('blogs.show');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Breeze Auth Routes (password reset, email verification)

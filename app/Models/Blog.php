@@ -2,45 +2,36 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasSEO;
-use App\Models\Traits\SyncsToFirestore;
+use App\Repositories\UserRepository;
 use App\Services\SEO\SEOData;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
-class Blog extends Model
+class Blog extends FirestoreModel
 {
-    use HasSEO;
-    use SyncsToFirestore;
-
-    protected $fillable = [
-        'title',
-        'slug',
-        'content',
-        'excerpt',
-        'featured_image',
-        'user_id',
-        'is_published',
-        'published_at',
-    ];
-
-    protected $casts = [
+    protected array $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    public function author(): BelongsTo
+    public function author(): ?User
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return app(UserRepository::class)->find($this->attributes['user_id'] ?? '');
     }
 
     public function getSEOData(): SEOData
     {
-        // Ensure image URL is absolute for SEO metadata
         $imageUrl = $this->featured_image ?
             (str_starts_with($this->featured_image, 'http') ? $this->featured_image : url($this->featured_image))
             : asset('assets/logo.png');
+
+        $publishedAt = $this->published_at;
+        $createdAt = $this->attributes['created_at'] ?? null;
+
+        $datePublished = $publishedAt instanceof \DateTimeInterface
+            ? $publishedAt->format('c')
+            : ($publishedAt ?: ($createdAt ?: now()->format('c')));
 
         return new SEOData(
             title: "{$this->title} | PhoneFinderHub Blog",
@@ -53,11 +44,11 @@ class Blog extends Model
                 '@type' => 'NewsArticle',
                 'headline' => $this->title,
                 'image' => [$imageUrl],
-                'datePublished' => $this->published_at ? $this->published_at->toIso8601String() : $this->created_at->toIso8601String(),
+                'datePublished' => $datePublished,
                 'author' => [
                     [
                         '@type' => 'Person',
-                        'name' => $this->author->name ?? 'PhoneFinderHub',
+                        'name' => $this->author?->name ?? 'PhoneFinderHub',
                     ],
                 ],
             ]

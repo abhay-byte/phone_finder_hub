@@ -2,42 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
-use App\Models\CommentUpvote;
+use App\Repositories\CommentRepository;
+use App\Repositories\CommentUpvoteRepository;
 use Illuminate\Support\Facades\Auth;
 
 class CommentUpvoteController extends Controller
 {
-    /**
-     * Toggle the upvote status of a comment for the auth user.
-     */
-    public function toggle(Comment $comment)
+    protected CommentRepository $comments;
+
+    protected CommentUpvoteRepository $upvotes;
+
+    public function __construct(CommentRepository $comments, CommentUpvoteRepository $upvotes)
+    {
+        $this->comments = $comments;
+        $this->upvotes = $upvotes;
+    }
+
+    public function toggle(string $commentId)
     {
         $userId = Auth::id();
+        $comment = $this->comments->findOrFail($commentId);
 
-        $existingUpvote = CommentUpvote::where('comment_id', $comment->id)
-            ->where('user_id', $userId)
-            ->first();
-
-        if ($existingUpvote) {
-            // User already upvoted, so un-upvote
-            $existingUpvote->delete();
-            $comment->decrement('upvotes_count');
+        if ($this->upvotes->hasUpvoted($comment->id, $userId)) {
+            $this->upvotes->removeUpvote($comment->id, $userId);
+            $newCount = max(0, ($comment->upvotes_count ?? 0) - 1);
+            $this->comments->update($comment->id, ['upvotes_count' => $newCount]);
             $status = 'removed';
         } else {
-            // New upvote
-            CommentUpvote::create([
+            $this->upvotes->create([
                 'comment_id' => $comment->id,
                 'user_id' => $userId,
+                'created_at' => now()->format('c'),
             ]);
-            $comment->increment('upvotes_count');
+            $newCount = ($comment->upvotes_count ?? 0) + 1;
+            $this->comments->update($comment->id, ['upvotes_count' => $newCount]);
             $status = 'added';
         }
 
-        // Return JSON so we can update the UI without a page reload
         return response()->json([
             'status' => $status,
-            'upvotes_count' => $comment->upvotes_count,
+            'upvotes_count' => $newCount,
         ]);
     }
 }

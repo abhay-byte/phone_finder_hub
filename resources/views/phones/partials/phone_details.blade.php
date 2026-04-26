@@ -1130,7 +1130,7 @@
                                                     <span
                                                         class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Sensors</span>
                                                     <span
-                                                        class="text-gray-700 font-medium leading-snug block">{{ $phone->camera->main_camera_sensors }}</span>
+                                                        class="text-gray-700 dark:text-gray-300 font-medium leading-snug block">{{ $phone->camera->main_camera_sensors }}</span>
                                                 </div>
                                             @endif
                                             @if ($phone->camera->main_camera_apertures)
@@ -1138,7 +1138,7 @@
                                                     <span
                                                         class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Aperture</span>
                                                     <span
-                                                        class="text-gray-700 font-medium leading-snug block">{{ $phone->camera->main_camera_apertures }}</span>
+                                                        class="text-gray-700 dark:text-gray-300 font-medium leading-snug block">{{ $phone->camera->main_camera_apertures }}</span>
                                                 </div>
                                             @endif
                                             @if ($phone->camera->main_camera_focal_lengths)
@@ -1147,7 +1147,7 @@
                                                         class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Focal
                                                         Length</span>
                                                     <span
-                                                        class="text-gray-700 font-medium leading-snug block">{{ $phone->camera->main_camera_focal_lengths }}</span>
+                                                        class="text-gray-700 dark:text-gray-300 font-medium leading-snug block">{{ $phone->camera->main_camera_focal_lengths }}</span>
                                                 </div>
                                             @endif
                                             @if ($phone->camera->main_camera_ois)
@@ -1155,7 +1155,7 @@
                                                     <span
                                                         class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">OIS</span>
                                                     <span
-                                                        class="text-gray-700 font-medium leading-snug block">{{ $phone->camera->main_camera_ois }}</span>
+                                                        class="text-gray-700 dark:text-gray-300 font-medium leading-snug block">{{ $phone->camera->main_camera_ois }}</span>
                                                 </div>
                                             @endif
                                             @if ($phone->camera->main_camera_pdaf)
@@ -1163,7 +1163,7 @@
                                                     <span
                                                         class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Focus</span>
                                                     <span
-                                                        class="text-gray-700 font-medium leading-snug block">{{ $phone->camera->main_camera_pdaf }}</span>
+                                                        class="text-gray-700 dark:text-gray-300 font-medium leading-snug block">{{ $phone->camera->main_camera_pdaf }}</span>
                                                 </div>
                                             @endif
                                         </div>
@@ -1186,7 +1186,7 @@
                                                         <span
                                                             class="font-bold text-xs uppercase text-gray-400">Aperture</span>
                                                         <span
-                                                            class="font-medium text-gray-900">{{ $phone->camera->selfie_camera_aperture }}</span>
+                                                            class="font-medium text-gray-900 dark:text-white">{{ $phone->camera->selfie_camera_aperture }}</span>
                                                     </div>
                                                 @endif
                                                 @if ($phone->camera->selfie_camera_sensor)
@@ -1195,7 +1195,7 @@
                                                         <span
                                                             class="font-bold text-xs uppercase text-gray-400">Sensor</span>
                                                         <span
-                                                            class="font-medium text-gray-900">{{ $phone->camera->selfie_camera_sensor }}</span>
+                                                            class="font-medium text-gray-900 dark:text-white">{{ $phone->camera->selfie_camera_sensor }}</span>
                                                     </div>
                                                 @endif
                                                 @if ($phone->camera->selfie_camera_autofocus)
@@ -1209,7 +1209,7 @@
                                                             class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Selfie
                                                             Video</span>
                                                         <span
-                                                            class="text-gray-900 font-medium block">{{ $phone->camera->selfie_video_features }}</span>
+                                                            class="text-gray-900 dark:text-white font-medium block">{{ $phone->camera->selfie_video_features }}</span>
                                                     </div>
                                                 @endif
                                             </div>
@@ -1218,7 +1218,7 @@
                                             <h4 class="text-sm font-bold uppercase text-gray-500 mb-2 tracking-wide">Rear
                                                 Camera Video</h4>
                                             <p
-                                                class="text-base font-bold text-gray-900 leading-relaxed mb-2">
+                                                class="text-base font-bold text-gray-900 dark:text-white leading-relaxed mb-2">
                                                 {{ $phone->camera->main_video_capabilities }}</p>
                                             @if ($phone->camera->video_features)
                                                 <p class="text-xs text-gray-500 font-medium">
@@ -1253,7 +1253,7 @@
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">WLAN</span>
                                             <div>
                                                 <span
-                                                    class="text-gray-900 font-bold block mb-1 leading-snug break-words whitespace-normal">{{ $phone->connectivity->wlan }}</span>
+                                                    class="text-gray-900 dark:text-white font-bold block mb-1 leading-snug break-words whitespace-normal">{{ $phone->connectivity->wlan }}</span>
                                                 @if ($phone->connectivity->wifi_bands)
                                                     <span
                                                         class="text-xs text-gray-500 font-medium">{{ $phone->connectivity->wifi_bands }}</span>
@@ -1264,7 +1264,7 @@
                                             <span
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">BT</span>
                                             <span
-                                                class="text-gray-900 font-bold">{{ $phone->connectivity->bluetooth }}</span>
+                                                class="text-gray-900 dark:text-white font-bold">{{ $phone->connectivity->bluetooth }}</span>
                                         </li>
                                         <li class="grid grid-cols-[80px_1fr] gap-3">
                                             <span
@@ -1272,10 +1272,10 @@
                                             <div>
                                                 @if ($phone->connectivity->positioning_details)
                                                     <span
-                                                        class="text-gray-900 font-bold block mb-1 leading-snug">{{ $phone->connectivity->positioning_details }}</span>
+                                                        class="text-gray-900 dark:text-white font-bold block mb-1 leading-snug">{{ $phone->connectivity->positioning_details }}</span>
                                                 @else
                                                     <span
-                                                        class="text-gray-900 font-bold block mb-1 leading-snug">{{ $phone->connectivity->positioning }}</span>
+                                                        class="text-gray-900 dark:text-white font-bold block mb-1 leading-snug">{{ $phone->connectivity->positioning }}</span>
                                                 @endif
                                             </div>
                                         </li>
@@ -1283,27 +1283,27 @@
                                             <span
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">NFC/IR</span>
                                             <span
-                                                class="text-gray-900 font-bold">{{ $phone->connectivity->nfc }}
+                                                class="text-gray-900 dark:text-white font-bold">{{ $phone->connectivity->nfc }}
                                                 / {{ $phone->connectivity->infrared }}</span>
                                         </li>
                                         <li class="grid grid-cols-[80px_1fr] gap-3">
                                             <span
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">USB</span>
                                             <span
-                                                class="text-gray-900 font-bold">{{ $phone->connectivity->usb_details ?? ($phone->connectivity->usb ?? 'Not specified') }}</span>
+                                                class="text-gray-900 dark:text-white font-bold">{{ $phone->connectivity->usb_details ?? ($phone->connectivity->usb ?? 'Not specified') }}</span>
                                         </li>
                                         <li class="grid grid-cols-[80px_1fr] gap-3">
                                             <span
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">Sensors</span>
                                             <span
-                                                class="text-gray-700 font-medium leading-relaxed">{{ $phone->connectivity->sensors }}</span>
+                                                class="text-gray-700 dark:text-gray-300 font-medium leading-relaxed">{{ $phone->connectivity->sensors }}</span>
                                         </li>
                                         @if ($phone->connectivity->sar_value)
                                             <li class="grid grid-cols-[80px_1fr] gap-3">
                                                 <span
                                                     class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">SAR</span>
                                                 <span
-                                                    class="text-gray-700 font-medium">{{ $phone->connectivity->sar_value }}</span>
+                                                    class="text-gray-700 dark:text-gray-300 font-medium">{{ $phone->connectivity->sar_value }}</span>
                                             </li>
                                         @endif
 
@@ -1314,20 +1314,20 @@
                                                 class="text-xs font-bold text-gray-400 uppercase tracking-wider pt-0.5">Audio</span>
                                             <div>
                                                 <span
-                                                    class="text-gray-900 font-bold block mb-2">{{ $phone->connectivity->audio_quality ?? 'High-Res Audio' }}</span>
+                                                    class="text-gray-900 dark:text-white font-bold block mb-2">{{ $phone->connectivity->audio_quality ?? 'High-Res Audio' }}</span>
 
                                                 <div class="space-y-1 text-sm">
                                                     <div class="flex items-center gap-2">
                                                         <span class="text-gray-500">3.5mm Jack:</span>
                                                         <span
-                                                            class="font-bold {{ $phone->connectivity->has_3_5mm_jack ? 'text-green-600' : 'text-gray-900' }}">
+                                                            class="font-bold {{ $phone->connectivity->has_3_5mm_jack ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white' }}">
                                                             {{ $phone->connectivity->has_3_5mm_jack ? 'Yes' : 'No' }}
                                                         </span>
                                                     </div>
 
                                                     <div class="flex items-center gap-2">
                                                         <span class="text-gray-500">Speakers:</span>
-                                                        <span class="font-bold text-gray-900">
+                                                        <span class="font-bold text-gray-900 dark:text-white">
                                                             {{ $phone->connectivity->loudspeaker ? 'Stereo' : 'Mono' }}
                                                         </span>
                                                     </div>
@@ -1358,13 +1358,13 @@
                                             <span
                                                 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Type</span>
                                             <span
-                                                class="font-bold text-gray-900">{{ $phone->battery->battery_type }}</span>
+                                                class="font-bold text-gray-900 dark:text-white">{{ $phone->battery->battery_type }}</span>
                                         </li>
                                         <li class="grid grid-cols-[80px_1fr] gap-3">
                                             <span
                                                 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Wired</span>
                                             <span
-                                                class="font-bold text-gray-900">{{ $phone->battery->charging_wired }}</span>
+                                                class="font-bold text-gray-900 dark:text-white">{{ $phone->battery->charging_wired }}</span>
                                         </li>
                                         @if (
                                             $phone->battery->charging_specs_detailed &&
@@ -1373,20 +1373,20 @@
                                                 <span
                                                     class="text-xs font-bold text-gray-500 uppercase tracking-wider">Speeds</span>
                                                 <span
-                                                    class="text-gray-700">{{ $phone->battery->charging_specs_detailed }}</span>
+                                                    class="text-gray-700 dark:text-gray-300">{{ $phone->battery->charging_specs_detailed }}</span>
                                             </li>
                                         @endif
                                         <li class="grid grid-cols-[80px_1fr] gap-3">
                                             <span
                                                 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Wireless</span>
                                             <span
-                                                class="font-bold text-gray-900">{{ $phone->battery->charging_wireless ?? 'No' }}</span>
+                                                class="font-bold text-gray-900 dark:text-white">{{ $phone->battery->charging_wireless ?? 'No' }}</span>
                                         </li>
                                         @if ($phone->battery->reverse_wireless || $phone->battery->reverse_wired)
                                             <li class="grid grid-cols-[80px_1fr] gap-3">
                                                 <span
                                                     class="text-xs font-bold text-gray-500 uppercase tracking-wider">Reverse</span>
-                                                <span class="text-gray-700">
+                                                <span class="text-gray-700 dark:text-gray-300">
                                                     {{ $phone->battery->reverse_wireless ? 'Wireless: ' . $phone->battery->reverse_wireless : '' }}
                                                     {{ $phone->battery->reverse_wired ? ($phone->battery->reverse_wireless ? ' • ' : '') . 'Wired: ' . $phone->battery->reverse_wired : '' }}
                                                 </span>

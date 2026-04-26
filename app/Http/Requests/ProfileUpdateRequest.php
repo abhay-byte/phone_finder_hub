@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class ProfileUpdateRequest extends FormRequest
 {
@@ -16,6 +15,8 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = $this->user()->getAuthIdentifier();
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
@@ -24,7 +25,12 @@ class ProfileUpdateRequest extends FormRequest
                 'lowercase',
                 'email',
                 'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
+                function ($attribute, $value, $fail) use ($userId) {
+                    $existing = app(UserRepository::class)->findByEmail($value);
+                    if ($existing && $existing->id !== $userId) {
+                        $fail('The email has already been taken.');
+                    }
+                },
             ],
         ];
     }

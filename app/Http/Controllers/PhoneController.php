@@ -2,46 +2,59 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\BlogRepository;
+use App\Repositories\CommentRepository;
+use App\Repositories\PhoneRepository;
 use App\Services\SEO\SEOData;
 use App\Services\SEO\SeoManager;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 
 class PhoneController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected PhoneRepository $phones;
+
+    protected BlogRepository $blogs;
+
+    protected CommentRepository $comments;
+
+    public function __construct(
+        PhoneRepository $phones,
+        BlogRepository $blogs,
+        CommentRepository $comments
+    ) {
+        $this->phones = $phones;
+        $this->blogs = $blogs;
+        $this->comments = $comments;
+    }
+
     public function index(Request $request, SeoManager $seo)
     {
-        $sort = $request->input('sort', 'expert_score'); // Default to Expert Score
+        $sort = $request->input('sort', 'expert_score');
 
-        // Cache fully rendered HTML for 5 minutes (skips heavy Blade loop rendering on home page)
-        $cacheKey = 'phones_index_grid_html_'.$sort.'_v6';
-        $gridHtml = Cache::remember($cacheKey, 300, function () use ($sort) {
-            $query = \App\Models\Phone::query();
+        $phones = $this->phones->all();
 
-            if ($sort == 'expert_score') {
-                $query->orderBy('expert_score', 'desc');
-            } elseif ($sort == 'value_score') {
-                $query->orderBy('value_score', 'desc');
-            } elseif ($sort == 'price_asc') {
-                $query->orderBy('price', 'asc');
-            } elseif ($sort == 'overall_score') {
-                $query->orderBy('overall_score', 'desc');
-            } elseif ($sort == 'ueps_score') {
-                $query->orderBy('ueps_score', 'desc');
-            } else {
-                $query->orderBy('expert_score', 'desc');
-            }
+        usort($phones, function ($a, $b) use ($sort) {
+            $aVal = $a->__get($sort) ?? 0;
+            $bVal = $b->__get($sort) ?? 0;
 
-            $phones = $query->with(['platform', 'benchmarks', 'battery', 'body'])->take(50)->get();
+            return $bVal <=> $aVal;
+        });
 
+        $phones = array_slice($phones, 0, 50);
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json($phones);
+        }
+
+        $cacheKey = 'phones_index_grid_html_'.$sort.'_v7';
+        $gridHtml = Cache::remember($cacheKey, 300, function () use ($phones) {
             return view('phones.partials.grid', compact('phones'))->render();
         });
 
-        $latestBlogs = Cache::remember('home_latest_blogs_v2', 300, function () {
-            return \App\Models\Blog::with('author')->where('is_published', true)->latest('published_at')->take(3)->get();
+        $latestBlogs = Cache::remember('home_latest_blogs_v3', 300, function () {
+            return $this->blogs->published(3);
         });
 
         $seo->set(new SEOData(
@@ -57,34 +70,23 @@ class PhoneController extends Controller
     {
         $sort = $request->input('sort', 'expert_score');
 
-        $cacheKey = 'phones_grid_html_'.$sort.'_v3';
+        $cacheKey = 'phones_grid_html_'.$sort.'_v4';
         $html = Cache::remember($cacheKey, 300, function () use ($sort) {
-            // Only load minimal relations for grid view
-            $query = \App\Models\Phone::query()->with(['platform', 'benchmarks']);
+            $phones = $this->phones->all();
 
-            if ($sort == 'expert_score') {
-                $query->orderBy('expert_score', 'desc');
-            } elseif ($sort == 'value_score') {
-                $query->orderBy('value_score', 'desc');
-            } elseif ($sort == 'price_asc') {
-                $query->orderBy('price', 'asc');
-            } elseif ($sort == 'overall_score') {
-                $query->orderBy('overall_score', 'desc');
-            } elseif ($sort == 'ueps_score') {
-                $query->orderBy('ueps_score', 'desc');
-            } else {
-                $query->orderBy('expert_score', 'desc');
-            }
+            usort($phones, function ($a, $b) use ($sort) {
+                $aVal = $a->__get($sort) ?? 0;
+                $bVal = $b->__get($sort) ?? 0;
 
-            $phones = $query->take(50)->get();
+                return $bVal <=> $aVal;
+            });
+
+            $phones = array_slice($phones, 0, 50);
 
             return view('phones.partials.grid', compact('phones'))->render();
         });
 
-        return response($html)
-            ->header('Vary', 'X-Requested-With');
-        // Removed no-cache headers to allow browser caching if desired, or keep them if strict freshness is needed.
-        // For now, removing them to let the server-side cache do the work.
+        return response($html)->header('Vary', 'X-Requested-With');
     }
 
     public function search(Request $request)
@@ -95,18 +97,10 @@ class PhoneController extends Controller
             return response()->json([]);
         }
 
-        $phones = \App\Models\Phone::with('platform')
-            ->where('name', 'like', "%{$query}%")
-            ->orWhere('brand', 'like', "%{$query}%")
-            ->orWhereHas('platform', function ($q) use ($query) {
-                $q->where('chipset', 'like', "%{$query}%")
-                    ->orWhere('cpu', 'like', "%{$query}%");
-            })
-            ->select('id', 'name', 'brand', 'image_url', 'price', 'overall_score', 'value_score')
-            ->limit(10)
-            ->get();
+        $phones = $this->phones->search($query);
+        $phones = array_slice($phones, 0, 10);
 
-        $results = $phones->map(function ($phone) {
+        $results = array_map(function ($phone) {
             return [
                 'id' => $phone->id,
                 'name' => $phone->name,
@@ -115,47 +109,37 @@ class PhoneController extends Controller
                 'full_name' => $phone->brand.' '.$phone->name,
                 'price' => $phone->price,
                 'value_score' => $phone->value_score ?? 'N/A',
-                'chipset' => $phone->platform->chipset ?? null, // Optional: return chipset for UI
+                'chipset' => $phone->platform->chipset ?? null,
             ];
-        });
+        }, $phones);
 
         return response()->json($results);
     }
 
     public function rankings(Request $request, SeoManager $seo)
     {
-        $tab = $request->input('tab', 'overall'); // Default tab to Overall
-        $page = $request->input('page', 1);
+        $tab = $request->input('tab', 'overall');
+        $page = (int) $request->input('page', 1);
 
-        // Dynamic Price Range
         $maxDatabasePrice = Cache::remember('max_database_price', 3600, function () {
-            $max = \App\Models\Phone::max('price') ?? 200000;
+            $max = $this->phones->maxPrice();
 
             return ceil($max / 1000) * 1000;
         });
 
-        // Filter Params
-        $minPrice = $request->input('min_price', 0);
-        $maxPrice = $request->input('max_price', $maxDatabasePrice);
+        $maxDatabaseAntutu = Cache::remember('max_database_antutu', 3600, function () {
+            return $this->phones->maxAntutu() ?: 3000000;
+        });
 
-        // Advanced Filters
-        $minRam = $request->input('min_ram', 4);
-        $maxRam = $request->input('max_ram', 24);
-        $minStorage = $request->input('min_storage', 64);
-        $maxStorage = $request->input('max_storage', 1024); // 1TB
+        $minPrice = (float) $request->input('min_price', 0);
+        $maxPrice = (float) $request->input('max_price', $maxDatabasePrice);
+        $minRam = (int) $request->input('min_ram', 4);
+        $maxRam = (int) $request->input('max_ram', 24);
+        $minStorage = (int) $request->input('min_storage', 64);
+        $maxStorage = (int) $request->input('max_storage', 1024);
         $bootloader = $request->boolean('bootloader');
         $turnip = $request->boolean('turnip');
         $showUnverified = $request->boolean('show_unverified', false);
-
-        // Define ranking metric based on tab
-        $rankExpression = match ($tab) {
-            'performance' => 'overall_score',
-            'value' => 'value_score',
-            'gaming' => 'gpx_score',
-            'cms' => 'cms_score',
-            'endurance' => 'endurance_score',
-            default => 'expert_score', // Default to Expert/Overall Score
-        };
 
         $defaultSort = match ($tab) {
             'performance' => 'overall_score',
@@ -169,223 +153,64 @@ class PhoneController extends Controller
         $sort = $request->input('sort', $defaultSort);
         $direction = $request->input('direction', 'desc');
 
-        // Cache key includes all filter parameters
         $brandsKey = implode('_', $request->input('brands', []));
         $ipRatingsKey = implode('_', $request->input('ip_ratings', []));
-        $minAntutu = $request->input('min_antutu', 0);
-        $maxAntutu = $request->input('max_antutu', 3000000);
+        $minAntutu = (int) $request->input('min_antutu', 0);
+        $maxAntutu = (int) $request->input('max_antutu', $maxDatabaseAntutu);
 
-        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_p{$minPrice}-{$maxPrice}_r{$minRam}-{$maxRam}_s{$minStorage}-{$maxStorage}_b{$bootloader}_t{$turnip}_un{$showUnverified}_br{$brandsKey}_ip{$ipRatingsKey}_a{$minAntutu}-{$maxAntutu}_html_v8";
+        $cacheKey = "rankings_{$tab}_{$sort}_{$direction}_{$page}_p{$minPrice}-{$maxPrice}_r{$minRam}-{$maxRam}_s{$minStorage}-{$maxStorage}_b{$bootloader}_t{$turnip}_un{$showUnverified}_br{$brandsKey}_ip{$ipRatingsKey}_a{$minAntutu}-{$maxAntutu}_html_v9";
 
         $queryParams = $request->query();
 
-        // Fetch Filter Options (Cached)
-        $filterOptions = Cache::remember('ranking_filter_options_v1', 3600, function () {
+        $filterOptions = Cache::remember('ranking_filter_options_v2', 3600, function () {
             return [
-                'brands' => \App\Models\Phone::distinct()->orderBy('brand')->pluck('brand')->toArray(),
-                'ip_ratings' => \App\Models\SpecBody::distinct()->whereNotNull('ip_rating')->where('ip_rating', '!=', '')->orderBy('ip_rating')->pluck('ip_rating')->toArray(),
-                'max_antutu' => \App\Models\Benchmark::max('antutu_score') ?? 3000000,
+                'brands' => $this->phones->brands(),
+                'ip_ratings' => $this->phones->distinct('body.ip_rating'),
+                'max_antutu' => $this->phones->maxAntutu() ?: 3000000,
             ];
         });
 
-        $tableHtml = Cache::remember($cacheKey, 300, function () use ($tab, $sort, $direction, $rankExpression, $page, $queryParams, $minPrice, $maxPrice, $maxDatabasePrice, $minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip, $showUnverified, $filterOptions, $request) {
+        $tableHtml = Cache::remember($cacheKey, 300, function () use (
+            $tab, $sort, $direction, $page, $queryParams,
+            $minPrice, $maxPrice, $minRam, $maxRam, $minStorage, $maxStorage,
+            $bootloader, $turnip, $showUnverified, $request, $minAntutu, $maxAntutu
+        ) {
+            $result = $this->phones->rankings(
+                [
+                    'min_price' => $minPrice,
+                    'max_price' => $maxPrice,
+                    'min_ram' => $minRam,
+                    'max_ram' => $maxRam,
+                    'min_storage' => $minStorage,
+                    'max_storage' => $maxStorage,
+                    'bootloader' => $bootloader,
+                    'turnip' => $turnip,
+                    'show_unverified' => $showUnverified,
+                    'brands' => $request->input('brands', []),
+                    'ip_ratings' => $request->input('ip_ratings', []),
+                    'min_antutu' => $minAntutu,
+                    'max_antutu' => $maxAntutu,
+                ],
+                $sort,
+                $direction,
+                $page
+            );
 
-            // Subquery to calculate Rank for ALL phones based on the Tab's metric
-            $rankingSubquery = \App\Models\Phone::query()
-                ->whereBetween('price', [$minPrice, $maxPrice])
-                ->when(! $showUnverified, function ($q) {
-                    $q->whereHas('benchmarks', function ($sq) {
-                        $sq->whereNotNull('antutu_score')
-                            ->whereNotNull('geekbench_single')
-                            ->whereNotNull('geekbench_multi')
-                            ->whereNotNull('dmark_wild_life_extreme');
-                    });
-                })
-                ->whereHas('platform', function ($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
-                    $q->where(function ($query) use ($minRam, $maxRam) {
-                        $query->where('ram_max', '>=', $minRam)
-                            ->where('ram_min', '<=', $maxRam);
-                    })
-                        ->where(function ($query) use ($minStorage, $maxStorage) {
-                            $query->where('storage_max', '>=', $minStorage)
-                                ->where('storage_min', '<=', $maxStorage);
-                        });
-
-                    if ($bootloader) {
-                        $q->where('bootloader_unlockable', true);
-                    }
-                    if ($turnip) {
-                        $q->where('turnip_support', true);
-                    }
-                })
-                // Brand Filter
-                ->when($request->has('brands'), function ($q) use ($request) {
-                    $q->whereIn('brand', $request->input('brands'));
-                })
-                // IP Rating Filter
-                ->when($request->has('ip_ratings'), function ($q) use ($request) {
-                    $q->whereHas('body', function ($sq) use ($request) {
-                        $sq->whereIn('ip_rating', $request->input('ip_ratings'));
-                    });
-                })
-                // AnTuTu Filter
-                ->when($request->filled('min_antutu') || $request->filled('max_antutu'), function ($q) use ($request) {
-                    $q->whereHas('benchmarks', function ($sq) use ($request) {
-                        if ($request->filled('min_antutu')) {
-                            $sq->where('antutu_score', '>=', $request->input('min_antutu'));
-                        }
-                        if ($request->filled('max_antutu')) {
-                            $sq->where('antutu_score', '<=', $request->input('max_antutu'));
-                        }
-                    });
-                })
-                ->select('id')
-                ->selectRaw("RANK() OVER (ORDER BY {$rankExpression} DESC) as computed_rank");
-
-            $query = \App\Models\Phone::query()
-                ->whereBetween('price', [$minPrice, $maxPrice])
-                ->when(! $showUnverified, function ($q) {
-                    $q->whereHas('benchmarks', function ($sq) {
-                        $sq->whereNotNull('antutu_score')
-                            ->whereNotNull('geekbench_single')
-                            ->whereNotNull('geekbench_multi')
-                            ->whereNotNull('dmark_wild_life_extreme');
-                    });
-                })
-                ->whereHas('platform', function ($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
-                    $q->where(function ($query) use ($minRam, $maxRam) {
-                        $query->where('ram_max', '>=', $minRam)
-                            ->where('ram_min', '<=', $maxRam);
-                    })
-                        ->where(function ($query) use ($minStorage, $maxStorage) {
-                            $query->where('storage_max', '>=', $minStorage)
-                                ->where('storage_min', '<=', $maxStorage);
-                        });
-
-                    if ($bootloader) {
-                        $q->where('bootloader_unlockable', true);
-                    }
-                    if ($turnip) {
-                        $q->where('turnip_support', true);
-                    }
-                })
-                // Brand Filter
-                ->when($request->has('brands'), function ($q) use ($request) {
-                    $q->whereIn('brand', $request->input('brands'));
-                })
-                // IP Rating Filter
-                ->when($request->has('ip_ratings'), function ($q) use ($request) {
-                    $q->whereHas('body', function ($sq) use ($request) {
-                        $sq->whereIn('ip_rating', $request->input('ip_ratings'));
-                    });
-                })
-                // AnTuTu Filter
-                ->when($request->filled('min_antutu') || $request->filled('max_antutu'), function ($q) use ($request) {
-                    $q->whereHas('benchmarks', function ($sq) use ($request) {
-                        if ($request->filled('min_antutu')) {
-                            $sq->where('antutu_score', '>=', $request->input('min_antutu'));
-                        }
-                        if ($request->filled('max_antutu')) {
-                            $sq->where('antutu_score', '<=', $request->input('max_antutu'));
-                        }
-                    });
-                })
-                ->joinSub($rankingSubquery, 'rankings_table', function ($join) {
-                    $join->on('phones.id', '=', 'rankings_table.id');
-                });
-
-            // Join benchmarks table if sorting by benchmark fields
-            if (in_array($sort, ['antutu_score', 'geekbench_multi', 'geekbench_single', 'dmark_wild_life_extreme', 'battery_endurance_hours', 'dxomark_score', 'phonearena_camera_score'])) {
-                $query->with(['benchmarks', 'battery', 'body'])
-                    ->leftJoin('benchmarks', 'phones.id', '=', 'benchmarks.phone_id')
-                    ->select('phones.*', 'rankings_table.computed_rank') // Select phones.* explicitly
-                    ->orderBy('benchmarks.'.$sort, $direction);
-            } elseif ($sort == 'price') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderBy('price', $direction);
-            } elseif ($sort == 'ueps_score') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderBy('ueps_score', $direction);
-            } elseif ($sort == 'value_score') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderBy('value_score', $direction);
-            } elseif ($sort == 'expert_score') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderBy('expert_score', $direction);
-            } elseif ($sort == 'gpx_score') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderBy('gpx_score', $direction);
-            } elseif ($sort == 'cms_score') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderBy('cms_score', $direction);
-            } elseif ($sort == 'endurance_score') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderBy('endurance_score', $direction);
-            } elseif ($sort == 'price_per_ueps') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderByRaw('price / ueps_score '.$direction);
-            } elseif ($sort == 'price_per_fpi') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderByRaw('price / overall_score '.$direction);
-            } elseif ($sort == 'price_per_cms') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderByRaw('price / cms_score '.$direction);
-            } elseif ($sort == 'price_per_endurance') {
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderByRaw('price / endurance_score '.$direction);
-            } else {
-                // Default sort (usually matches the tab metric)
-                $query->select('phones.*', 'rankings_table.computed_rank')
-                    ->orderBy('expert_score', $direction);
-            }
-
-            // Optimization: Manual pagination
-            $perPage = 50;
-            $total = \App\Models\Phone::whereBetween('price', [$minPrice, $maxPrice])
-                ->when(! $showUnverified, function ($q) {
-                    $q->whereHas('benchmarks', function ($sq) {
-                        $sq->whereNotNull('antutu_score')
-                            ->whereNotNull('geekbench_single')
-                            ->whereNotNull('geekbench_multi')
-                            ->whereNotNull('dmark_wild_life_extreme');
-                    });
-                })
-                ->whereHas('platform', function ($q) use ($minRam, $maxRam, $minStorage, $maxStorage, $bootloader, $turnip) {
-                    $q->where(function ($query) use ($minRam, $maxRam) {
-                        $query->where('ram_max', '>=', $minRam)
-                            ->where('ram_min', '<=', $maxRam);
-                    })
-                        ->where(function ($query) use ($minStorage, $maxStorage) {
-                            $query->where('storage_max', '>=', $minStorage)
-                                ->where('storage_min', '<=', $maxStorage);
-                        });
-
-                    if ($bootloader) {
-                        $q->where('bootloader_unlockable', true);
-                    }
-                    if ($turnip) {
-                        $q->where('turnip_support', true);
-                    }
-                })->count();
-
-            $items = $query->skip(($page - 1) * $perPage)
-                ->take($perPage)
-                ->get();
-
-            $phones = new \Illuminate\Pagination\LengthAwarePaginator(
-                $items,
-                $total,
-                $perPage,
-                $page,
+            $phones = new LengthAwarePaginator(
+                $result['items'],
+                $result['total'],
+                $result['per_page'],
+                $result['current_page'],
                 [
                     'path' => \Illuminate\Support\Facades\Request::url(),
                     'query' => $queryParams,
                 ]
             );
 
-            // Extract ranks for the view compatibility
-            // The view likely expects $ranks[$id] = rank
-            $ranks = $phones->pluck('computed_rank', 'id')->toArray();
+            $ranks = [];
+            foreach ($result['items'] as $phone) {
+                $ranks[$phone->id] = $phone->computed_rank ?? 0;
+            }
 
             return view('phones.partials.rankings_table', compact(
                 'phones', 'sort', 'direction', 'tab', 'ranks'
@@ -414,42 +239,31 @@ class PhoneController extends Controller
         ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id, SeoManager $seo)
+    public function show($id, SeoManager $seo, Request $request)
     {
-        // Cache the eloquent model and relations instead of the full HTML view
-        // to prevent session/auth-dependent UI (like comments) from being cached statefully.
-        $phone = Cache::remember('phone_data_v2_'.$id, 3600, function () use ($id) {
-            return \App\Models\Phone::with([
-                'body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks',
-            ])->findOrFail($id);
+        $phone = Cache::remember('phone_data_v3_'.$id, 3600, function () use ($id) {
+            return $this->phones->findOrFail($id);
         });
 
-        // Cache the fully rendered heavy blade specs template to avoid compiling 1400+ lines.
-        $phoneDetailsHtml = Cache::remember('phone_details_html_v2_'.$id, 3600, function () use ($phone) {
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json($phone);
+        }
+
+        $phoneDetailsHtml = Cache::remember('phone_details_html_v3_'.$id, 3600, function () use ($phone) {
             return view('phones.partials.phone_details', compact('phone'))->render();
         });
 
-        $comments = Cache::remember('phone_comments_v3_'.$phone->id, 60, function () use ($phone) {
-            return \App\Models\Comment::with(['user', 'replies.user', 'replies.upvotes', 'upvotes'])
-                ->where('phone_id', $phone->id)
-                ->whereNull('parent_id')
-                ->orderBy('created_at', 'desc')
-                ->get();
+        $comments = Cache::remember('phone_comments_v4_'.$phone->id, 60, function () use ($phone) {
+            return $this->comments->forPhone($phone->id);
         });
 
-        $totalComments = Cache::remember('phone_comments_count_v2_'.$phone->id, 60, function () use ($phone) {
-            return $phone->comments()->count();
+        $totalComments = Cache::remember('phone_comments_count_v3_'.$phone->id, 60, function () use ($phone) {
+            return $this->comments->countForPhone($phone->id);
         });
 
         $seo->set($phone->getSEOData());
@@ -457,17 +271,11 @@ class PhoneController extends Controller
         return view('phones.show', compact('phone', 'comments', 'phoneDetailsHtml', 'totalComments'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

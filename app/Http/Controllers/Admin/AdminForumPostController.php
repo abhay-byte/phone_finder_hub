@@ -3,53 +3,70 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ForumComment;
-use App\Models\ForumPost;
+use App\Repositories\ForumCommentRepository;
+use App\Repositories\ForumPostRepository;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class AdminForumPostController extends Controller
 {
-    /**
-     * Display a listing of the posts.
-     */
-    public function index()
+    protected ForumPostRepository $posts;
+
+    protected ForumCommentRepository $comments;
+
+    public function __construct(ForumPostRepository $posts, ForumCommentRepository $comments)
     {
-        $posts = ForumPost::with(['category', 'user'])
-            ->withCount('comments')
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $this->posts = $posts;
+        $this->comments = $comments;
+    }
+
+    public function index(Request $request)
+    {
+        $all = $this->posts->all();
+        foreach ($all as $post) {
+            $post->comments_count = count($this->comments->forPost($post->id));
+        }
+
+        usort($all, function ($a, $b) {
+            return ($b->created_at ?? '') <=> ($a->created_at ?? '');
+        });
+
+        $page = (int) $request->input('page', 1);
+        $perPage = 20;
+        $total = count($all);
+        $items = array_slice($all, ($page - 1) * $perPage, $perPage);
+
+        $posts = new LengthAwarePaginator(
+            $items,
+            $total,
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         return view('admin.forums.posts.index', compact('posts'));
     }
 
-    /**
-     * Display the specified post with its comments.
-     */
-    public function show($id)
+    public function show(string $id)
     {
-        $post = ForumPost::with(['category', 'user', 'comments.user'])->findOrFail($id);
+        $post = $this->posts->findOrFail($id);
 
         return view('admin.forums.posts.show', compact('post'));
     }
 
-    /**
-     * Remove the specified post from storage.
-     */
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $post = ForumPost::findOrFail($id);
-        $post->delete();
+        $post = $this->posts->findOrFail($id);
+        $this->posts->delete($post->id);
 
         return redirect()->route('admin.forum.posts.index')->with('success', 'Forum Post and all its comments deleted successfully.');
     }
 
-    /**
-     * Remove a specific comment from a post.
-     */
-    public function destroyComment($id)
+    public function destroyComment(string $id)
     {
-        $comment = ForumComment::findOrFail($id);
+        $comment = $this->comments->findOrFail($id);
         $postId = $comment->forum_post_id;
-        $comment->delete();
+        $this->comments->delete($comment->id);
 
         return redirect()->route('admin.forum.posts.show', $postId)->with('success', 'Comment deleted successfully.');
     }

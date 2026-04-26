@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Phone;
+use App\Repositories\PhoneRepository;
 use Illuminate\Http\Request;
 
 class ComparisonController extends Controller
 {
-    /**
-     * Display the comparison page.
-     */
+    protected PhoneRepository $phones;
+
+    public function __construct(PhoneRepository $phones)
+    {
+        $this->phones = $phones;
+    }
+
     public function index(Request $request)
     {
-        // Get IDs from query string (comma separated)
         $ids = explode(',', $request->query('ids', ''));
-
-        // Filter out empty or non-numeric IDs
-        $ids = array_filter($ids, function ($id) {
-            return is_numeric($id);
-        });
+        $ids = array_filter($ids);
 
         if (empty($ids)) {
             $phones = collect();
@@ -26,17 +25,15 @@ class ComparisonController extends Controller
             return view('phones.compare', compact('phones'));
         }
 
-        // Limit to 3 or 4 phones for UI sanity (let's say 4)
         $ids = array_slice($ids, 0, 4);
+        $phones = $this->phones->findMany($ids);
 
-        $phones = Phone::whereIn('id', $ids)
-            ->with(['body', 'platform', 'camera', 'connectivity', 'battery', 'benchmarks'])
-            ->get();
+        usort($phones, function ($a, $b) use ($ids) {
+            $aIndex = array_search($a->id, $ids);
+            $bIndex = array_search($b->id, $ids);
 
-        // Maintain the order of IDs as requested
-        $phones = $phones->sortBy(function ($model) use ($ids) {
-            return array_search($model->id, $ids);
-        })->values();
+            return $aIndex <=> $bIndex;
+        });
 
         return view('phones.compare', compact('phones'));
     }

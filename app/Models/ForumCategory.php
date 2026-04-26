@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
-use App\Models\Traits\SyncsToFirestore;
-use Illuminate\Database\Eloquent\Model;
+use App\Repositories\ForumPostRepository;
+use Illuminate\Support\Collection;
 
-class ForumCategory extends Model
+class ForumCategory extends FirestoreModel
 {
-    use SyncsToFirestore;
+    protected array $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
-    protected $fillable = ['name', 'slug', 'description', 'order', 'rules_banner'];
-
-    public function posts()
+    public function posts(): Collection
     {
-        return $this->hasMany(ForumPost::class);
+        return collect(app(ForumPostRepository::class)->forCategory($this->attributes['id'] ?? ''));
     }
 }

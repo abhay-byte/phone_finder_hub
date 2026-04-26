@@ -2,19 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Chat;
-use App\Models\ChatMessage;
+use App\Repositories\ChatMessageRepository;
+use App\Repositories\ChatRepository;
+use App\Repositories\PhoneRepository;
 use App\Services\SEO\SEOData;
 use App\Services\SEO\SeoManager;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class FindController extends Controller
 {
-    // ─── Helpers ──────────────────────────────────────────────────────────────
+    protected PhoneRepository $phones;
 
-    /** Extract INR budget from current user message (e.g. "under 45k" → 45000) */
+    protected ChatRepository $chats;
+
+    protected ChatMessageRepository $chatMessages;
+
+    public function __construct(PhoneRepository $phones, ChatRepository $chats, ChatMessageRepository $chatMessages)
+    {
+        $this->phones = $phones;
+        $this->chats = $chats;
+        $this->chatMessages = $chatMessages;
+    }
+
     protected function extractBudget(string $message): ?int
     {
         $text = strtolower(str_replace(',', '', $message));
@@ -38,7 +48,6 @@ class FindController extends Controller
         return null;
     }
 
-    /** Detect what dimension the user cares about most */
     protected function detectPriority(string $message): string
     {
         $msg = strtolower($message);
@@ -61,7 +70,6 @@ class FindController extends Controller
         return 'overall';
     }
 
-    /** Sort-column map for each priority */
     protected function priorityColumn(string $priority): string
     {
         return match ($priority) {
@@ -74,12 +82,10 @@ class FindController extends Controller
         };
     }
 
-    // ─── Pages ────────────────────────────────────────────────────────────────
-
     public function index(SeoManager $seo)
     {
         $chats = auth()->check()
-            ? Chat::where('user_id', auth()->id())->orderBy('updated_at', 'desc')->get()
+            ? $this->chats->forUser(auth()->id())
             : [];
 
         $seo->set(new SEOData(
@@ -88,18 +94,16 @@ class FindController extends Controller
             url: route('find.index'),
         ));
 
-        $allPhoneNames = \App\Models\Phone::pluck('name')->values()->toArray();
+        $allPhoneNames = array_column($this->phones->all(), 'name');
 
         return view('find.index', compact('chats', 'allPhoneNames'));
     }
-
-    // ─── Chat ─────────────────────────────────────────────────────────────────
 
     public function chat(Request $request)
     {
         $request->validate([
             'message' => 'required|string',
-            'chat_id' => 'nullable|exists:chats,id',
+            'chat_id' => 'nullable|string',
             'history' => 'nullable|array',
         ]);
 
@@ -113,22 +117,22 @@ class FindController extends Controller
         }
 
         try {
-            // 1. Detect intent from CURRENT message only
             $budget = $this->extractBudget($userMessage);
             $priority = $this->detectPriority($userMessage);
             $sortCol = $this->priorityColumn($priority);
 
-            // 2. Query top 15 phones sorted by priority, filtered by budget
-            $query = \App\Models\Phone::with(['platform', 'battery', 'benchmarks', 'body', 'connectivity'])
-                ->orderBy($sortCol, 'desc');
+            $allPhones = $this->phones->all();
 
             if ($budget) {
-                $query->where('price', '<=', $budget * 1.05); // 5% overshoot tolerance
+                $allPhones = array_filter($allPhones, fn ($p) => ($p->price ?? 0) <= $budget * 1.05);
             }
 
-            $phones = $query->limit(15)->get();
+            usort($allPhones, function ($a, $b) use ($sortCol) {
+                return ($b->$sortCol ?? 0) <=> ($a->$sortCol ?? 0);
+            });
 
-            // 3. Build phone lines and card strings
+            $phones = array_slice($allPhones, 0, 15);
+
             $phoneLines = [];
             $cardLines = [];
 
@@ -146,7 +150,6 @@ class FindController extends Controller
                 $nfc = trim($phone->connectivity->nfc ?? '');
                 $jack = trim($phone->connectivity->jack_3_5mm ?? '');
 
-                // Compact spec summary
                 $specs = $chipset;
                 if ($ram) {
                     $specs .= " | {$ram} RAM";
@@ -179,16 +182,22 @@ class FindController extends Controller
                     .'|'.trim($phone->flipkart_url ?? '').']';
             }
 
-            // 4. Build top-5 ranklists (budget-aware)
-            $bc = $budget ? 'WHERE price <= '.intval($budget * 1.05) : '';
-            $fmt = fn ($rows) => implode(', ', array_column($rows, 'name'));
-            $ranklist =
-                'Best Camera (CMS): '.$fmt(DB::select("SELECT name FROM phones {$bc} ORDER BY cms_score       DESC LIMIT 5"))."\n".
-                'Best Gaming (GPX): '.$fmt(DB::select("SELECT name FROM phones {$bc} ORDER BY gpx_score       DESC LIMIT 5"))."\n".
-                'Best Experience(UEPS):'.$fmt(DB::select("SELECT name FROM phones {$bc} ORDER BY ueps_score     DESC LIMIT 5"))."\n".
-                'Best Endurance: '.$fmt(DB::select("SELECT name FROM phones {$bc} ORDER BY endurance_score DESC LIMIT 5"));
+            $filtered = $budget
+                ? array_filter($allPhones, fn ($p) => ($p->price ?? 0) <= $budget * 1.05)
+                : $allPhones;
 
-            // 5. Fill prompt from resource file
+            $top5 = function (string $col) use ($filtered) {
+                usort($filtered, fn ($a, $b) => ($b->$col ?? 0) <=> ($a->$col ?? 0));
+
+                return implode(', ', array_column(array_slice($filtered, 0, 5), 'name'));
+            };
+
+            $ranklist =
+                'Best Camera (CMS): '.$top5('cms_score')."\n".
+                'Best Gaming (GPX): '.$top5('gpx_score')."\n".
+                'Best Experience(UEPS):'.$top5('ueps_score')."\n".
+                'Best Endurance: '.$top5('endurance_score');
+
             $promptTemplate = file_get_contents(resource_path('ai/find_prompt.txt'));
 
             $budgetLabel = $budget ? '(within ₹'.number_format($budget).')' : '(no budget filter)';
@@ -202,7 +211,6 @@ class FindController extends Controller
                 $promptTemplate
             );
 
-            // 6. Build messages — strip [CARD|...] blobs from history
             $messages = [['role' => 'system', 'content' => $systemPrompt]];
             $historySlice = array_slice($history, -12);
 
@@ -220,9 +228,8 @@ class FindController extends Controller
 
             $messages[] = ['role' => 'user', 'content' => $userMessage];
 
-            \Log::info("FindAI: priority={$priority} budget=".($budget ?? 'none')." phones={$phones->count()} history=".count($historySlice));
+            \Log::info("FindAI: priority={$priority} budget=".($budget ?? 'none').' phones='.count($phones).' history='.count($historySlice));
 
-            // 7. Stream response
             return response()->stream(function () use ($apiKey, $messages, $userMessage, $chatId) {
                 $title = null;
 
@@ -238,14 +245,14 @@ class FindController extends Controller
                             'max_tokens' => 20,
                         ]);
                         $title = trim($tr->json()['choices'][0]['message']['content'] ?? 'New Chat', " \t\n\r\"");
-                        $chat = Chat::create(['user_id' => auth()->id(), 'title' => $title]);
+                        $chat = $this->chats->create(['user_id' => auth()->id(), 'title' => $title, 'created_at' => now()->format('c')]);
                         $chatId = $chat->id;
                     } else {
-                        $chat = Chat::findOrFail($chatId);
-                        $chat->touch();
+                        $chat = $this->chats->findOrFail($chatId);
+                        $this->chats->update($chat->id, ['updated_at' => now()->format('c')]);
                         $title = $chat->title;
                     }
-                    ChatMessage::create(['chat_id' => $chatId, 'role' => 'user', 'content' => $userMessage]);
+                    $this->chatMessages->create(['chat_id' => $chatId, 'role' => 'user', 'content' => $userMessage, 'created_at' => now()->format('c')]);
                 }
 
                 echo 'data: '.json_encode(['type' => 'meta', 'chat_id' => $chatId, 'title' => $title])."\n\n";
@@ -294,7 +301,7 @@ class FindController extends Controller
                     }
 
                     if (auth()->check() && $chatId && ! empty(trim($assistant))) {
-                        ChatMessage::create(['chat_id' => $chatId, 'role' => 'assistant', 'content' => $assistant]);
+                        $this->chatMessages->create(['chat_id' => $chatId, 'role' => 'assistant', 'content' => $assistant, 'created_at' => now()->format('c')]);
                     }
 
                     echo 'data: '.json_encode(['type' => 'done'])."\n\n";
@@ -324,23 +331,25 @@ class FindController extends Controller
         }
     }
 
-    // ─── Chat history ──────────────────────────────────────────────────────────
-
-    public function show(Chat $chat)
+    public function show(string $chatId)
     {
+        $chat = $this->chats->findOrFail($chatId);
         abort_unless(auth()->id() === $chat->user_id, 403);
+
+        $messages = $this->chatMessages->forChat($chat->id);
 
         return response()->json([
             'chat_id' => $chat->id,
             'title' => $chat->title,
-            'messages' => $chat->messages()->orderBy('created_at')->get()->map(fn ($m) => ['role' => $m->role, 'content' => $m->content]),
+            'messages' => array_map(fn ($m) => ['role' => $m->role, 'content' => $m->content], $messages),
         ]);
     }
 
-    public function destroy(Chat $chat)
+    public function destroy(string $chatId)
     {
+        $chat = $this->chats->findOrFail($chatId);
         abort_unless(auth()->id() === $chat->user_id, 403);
-        $chat->delete();
+        $this->chats->delete($chat->id);
 
         return response()->json(['success' => true]);
     }

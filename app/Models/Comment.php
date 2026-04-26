@@ -2,56 +2,58 @@
 
 namespace App\Models;
 
-use App\Models\Traits\SyncsToFirestore;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Repositories\CommentRepository;
+use App\Repositories\CommentUpvoteRepository;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Collection;
 
-class Comment extends Model
+class Comment extends FirestoreModel
 {
-    use SyncsToFirestore;
-
-    protected $fillable = [
-        'phone_id',
-        'user_id',
-        'parent_id',
-        'content',
-        'upvotes_count',
+    protected array $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    public function phone(): BelongsTo
+    public function phone(): ?Phone
     {
-        return $this->belongsTo(Phone::class);
+        return app(\App\Repositories\PhoneRepository::class)->find($this->attributes['phone_id'] ?? '');
     }
 
-    public function user(): BelongsTo
+    public function user(): ?User
     {
-        return $this->belongsTo(User::class);
+        return app(UserRepository::class)->find($this->attributes['user_id'] ?? '');
     }
 
-    public function parent(): BelongsTo
+    public function parent(): ?Comment
     {
-        return $this->belongsTo(Comment::class, 'parent_id');
+        if (empty($this->attributes['parent_id'])) {
+            return null;
+        }
+
+        $result = app(CommentRepository::class)->find($this->attributes['parent_id']);
+
+        return $result instanceof Comment ? $result : null;
     }
 
-    public function replies(): HasMany
+    public function replies(): Collection
     {
-        return $this->hasMany(Comment::class, 'parent_id');
+        return collect(app(CommentRepository::class)->repliesFor($this->attributes['id'] ?? ''));
     }
 
-    public function upvotes(): HasMany
+    public function upvotes(): Collection
     {
-        return $this->hasMany(CommentUpvote::class);
+        return collect(app(CommentUpvoteRepository::class)->forComment($this->attributes['id'] ?? ''));
     }
 
     public function getAuthorNameAttribute(): string
     {
-        if ($this->user_id) {
-            return $this->user->name;
+        if (! empty($this->attributes['user_id'])) {
+            $user = $this->user();
+            if ($user) {
+                return $user->name;
+            }
         }
 
-        // Generate a consistently random but anonymous sounding name based on the comment ID or IP
-        // Since we don't have IP here easily without request, let's use a hash of the comment ID to keep it somewhat stable
-        return 'Anonymous '.substr(md5('anon'.$this->id), 0, 6);
+        return 'Anonymous '.substr(md5('anon'.($this->attributes['id'] ?? '0')), 0, 6);
     }
 }

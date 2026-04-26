@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Auth\FirestoreUserProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,5 +26,9 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
+
+        Auth::provider('firestore', function ($app, array $config) {
+            return new FirestoreUserProvider($app->make(\App\Repositories\UserRepository::class));
+        });
     }
 }

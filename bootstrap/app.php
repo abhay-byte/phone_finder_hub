@@ -8,6 +8,24 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
+/*
+ * Render Deployment: Firebase credentials are provided as a base64-encoded
+ * secret because multi-line JSON does not paste reliably into Render's
+ * environment variable fields. We decode it here before Laravel boots so
+ * config/firebase.php can reference the file path.
+ */
+if ($base64 = $_ENV['FIREBASE_CREDENTIALS_BASE64'] ?? $_SERVER['FIREBASE_CREDENTIALS_BASE64'] ?? null) {
+    $credentialsPath = dirname(__DIR__).'/storage/app/firebase-credentials.json';
+
+    if (! file_exists($credentialsPath) || filesize($credentialsPath) === 0) {
+        file_put_contents($credentialsPath, base64_decode($base64));
+    }
+
+    $_ENV['FIREBASE_CREDENTIALS'] = $credentialsPath;
+    $_SERVER['FIREBASE_CREDENTIALS'] = $credentialsPath;
+    putenv("FIREBASE_CREDENTIALS={$credentialsPath}");
+}
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',

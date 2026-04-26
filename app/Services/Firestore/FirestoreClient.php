@@ -21,7 +21,7 @@ class FirestoreClient
 
     public function __construct()
     {
-        $this->projectId = config('services.firebase.project_id', config('firebase.projects.app.credentials.project_id'));
+        $this->projectId = config('services.firebase.project_id', config('firebase.projects.app.project_id', env('FIREBASE_PROJECT_ID')));
         $this->baseUrl = "https://firestore.googleapis.com/v1/projects/{$this->projectId}/databases/(default)/documents";
     }
 
@@ -35,6 +35,10 @@ class FirestoreClient
         }
 
         $credentialsPath = config('firebase.projects.app.credentials');
+
+        if ($credentialsPath && ! str_starts_with($credentialsPath, DIRECTORY_SEPARATOR)) {
+            $credentialsPath = base_path($credentialsPath);
+        }
 
         if (! $credentialsPath || ! file_exists($credentialsPath)) {
             throw new \RuntimeException('Firebase service account credentials not found at: '.$credentialsPath);
@@ -248,9 +252,10 @@ class FirestoreClient
 
         if (! empty($filters)) {
             $filterClauses = [];
-            foreach ($filters as $field => $condition) {
-                $op = $condition['op'] ?? 'EQUAL';
-                $value = $this->toFirestoreValue($condition['value']);
+            foreach ($filters as $filter) {
+                $field = $filter['field'] ?? '';
+                $op = $filter['op'] ?? 'EQUAL';
+                $value = $this->toFirestoreValue($filter['value']);
                 $filterClauses[] = [
                     'fieldFilter' => [
                         'field' => ['fieldPath' => $field],

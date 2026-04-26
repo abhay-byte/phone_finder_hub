@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Contract\Auth as FirebaseAuth;
 use Kreait\Firebase\Exception\Auth\FailedToVerifyToken;
@@ -11,6 +11,13 @@ use Kreait\Laravel\Firebase\Facades\Firebase;
 class FirebaseAuthService
 {
     protected ?FirebaseAuth $auth = null;
+
+    protected UserRepository $users;
+
+    public function __construct(UserRepository $users)
+    {
+        $this->users = $users;
+    }
 
     protected function getAuth(): FirebaseAuth
     {
@@ -21,9 +28,6 @@ class FirebaseAuthService
         return $this->auth;
     }
 
-    /**
-     * Verify a Firebase ID token
-     */
     public function verifyIdToken(string $idToken): ?object
     {
         try {
@@ -41,9 +45,6 @@ class FirebaseAuthService
         }
     }
 
-    /**
-     * Get user by Firebase UID
-     */
     public function getUser(string $uid): ?object
     {
         try {
@@ -55,43 +56,39 @@ class FirebaseAuthService
         }
     }
 
-    /**
-     * Create or update local user from Firebase user data
-     */
-    public function syncUser(object $firebaseUser): User
+    public function syncUser(object $firebaseUser): \App\Models\User
     {
-        $user = User::where('firebase_uid', $firebaseUser->uid)->first();
+        $user = $this->users->findByFirebaseUid($firebaseUser->uid);
 
         if (! $user) {
-            $user = User::where('email', $firebaseUser->email)->first();
+            $user = $this->users->findByEmail($firebaseUser->email);
         }
 
         if ($user) {
-            $user->update([
+            $this->users->update($user->id, [
                 'firebase_uid' => $firebaseUser->uid,
                 'name' => $firebaseUser->displayName ?? $user->name,
-                'email_verified_at' => $firebaseUser->emailVerified ? now() : $user->email_verified_at,
+                'email_verified_at' => $firebaseUser->emailVerified ? now()->format('c') : $user->email_verified_at,
                 'photo_url' => $firebaseUser->photoUrl ?? $user->photo_url,
             ]);
+            $user = $this->users->find($user->id);
         } else {
-            $user = User::create([
+            $user = $this->users->create([
                 'firebase_uid' => $firebaseUser->uid,
                 'name' => $firebaseUser->displayName ?? explode('@', $firebaseUser->email)[0],
                 'email' => $firebaseUser->email,
                 'username' => $this->generateUniqueUsername($firebaseUser->email),
-                'email_verified_at' => $firebaseUser->emailVerified ? now() : null,
+                'email_verified_at' => $firebaseUser->emailVerified ? now()->format('c') : null,
                 'photo_url' => $firebaseUser->photoUrl ?? null,
                 'role' => 'user',
                 'password' => bcrypt(uniqid()),
+                'created_at' => now()->format('c'),
             ]);
         }
 
         return $user;
     }
 
-    /**
-     * Create a custom token for a user
-     */
     public function createCustomToken(string $uid, array $claims = []): ?string
     {
         try {
@@ -105,9 +102,6 @@ class FirebaseAuthService
         }
     }
 
-    /**
-     * Revoke refresh tokens for a user
-     */
     public function revokeRefreshTokens(string $uid): bool
     {
         try {
@@ -121,16 +115,13 @@ class FirebaseAuthService
         }
     }
 
-    /**
-     * Generate a unique username from email
-     */
     protected function generateUniqueUsername(string $email): string
     {
         $base = explode('@', $email)[0];
         $username = $base;
         $counter = 1;
 
-        while (User::where('username', $username)->exists()) {
+        while ($this->users->findByUsername($username)) {
             $username = $base.$counter;
             $counter++;
         }

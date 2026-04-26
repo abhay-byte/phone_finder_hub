@@ -6,7 +6,7 @@
         replyContent: '',
         editContent: {{ json_encode($comment->content) }},
         errorMessage: '',
-        upvoted: {{ Auth::check() && $comment->upvotes()->where('user_id', Auth::id())->exists() ? 'true' : 'false' }},
+        upvoted: {{ Auth::check() && $comment->upvotes->contains('user_id', Auth::id()) ? 'true' : 'false' }},
         upvotesCount: {{ $comment->upvotes_count }},
         toggleUpvote() {
             @if(Auth::check())

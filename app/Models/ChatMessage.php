@@ -2,17 +2,12 @@
 
 namespace App\Models;
 
-use App\Models\Traits\SyncsToFirestore;
-use Illuminate\Database\Eloquent\Model;
+use App\Repositories\ChatRepository;
 
-class ChatMessage extends Model
+class ChatMessage extends FirestoreModel
 {
-    use SyncsToFirestore;
-
-    protected $fillable = ['chat_id', 'role', 'content'];
-
-    public function chat()
+    public function chat(): ?Chat
     {
-        return $this->belongsTo(Chat::class);
+        return app(ChatRepository::class)->find($this->attributes['chat_id'] ?? '');
     }
 }

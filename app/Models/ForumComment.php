@@ -2,22 +2,23 @@
 
 namespace App\Models;
 
-use App\Models\Traits\SyncsToFirestore;
-use Illuminate\Database\Eloquent\Model;
+use App\Repositories\ForumPostRepository;
+use App\Repositories\UserRepository;
 
-class ForumComment extends Model
+class ForumComment extends FirestoreModel
 {
-    use SyncsToFirestore;
+    protected array $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
-    protected $fillable = ['forum_post_id', 'user_id', 'content'];
-
-    public function post()
+    public function post(): ?ForumPost
     {
-        return $this->belongsTo(ForumPost::class, 'forum_post_id');
+        return app(ForumPostRepository::class)->find($this->attributes['forum_post_id'] ?? '');
     }
 
-    public function user()
+    public function user(): ?User
     {
-        return $this->belongsTo(User::class);
+        return app(UserRepository::class)->find($this->attributes['user_id'] ?? '');
     }
 }

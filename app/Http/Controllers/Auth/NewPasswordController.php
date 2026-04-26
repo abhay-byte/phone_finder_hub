@@ -3,32 +3,33 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Repositories\UserRepository;
+use App\Services\Firestore\FirestoreClient;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class NewPasswordController extends Controller
 {
-    /**
-     * Display the password reset view.
-     */
+    protected UserRepository $users;
+
+    protected FirestoreClient $firestore;
+
+    public function __construct(UserRepository $users, FirestoreClient $firestore)
+    {
+        $this->users = $users;
+        $this->firestore = $firestore;
+    }
+
     public function create(Request $request): View
     {
         return view('auth.reset-password', ['request' => $request]);
     }
 
-    /**
-     * Handle an incoming new password request.
-     *
-     * @throws ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -37,27 +38,36 @@ class NewPasswordController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // Here we will attempt to reset the user's password. If it is successful we
-        // will update the password on an actual user model and persist it to the
-        // database. Otherwise we will parse the error and return the response.
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
-                ])->save();
+        $tokenDoc = $this->firestore->getDocument('password_reset_tokens', $request->token);
 
-                event(new PasswordReset($user));
-            }
-        );
+        if (! $tokenDoc || $tokenDoc['email'] !== $request->email) {
+            return back()->withInput($request->only('email'))
+                ->withErrors(['email' => 'This password reset token is invalid.']);
+        }
 
-        // If the password was successfully reset, we will redirect the user back to
-        // the application's home authenticated view. If there is an error we can
-        // redirect them back to where they came from with their error message.
-        return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+        $createdAt = isset($tokenDoc['created_at']) ? new \DateTime($tokenDoc['created_at']) : null;
+        $now = new \DateTime;
+        if (! $createdAt || ($now->getTimestamp() - $createdAt->getTimestamp()) > 3600) {
+            return back()->withInput($request->only('email'))
+                ->withErrors(['email' => 'This password reset token has expired.']);
+        }
+
+        $user = $this->users->findByEmail($request->email);
+
+        if (! $user) {
+            return back()->withInput($request->only('email'))
+                ->withErrors(['email' => 'We can\'t find a user with that email address.']);
+        }
+
+        $this->users->update($user->id, [
+            'password' => Hash::make($request->password),
+            'remember_token' => Str::random(60),
+        ]);
+
+        $this->firestore->deleteDocument('password_reset_tokens', $request->token);
+
+        event(new PasswordReset($user));
+
+        return redirect()->route('login')->with('status', 'Your password has been reset!');
     }
 }
