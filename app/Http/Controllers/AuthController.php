@@ -52,10 +52,15 @@ class AuthController extends Controller
         $identifier = strip_tags(trim($request->input('identifier')));
         $password = $request->input('password');
 
-        $field = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        if (! filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+            $user = app(\App\Repositories\UserRepository::class)->findByUsername($identifier);
+            if ($user) {
+                $identifier = $user->email;
+            }
+        }
 
         $credentials = [
-            $field => $identifier,
+            'email' => $identifier,
             'password' => $password,
         ];
 

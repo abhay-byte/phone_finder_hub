@@ -34,8 +34,13 @@ class UserRepository extends FirestoreRepository
 
     public function findByUsername(string $username): ?User
     {
-        $result = $this->where('username', '==', $username)->first();
+        $all = $this->all();
+        foreach ($all as $user) {
+            if (($user->name ?? '') === $username) {
+                return $user;
+            }
+        }
 
-        return $result instanceof User ? $result : null;
+        return null;
     }
 }

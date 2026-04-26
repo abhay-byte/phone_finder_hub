@@ -39,7 +39,7 @@
             <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
         <div>
-            <p class="text-3xl font-black text-slate-900 dark:text-white transition-colors duration-300">{{ \App\Models\Phone::where('expert_score', '>', 0)->count() }}</p>
+            <p class="text-3xl font-black text-slate-900 dark:text-white transition-colors duration-300">{{ $expertRated }}</p>
             <p class="text-sm text-slate-500 dark:text-slate-400 transition-colors duration-300">Scored Phones</p>
         </div>
     </div>
